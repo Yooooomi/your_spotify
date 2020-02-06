@@ -1,10 +1,11 @@
 import React from 'react';
-import s from './index.module.css';
-import API from '../../services/API';
-import urls from '../../services/urls';
+import s from '../index.module.css';
+import API from '../../../services/API';
+import urls from '../../../services/urls';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
+import { mapStateToProps, mapDispatchToProps } from '../../../services/redux/tools';
+import { Input, Button, TextField, Typography } from '@material-ui/core';
 
 class Login extends React.Component {
     constructor(props) {
@@ -39,17 +40,20 @@ class Login extends React.Component {
         const { username, password } = this.props;
 
         return (
-            <form className={s.root} onSubmit={this.login} >
+            <form className={s.root} onSubmit={this.login}>
+                <Typography variant="h5">Login</Typography>
                 <div>
-                    <input name="username" onChange={this.update} value={username} placeholder="username" />
+                    <TextField margin="normal" fullWidth variant="outlined" label="Username" name="username" onChange={this.update} value={username} />
                 </div>
                 <div>
-                    <input name="password" onChange={this.update} value={password} placeholder="password" type="password" />
+                    <TextField margin="normal" fullWidth variant="outlined" label="Password" name="password" onChange={this.update} value={password} type="password" />
                 </div>
                 <div>
-                    <button type="submit">Login</button>
+                    <Button color="primary" variant="contained" fullWidth type="submit">Login</Button>
+                    <div className={s.underButton}>
+                        <Link className={s.link} to={urls.register}>Register</Link>
+                    </div>
                 </div>
-                <Link to={urls.register}>Register</Link>
             </form>
         )
     }

@@ -14,6 +14,9 @@ class Provider {
 
   static getUniqueID = (accessToken) => {
   }
+
+  static getHttpClient = accessToken => {
+  }
 }
 
 class Spotify extends Provider {
@@ -49,8 +52,8 @@ class Spotify extends Provider {
     };
   }
 
-  static refresh = refresh => {
-    const { data } = Axios.post('https://accounts.spotify.com/api/token', null, {
+  static refresh = async refresh => {
+    const { data } = await Axios.post('https://accounts.spotify.com/api/token', null, {
       params: {
         grant_type: 'refresh_token',
         refresh_token: refresh,
@@ -63,9 +66,18 @@ class Spotify extends Provider {
 
     return {
       accessToken: data.access_token,
-      refreshToken: data.refresh_token,
       expiresIn: Date.now() + data.expires_in * 1000,
     };
+  }
+
+  static getHttpClient = (accessToken, expires) => {
+    return Axios.create({
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      baseURL: 'https://api.spotify.com/v1',
+    });
   }
 }
 

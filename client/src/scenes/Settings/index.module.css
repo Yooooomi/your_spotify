@@ -1,0 +1,23 @@
+
+
+.root {
+
+}
+
+.row {
+}
+
+.paper {
+    width: 100%;
+    padding: 20px;
+}
+
+.entry {
+    display: flex;
+    justify-content: space-between;
+}
+
+.footer {
+    padding: 20px;
+    width: 100%;
+}

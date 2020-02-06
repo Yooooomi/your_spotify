@@ -1,8 +1,9 @@
 import React from 'react';
-import s from './index.module.css';
-import API from '../../services/API';
+import s from '../index.module.css';
+import API from '../../../services/API';
 import { withRouter, Link } from 'react-router-dom';
-import urls from '../../services/urls';
+import urls from '../../../services/urls';
+import { TextField, Button, Typography } from '@material-ui/core';
 
 class Register extends React.Component {
     constructor(props) {
@@ -35,16 +36,19 @@ class Register extends React.Component {
 
         return (
             <form className={s.root} onSubmit={this.register} >
+                <Typography variant="h5">Register</Typography>
                 <div>
-                    <input name="username" onChange={this.update} value={username} placeholder="username" />
+                    <TextField fullWidth margin="normal" variant="outlined" label="Username" name="username" onChange={this.update} value={username} />
                 </div>
                 <div>
-                    <input name="password" onChange={this.update} value={password} placeholder="password" type="password" />
+                    <TextField fullWidth margin="normal" variant="outlined" label="Password" name="password" onChange={this.update} value={password} type="password" />
                 </div>
                 <div>
-                    <button type="submit">register</button>
+                    <Button fullWidth variant="contained" color="primary" type="submit">register</Button>
+                    <div className={s.underButton}>
+                        <Link className={s.link} to={urls.login}>Login</Link>
+                    </div>
                 </div>
-                <Link to={urls.login}>Login</Link>
             </form>
         )
     }

@@ -2,15 +2,19 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Login from './scenes/Login';
+import Login from './scenes/Auth/Login';
 import urls from './services/urls';
 import { connect } from 'react-redux';
 import { mapStateToProps, mapDispatchToProps } from './services/redux/tools';
 import API from './services/API';
-import Register from './scenes/Register';
+import Register from './scenes/Auth/Register';
 import PrivateRoute from './components/PrivateRoute';
 import Home from './scenes/Home';
-import History from './scenes/History';
+import History from './scenes/HistoryScene';
+import Layout from './components/Layout';
+import { MuiThemeProvider } from '@material-ui/core';
+import theme from './services/theme';
+import Settings from './scenes/Settings';
 
 class App extends React.Component {
   async componentDidMount() {
@@ -19,6 +23,16 @@ class App extends React.Component {
     try {
       API.init();
       const { data } = await API.me();
+
+      data.spotify = null;
+
+      try {
+        const spot = await API.sme();
+        data.spotify = spot.data;
+      } catch (e) {
+        console.log('Account not linked to spotify');
+      }
+
       updateUser(data);
     } catch (e) {
       console.log('Not logged');
@@ -31,12 +45,17 @@ class App extends React.Component {
     return (
       <div className="App">
         <Router>
-          <Switch>
-            <PrivateRoute exact path={urls.home} component={Home} />
-            <PrivateRoute exact path={urls.history} component={History} />
-            <Route exact path={urls.register} component={Register} />
-            <Route exact path={urls.login} component={Login} />
-          </Switch>
+          <MuiThemeProvider theme={theme}>
+            <Layout>
+              <Switch>
+                <PrivateRoute exact path={urls.home} component={Home} />
+                <PrivateRoute exact path={urls.history} component={History} />
+                <PrivateRoute exact path={urls.settings} component={Settings} />
+                <Route exact path={urls.register} component={Register} />
+                <Route exact path={urls.login} component={Login} />
+              </Switch>
+            </Layout>
+          </MuiThemeProvider>
         </Router>
       </div>
     );

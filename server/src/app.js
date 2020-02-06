@@ -35,7 +35,8 @@ app.use('/oauth', oauthRouter);
 app.use('/spotify', spotifyRouter);
 app.use('/users', usersRouter);
 
-app.use((err, req, res, next) => {
+app.use(function(err, req, res, next) {
+  console.log('Crash !!');
   if (err) {
     console.error(err);
   }

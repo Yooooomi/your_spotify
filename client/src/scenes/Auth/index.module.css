@@ -1,0 +1,20 @@
+
+
+.root {
+    width: 20%;
+    margin: auto;
+}
+
+.input {
+    margin-bottom: 15px;
+}
+
+.underButton {
+    margin-top: 8px;
+    text-align: right;
+}
+
+.link {
+    color: #1365ff;
+    text-decoration: none;
+}

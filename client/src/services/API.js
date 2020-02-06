@@ -25,6 +25,7 @@ const API = {
     username, password,
   }),
   me: () => axios.get('/me'),
+  sme: () => axios.get('/oauth/spotify/me'),
   getTracks: (number, offset) => axios.get('/spotify/gethistory', {
     params: { number, offset },
   }),
@@ -37,20 +38,20 @@ const API = {
   listened_to: (start, end) => axios.get('/spotify/listened_to', {
     params: { start, end },
   }),
-  songsPer: (start, end) => axios.get('/spotify/songs_per', {
-    params: { start, end },
+  songsPer: (start, end, timeSplit) => axios.get('/spotify/songs_per', {
+    params: { start, end, timeSplit },
   }),
-  timePer: (start, end) => axios.get('/spotify/time_per', {
-    params: { start, end, timeSplit: 'hour' },
+  timePer: (start, end, timeSplit) => axios.get('/spotify/time_per', {
+    params: { start, end, timeSplit },
   }),
-  featRatio: (start, end) => axios.get('/spotify/feat_ratio', {
-    params: { start, end },
+  featRatio: (start, end, timeSplit) => axios.get('/spotify/feat_ratio', {
+    params: { start, end, timeSplit },
   }),
-  albumDateRatio: (start, end) => axios.get('/spotify/album_date_ratio', {
-    params: { start, end },
+  albumDateRatio: (start, end, timeSplit) => axios.get('/spotify/album_date_ratio', {
+    params: { start, end, timeSplit },
   }),
-  popularityPer: (start, end) => axios.get('/spotify/popularity_per', {
-    params: { start, end },
+  popularityPer: (start, end, timeSplit) => axios.get('/spotify/popularity_per', {
+    params: { start, end, timeSplit },
   }),
 };
 

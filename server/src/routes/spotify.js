@@ -26,9 +26,13 @@ router.get('/listened_to', validating(interval, 'query'), logged, async (req, re
   const { user } = req;
   const { start, end } = req.values;
 
-  const result = await db.getSongsNbInterval(user._id, start, end);
+  const result = await db.getSongsPer(user._id, start, end);
   console.log('Listened to ', result);
-  return res.status(200).send({ count: result });
+  if (result.length > 0) {
+    return res.status(200).send({ count: result[0].count });
+  } else {
+    return res.status(200).send({ count: 0 });
+  }
 });
 
 router.get('/most_listened', validating(interval, 'query'), logged, async (req, res) => {

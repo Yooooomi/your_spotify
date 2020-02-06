@@ -1,0 +1,31 @@
+
+
+.root {
+
+}
+
+.header {
+    height: 5vh;
+    background-color: white;
+}
+
+.stat {
+    flex-grow: 1;
+}
+
+.page {
+    display: flex;
+}
+
+.sider {
+    padding-top: 5vh;
+    flex: 2;
+    background-color: white;
+    height: 90vh;
+}
+
+.content {
+    flex: 10;
+    padding: 0px 50px;
+    padding-top: 5vh;
+}

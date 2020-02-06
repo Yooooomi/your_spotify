@@ -203,13 +203,12 @@ const popularityPer = async (userId, start, end, timeSplit = 'day') => {
     {
       $group: {
         _id: getGroupingByTimeSplit(timeSplit),
-        totalPopularity: { "$sum": { $toInt: { $arrayElemAt: [{ $split: ['$album.release_date', '-'] }, 0] } } },
+        totalPopularity: { "$sum": '$track.popularity' },
         count: { $sum: 1 },
       }
     },
-    { $project: { _id: 1, totalYear: { $divide: ['$totalYear', '$count'] }, count: 1 } },
+    { $project: { _id: 1, totalPopularity: { $divide: ['$totalPopularity', '$count'] }, count: 1 } },
   ]);
-
   return res;
 }
 

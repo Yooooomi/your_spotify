@@ -6,8 +6,6 @@ class Track extends React.Component {
     render() {
         const { className, track, infos } = this.props;
 
-        console.log(infos);
-
         return (
             <div className={cl(s.root, className)}>
                 <div className={s.cover}>
