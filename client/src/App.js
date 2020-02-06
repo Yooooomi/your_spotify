@@ -10,6 +10,7 @@ import API from './services/API';
 import Register from './scenes/Register';
 import PrivateRoute from './components/PrivateRoute';
 import Home from './scenes/Home';
+import History from './scenes/History';
 
 class App extends React.Component {
   async componentDidMount() {
@@ -32,6 +33,7 @@ class App extends React.Component {
         <Router>
           <Switch>
             <PrivateRoute exact path={urls.home} component={Home} />
+            <PrivateRoute exact path={urls.history} component={History} />
             <Route exact path={urls.register} component={Register} />
             <Route exact path={urls.login} component={Login} />
           </Switch>

@@ -45,13 +45,12 @@ const loop = async user => {
       //});
       const tracks = data.items.map(e => e.track);
       await dbTools.saveMusics(tracks, user.accessToken);
-      const ids = tracks.map(e => e.id);
-      await db.addTrackIdsToUser('_id', user._id, ids);
+      const infos = data.items.map(e => ({ played_at: e.played_at, id: e.track.id }));
+      await db.addTrackIdsToUser(user._id, infos);
     }
   } catch (e) {
     console.error(e);
   }
-
 };
 
 const reflect = p => p.then(v => ({ failed: false }), e => ({ failed: true, error: e }));
@@ -71,8 +70,6 @@ const dbLoop = async () => {
         activated: true,
       },
     );
-
-    console.log(users);
 
     const promises = users.map(us => reflect(loop(us)));
     const results = await Promise.all(promises);

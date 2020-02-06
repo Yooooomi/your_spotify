@@ -20,6 +20,13 @@ const mapDispatchToProps = dispatch => ({
       dispatch({ type: 'UPDATE_USER', user: {} });
     }
   },
+  addTracks: async (offset) => {
+    const { data } = await API.getTracks(20, offset);
+    dispatch({ type: 'ADD_TRACKS', tracks: data, full: data.length !== 20 });
+  },
+  manuallyAddTracks: (tracks) => {
+    dispatch({ type: 'ADD_TRACKS', tracks });
+  },
 });
 
 export { mapDispatchToProps, mapStateToProps };

@@ -14,6 +14,7 @@ app.use(bp.json())
 
 var indexRouter = require('./routes/index');
 var oauthRouter = require('./routes/oauth');
+var spotifyRouter = require('./routes/spotify');
 var usersRouter = require('./routes/users');
 
 app.use((req, res, next) => {
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/oauth', oauthRouter);
+app.use('/spotify', spotifyRouter);
 app.use('/users', usersRouter);
 
 app.use((err, req, res, next) => {

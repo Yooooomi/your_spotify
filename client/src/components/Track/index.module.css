@@ -1,0 +1,34 @@
+
+
+.root {
+    position: relative;
+    background-color: white;
+    text-align: left;
+    -webkit-box-shadow: 10px 10px 16px -9px rgba(0,0,0,0.09);
+    -moz-box-shadow: 10px 10px 16px -9px rgba(0,0,0,0.09);
+    box-shadow: 10px 10px 16px -9px rgba(0,0,0,0.09);
+}
+
+.cover {
+    position: relative;
+}
+
+.cover > img {
+    width: 100%;
+}
+
+.texts {
+    padding: 5px;
+}
+
+.title {
+    font-size: 0.9em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.author {
+    font-size: 0.7em;
+    color: rgb(137, 139, 145);
+}

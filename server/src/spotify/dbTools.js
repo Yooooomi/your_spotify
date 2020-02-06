@@ -5,7 +5,7 @@ const Axios = require('axios');
 const axios = Axios.create();
 
 const saveArtist = async artist => {
-  let dbartist = db.Artist.findOne({ id: artist.id });
+  let dbartist = db.Artist.findOne({ id: artist.id }).catch(() => {});
   dbartist = await dbartist;
 
   if (!dbartist) {
@@ -22,20 +22,23 @@ const saveMusic = async (track) => {
   track.artists = track.artists.map(e => e.id);
   track.album = track.album.id;
 
-  let dbalbum = db.Album.findOne({ id: album.id });
-  let dbtrack = db.Track.findOne({ id: track.id });
+  let dbalbum = db.Album.findOne({ id: album.id }).catch(() => {});
+  let dbtrack = db.Track.findOne({ id: track.id }).catch(() => {});
 
   dbalbum = await dbalbum;
   dbtrack = await dbtrack;
 
+  // for (let i = 0; i < artists.length; i++) {
+  //   await saveArtist(artists[i]);
+  // }
   await Promise.all(artists.map(saveArtist));
   
   if (!dbalbum) {
-    await db.Album.create(album);
+    await db.Album.create(album).catch(() => {});
     console.log('Created album ', album.name);
   }
   if (!dbtrack) {
-    await db.Track.create(track);
+    await db.Track.create(track).catch(() => {});
     console.log('Created track ', track.name);
   }
 };
@@ -55,6 +58,9 @@ const saveMusics = async (musics, access) => {
       Authorization: `Bearer ${access}`,
     },
   });
+  // for (let i = 0; i < data.tracks.length; i++) {
+  //   await saveMusic(data.tracks[i]);
+  // }
   await Promise.all(data.tracks.map(e => saveMusic(e)));
 }
 

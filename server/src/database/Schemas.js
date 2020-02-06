@@ -1,28 +1,36 @@
 const mongoose = require('mongoose');
 
-const User = mongoose.model('User', {
-  username: String,
-  password: String,
-  spotifyId: String,
-  expiresIn: Number,
-  accessToken: String,
-  refreshToken: String,
-  activated: Boolean,
-  lastTimestamp: Number,
-  trackIds: [String],
+const User = mongoose.model('User',
+  new mongoose.Schema({
+    username: String,
+    password: String,
+    spotifyId: String,
+    expiresIn: Number,
+    accessToken: String,
+    refreshToken: String,
+    activated: Boolean,
+    lastTimestamp: Number,
+    tracks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Infos' }],
+  }, { toJSON: { virtuals: true }, toObject: { virtuals: true } }),
+);
+
+const Infos = mongoose.model('Infos', {
+  owner: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  id: String,
+  played_at: Date,
 });
 
-User.schema.virtual('tracks', {
+Infos.schema.virtual('track', {
   ref: 'Track',
-  localField: 'trackIds',
+  localField: 'id',
   foreignField: 'id',
-  justOne: false,
-});
+  justOne: true,
+})
 
 const Artist = mongoose.model('Artist', {
   "external_urls": Object,
   "href": String,
-  "id": String,
+  "id": { type: String, unique: true },
   "name": String,
   "type": String,
   "uri": String,
@@ -34,7 +42,7 @@ const Album = mongoose.model('Album', {
   "available_markets": [String],
   "external_urls": Object,
   "href": String,
-  "id": String,
+  "id": { type: String, unique: true },
   "images": [Object],
   "name": String,
   "release_date": String,
@@ -60,7 +68,7 @@ const Track = mongoose.model('Track', {
   "external_ids": Object,
   "external_urls": Object,
   "href": String,
-  "id": String,
+  "id": { type: String, unique: true },
   "is_local": Boolean,
   "name": String,
   "popularity": Number,
@@ -96,6 +104,7 @@ Track.schema.virtual('full_artist', {
 
 module.exports = {
   User,
+  Infos,
   Artist,
   Album,
   Track,

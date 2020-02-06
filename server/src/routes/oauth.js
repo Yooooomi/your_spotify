@@ -14,8 +14,6 @@ router.get('/spotify/callback', logged, async (req, res) => {
 
   const infos = await Spotify.exchangeCode(code);
 
-  console.log(infos, req.user);
-
   await db.storeInUser('_id', req.user._id, {
     ...infos,
     activated: true,

@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken');
 const db = require('../database');
 
 const validating = (schema, location = 'body') => (req, res, next) => {
-  console.log(req.body);
-
   const { error, value } = Joi.validate(req[location], schema);
 
   if (error) {
@@ -25,8 +23,6 @@ const logged = async (req, res, next) => {
   if (auth) {
     try {
       const userId = jwt.verify(auth, 'MyPrivateKey');
-
-      console.log('User id: ', userId);
 
       const user = await db.getUserFromField('_id', userId.userId, false);
 
