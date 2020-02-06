@@ -50,15 +50,22 @@ class Spotify extends Provider {
   }
 
   static refresh = refresh => {
-    return Axios.post('https://accounts.spotify.com/api/token', {
-      grant_type: 'refresh_token',
-      refresh_token: refresh,
-    }, {
+    const { data } = Axios.post('https://accounts.spotify.com/api/token', null, {
+      params: {
+        grant_type: 'refresh_token',
+        refresh_token: refresh,
+      },
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Authorization: Basic ${(credentials.spotify.public + ':' + credentials.spotify.secret).toString('base64')}`,
+        Authorization: `Basic ${Buffer.from(credentials.spotify.public + ':' + credentials.spotify.secret).toString('base64')}`,
       },
     });
+
+    return {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      expiresIn: Date.now() + data.expires_in * 1000,
+    };
   }
 }
 

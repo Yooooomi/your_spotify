@@ -7,6 +7,8 @@
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
+const db = require('../database');
+const { dbLoop } = require('../spotify/looper');
 
 /**
  * Get port from environment and store in Express.
@@ -25,9 +27,12 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+db.connect().then(() => {
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+  dbLoop();
+})
 
 /**
  * Normalize a port into a number, string, or false.

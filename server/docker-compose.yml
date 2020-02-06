@@ -1,14 +1,18 @@
 version: "3"
+
+
 services:
   app:
     container_name: express-mongo
     restart: always
     build: ./
     ports:
-      - "80:3000"
+      - "8080:8080"
     volumes:
-      - .:/app
+      - ./src/:/app/src/
     links:
+      - mongo
+    depends_on:
       - mongo
   mongo:
     container_name: mongo
