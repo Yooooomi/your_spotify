@@ -12,5 +12,4 @@ RUN npm install
 
 COPY src/* /app/src/
 
-
 ENTRYPOINT [ "yarn", "dev" ]

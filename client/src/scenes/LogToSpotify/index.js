@@ -1,6 +1,7 @@
 import React from 'react';
 import s from './index.module.css';
 import { Typography, Button } from '@material-ui/core';
+import API from '../../services/API';
 
 class LogToSpotify extends React.Component {
   render() {
@@ -20,7 +21,7 @@ class LogToSpotify extends React.Component {
           </div>
         </div>
         <div className={s.entry}>
-          <a style={{ textDecoration: 'none' }} href="http://localhost:8080/oauth/spotify">
+          <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
             <Button fullWidth variant="contained" color="primary">
               Here
           </Button>

@@ -1,11 +1,12 @@
 const Axios = require('axios');
 
 const axios = Axios.create({
-  baseURL: 'http://localhost:8080/',
+  baseURL: window.API_ENDPOINT,
   withCredentials: true,
 });
 
 const API = {
+  spotify: () => axios.get('/oauth/spotify'),
   login: (username, password) => axios.post('/login', {
     username, password,
   }),

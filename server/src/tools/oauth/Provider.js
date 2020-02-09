@@ -20,9 +20,9 @@ class Provider {
 }
 
 class Spotify extends Provider {
-  static getRedirect = () => {
+  static getRedirect = (host) => {
     const scopes = credentials.spotify.scopes;
-    const redirectUri = credentials.spotify.redirectUri;
+    const redirectUri = host + credentials.spotify.redirectUri;
 
     return 'https://accounts.spotify.com/authorize' +
       '?response_type=code' +

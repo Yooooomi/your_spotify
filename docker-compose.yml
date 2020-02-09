@@ -1,12 +1,10 @@
 version: "3"
 
-
 services:
   app:
     container_name: express-mongo
     restart: always
-    build:
-      context: ./
+    build: ./server
     ports:
       - "8080:8080"
     volumes:
@@ -15,8 +13,22 @@ services:
       - mongo
     depends_on:
       - mongo
+    environment:
+      - CLIENT_ENDPOINT=http://localhost:3000 # This MUST be a valid redirect URL on the spotify dashboard
   mongo:
     container_name: mongo
     image: mongo
     ports:
       - "27017:27017"
+
+  web:
+    container_name: web
+    restart: always
+    build: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src/
+      - ./public:/app/public/
+    environment:
+      - API_ENDPOINT=http://localhost:8080

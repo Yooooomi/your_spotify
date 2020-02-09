@@ -3,9 +3,11 @@ var router = express.Router();
 const { logged, withHttpClient } = require('../tools/middleware');
 const { Spotify } = require('../tools/oauth/Provider');
 const db = require('../database');
+const Joi = require('joi');
 
 router.get('/spotify', (req, res) => {
-  return res.redirect(Spotify.getRedirect());
+  console.log(req.get('host'));
+  return res.redirect(Spotify.getRedirect(req.get('host')));
 });
 
 router.get('/spotify/callback', logged, async (req, res) => {

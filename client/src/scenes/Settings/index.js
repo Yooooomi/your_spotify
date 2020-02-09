@@ -55,7 +55,7 @@ class Settings extends React.Component {
                     ))
                   ) : (
                       <div>
-                        <a style={{ textDecoration: 'none' }} href="http://localhost:8080/oauth/spotify">
+                        <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
                           <Button fullWidth variant="contained" color="primary">
                             Login to Spotify
                           </Button>
@@ -70,7 +70,7 @@ class Settings extends React.Component {
             <Paper className={s.footer}>
               <Grid container spacing={1}>
                 <Grid item xs={4}>
-                  <a style={{ textDecoration: 'none' }} href="http://localhost:8080/oauth/spotify">
+                  <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
                     <Button fullWidth variant="contained" color="primary">
                       Relog to Spotify
                     </Button>
