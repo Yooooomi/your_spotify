@@ -1,8 +1,35 @@
 var express = require('express');
 var router = express.Router();
-const { logged, validating } = require('../tools/middleware');
+const { logged, validating, withHttpClient } = require('../tools/middleware');
 const db = require('../database');
 const Joi = require('joi');
+
+const playSchema = Joi.object().keys({
+  id: Joi.string().required(),
+});
+
+router.post('/play', validating(playSchema), logged, withHttpClient, async (req, res) => {
+  const { client } = req;
+  const { id } = req.values;
+
+  try {
+    const track = await db.Track.findOne({ id, });
+
+    if (!track) return res.status(400).end();
+    await client.put('https://api.spotify.com/v1/me/player/play', {
+        uris: [track.uri],
+      }
+    );
+    return res.status(200).end();
+  } catch (e) {
+    if (e.response) {
+      console.error(e.response.data);
+      return res.status(400).send(e.response.data.error);
+    }
+    else console.error(e);
+    return res.status(500).end();
+  }
+});
 
 const gethistorySchema = Joi.object().keys({
   number: Joi.number().max(20).required(),
@@ -33,7 +60,7 @@ router.get('/listened_to', validating(interval, 'query'), logged, async (req, re
   const { start, end } = req.values;
 
   const result = await db.getSongsPer(user._id, start, end);
-  console.log('Listened to ', result);
+  ('Listened to ', result);
   if (result.length > 0) {
     return res.status(200).send({ count: result[0].count });
   } else {

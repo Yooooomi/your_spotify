@@ -14,6 +14,8 @@ class SongsToday extends React.Component {
   }
 
   async componentDidMount() {
+    const { loaded } = this.props;
+
     const start = new Date();
     start.setHours(0, 0, 0);
     const end = new Date();
@@ -21,7 +23,7 @@ class SongsToday extends React.Component {
     const { data } = await API.listened_to(start, end);
     this.setState({
       stats: data,
-    });
+    }, loaded);
   }
 
   render() {

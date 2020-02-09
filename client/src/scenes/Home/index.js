@@ -15,8 +15,30 @@ import BestSong from '../../components/Stats/Cards/Normal/BestSong';
 import API from '../../services/API';
 import DifferentArtistsPer from '../../components/Stats/Graphs/Normal/DifferentArtistsPer';
 import BestArtist from '../../components/Stats/Cards/Normal/BestArtist';
+import ShowIfInScreen from '../../components/ShowIfInScreen';
+import { today } from '../../services/interval';
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.loadedNb = 0;
+
+    this.inter = today();
+
+    this.state = {
+      loaded: 0,
+    };
+  }
+
+  loaded = () => {
+    this.loadedNb += 1;
+
+    this.setState({
+      loaded: this.loadedNb
+    });
+  }
+
   componentDidMount() {
     const start = new Date();
     start.setDate(start.getDate() - 7);
@@ -26,31 +48,45 @@ class Home extends React.Component {
 
   render() {
     const { user } = this.props;
+    const { loadedNb } = this;
 
     return (
       <div className={s.root}>
-        <div className={s.welcome}>
+        <div className={loadedNb === 4 ? s.welcome : s.welcomehidden}>
           <Typography align="left" variant="h4">
             Welcome&nbsp;
             {user.username}
+            &nbsp;here is your day summary
           </Typography>
         </div>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <SongsToday />
+        <div className={s.content} className={loadedNb === 4 ? s.content : s.contenthidden}>
+          <Grid container spacing={2} alignContent="stretch">
+            <Grid item xs={12} lg={6}>
+              <SongsToday loaded={this.loaded} />
+            </Grid>
+            <Grid item xs={12} lg={6}>
+              <TimeToday loaded={this.loaded} />
+            </Grid>
+            <Grid item xs={6} lg={3}>
+              <BestSong loaded={this.loaded} />
+            </Grid>
+            <Grid item xs={6} lg={3}>
+              <BestArtist loaded={this.loaded} />
+            </Grid>
+            <Grid style={{ minHeight: '250px' }} item xs={12} lg={6}>
+              <TimePer defaultStart={this.inter.start} defaultEnd={this.inter.end} defaultTimeSplit="hour" />
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <TimeToday />
-          </Grid>
-          <Grid item xs={3}>
-            <BestSong />
-          </Grid>
-          <Grid item xs={3}>
-            <BestArtist />
-          </Grid>
-        </Grid>
-        <TimePer />
-        <SongsPer />
+        </div>
+        <ShowIfInScreen>
+          <div className={s.listened}>
+            <Typography variant="h4">
+              What you listened to today
+              </Typography>
+          </div>
+          <History xs={2} lg={4} />
+        </ShowIfInScreen>
+        {/* <SongsPer />
         <AlbumDatePer />
         <PopularityPer />
         <FeatRatioPer />
@@ -59,9 +95,8 @@ class Home extends React.Component {
           <Typography align="left" variant="h4">
             Recent play history
           </Typography>
-        </div>
-        <History nb={4} />
-        <a href="http://localhost:8080/oauth/spotify">Spotify</a>
+        </div> */}
+
       </div>
     );
   }

@@ -26,10 +26,7 @@ class BestArtist extends React.Component {
 
   refresh = async () => {
     const { start, end } = this.state;
-
     const { data } = await API.differentArtistsPer(start, end);
-
-    console.log('Artist', data);
 
     this.setState({
       stats: data,
@@ -43,7 +40,7 @@ class BestArtist extends React.Component {
   render() {
     const { stats } = this.state;
 
-    if (!stats) return null;
+    if (!stats || !stats.length) return null;
 
     return (
       <div className={s.root} style={{ backgroundImage: `url(${stats[0].artist.images[0].url})` }}>

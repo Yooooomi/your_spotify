@@ -1,0 +1,25 @@
+
+
+.root {
+    height: 95vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: -50px;
+}
+
+.entry {
+    margin-bottom: 25px;
+    display: block;
+    position: relative;
+}
+
+.entry > img {
+    width: 20%;
+}
+
+.desc {
+    width: 50%;
+    margin: auto;
+}

@@ -54,27 +54,30 @@ const fillArray = (stats, start, end, timeSplit, dataGetter) => {
 };
 
 class IntervalChart extends React.Component {
-  init = (name = '', timeSplit = 'hour', start = null, end = null, fetchOnMount = true) => {
+  constructor(props, name) {
+    super(props);
+
     this.inited = true;
     this.name = name;
 
-    if (start === null) {
-      start = new Date();
-      start.setHours(0, 0, 0);
-      start.setDate(start.getDate() - 5);
+    let { defaultStart, defaultEnd, defaultTimeSplit, dontFetchOnMount } = this.props;
+
+    this.dontFetchOnMount = dontFetchOnMount;
+
+    if (!defaultStart) {
+      defaultStart = new Date();
+      defaultStart.setHours(0, 0, 0);
+      defaultStart.setDate(defaultStart.getDate() - 5);
     }
-    if (end === null) {
-      end = new Date();
+    if (!defaultEnd) {
+      defaultEnd = new Date();
     }
 
-    this.fetchOnMount = fetchOnMount;
-
-    // eslint-disable-next-line react/no-direct-mutation-state
     this.state = {
-      start,
-      end,
+      start: defaultStart,
+      end: defaultEnd,
+      timeSplit: defaultTimeSplit || 'hour',
       stats: null,
-      timeSplit,
     };
   }
 
@@ -86,7 +89,7 @@ class IntervalChart extends React.Component {
     throw new Error('Implement fetch stats');
   }
 
-  refresh = async () => {
+  refresh = async (cb) => {
     const { start, end, timeSplit } = this.state;
     const data = await this.fetchStats();
 
@@ -98,7 +101,7 @@ class IntervalChart extends React.Component {
 
     this.setState({
       stats: values,
-    });
+    }, cb);
   }
 
   setInfos = (field, value, shouldRefresh = true) => {
@@ -110,10 +113,14 @@ class IntervalChart extends React.Component {
 
   componentDidMount() {
     if (!this.inited) {
-      throw new Error('You must init the Interval chart in the constructor');
+      throw new Error('You must call parent constructor when using IntervalChart');
     }
-    if (this.fetchOnMount) {
-      this.refresh();
+    const { loaded } = this.props;
+
+    if (!this.dontFetchOnMount) {
+      this.refresh(loaded);
+    } else if (loaded) {
+      loaded();
     }
   }
 

@@ -6,4 +6,7 @@ export default createMuiTheme({
     primary: { main: '#1365ff' },
     secondary: { main: '#EBECF0' },
   },
+  typography: {
+    fontFamily: 'Open Sans',
+  },
 });

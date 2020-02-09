@@ -1,7 +1,8 @@
 
 
 .root {
-    position: relative
+    position: relative;
+    height: calc(100% - 40px);
 }
 
 .buttons {

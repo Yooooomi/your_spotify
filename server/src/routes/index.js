@@ -32,6 +32,11 @@ router.post('/register', validating(registerSchema), async (req, res) => {
   return res.status(200).send(newUser);
 });
 
+router.post('/logout', async (req, res) => {
+  res.clearCookie('token');
+  return res.status(200).end();
+});
+
 const loginSchema = Joi.object().keys({
   username: Joi.string().max(constants.maxStringLength).required(),
   password: Joi.string().max(constants.maxStringLength).required(),

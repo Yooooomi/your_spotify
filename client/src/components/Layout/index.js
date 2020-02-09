@@ -13,13 +13,14 @@ class Layout extends React.Component {
           <AppBar>
             <Toolbar className={s.toolbar}>
               <Typography variant="h6">Your spotify</Typography>
-              <Typography className={s.stat}>You listened to 6 hours of music today</Typography>
             </Toolbar>
           </AppBar>
         </div>
         <div className={s.page}>
-          <div className={s.sider}>
-            <Sider />
+          <div className={s.siderContainer}>
+            <div className={s.sider}>
+              <Sider />
+            </div>
           </div>
           <div className={s.content}>
             {children}

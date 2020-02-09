@@ -6,9 +6,7 @@ import Chart from '../../../../Chart';
 
 class TimePer extends IntervalChart {
   constructor(props) {
-    super(props);
-
-    this.init('Time listened');
+    super(props, 'Time listened');
   }
 
   dataGetter = stats => {

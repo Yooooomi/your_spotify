@@ -5,18 +5,6 @@ const axios = Axios.create({
   withCredentials: true,
 });
 
-let token = '';
-
-const setToken = tk => {
-  token = tk;
-  localStorage.setItem('token', tk);
-  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
-
-const init = () => {
-  setToken(localStorage.getItem('token'));
-};
-
 const API = {
   login: (username, password) => axios.post('/login', {
     username, password,
@@ -24,8 +12,12 @@ const API = {
   register: (username, password) => axios.post('/register', {
     username, password,
   }),
+  logout: () => axios.post('/logout'),
   me: () => axios.get('/me'),
   sme: () => axios.get('/oauth/spotify/me'),
+  play: id => axios.post('/spotify/play', {
+    id,
+  }),
   getTracks: (number, offset) => axios.get('/spotify/gethistory', {
     params: { number, offset },
   }),
@@ -59,7 +51,5 @@ const API = {
 };
 
 export default {
-  init,
-  setToken,
   ...API,
 };

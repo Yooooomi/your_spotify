@@ -1,7 +1,7 @@
 import 'date-fns';
 import React from 'react';
 import {
-  FlexibleWidthXYPlot,
+  FlexibleXYPlot,
   XAxis,
   YAxis,
   LineSeries,
@@ -57,33 +57,33 @@ export default function Chart({
 
   return (
     <div className={cl(s.root, className)}>
-      <FlexibleWidthXYPlot
+      <FlexibleXYPlot
         style={{
           width: '100%',
         }}
-        height={300}
       >
         <XAxis
           title={xName}
           tickFormat={xFormat}
         />
         <YAxis
+        bottom={0}
           title={yName}
         />
         <LineSeries
           curve="curveMonotoneX"
           data={data}
         />
-      </FlexibleWidthXYPlot>
+      </FlexibleXYPlot>
       <div className={s.buttons}>
-      <IntervalModifier
-              start={start}
-              end={end}
-              timeSplit={timeSplit}
-              onStartChange={onStartChange}
-              onEndChange={onEndChange}
-              onTimeSplitChange={onTimeSplitChange}
-            />
+        <IntervalModifier
+          start={start}
+          end={end}
+          timeSplit={timeSplit}
+          onStartChange={onStartChange}
+          onEndChange={onEndChange}
+          onTimeSplitChange={onTimeSplitChange}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,19 @@
 
+export const today = () => {
+  const start = new Date();
+
+  start.setSeconds(0);
+  start.setMinutes(0);
+  start.setHours(0);
+
+  const end = new Date();
+
+  return {
+    start,
+    end,
+  };
+}
+
 export const lastDay = () => {
   const start = new Date();
 

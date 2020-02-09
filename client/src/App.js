@@ -14,20 +14,21 @@ import History from './scenes/HistoryScene';
 import Layout from './components/Layout';
 import theme from './services/theme';
 import Settings from './scenes/Settings';
+import Logout from './scenes/Auth/Logout';
+import LogToSpotify from './scenes/LogToSpotify';
 
 class App extends React.Component {
   async componentDidMount() {
     const { updateUser, updateReady } = this.props;
 
     try {
-      API.init();
       const { data } = await API.me();
 
       data.spotify = null;
 
       try {
-        const spot = await API.sme();
-        data.spotify = spot.data;
+        //const spot = await API.sme();
+        //data.spotify = spot.data;
       } catch (e) {
         console.log('Account not linked to spotify');
       }
@@ -46,9 +47,11 @@ class App extends React.Component {
         <MuiThemeProvider theme={theme}>
           <Layout>
             <Switch>
-              <PrivateRoute exact path={urls.home} component={Home} />
-              <PrivateRoute exact path={urls.history} component={History} />
+              <PrivateRoute spotify exact path={urls.home} component={Home} />
+              <PrivateRoute spotify exact path={urls.history} component={History} />
               <PrivateRoute exact path={urls.settings} component={Settings} />
+              <PrivateRoute exact path={urls.activateSpotify} component={LogToSpotify} />
+              <PrivateRoute exact path={urls.logout} component={Logout} />
               <Route exact path={urls.register} component={Register} />
               <Route exact path={urls.login} component={Login} />
             </Switch>

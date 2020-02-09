@@ -14,6 +14,8 @@ class TimeToday extends React.Component {
   }
 
   async componentDidMount() {
+    const { loaded } = this.props;
+
     const start = new Date();
     start.setHours(0, 0, 0);
     const end = new Date();
@@ -21,7 +23,7 @@ class TimeToday extends React.Component {
     const { data } = await API.timePer(start, end, 'month');
     this.setState({
       stats: data[0] || { count: 0 },
-    });
+    }, loaded);
   }
 
   render() {
@@ -32,7 +34,7 @@ class TimeToday extends React.Component {
 
     return (
       <Paper className={cl(s.root, className)}>
-        <Typography>You listened </Typography>
+        <Typography>You listened to </Typography>
         <Typography variant="h1">{Math.floor(stats.count / 1000 / 60)}</Typography>
         <Typography>minutes of music today</Typography>
       </Paper>

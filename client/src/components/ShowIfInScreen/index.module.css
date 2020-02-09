@@ -1,0 +1,28 @@
+
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes frombottom {
+    0% {
+        transform: translateY(250px);
+    }
+    100% {
+        transform: rotateX(0deg);
+    }
+}
+
+.root {
+    animation: frombottom 700ms, fadein 700ms;
+    animation-iteration-count: 1;
+}
+
+.hidden {
+    opacity: 0;
+}

@@ -20,14 +20,3 @@ services:
     image: mongo
     ports:
       - "27017:27017"
-
-  web:
-    container_name: web
-    restart: always
-    build:
-      context: ./client
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./src:/app/src/
-      - ./public:/app/public/

@@ -6,9 +6,7 @@ import Chart from '../../../../Chart';
 
 class DifferentArtistsPer extends IntervalChart {
   constructor(props) {
-    super(props);
-
-    this.init('Number of different artists');
+    super(props, 'Number of different artists');
   }
 
   dataGetter = stats => {

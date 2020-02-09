@@ -6,9 +6,7 @@ import Chart from '../../../../Chart';
 
 class PopularityPer extends IntervalChart {
   constructor(props) {
-    super(props);
-
-    this.init('Average song popularity');
+    super(props, 'Average song popularity');
   }
 
   dataGetter = stats => {
@@ -19,8 +17,6 @@ class PopularityPer extends IntervalChart {
   fetchStats = async () => {
     const { start, end, timeSplit } = this.state;
     const { data } = await API.popularityPer(start, end, timeSplit);
-
-    console.log('Pop!', data);
 
     return data;
   }

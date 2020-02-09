@@ -6,9 +6,7 @@ import Chart from '../../../../Chart';
 
 class FeatRatioPer extends IntervalChart {
   constructor(props) {
-    super(props);
-
-    this.init('Average person number per song');
+    super(props, 'Average person number per song');
   }
 
   dataGetter = stats => {
@@ -19,8 +17,6 @@ class FeatRatioPer extends IntervalChart {
   fetchStats = async () => {
     const { start, end, timeSplit } = this.state;
     const { data } = await API.featRatio(start, end, timeSplit);
-
-    console.log('Ratio', data);
 
     return data;
   }

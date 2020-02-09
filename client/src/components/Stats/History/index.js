@@ -7,43 +7,68 @@ import { mapStateToProps, mapDispatchToProps } from '../../../services/redux/too
 import Track from '../../Track';
 
 class History extends React.Component {
-    loadMore = () => {
-      const { user, addTracks } = this.props;
+  constructor(props) {
+    super(props);
 
-      addTracks(user.tracks.length);
+    this.maxOldEnd = false;
+  }
+
+  loadMore = () => {
+    const { user, addTracks } = this.props;
+
+    addTracks(user.tracks.length);
+  }
+
+  render() {
+    const { user, nb, maxOld } = this.props;
+    const { tracks } = user;
+
+    let xs = 3;
+    let lg = 4
+
+    if (xs) {
+      xs = 12 / xs;
     }
 
-    render() {
-      const { user, nb } = this.props;
-      const { tracks } = user;
-
-      let xs = 4;
-
-      if (nb) {
-        xs = 12 / nb;
-      }
-
-      return (
-        <div className={s.root}>
-          <InfiniteScroll
-            pageStart={0}
-            loadMore={this.loadMore}
-            hasMore={!user.full}
-            loader={<div className="loader" key={0}>Loading ...</div>}
-          >
-            <Grid container spacing={1}>
-              {
-                tracks.map(e => (
-                  <Grid item xs={xs} key={e.played_at}>
-                    <Track infos={e} track={e.track} />
-                  </Grid>
-                ))
-              }
-            </Grid>
-          </InfiniteScroll>
-        </div>
-      );
+    if (lg) {
+      lg = 12 / lg;
     }
+
+    let displayTracks = tracks;
+
+    if (maxOld) {
+      displayTracks = tracks.filter(tr => {
+        const played = new Date(tr.played_at);
+        if (played.getTime() > maxOld.getTime()) {
+          return true;
+        } else {
+          this.maxOldEnd = true;
+          return false;
+        }
+      });
+    }
+
+    return (
+      <div className={s.root}>
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={this.loadMore}
+          hasMore={(maxOld && !this.maxOldEnd) || (!maxOld && !user.full)}
+          loader={<div className="loader" key={0}>Loading ...</div>}
+        >
+          <Grid container spacing={2}>
+            {
+              displayTracks.map(e => (
+                <Grid item xs={xs} lg={lg} key={e.played_at}>
+                  <Track infos={e} track={e.track} />
+                </Grid>
+              ))
+            }
+          </Grid>
+        </InfiniteScroll>
+      </div>
+    );
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);

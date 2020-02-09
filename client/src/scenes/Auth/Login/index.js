@@ -25,7 +25,6 @@ class Login extends React.Component {
 
       try {
         const { data } = await API.login(username, password);
-        API.setToken(data.token);
         updateUser(data.user);
         updateReady(true);
         history.push(urls.home);

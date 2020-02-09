@@ -22,8 +22,6 @@ class Settings extends React.Component {
   render() {
     const { user } = this.props;
 
-    console.log(user);
-
     return (
       <div className={s.root}>
         <Grid container spacing={2}>
@@ -48,12 +46,22 @@ class Settings extends React.Component {
               <div>
                 <Typography variant="h5" align="left">Spotify infos</Typography>
                 {
-                  SpotifyFields.map(field => (
-                    <div className={s.entry} key={field.value}>
-                      <Typography align="left">{field.label}</Typography>
-                      <Typography align="right">{user.spotify[field.value]}</Typography>
-                    </div>
-                  ))
+                  user.activated ? (
+                    SpotifyFields.map(field => (
+                      <div className={s.entry} key={field.value}>
+                        <Typography align="left">{field.label}</Typography>
+                        <Typography align="right">{user.spotify[field.value]}</Typography>
+                      </div>
+                    ))
+                  ) : (
+                      <div>
+                        <a style={{ textDecoration: 'none' }} href="http://localhost:8080/oauth/spotify">
+                          <Button fullWidth variant="contained" color="primary">
+                            Login to Spotify
+                          </Button>
+                        </a>
+                      </div>
+                    )
                 }
               </div>
             </Paper>
@@ -62,7 +70,11 @@ class Settings extends React.Component {
             <Paper className={s.footer}>
               <Grid container spacing={1}>
                 <Grid item xs={4}>
-                  <Button fullWidth variant="contained" color="primary">Disable this</Button>
+                  <a style={{ textDecoration: 'none' }} href="http://localhost:8080/oauth/spotify">
+                    <Button fullWidth variant="contained" color="primary">
+                      Relog to Spotify
+                    </Button>
+                  </a>
                 </Grid>
                 <Grid item xs={4}>
                   <Button fullWidth variant="contained" color="primary">Disable this</Button>

@@ -6,9 +6,7 @@ import Chart from '../../../../Chart';
 
 class AlbumDatePer extends IntervalChart {
   constructor(props) {
-    super(props);
-
-    this.init('Average album release date');
+    super(props, 'Average album release date');
   }
 
   dataGetter = stats => {

@@ -17,15 +17,39 @@
     width: 100%;
 }
 
+
+.bottom {
+    display: flex;
+}
+
+.play {
+    margin-left: auto;
+}
+
+.playButton:hover {
+    transition: all 250ms;
+    transform: scale(1.3);
+}
+
+.playButton:active {
+    transform: scale(1);
+}
+
+.playButton {
+    background: transparent !important;
+    transform: scale(1);
+    transition: all 250ms;
+}
+
 .texts {
     padding: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .title {
     font-size: 0.9em;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
 }
 
 .author {
