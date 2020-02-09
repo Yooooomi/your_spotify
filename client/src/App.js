@@ -1,10 +1,10 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { MuiThemeProvider } from '@material-ui/core';
+import { connect } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import './App.css';
 import Login from './scenes/Auth/Login';
 import urls from './services/urls';
-import { connect } from 'react-redux';
 import { mapStateToProps, mapDispatchToProps } from './services/redux/tools';
 import API from './services/API';
 import Register from './scenes/Auth/Register';
@@ -12,7 +12,6 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './scenes/Home';
 import History from './scenes/HistoryScene';
 import Layout from './components/Layout';
-import { MuiThemeProvider } from '@material-ui/core';
 import theme from './services/theme';
 import Settings from './scenes/Settings';
 
@@ -41,25 +40,23 @@ class App extends React.Component {
     }
   }
 
-  render() {
-    return (
-      <div className="App">
-        <Router>
-          <MuiThemeProvider theme={theme}>
-            <Layout>
-              <Switch>
-                <PrivateRoute exact path={urls.home} component={Home} />
-                <PrivateRoute exact path={urls.history} component={History} />
-                <PrivateRoute exact path={urls.settings} component={Settings} />
-                <Route exact path={urls.register} component={Register} />
-                <Route exact path={urls.login} component={Login} />
-              </Switch>
-            </Layout>
-          </MuiThemeProvider>
-        </Router>
-      </div>
-    );
-  }
+  render = () => (
+    <div className="App">
+      <Router>
+        <MuiThemeProvider theme={theme}>
+          <Layout>
+            <Switch>
+              <PrivateRoute exact path={urls.home} component={Home} />
+              <PrivateRoute exact path={urls.history} component={History} />
+              <PrivateRoute exact path={urls.settings} component={Settings} />
+              <Route exact path={urls.register} component={Register} />
+              <Route exact path={urls.login} component={Login} />
+            </Switch>
+          </Layout>
+        </MuiThemeProvider>
+      </Router>
+    </div>
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

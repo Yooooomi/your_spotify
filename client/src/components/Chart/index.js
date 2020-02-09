@@ -1,101 +1,90 @@
 import 'date-fns';
-import React from 'react'
+import React from 'react';
 import {
-    FlexibleWidthXYPlot,
-    XYPlot,
-    XAxis,
-    YAxis,
-    LineSeries,
+  FlexibleWidthXYPlot,
+  XAxis,
+  YAxis,
+  LineSeries,
 } from 'react-vis';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import cl from 'classnames';
 import s from './index.module.css';
-import { Button, Switch, MenuItem, Select, Popper, IconButton, Paper } from '@material-ui/core';
-import { ArrowDownwardOutlined } from '@material-ui/icons';
+import IntervalModifier from '../IntervalModifier';
+
+const padDate = (value) => (`${value}`).padStart(2, '0');
+
+const getPrecision = (start, end) => {
+  const diff = end.getTime() - start.getTime();
+  const day = 1000 * 60 * 60 * 24;
+
+  if (diff < day * 2) return 'hour';
+  if (diff <= day * 31) return 'day';
+  if (diff <= day * 31 * 12) return 'month';
+  return 'year';
+};
+
+const getFormatter = (arrayLength, start, end) => {
+  const diff = end.getTime() - start.getTime();
+  const precision = getPrecision(start, end);
+
+  return value => {
+    const ratio = value / arrayLength;
+    const current = new Date(start.getTime() + diff * ratio);
+
+    if (precision === 'hour') return `${padDate(current.getHours())}h`;
+    if (precision === 'day') return `${padDate(current.getDate())}/${padDate(current.getMonth() + 1)}`;
+    if (precision === 'month') return `${padDate(current.getMonth() + 1)}/${current.getFullYear()}`;
+    if (precision === 'year') return `${current.getFullYear()}`;
+    return 'NO PRECISION';
+  };
+};
 
 export default function Chart({
-    data,
-    className,
-    start,
-    end,
-    timeSplit,
-    onTimeSplitChange,
-    onStartChange = () => { },
-    onEndChange = () => { } },
-) {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+  data,
+  className,
+  start,
+  end,
+  timeSplit,
+  onTimeSplitChange,
+  xFormat = null,
+  onStartChange = () => { },
+  onEndChange = () => { },
+  xName,
+  yName,
+}) {
+  if (xFormat === null) {
+    xFormat = getFormatter(data.length, start, end);
+  }
 
-    return (
-        <div className={s.root}>
-            <FlexibleWidthXYPlot
-                style={{
-                    width: '100%',
-                }}
-                height={300}
-            >
-                <XAxis />
-                <YAxis />
-                <LineSeries
-                    curve="curveMonotoneX"
-                    data={data}
-                />
-            </FlexibleWidthXYPlot>
-            <div className={s.buttons}>
-                <IconButton onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)}>
-                    <ArrowDownwardOutlined />
-                </IconButton>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <Popper
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                    >
-                        <Paper className={s.paper}>
-                            <div className={s.entry}>
-                                <KeyboardDatePicker
-                                    margin="none"
-                                    label="From"
-                                    variant="inline"
-                                    format="MM/dd/yyyy"
-                                    value={start}
-                                    onChange={onStartChange}
-                                    fullWidth
-                                />
-                            </div>
-                            <div className={s.entry}>
-                                <KeyboardDatePicker
-                                    margin="none"
-                                    label="To"
-                                    variant="inline"
-                                    format="MM/dd/yyyy"
-                                    value={end}
-                                    onChange={onEndChange}
-                                    fullWidth
-                                />
-                            </div>
-                            <div className={s.entry}>
-                                <Select
-                                    fullWidth
-                                    value={timeSplit}
-                                    onChange={onTimeSplitChange}
-                                    label="Time split"
-                                >
-                                    <MenuItem value="hour">Hour</MenuItem>
-                                    <MenuItem value="day">day</MenuItem>
-                                    <MenuItem value="week">week</MenuItem>
-                                    <MenuItem value="month">month</MenuItem>
-                                    <MenuItem value="year">year</MenuItem>
-                                </Select>
-                            </div>
-                            <div className={s.entry}>
-                                <Button fullWidth variant="contained">Modify</Button>
-                            </div>
-                        </Paper>
-                    </Popper>
-                </MuiPickersUtilsProvider>
-            </div>
-        </div>
-    )
+  return (
+    <div className={cl(s.root, className)}>
+      <FlexibleWidthXYPlot
+        style={{
+          width: '100%',
+        }}
+        height={300}
+      >
+        <XAxis
+          title={xName}
+          tickFormat={xFormat}
+        />
+        <YAxis
+          title={yName}
+        />
+        <LineSeries
+          curve="curveMonotoneX"
+          data={data}
+        />
+      </FlexibleWidthXYPlot>
+      <div className={s.buttons}>
+      <IntervalModifier
+              start={start}
+              end={end}
+              timeSplit={timeSplit}
+              onStartChange={onStartChange}
+              onEndChange={onEndChange}
+              onTimeSplitChange={onTimeSplitChange}
+            />
+      </div>
+    </div>
+  );
 }

@@ -1,0 +1,27 @@
+parser: 'babel-eslint'
+env:
+  commonjs: true
+  es6: true
+  node: true
+plugins: ['react']
+extends: [
+  'airbnb/base',
+  plugin:react/recommended
+]
+globals:
+  Atomics: readonly
+  SharedArrayBuffer: readonly
+  window: true
+  document: true
+  localStorage: true
+parserOptions:
+  ecmaVersion: 2018
+rules: {
+  indent: [2, 2],
+  no-underscore-dangle: off,
+  no-param-reassign: off,
+  arrow-parens: off,
+  no-async-promise-executor: off,
+  linebreak-style: off,
+  react/prop-types: off
+}

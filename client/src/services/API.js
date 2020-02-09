@@ -10,12 +10,12 @@ let token = '';
 const setToken = tk => {
   token = tk;
   localStorage.setItem('token', tk);
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-}
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+};
 
 const init = () => {
   setToken(localStorage.getItem('token'));
-}
+};
 
 const API = {
   login: (username, password) => axios.post('/login', {
@@ -32,8 +32,8 @@ const API = {
   mostListened: (start, end) => axios.get('/spotify/most_listened', {
     params: { start, end },
   }),
-  mostListenedArtist: (start, end) => axios.get('/spotify/most_listened_artist', {
-    params: { start, end },
+  mostListenedArtist: (start, end, timeSplit) => axios.get('/spotify/most_listened_artist', {
+    params: { start, end, timeSplit },
   }),
   listened_to: (start, end) => axios.get('/spotify/listened_to', {
     params: { start, end },
@@ -51,6 +51,9 @@ const API = {
     params: { start, end, timeSplit },
   }),
   popularityPer: (start, end, timeSplit) => axios.get('/spotify/popularity_per', {
+    params: { start, end, timeSplit },
+  }),
+  differentArtistsPer: (start, end, timeSplit) => axios.get('/spotify/different_artists_per', {
     params: { start, end, timeSplit },
   }),
 };

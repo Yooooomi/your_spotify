@@ -29,26 +29,35 @@ Infos.schema.virtual('track', {
 
 const Artist = mongoose.model('Artist', {
   "external_urls": Object,
+  "followers": Object,
+  "genres": [String],
   "href": String,
   "id": { type: String, unique: true },
+  "images": [Object],
   "name": String,
+  "popularity": Number,
   "type": String,
   "uri": String,
 });
 
 const Album = mongoose.model('Album', {
   "album_type": String,
-  "artists": [String], // IDs of artists
+  "artists": [String],
   "available_markets": [String],
+  "copyrights": [Object],
+  "external_ids": Object,
   "external_urls": Object,
+  "genres": [String],
   "href": String,
   "id": { type: String, unique: true },
   "images": [Object],
   "name": String,
+  "popularity": Number,
   "release_date": String,
   "release_date_precision": String,
+  //  "tracks": ,
   "type": String,
-  "uri": String
+  "uri": String,
 });
 
 Album.schema.virtual('artist', {

@@ -1,0 +1,19 @@
+
+
+.root {
+}
+
+.paper {
+    padding: 20px;
+}
+
+.entry {
+    margin-bottom: 10px;
+}
+
+.auto {
+    position: absolute;
+    z-index: 3;
+    top: 0px;
+    right: 0px;   
+}

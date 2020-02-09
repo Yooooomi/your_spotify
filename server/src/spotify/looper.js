@@ -2,6 +2,7 @@ const { Spotify } = require('../tools/oauth/Provider');
 const db = require('../database');
 const Axios = require('axios');
 const dbTools = require('./dbTools');
+const occasionnal = require('./Occasionnal');
 
 const refresh = user => {
   const infos = Spotify.refresh(user.refreshToken);
@@ -35,6 +36,12 @@ const loop = async user => {
   if (timestamp && timestamp > 0) {
     url += `?after=${user.lastTimestamp}`;
   }
+  let lastDiscovery = user.lastDiscovery;
+  const now = new Date();
+
+  if (!lastDiscovery || lastDiscovery.getDate() !== now.getDate()) {
+    occasionnal.handleOccasionnal(user);
+  }
 
   try {
     const { data } = await client.get(url);
@@ -47,6 +54,8 @@ const loop = async user => {
       await dbTools.saveMusics(tracks, user.accessToken);
       const infos = data.items.map(e => ({ played_at: e.played_at, id: e.track.id }));
       await db.addTrackIdsToUser(user._id, infos);
+    } else {
+      console.log('User has no new music');
     }
   } catch (e) {
     console.error(e);
