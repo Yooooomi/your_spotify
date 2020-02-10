@@ -1,0 +1,36 @@
+name: Server CI
+
+on:
+  push:
+    paths:
+      - server/**
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
+
+    steps:
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          version: latest
+      - name: Run Buildx
+        run: |
+          docker buildx build \
+            --platform linux/386,linux/amd64,linux/arm64 \
+            --output "type=image,push=false" \
+            --tag your_spotify_server
+
+      - uses: actions/checkout@master
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: yooooomi/your_spotify_server
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
