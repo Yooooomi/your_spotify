@@ -13,6 +13,6 @@ RUN npm install
 
 COPY src/* /app/src/
 
-RUN scripts/build/*.sh
+RUN sh scripts/build/*.sh
 
 ENTRYPOINT [ "sh", "/app/scripts/run/*.sh" ]
