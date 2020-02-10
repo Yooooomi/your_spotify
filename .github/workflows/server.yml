@@ -2,6 +2,8 @@ name: Server CI
 
 on:
   push:
+    paths:
+      - server/**
     branches:
       - master
 
