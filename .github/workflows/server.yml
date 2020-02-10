@@ -2,8 +2,8 @@ name: Server CI
 
 on:
   push:
-    paths:
-      - server/**
+    branches:
+      - master
 
 jobs:
   build:
@@ -17,12 +17,12 @@ jobs:
         with:
           version: latest
       - name: Run Buildx
-        working-directory: ./server
         run: |
           docker buildx build \
             --platform linux/386,linux/amd64,linux/arm64 \
             --output "type=image,push=false" \
-            --tag yooooomi/your_spotify_server .
+            --tag yooooomi/your_spotify_server \
+            --file ./server/Dockerfile
 
       - uses: actions/checkout@master
       - name: Publish to Registry
