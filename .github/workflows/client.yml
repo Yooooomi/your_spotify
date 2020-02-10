@@ -1,10 +1,11 @@
   
-name: Server CI
+name: Client CI
 
 on:
   push:
-#    paths:
-#      - client/**
+    paths:
+      - client/**
+      - .github/workflows/client.yml
     branches:
       - master
 
