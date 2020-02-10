@@ -10,10 +10,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [8.x, 10.x, 12.x]
-
     steps:
       - name: Set up Docker Buildx
         id: buildx
@@ -25,7 +21,7 @@ jobs:
           docker buildx build \
             --platform linux/386,linux/amd64,linux/arm64 \
             --output "type=image,push=false" \
-            --tag your_spotify_server
+            --tag your_spotify_server server/
 
       - uses: actions/checkout@master
       - name: Publish to Registry
