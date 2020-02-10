@@ -14,7 +14,10 @@ services:
     depends_on:
       - mongo
     environment:
-      - CLIENT_ENDPOINT=http://localhost:3000 # This MUST be a valid redirect URL on the spotify dashboard
+      - MY_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
+      - CLIENT_ENDPOINT=http://localhost:3000
+      - SPOTIFY_PUBLIC=1bda6c1687914623bab9fbee30595f52
+      - SPOTIFY_SECRET=2508ed3146da425f9c3494a77ce994a1
   mongo:
     container_name: mongo
     image: mongo

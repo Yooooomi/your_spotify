@@ -1,7 +1,7 @@
 const credentials = {
   spotify: {
-    public: '1bda6c1687914623bab9fbee30595f52',
-    secret: '2508ed3146da425f9c3494a77ce994a1',
+    public: process.env.SPOTIFY_PUBLIC,
+    secret: process.env.SPOTIFY_SECRET,
     scopes: 'user-read-private user-read-email user-read-recently-played user-modify-playback-state',
     redirectUri: '/oauth/spotify/callback',
   }
