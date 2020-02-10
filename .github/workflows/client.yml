@@ -1,9 +1,10 @@
+  
 name: Server CI
 
 on:
   push:
-    paths:
-      - server/**
+#    paths:
+#      - client/**
     branches:
       - master
 
@@ -23,9 +24,9 @@ jobs:
       - name: Docker login
         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: Run Buildx
-        working-directory: ./server/
+        working-directory: ./client/
         run: |
           ls && docker buildx build \
             --platform linux/386,linux/amd64,linux/arm64 \
             --output "type=image" --push \
-            --tag yooooomi/your_spotify_server ./
+            --tag yooooomi/your_spotify_client ./
