@@ -27,8 +27,8 @@ class App extends React.Component {
       data.spotify = null;
 
       try {
-        //const spot = await API.sme();
-        //data.spotify = spot.data;
+        const spot = await API.sme();
+        data.spotify = spot.data;
       } catch (e) {
         console.log('Account not linked to spotify');
       }

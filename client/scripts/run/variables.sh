@@ -1,8 +1,13 @@
 
 
-VAR_PATH="/app/public/variables-final.js"
+if [[ "$ENVIRONMENT" == "DEV" ]]
+then
+    VAR_PATH="/app/public/variables-final.js"
+else
+    VAR_PATH="/app/build/variables-final.js"
+fi
 
-cp /app/public/variables.js $VAR_PATH
+cp /app/build/variables.js $VAR_PATH
 
 if [ ! -z "$API_ENDPOINT" ]
 then

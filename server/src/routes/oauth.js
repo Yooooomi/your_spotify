@@ -6,7 +6,7 @@ const db = require('../database');
 const Joi = require('joi');
 
 router.get('/spotify', (req, res) => {
-  return res.redirect(Spotify.getRedirect(process.env.MY_ENDPOINT));
+  return res.redirect(Spotify.getRedirect());
 });
 
 router.get('/spotify/callback', logged, async (req, res) => {

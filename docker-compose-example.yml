@@ -2,9 +2,9 @@ version: "3"
 
 services:
   app:
+    image: yooooomi/your_spotify_server
     container_name: express-mongo
     restart: always
-    build: ./server
     ports:
       - "8080:8080"
     links:
@@ -23,9 +23,9 @@ services:
       - "27017:27017"
 
   web:
+    image: yooooomi/your_spotify_client
     container_name: web
     restart: always
-    build: ./client
     ports:
       - "3000:3000"
     environment:
