@@ -10,6 +10,6 @@ COPY package-lock.json /app/package-lock.json
 
 RUN npm install
 
-COPY src/ /app/
+COPY src/ /app/src/
 
 ENTRYPOINT [ "yarn", "dev" ]
