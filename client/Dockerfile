@@ -16,4 +16,4 @@ COPY public/ /app/public/
 
 RUN sh scripts/build/*.sh
 
-ENTRYPOINT [ "sh", "-c", "/app/scripts/run/*.sh" ]
+ENTRYPOINT [ "sh", "scripts/run/run.sh" ]

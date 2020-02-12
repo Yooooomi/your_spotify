@@ -1,0 +1,3 @@
+
+
+sh scripts/run/*.sh

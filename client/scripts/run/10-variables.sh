@@ -1,8 +1,8 @@
 
 
-VAR_PATH="../../public/variables-final.js"
+VAR_PATH="/app/public/variables-final.js"
 
-cp ../../public/variables.js $VAR_PATH
+cp /app/public/variables.js $VAR_PATH
 
 if [ ! -z "$API_ENDPOINT" ]
 then
