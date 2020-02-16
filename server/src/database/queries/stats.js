@@ -1,103 +1,10 @@
-const { User, Track, Infos } = require('./Schemas');
-const { NoResult } = require('../tools/errors/Database');
+const { Infos } = require('../Schemas');
 
-const getUserFromField = async (field, value, crash = true) => {
-  const user = User.findOne({ [field]: value }, '-tracks');
-
-  if (!user && crash) {
-    throw new NoResult();
-  }
-  return user;
-}
-
-const createUser = (username, password) => {
-  return User.create({
-    username,
-    password,
-    activated: false,
-    accessToken: '',
-    refreshToken: '',
-    expiresIn: 0,
-  });
-}
-
-const storeInUser = (field, value, infos) => {
-  return User.findOneAndUpdate({ [field]: value }, infos, { new: true });
-}
-
-const addTrackIdsToUser = async (id, infos) => {
-  infos.forEach(info => info.owner = id);
-  const infosSaved = await Infos.create(infos);
-  return User.findByIdAndUpdate(id, { $push: { tracks: { $each: infosSaved.map(e => e._id.toString()) } } });
-}
-
-const getSongs = async (userId, offset, number) => {
-  const fullUser = await User.findById(userId).populate(
-    {
-      path: 'tracks',
-      model: 'Infos',
-      options: { skip: offset, limit: number },
-      populate: {
-        path: 'track',
-        model: 'Track',
-        populate: [
-          { path: 'full_album', model: 'Album' },
-          { path: 'full_artist', model: 'Artist' },
-        ]
-      },
-    },
-  );
-  return fullUser.tracks;
-}
-
-const getSongsInterval = async (id, start, end) => {
-  const user = await User.findById(id).populate({
-    path: 'tracks',
-    match: {
-      played_at: {
-        $gte: start,
-        $lt: end,
-      },
-    }
-  });
-  return user.tracks;
-}
-
-const getSongsNbInterval = async (id, start, end) => {
-  const res = await Infos.aggregate([
-    { $match: { owner: id, played_at: { $gt: start, $lt: end } } },
-    { $group: { _id: null, count: { $sum: 1 } } }
-  ]);
-  return res[0].count;
-}
-
-const getGroupingByTimeSplit = (timeSplit, prefix = '') => {
-  if (timeSplit === 'all') return null;
-  if (timeSplit === 'year') return { year: `$${prefix}year` };
-  if (timeSplit === 'week') return { year: `$${prefix}year`, week: `$${prefix}week` };
-  if (timeSplit === 'month') return { year: `$${prefix}year`, month: `$${prefix}month` };
-  if (timeSplit === 'day') return { year: `$${prefix}year`, month: `$${prefix}month`, day: `$${prefix}day` };
-  if (timeSplit === 'hour') return { year: `$${prefix}year`, month: `$${prefix}month`, day: `$${prefix}day`, hour: `$${prefix}hour` };
-  return {};
-}
-
-const sortByTimeSplit = (timeSplit, prefix = '') => {
-  if (timeSplit === 'all') return [];
-  if (timeSplit === 'year') return [{ $sort: { [`${prefix}year`]: 1 } }];
-  if (timeSplit === 'week') return [{ $sort: { [`${prefix}year`]: 1, [`${prefix}week`]: 1 } }];
-  if (timeSplit === 'month') return [{ $sort: { [`${prefix}year`]: 1, [`${prefix}month`]: 1 } }];
-  if (timeSplit === 'day') return [{ $sort: { [`${prefix}year`]: 1, [`${prefix}month`]: 1, [`${prefix}day`]: 1 } }];
-  if (timeSplit === 'hour') return [{ $sort: { [`${prefix}year`]: 1, [`${prefix}month`]: 1, [`${prefix}day`]: 1, [`${prefix}hour`]: 1 } }];
-  return [];
-}
-
-const getGroupByDateProjection = () => ({
-  year: { "$year": "$played_at" },
-  month: { "$month": "$played_at" },
-  day: { "$dayOfMonth": "$played_at" },
-  week: { "$week": "$played_at" },
-  hour: { "$hour": "$played_at" },
-});
+const {
+  getGroupByDateProjection,
+  getGroupingByTimeSplit,
+  sortByTimeSplit,
+} = require('./statsTools');
 
 const getMostListenedSongs = async (userId, start, end, timeSplit = 'hour') => {
   const res = await Infos.aggregate([
@@ -291,18 +198,7 @@ const differentArtistsPer = async (userId, start, end, timeSplit = 'day') => {
   return res;
 }
 
-const getUsersNb = () => User.find().count();
-const getUsers = (nb, offset, condition) => User.find(condition).limit(nb).skip(offset);
-
 module.exports = {
-  getUserFromField,
-  createUser,
-  storeInUser,
-  getSongs,
-  getUsersNb,
-  getUsers,
-  addTrackIdsToUser,
-  getSongsNbInterval,
   getMostListenedSongs,
   getMostListenedArtist,
   getSongsPer,
@@ -310,5 +206,5 @@ module.exports = {
   albumDateRatio,
   featRatio,
   popularityPer,
-  differentArtistsPer,
-};
+  differentArtistsPer
+}

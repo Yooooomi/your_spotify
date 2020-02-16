@@ -1,8 +1,8 @@
 import React from 'react';
 import cl from 'classnames';
-import s from './index.module.css';
 import { PlayCircleOutline } from '@material-ui/icons';
 import { IconButton } from '@material-ui/core';
+import s from './index.module.css';
 import API from '../../services/API';
 
 class Track extends React.Component {
@@ -30,7 +30,13 @@ class Track extends React.Component {
             </div>
           </div>
           <div className={s.play}>
-            <IconButton onClick={this.play} disableRipple disableFocusRipple disableTouchRipple className={s.playButton}>
+            <IconButton
+              onClick={this.play}
+              disableRipple
+              disableFocusRipple
+              disableTouchRipple
+              className={s.playButton}
+            >
               <PlayCircleOutline fontSize="small" />
             </IconButton>
           </div>

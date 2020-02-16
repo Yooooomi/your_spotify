@@ -1,12 +1,12 @@
 import React from 'react';
 import s from './index.module.css';
-import IntervalChart from '../../IntervalChart';
+import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
 import Chart from '../../../../Chart';
 
 class TimePer extends IntervalChart {
   constructor(props) {
-    super(props, 'Time listened');
+    super(props, 'Time listened', FillModes.ASK);
   }
 
   dataGetter = stats => {

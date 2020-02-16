@@ -16,7 +16,7 @@ class ShowIfInScreen extends React.Component {
   checkVisibility = () => {
     const { offsetTop } = this.ref.current;
 
-    const triggerPoint = window.outerHeight * 2 / 3;
+    const triggerPoint = window.outerHeight * (2 / 3);
 
     if (window.scrollY + triggerPoint > offsetTop) {
       window.removeEventListener('scroll', this.checkVisibility);
@@ -47,7 +47,7 @@ class ShowIfInScreen extends React.Component {
       <div ref={this.ref} className={show ? s.root : s.hidden}>
         {children}
       </div>
-    )
+    );
   }
 }
 

@@ -1,7 +1,6 @@
 import React from 'react';
-import s from './index.module.css';
 import { Typography, Button } from '@material-ui/core';
-import API from '../../services/API';
+import s from './index.module.css';
 
 class LogToSpotify extends React.Component {
   render() {
@@ -17,18 +16,18 @@ class LogToSpotify extends React.Component {
           <div className={s.desc}>
             <Typography variant="caption">
               You need to give <em>Your Spotify</em> the permission to watch your activity in order to provide nice statistics about your account
-          </Typography>
+            </Typography>
           </div>
         </div>
         <div className={s.entry}>
           <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
             <Button fullWidth variant="contained" color="primary">
               Here
-          </Button>
+            </Button>
           </a>
         </div>
       </div>
-    )
+    );
   }
 }
 

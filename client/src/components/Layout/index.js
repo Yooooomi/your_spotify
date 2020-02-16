@@ -1,9 +1,16 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import {
+  AppBar, Toolbar, Typography, IconButton,
+} from '@material-ui/core';
+import { Menu } from '@material-ui/icons';
 import s from './index.module.css';
 import Sider from './components/Sider';
 
 class Layout extends React.Component {
+  onDrawer = () => {
+    window.openDrawer();
+  }
+
   render() {
     const { children } = this.props;
 
@@ -12,6 +19,7 @@ class Layout extends React.Component {
         <div className={s.header}>
           <AppBar>
             <Toolbar className={s.toolbar}>
+              <IconButton onClick={this.onDrawer} edge="start"><Menu /></IconButton>
               <Typography variant="h6">Your spotify</Typography>
             </Toolbar>
           </AppBar>

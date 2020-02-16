@@ -29,6 +29,7 @@ class Login extends React.Component {
         updateReady(true);
         history.push(urls.home);
       } catch (e) {
+        window.message('error', 'Wrong username or password');
         console.error(e);
       }
     }

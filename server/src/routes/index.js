@@ -23,7 +23,7 @@ router.post('/register', validating(registerSchema), async (req, res) => {
   const alreadyExisting = await db.getUserFromField('username', username, false);
 
   if (alreadyExisting) {
-    return res.status(409).end();
+    return res.status(409).send({ code: 'USER_ALREADY_EXISTS' });
   }
 
   const hashedPassword = bcrypt.hashSync(password, 14);
@@ -48,16 +48,15 @@ router.post('/login', validating(loginSchema), async (req, res) => {
   const user = await db.getUserFromField('username', username, false);
 
   if (!user) {
-    return res.status(400).end();
+    return res.status(400).send({ code: 'INCORRET_PASSWORD' });
   }
 
   // TODO filter user
 
   if (!bcrypt.compareSync(password, user.password)) {
-    return res.status(401).end();
+    return res.status(401).send({ code: 'INCORRECT_PASSWORD' });
   }
 
-  // TODO store key
   const token = jwt.sign({ userId: user._id.toString() }, 'MyPrivateKey', {
     expiresIn: '1h',
   });

@@ -17,8 +17,8 @@ const getPrecision = (start, end) => {
   const day = 1000 * 60 * 60 * 24;
 
   if (diff < day * 2) return 'hour';
-  if (diff <= day * 31) return 'day';
-  if (diff <= day * 31 * 12) return 'month';
+  if (diff <= day * 31 * 2) return 'day';
+  if (diff <= day * 31 * 12 * 2) return 'month';
   return 'year';
 };
 
@@ -27,7 +27,7 @@ const getFormatter = (arrayLength, start, end) => {
   const precision = getPrecision(start, end);
 
   return value => {
-    const ratio = value / arrayLength;
+    const ratio = value / (arrayLength - 1);
     const current = new Date(start.getTime() + diff * ratio);
 
     if (precision === 'hour') return `${padDate(current.getHours())}h`;
@@ -67,7 +67,7 @@ export default function Chart({
           tickFormat={xFormat}
         />
         <YAxis
-        bottom={0}
+          bottom={0}
           title={yName}
         />
         <LineSeries

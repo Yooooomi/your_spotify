@@ -1,8 +1,4 @@
-
-
-.root {
-
-}
+.root {}
 
 .header {
     height: 5vh;
@@ -35,4 +31,17 @@
     width: 85vw;
     padding: 0px 50px;
     padding-top: 5vh;
+}
+
+@media only screen and (max-width: 960px) {
+    .content {
+        width: 100vw;
+        padding: 0px 10px;
+    }
+    .siderContainer {
+        width: 0px;
+    }
+    .sider {
+        width: 0px;
+    }
 }

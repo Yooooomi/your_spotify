@@ -1,9 +1,9 @@
 import React from 'react';
+import { Tooltip } from '@material-ui/core';
 import s from './index.module.css';
 import API from '../../../../../services/API';
 import { lastMonth } from '../../../../../services/interval';
 import IntervalModifier from '../../../../IntervalModifier';
-import { Typography, Tooltip } from '@material-ui/core';
 
 class BestSong extends React.Component {
   constructor(props) {
@@ -45,7 +45,8 @@ class BestSong extends React.Component {
 
     if (!stats) return null;
 
-    let name, background, counts;
+    let name; let background; let
+      counts;
 
     if (!stats.length || !stats[0].tracks.length) {
       name = 'No data';
@@ -78,7 +79,7 @@ class BestSong extends React.Component {
           </div>
         </Tooltip>
       </div>
-    )
+    );
   }
 }
 

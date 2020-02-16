@@ -14,11 +14,13 @@ const User = mongoose.model('User',
   }, { toJSON: { virtuals: true }, toObject: { virtuals: true } }),
 );
 
-const Infos = mongoose.model('Infos', {
-  owner: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  id: String,
-  played_at: Date,
-});
+const Infos = mongoose.model('Infos',
+  new mongoose.Schema({
+    owner: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    id: String,
+    played_at: Date,
+  }, { toJSON: { virtuals: true }, toObject: { virtuals: true } }),
+);
 
 Infos.schema.virtual('track', {
   ref: 'Track',

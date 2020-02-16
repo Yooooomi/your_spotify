@@ -1,12 +1,12 @@
 import React from 'react';
 import s from './index.module.css';
-import IntervalChart from '../../IntervalChart';
+import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
 import Chart from '../../../../Chart';
 
 class AlbumDatePer extends IntervalChart {
   constructor(props) {
-    super(props, 'Average album release date');
+    super(props, 'Average album release date', FillModes.PREVIOUS_VALUE);
   }
 
   dataGetter = stats => {
@@ -38,7 +38,7 @@ class AlbumDatePer extends IntervalChart {
         start={start}
         end={end}
         timeSplit={timeSplit}
-        onTimeSplitChange={e => this.setInfos('timeSplit', e.target.value)}
+        onTimeSplitChange={e => this.setInfos('timeSplit', e)}
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}
         className={s.chart}

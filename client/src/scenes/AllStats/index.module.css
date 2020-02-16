@@ -1,0 +1,11 @@
+
+
+.graph {
+    min-height: 350px;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

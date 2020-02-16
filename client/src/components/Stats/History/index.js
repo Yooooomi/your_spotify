@@ -1,6 +1,6 @@
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { connect } from 'react-redux';
 import s from './index.module.css';
 import { mapStateToProps, mapDispatchToProps } from '../../../services/redux/tools';
@@ -13,26 +13,19 @@ class History extends React.Component {
     this.maxOldEnd = false;
   }
 
-  loadMore = () => {
+  loadMore = async () => {
     const { user, addTracks } = this.props;
 
-    addTracks(user.tracks.length);
+    await addTracks(user.tracks.length);
   }
 
   render() {
-    const { user, nb, maxOld } = this.props;
+    const { user, maxOld } = this.props;
     const { tracks } = user;
 
-    let xs = 3;
-    let lg = 4
-
-    if (xs) {
-      xs = 12 / xs;
-    }
-
-    if (lg) {
-      lg = 12 / lg;
-    }
+    const xs = 6;
+    const md = 4;
+    const lg = 3;
 
     let displayTracks = tracks;
 
@@ -41,11 +34,18 @@ class History extends React.Component {
         const played = new Date(tr.played_at);
         if (played.getTime() > maxOld.getTime()) {
           return true;
-        } else {
-          this.maxOldEnd = true;
-          return false;
         }
+        this.maxOldEnd = true;
+        return false;
       });
+    }
+
+    if (user.full && displayTracks.length === 0) {
+      return (
+        <div className={s.root}>
+          <Typography align="center" variant="h5">No songs to display</Typography>
+        </div>
+      );
     }
 
     return (
@@ -59,7 +59,7 @@ class History extends React.Component {
           <Grid container spacing={2}>
             {
               displayTracks.map(e => (
-                <Grid item xs={xs} lg={lg} key={e.played_at}>
+                <Grid item xs={xs} md={md} lg={lg} key={e.played_at}>
                   <Track infos={e} track={e.track} />
                 </Grid>
               ))

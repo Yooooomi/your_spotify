@@ -54,14 +54,14 @@ class Settings extends React.Component {
                       </div>
                     ))
                   ) : (
-                      <div>
-                        <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
-                          <Button fullWidth variant="contained" color="primary">
+                    <div>
+                      <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
+                        <Button fullWidth variant="contained" color="primary">
                             Login to Spotify
-                          </Button>
-                        </a>
-                      </div>
-                    )
+                        </Button>
+                      </a>
+                    </div>
+                  )
                 }
               </div>
             </Paper>

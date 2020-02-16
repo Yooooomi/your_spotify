@@ -16,6 +16,8 @@ import theme from './services/theme';
 import Settings from './scenes/Settings';
 import Logout from './scenes/Auth/Logout';
 import LogToSpotify from './scenes/LogToSpotify';
+import AllStats from './scenes/AllStats';
+import SnackbarMessage from './components/SnackbarMessage';
 
 class App extends React.Component {
   async componentDidMount() {
@@ -26,16 +28,17 @@ class App extends React.Component {
 
       data.spotify = null;
 
-      try {
-        const spot = await API.sme();
-        data.spotify = spot.data;
-      } catch (e) {
-        console.log('Account not linked to spotify');
+      if (data.activated) {
+        try {
+          const spot = await API.sme();
+          data.spotify = spot.data;
+        } catch (e) {
+          window.message('error', 'Something went wrong with your Spotify profile');
+        }
       }
-
       updateUser(data);
     } catch (e) {
-      console.log('Not logged');
+      // User is just not logged
     } finally {
       updateReady(true);
     }
@@ -45,10 +48,12 @@ class App extends React.Component {
     <div className="App">
       <Router>
         <MuiThemeProvider theme={theme}>
+          <SnackbarMessage />
           <Layout>
             <Switch>
               <PrivateRoute spotify exact path={urls.home} component={Home} />
               <PrivateRoute spotify exact path={urls.history} component={History} />
+              <PrivateRoute exact path={urls.allStats} component={AllStats} />
               <PrivateRoute exact path={urls.settings} component={Settings} />
               <PrivateRoute exact path={urls.activateSpotify} component={LogToSpotify} />
               <PrivateRoute exact path={urls.logout} component={Logout} />

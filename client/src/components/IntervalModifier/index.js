@@ -1,20 +1,23 @@
 import React from 'react';
-import s from './index.module.css';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import cl from 'classnames';
 // eslint-disable-next-line import/no-unresolved
 import { Settings } from '@material-ui/icons';
 import DateFnsUtils from '@date-io/date-fns';
-import { Paper, Select, MenuItem, Popper, IconButton, } from '@material-ui/core';
+import {
+  Paper, Select, MenuItem, Popper, IconButton,
+} from '@material-ui/core';
+import s from './index.module.css';
+import { setThisToMorning, setThisToEvening } from '../../services/interval';
 
 function IntervalModifier({
   className,
   start,
   end,
   timeSplit,
-  onStartChange,
-  onEndChange,
-  onTimeSplitChange,
+  onStartChange = () => { },
+  onEndChange = () => { },
+  onTimeSplitChange = () => { },
   autoAbsolute = false,
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -37,7 +40,9 @@ function IntervalModifier({
                 variant="inline"
                 format="MM/dd/yyyy"
                 value={start}
-                onChange={onStartChange}
+                onChange={date => {
+                  onStartChange(setThisToMorning(date));
+                }}
                 fullWidth
               />
             </div>
@@ -48,16 +53,18 @@ function IntervalModifier({
                 variant="inline"
                 format="MM/dd/yyyy"
                 value={end}
-                onChange={onEndChange}
+                onChange={date => {
+                  onEndChange(setThisToEvening(date));
+                }}
                 fullWidth
               />
             </div>
             <div className={s.entry}>
-              {onTimeSplitChange &&
-                <Select
+              {onTimeSplitChange
+                && <Select
                   fullWidth
                   value={timeSplit}
-                  onChange={onTimeSplitChange}
+                  onChange={e => onTimeSplitChange(e.target.value)}
                   label="Time split"
                 >
                   <MenuItem value="hour">Hour</MenuItem>
@@ -72,7 +79,7 @@ function IntervalModifier({
         </Popper>
       </MuiPickersUtilsProvider>
     </div>
-  )
+  );
 }
 
 export default IntervalModifier;

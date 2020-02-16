@@ -1,5 +1,6 @@
 const db = require('../database');
 const Axios = require('axios');
+const logger = require('../tools/logger');
 
 // const saveArtist = async artist => {
 //   let dbartist = db.Artist.findOne({ id: artist.id }).catch(console.log);
@@ -73,7 +74,7 @@ const storeTracksAndReturnAlbumsArtists = async (ids, client) => {
   const albumIds = [];
 
   tracks.forEach(track => {
-    console.log(`Storing non existing track ${track.name} by ${track.artists[0].name}`);
+    logger.info(`Storing non existing track ${track.name} by ${track.artists[0].name}`);
 
     track.artists.forEach(art => {
       if (!artistIds.includes(art.id)) {
@@ -89,7 +90,7 @@ const storeTracksAndReturnAlbumsArtists = async (ids, client) => {
     track.artists = track.artists.map(art => art.id);
   });
 
-  await db.Track.create(tracks).catch(console.log);
+  await db.Track.create(tracks).catch(() => { });
 
   return {
     artists: artistIds,
@@ -107,13 +108,13 @@ const storeAlbums = async (ids, client) => {
   const { albums } = data;
 
   albums.forEach(alb => {
-    console.log(`Storing non existing album ${alb.name} by ${alb.artists[0].name}`)
+    logger.info(`Storing non existing album ${alb.name} by ${alb.artists[0].name}`)
 
     alb.artists = alb.artists.map(art => art.id);
     delete alb.tracks;
   });
 
-  await db.Album.create(albums).catch(console.log);
+  await db.Album.create(albums).catch(() => { });
 }
 
 const artistUrl = 'https://api.spotify.com/v1/artists';
@@ -125,9 +126,9 @@ const storeArtists = async (ids, client) => {
   const { data } = await client.get(finalUrl);
   const { artists } = data;
 
-  artists.forEach(artist => console.log(`Storing non existing artist ${artist.name}`));
+  artists.forEach(artist => logger.info(`Storing non existing artist ${artist.name}`));
 
-  await db.Artist.create(artists).catch(console.log);
+  await db.Artist.create(artists).catch(() => { });
 }
 
 const saveMusics = async (tracks, access) => {
@@ -147,7 +148,7 @@ const saveMusics = async (tracks, access) => {
   const missingTrackIds = ids.filter(id => !storedTracks.find(stored => stored.id.toString() === id.toString()));
 
   if (missingTrackIds.length === 0) {
-    console.log('No missing tracks, passing...');
+    logger.info('No missing tracks, passing...');
     return;
   }
 

@@ -31,7 +31,7 @@ router.get('/spotify/me', logged, withHttpClient, async (req, res) => {
     return res.status(200).send(data);
   } catch (e) {
     console.error(e);
-    return res.status(500).end();
+    return res.status(500).end({ code: 'SPOTIFY_ERROR' });
   }
 });
 

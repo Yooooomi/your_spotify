@@ -1,5 +1,6 @@
 import React from 'react';
 import { Paper, Typography } from '@material-ui/core';
+import cl from 'classnames';
 import s from './index.module.css';
 
 const getWeek = (date) => {
@@ -34,7 +35,13 @@ const isGoodValue = (stat, date, timeSplit) => {
   return false;
 };
 
-const fillArray = (stats, start, end, timeSplit, dataGetter) => {
+export const FillModes = {
+  ASK: 1,
+  PREVIOUS_VALUE: 2,
+  VOID: 3,
+};
+
+const fillArray = (stats, start, end, timeSplit, dataGetter, fillMode) => {
   const values = [];
   let tmp = new Date(start.getTime());
   let index = 0;
@@ -45,8 +52,12 @@ const fillArray = (stats, start, end, timeSplit, dataGetter) => {
     if (fetched) {
       values.push({ data: dataGetter(stats[index]), _id: new Date(tmp.getTime()) });
       index += 1;
-    } else {
+    } else if (fillMode === FillModes.ASK) {
       values.push({ data: dataGetter(null), _id: new Date(tmp.getTime()) });
+    } else if (fillMode === FillModes.PREVIOUS_VALUE) {
+      values.push({ data: dataGetter(stats[index - 1] || null), _id: new Date(tmp.getTime()) });
+    } else if (fillMode === FillModes.VOID) {
+      // Do nothing
     }
     tmp = addTimesplit(tmp, timeSplit);
   }
@@ -54,31 +65,74 @@ const fillArray = (stats, start, end, timeSplit, dataGetter) => {
 };
 
 class IntervalChart extends React.Component {
-  constructor(props, name) {
+  constructor(props, name, fillMode = FillModes.ASK) {
     super(props);
+
+    this.fillMode = fillMode;
 
     this.inited = true;
     this.name = name;
 
-    let { defaultStart, defaultEnd, defaultTimeSplit, dontFetchOnMount } = this.props;
+    let {
+      start,
+      end,
+    } = this.props;
+
+    const {
+      timeSplit,
+      dontFetchOnMount,
+    } = this.props;
 
     this.dontFetchOnMount = dontFetchOnMount;
 
-    if (!defaultStart) {
-      defaultStart = new Date();
-      defaultStart.setHours(0, 0, 0);
-      defaultStart.setDate(defaultStart.getDate() - 5);
+    if (!start) {
+      start = new Date();
+      start.setHours(0, 0, 0);
+      start.setDate(start.getDate() - 5);
     }
-    if (!defaultEnd) {
-      defaultEnd = new Date();
+    if (!end) {
+      end = new Date();
     }
 
     this.state = {
-      start: defaultStart,
-      end: defaultEnd,
-      timeSplit: defaultTimeSplit || 'hour',
+      start,
+      end,
+      timeSplit: timeSplit || 'hour',
       stats: null,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const lastStart = prevProps.start;
+    const lastEnd = prevProps.end;
+    const { start } = this.props;
+    const { end } = this.props;
+
+    const lastSplit = prevProps.timeSplit;
+    const split = this.props.timeSplit;
+
+    const changes = {};
+
+    if (
+      (!lastStart && start)
+      || (lastStart && start && lastStart.getTime() !== start.getTime())
+    ) {
+      changes.start = start;
+    }
+
+    if (
+      (!lastEnd && end)
+      || (lastEnd && end && lastEnd.getTime() !== end.getTime())
+    ) {
+      changes.end = end;
+    }
+
+    if (split && lastSplit !== split) {
+      changes.timeSplit = split;
+    }
+    if (Object.keys(changes).length > 0) {
+      this.setState(changes, this.refresh);
+    }
   }
 
   dataGetter = () => {
@@ -93,7 +147,7 @@ class IntervalChart extends React.Component {
     const { start, end, timeSplit } = this.state;
     const data = await this.fetchStats();
 
-    const values = fillArray(data, start, end, timeSplit, this.dataGetter);
+    const values = fillArray(data, start, end, timeSplit, this.dataGetter, this.fillMode);
 
     if (values.length === 1) {
       values.push(values[0]);
@@ -129,11 +183,12 @@ class IntervalChart extends React.Component {
   }
 
   render() {
+    const { className } = this.props;
     const { stats } = this.state;
     if (!stats) return null;
 
     return (
-      <Paper className={s.paper}>
+      <Paper className={cl(s.paper, className)}>
         <Typography>{this.name}</Typography>
         {this.getContent()}
       </Paper>

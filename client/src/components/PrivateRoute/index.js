@@ -6,14 +6,15 @@ import urls from '../../services/urls';
 
 class PrivateRoute extends React.Component {
   render() {
-    const { ready, user, spotify, ...other } = this.props;
+    const {
+      ready, user, spotify, ...other
+    } = this.props;
 
     if (ready && user) {
       if (!spotify || (spotify && user.activated)) {
         return <Route {...other} />;
-      } else {
-        return <Redirect to={urls.activateSpotify} />
       }
+      return <Redirect to={urls.activateSpotify} />;
     }
     if (!ready) return null;
     return <Redirect to={urls.login} />;

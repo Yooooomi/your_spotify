@@ -3,3 +3,7 @@
 .root {
     text-align: left;
 }
+
+.mobileDrawer {
+    width: 60vw;
+}

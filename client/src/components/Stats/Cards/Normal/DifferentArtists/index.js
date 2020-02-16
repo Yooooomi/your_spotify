@@ -3,7 +3,6 @@ import s from './index.module.css';
 import API from '../../../../../services/API';
 import { lastMonth } from '../../../../../services/interval';
 import IntervalModifier from '../../../../IntervalModifier';
-import { Typography } from '@material-ui/core';
 
 class BestArtist extends React.Component {
   constructor(props) {
@@ -56,7 +55,7 @@ class BestArtist extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

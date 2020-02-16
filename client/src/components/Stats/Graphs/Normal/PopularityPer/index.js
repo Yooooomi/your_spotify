@@ -1,12 +1,12 @@
 import React from 'react';
 import s from './index.module.css';
-import IntervalChart from '../../IntervalChart';
+import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
 import Chart from '../../../../Chart';
 
 class PopularityPer extends IntervalChart {
   constructor(props) {
-    super(props, 'Average song popularity');
+    super(props, 'Average song popularity', FillModes.PREVIOUS_VALUE);
   }
 
   dataGetter = stats => {

@@ -1,12 +1,12 @@
 import React from 'react';
 import s from './index.module.css';
-import IntervalChart from '../../IntervalChart';
+import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
 import Chart from '../../../../Chart';
 
 class DifferentArtistsPer extends IntervalChart {
   constructor(props) {
-    super(props, 'Number of different artists');
+    super(props, 'Number of different artists', FillModes.VOID);
   }
 
   dataGetter = stats => {
