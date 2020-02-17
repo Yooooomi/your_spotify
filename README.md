@@ -8,7 +8,9 @@ It's composed of a web server which polls the Spotify API every now and then and
 
 1) You have to own a Spotify application ID that you can create through their [dashboard](https://developer.spotify.com/dashboard/applications)
 2) You need to provide the __Server__ environment the __public__ AND __secret__ key of the application (cf. [Installation](#Installation))
-  - A tutorial is available at the end of this readme.
+3) You need to provide an __authorized__ redirect URI to the `docker-compose` file
+
+> A tutorial is available at the end of this readme.
 
 # Installation
 
@@ -69,3 +71,5 @@ To do so, you need to create a __Spotify application__ [here](https://developer.
 2) Fill out all the informations
 3) Copy the __public__ and the __secret__ key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
 respectively
+4) Add an authorized redirect URI corresponding to your __server__ location on the internet
+  - i.e: `localhost:3000` or `home.mydomain.com/your_spotify_backend`
