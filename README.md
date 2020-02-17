@@ -1,3 +1,5 @@
+![Client CI](https://github.com/Yooooomi/your_spotify/workflows/Client%20CI/badge.svg)
+![Server CI](https://github.com/Yooooomi/your_spotify/workflows/Server%20CI/badge.svg)
 
 # Your Spotify
 
