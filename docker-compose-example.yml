@@ -16,6 +16,8 @@ services:
       - CLIENT_ENDPOINT=http://localhost:3000
       - SPOTIFY_PUBLIC=1bda6c1687914623bab9fbee30595f52
       - SPOTIFY_SECRET=2508ed3146da425f9c3494a77ce994a1
+      - CORS=http://localhost:3000,http://localhost:3001
+      #- CORS=all
   mongo:
     container_name: mongo
     image: mongo

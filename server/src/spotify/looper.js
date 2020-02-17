@@ -73,26 +73,27 @@ const reflect = p => p.then(v => ({ failed: false }), e => ({ failed: true, erro
 const wait = ms => new Promise((s, f) => setTimeout(s, ms));
 
 const dbLoop = async () => {
-  return;
-  let nbUsers = await db.getUsersNb();
-  const batchSize = 1;
-  logger.info(`Starting loop for ${nbUsers} users`);
+  while (true) {
+    let nbUsers = await db.getUsersNb();
+    const batchSize = 1;
+    logger.info(`Starting loop for ${nbUsers} users`);
 
-  for (let i = 0; i < nbUsers; i += batchSize) {
-    const users = await db.getUsers(
-      batchSize,
-      i * batchSize,
-      {
-        activated: true,
-      },
-    );
+    for (let i = 0; i < nbUsers; i += batchSize) {
+      const users = await db.getUsers(
+        batchSize,
+        i * batchSize,
+        {
+          activated: true,
+        },
+      );
 
-    const promises = users.map(us => reflect(loop(us)));
-    const results = await Promise.all(promises);
+      const promises = users.map(us => reflect(loop(us)));
+      const results = await Promise.all(promises);
 
-    results.filter(e => e.failed).forEach(e => logger.error(e.error));
+      results.filter(e => e.failed).forEach(e => logger.error(e.error));
 
-    await wait(30 * 1000);
+      await wait(120 * 1000);
+    }
   }
 }
 

@@ -2,7 +2,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const cors = require('cors');
 const bp = require('body-parser');
 
 var app = express();
@@ -16,13 +15,29 @@ var indexRouter = require('./routes/index');
 var oauthRouter = require('./routes/oauth');
 var spotifyRouter = require('./routes/spotify');
 
-app.use((req, res, next) => {
-  const origin = req.get('origin');
+const cors = process.env.CORS || '';
+const corsList = cors.split(',');
 
-  res.header('Access-Control-Allow-Origin', origin);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, x-id, Content-Length, X-Requested-With');
-  res.header('Access-Control-Allow-Credentials', true);
+app.use((req, res, next) => {
+  let origin = null;
+  const thisOrigin = req.get('origin');
+
+  if (cors === 'all') {
+    origin = thisOrigin;
+  } else {
+    const index = corsList.indexOf(thisOrigin);
+
+    if (index >= 0) {
+      origin = corsList[index];
+    }
+  }
+
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, x-id, Content-Length, X-Requested-With');
+    res.header('Access-Control-Allow-Credentials', true);
+  }
 
   next();
 });
@@ -33,7 +48,7 @@ app.use('/spotify', spotifyRouter);
 
 app.use(function(err, req, res, next) {
   if (err) {
-    console.error(err);
+    logger.error(err);
   }
   return res.status(500).end();
 });
