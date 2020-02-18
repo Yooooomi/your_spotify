@@ -9,8 +9,10 @@ import SongsPer from '../../components/Stats/Graphs/Normal/SongsPer';
 import TimePer from '../../components/Stats/Graphs/Normal/TimePer';
 import IntervalModifier from '../../components/IntervalModifier';
 import { lastMonth } from '../../services/interval';
+import BestArtists from '../../components/Stats/Graphs/Normal/BestArtists';
 
 const StatClasses = [
+  BestArtists,
   AlbumDatePer,
   DifferentArtistsPer,
   FeatRatioPer,

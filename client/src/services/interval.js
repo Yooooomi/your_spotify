@@ -23,6 +23,19 @@ export const today = () => {
   };
 };
 
+export const yesterday = () => {
+  const start = setThisToMorning(new Date());
+  const end = setThisToEvening(new Date());
+
+  start.setDate(start.getDate() - 1);
+  end.setDate(end.getDate() - 1);
+
+  return {
+    start,
+    end,
+  };
+}
+
 export const lastDay = () => {
   const start = setThisToMorning(new Date());
 

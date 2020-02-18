@@ -4,20 +4,9 @@ import s from './index.module.css';
 import API from '../../../../../services/API';
 import { lastMonth } from '../../../../../services/interval';
 import IntervalModifier from '../../../../IntervalModifier';
+import DataDisplayer from '../../../DataDisplayer';
 
-class BestSong extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const inter = lastMonth();
-
-    this.state = {
-      start: inter.start,
-      end: inter.end,
-      stats: null,
-    };
-  }
-
+class BestSong extends DataDisplayer {
   onInterChange = (field, value) => {
     this.setState({
       [field]: value,

@@ -5,6 +5,7 @@ import {
   XAxis,
   YAxis,
   LineSeries,
+  VerticalBarSeries,
 } from 'react-vis';
 import cl from 'classnames';
 import s from './index.module.css';
@@ -50,19 +51,55 @@ export default function Chart({
   onEndChange = () => { },
   xName,
   yName,
+  type = 'line', // || bar
 }) {
+  const length = data.length;
+  let tickValues = undefined;
+  const nbTick = 10;
+
   if (xFormat === null) {
     xFormat = getFormatter(data.length, start, end);
+
+    if (length < nbTick) {
+      tickValues = Array.from(new Array(length).keys());
+    } else {
+      tickValues = [];
+      for (let i = 0; i < nbTick; i++) {
+        const idx = Math.floor(i * length / nbTick);
+        tickValues.push(idx);
+      }
+    }
+  }
+
+  const getLine = () => {
+    switch (type) {
+      case 'line':
+        return (
+          <LineSeries
+            curve="curveMonotoneX"
+            data={data}
+            strokeWidth={3}
+          />
+        );
+      case 'bar':
+        return (
+          <VerticalBarSeries
+            data={data}
+          />
+        );
+    }
   }
 
   return (
     <div className={cl(s.root, className)}>
       <FlexibleXYPlot
+        xType='ordinal'
         style={{
           width: '100%',
         }}
       >
         <XAxis
+          tickValues={tickValues}
           title={xName}
           tickFormat={xFormat}
         />
@@ -70,10 +107,9 @@ export default function Chart({
           bottom={0}
           title={yName}
         />
-        <LineSeries
-          curve="curveMonotoneX"
-          data={data}
-        />
+        {
+          getLine()
+        }
       </FlexibleXYPlot>
       <div className={s.buttons}>
         <IntervalModifier

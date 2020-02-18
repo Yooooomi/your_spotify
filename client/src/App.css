@@ -1,14 +1,21 @@
+
 * {
   box-sizing: border-box;
 }
 
 html {
-  background-color: #EBECF0;
+  background-color: #1B2430;
+}
+
+hr {
+  background: none;
+  border: none;
+  border-bottom: solid #D9DBDD 1px;
 }
 
 .App {
   box-sizing: border-box;
-  background-color: #EBECF0;
+  background-color: #F7F9FC;
   text-align: center;
   min-height: 100vh;
 }

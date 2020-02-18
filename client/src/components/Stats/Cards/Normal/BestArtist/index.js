@@ -4,8 +4,9 @@ import s from './index.module.css';
 import API from '../../../../../services/API';
 import { lastMonth } from '../../../../../services/interval';
 import IntervalModifier from '../../../../IntervalModifier';
+import DataDisplayer from '../../../DataDisplayer';
 
-class BestArtist extends React.Component {
+class BestArtist extends DataDisplayer {
   constructor(props) {
     super(props);
 
@@ -31,12 +32,6 @@ class BestArtist extends React.Component {
     this.setState({
       stats: data,
     }, cb);
-  }
-
-  componentDidMount() {
-    const { loaded } = this.props;
-
-    this.refresh(loaded);
   }
 
   render() {

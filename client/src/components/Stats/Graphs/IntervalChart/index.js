@@ -2,6 +2,7 @@ import React from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import cl from 'classnames';
 import s from './index.module.css';
+import BasicChart from '../BasicChart';
 
 const getWeek = (date) => {
   const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
@@ -50,12 +51,12 @@ const fillArray = (stats, start, end, timeSplit, dataGetter, fillMode) => {
     const fetched = index < stats.length && isGoodValue(stats[index]._id, tmp, timeSplit);
 
     if (fetched) {
-      values.push({ data: dataGetter(stats[index]), _id: new Date(tmp.getTime()) });
+      values.push({ data: dataGetter(stats[index], index), _id: new Date(tmp.getTime()) });
       index += 1;
     } else if (fillMode === FillModes.ASK) {
-      values.push({ data: dataGetter(null), _id: new Date(tmp.getTime()) });
+      values.push({ data: dataGetter(null, index), _id: new Date(tmp.getTime()) });
     } else if (fillMode === FillModes.PREVIOUS_VALUE) {
-      values.push({ data: dataGetter(stats[index - 1] || null), _id: new Date(tmp.getTime()) });
+      values.push({ data: dataGetter(stats[index - 1] || null, index - 1), _id: new Date(tmp.getTime()) });
     } else if (fillMode === FillModes.VOID) {
       // Do nothing
     }
@@ -64,75 +65,16 @@ const fillArray = (stats, start, end, timeSplit, dataGetter, fillMode) => {
   return values;
 };
 
-class IntervalChart extends React.Component {
+/*
+* IntervalChart is built on top of BasicChart and just implemented post refresh treatment to fill up datas
+* if missing, following a fillMode mode
+*/
+
+class IntervalChart extends BasicChart {
   constructor(props, name, fillMode = FillModes.ASK) {
-    super(props);
+    super(props, name);
 
     this.fillMode = fillMode;
-
-    this.inited = true;
-    this.name = name;
-
-    let {
-      start,
-      end,
-    } = this.props;
-
-    const {
-      timeSplit,
-      dontFetchOnMount,
-    } = this.props;
-
-    this.dontFetchOnMount = dontFetchOnMount;
-
-    if (!start) {
-      start = new Date();
-      start.setHours(0, 0, 0);
-      start.setDate(start.getDate() - 5);
-    }
-    if (!end) {
-      end = new Date();
-    }
-
-    this.state = {
-      start,
-      end,
-      timeSplit: timeSplit || 'hour',
-      stats: null,
-    };
-  }
-
-  componentDidUpdate(prevProps) {
-    const lastStart = prevProps.start;
-    const lastEnd = prevProps.end;
-    const { start } = this.props;
-    const { end } = this.props;
-
-    const lastSplit = prevProps.timeSplit;
-    const split = this.props.timeSplit;
-
-    const changes = {};
-
-    if (
-      (!lastStart && start)
-      || (lastStart && start && lastStart.getTime() !== start.getTime())
-    ) {
-      changes.start = start;
-    }
-
-    if (
-      (!lastEnd && end)
-      || (lastEnd && end && lastEnd.getTime() !== end.getTime())
-    ) {
-      changes.end = end;
-    }
-
-    if (split && lastSplit !== split) {
-      changes.timeSplit = split;
-    }
-    if (Object.keys(changes).length > 0) {
-      this.setState(changes, this.refresh);
-    }
   }
 
   dataGetter = () => {
@@ -143,9 +85,8 @@ class IntervalChart extends React.Component {
     throw new Error('Implement fetch stats');
   }
 
-  refresh = async (cb) => {
+  postRefreshModification = async (data) => {
     const { start, end, timeSplit } = this.state;
-    const data = await this.fetchStats();
 
     const values = fillArray(data, start, end, timeSplit, this.dataGetter, this.fillMode);
 
@@ -153,46 +94,7 @@ class IntervalChart extends React.Component {
       values.push(values[0]);
     }
 
-    this.setState({
-      stats: values,
-    }, cb);
-  }
-
-  setInfos = (field, value, shouldRefresh = true) => {
-    this.setState({ [field]: value }, () => {
-      if (!shouldRefresh) return;
-      this.refresh();
-    });
-  }
-
-  componentDidMount() {
-    if (!this.inited) {
-      throw new Error('You must call parent constructor when using IntervalChart');
-    }
-    const { loaded } = this.props;
-
-    if (!this.dontFetchOnMount) {
-      this.refresh(loaded);
-    } else if (loaded) {
-      loaded();
-    }
-  }
-
-  getContent = () => {
-    throw new Error('Implement get content');
-  }
-
-  render() {
-    const { className } = this.props;
-    const { stats } = this.state;
-    if (!stats) return null;
-
-    return (
-      <Paper className={cl(s.paper, className)}>
-        <Typography>{this.name}</Typography>
-        {this.getContent()}
-      </Paper>
-    );
+    return values;
   }
 }
 

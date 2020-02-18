@@ -12,3 +12,7 @@
 .less {
     color: red;
 }
+
+.middle {
+    margin: 15px 0px !important;
+}

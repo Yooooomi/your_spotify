@@ -1,62 +1,81 @@
 import React from 'react';
 import s from './index.module.css';
 import API from '../../../../../services/API';
-import { lastMonth } from '../../../../../services/interval';
+import { lastMonth, today, yesterday } from '../../../../../services/interval';
 import IntervalModifier from '../../../../IntervalModifier';
+import BasicCard from '../BasicCard';
+import { ratioValueAB } from '../../../../../services/operations';
+import { Typography } from '@material-ui/core';
 
-class BestArtist extends React.Component {
+class DifferentArtists extends BasicCard {
   constructor(props) {
     super(props);
 
-    const inter = lastMonth();
-
     this.state = {
-      start: inter.start,
-      end: inter.end,
+      ...this.state,
+      statsYesterday: null,
       stats: null,
     };
   }
 
-  onInterChange = (field, value) => {
-    this.setState({
-      [field]: value,
-    }, this.refresh);
-  }
-
   refresh = async () => {
-    const { start, end } = this.state;
-    const { data } = await API.differentArtistsPer(start, end);
+    const { start, end, previousStart, previousEnd } = this.state;
+
+    const stats = await API.differentArtistsPer(start, end, 'all');
+    const statsYesterday = await API.differentArtistsPer(previousStart, previousEnd, 'all');
 
     this.setState({
-      stats: data,
+      statsYesterday: statsYesterday.data,
+      stats: stats.data,
     });
   }
 
-  componentDidMount() {
-    this.refresh();
-  }
-
-  render() {
+  isReady = () => {
     const { stats } = this.state;
 
-    if (!stats || !stats.length) return null;
+    return !!stats;
+  }
 
-    return (
-      <div className={s.root} style={{ backgroundImage: `url(${stats[0].artist.images[0].url})` }}>
-        <IntervalModifier
-          onStartChange={date => this.onInterChange('start', date)}
-          onEndChange={date => this.onInterChange('end', date)}
-          autoAbsolute
-        />
-        <div className={s.content}>
-          <div className={s.text}>
-            <div className={s.desc}>Best artist</div>
-            <div className={s.title}>{stats[0].artist.name}</div>
-          </div>
-        </div>
-      </div>
-    );
+  getTop = () => {
+    return 'Different artists';
+  }
+
+  getValue = () => {
+    const { stats } = this.state;
+
+    if (!stats.length) return 0;
+
+    return stats[0].artists.length;
+  }
+
+  getBottom = () => {
+    const { stats, statsYesterday } = this.state;
+
+    const value = stats.length > 0 ? stats[0].artists.length : 0;
+    const oldValue = statsYesterday.length > 0 ? stats[0].artists.length : 0;
+
+    const moreOrLessThanYesterday = Math.floor(ratioValueAB(oldValue, value));
+
+    if (moreOrLessThanYesterday < 0) {
+      return (
+        <Typography variant="subtitle1">
+          <Typography color="error" component="span" variant='subtitle2'>
+            {moreOrLessThanYesterday}%
+          </Typography>
+          &nbsp;less for this period
+        </Typography>
+      );
+    } else {
+      return (
+        <Typography variant="subtitle1">
+          <Typography style={{ color: '#255E2B' }} component="span" variant='subtitle2'>
+            {moreOrLessThanYesterday}%
+          </Typography>
+          &nbsp;more for this period
+        </Typography>
+      );
+    }
   }
 }
 
-export default BestArtist;
+export default DifferentArtists;

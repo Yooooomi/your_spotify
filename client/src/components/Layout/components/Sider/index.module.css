@@ -2,8 +2,18 @@
 
 .root {
     text-align: left;
+    background-color: #1B2430;
+    color: white;
 }
 
 .mobileDrawer {
     width: 60vw;
+}
+
+.icon {
+    color: white;
+}
+
+.siderHeader {
+    color: white !important;
 }

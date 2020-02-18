@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid, Divider } from '@material-ui/core';
 import cl from 'classnames';
 import s from './index.module.css';
 import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
@@ -12,6 +12,8 @@ import BestSong from '../../components/Stats/Cards/Normal/BestSong';
 import BestArtist from '../../components/Stats/Cards/Normal/BestArtist';
 import ShowIfInScreen from '../../components/ShowIfInScreen';
 import { today } from '../../services/interval';
+import BestArtists from '../../components/Stats/Graphs/Normal/BestArtists';
+import DifferentArtists from '../../components/Stats/Cards/Normal/DifferentArtists';
 
 class Home extends React.Component {
   constructor(props) {
@@ -46,14 +48,26 @@ class Home extends React.Component {
             &nbsp;here is your day summary
           </Typography>
         </div>
+        <hr className={s.divider} />
         <div className={cl(s.content, loadedNb === 4 ? s.content : s.contenthidden)}>
-          <Grid container spacing={2} alignContent="stretch">
-            <Grid item xs={12} lg={6}>
-              <SongsToday loaded={this.loaded} />
+          <Grid container spacing={3} alignContent="stretch">
+            
+            <Grid container item xs={12} lg={6} spacing={0}>
+              <Grid item xs={12} lg={6}>
+                <div className={cl(s.left, s.firstleft)}><SongsToday loaded={this.loaded} /></div>
+              </Grid>
+              <Grid item xs={12} lg={6}>
+                <div className={cl(s.left, s.secondleft)}><DifferentArtists /></div>
+              </Grid>
+              <Grid item xs={12}>
+                <div><TimeToday loaded={this.loaded} /></div>
+              </Grid>
             </Grid>
+
             <Grid item xs={12} lg={6}>
-              <TimeToday loaded={this.loaded} />
+              <BestArtists />
             </Grid>
+
             <Grid item xs={6} lg={3}>
               <BestSong loaded={this.loaded} />
             </Grid>

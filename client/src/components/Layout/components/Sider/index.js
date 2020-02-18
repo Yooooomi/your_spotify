@@ -67,7 +67,7 @@ class Sider extends React.Component {
     return SiderItems.map(part => (
       <List
         key={part.label}
-        subheader={<ListSubheader>{part.label}</ListSubheader>}
+        subheader={<ListSubheader className={s.siderHeader}>{part.label}</ListSubheader>}
       >
         {
           part.links.map(link => (

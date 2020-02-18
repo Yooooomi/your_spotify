@@ -1,45 +1,13 @@
 
-
 .root {
-    position: relative;
-    height: 50px;
-    padding-top: 100%;
-    background-size: cover;
-}
-
-.content {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 10%;
-    background-color: rgba(165, 165, 165, 0.5);
-}
-
-.image {
-    position: relative;
-}
-
-.image > img {
-    width: 100%;
-}
-
-.text {
-    height: 100%;
     text-align: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    padding: 20px;
 }
 
-.desc {
-    color: white;
-    font-weight: bold;
-    font-size: 2em;
+.more {
+    color: green;
 }
 
-.title {
-    color: white;
-    font-size: 1.5em;
+.less {
+    color: red;
 }

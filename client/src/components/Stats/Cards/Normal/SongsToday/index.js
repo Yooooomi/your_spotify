@@ -3,42 +3,77 @@ import { Paper, Typography } from '@material-ui/core';
 import cl from 'classnames';
 import s from './index.module.css';
 import API from '../../../../../services/API';
+import { today, yesterday } from '../../../../../services/interval';
+import BasicCard from '../BasicCard';
+import { ratioValueAB } from '../../../../../services/operations';
 
-class SongsToday extends React.Component {
+class SongsToday extends BasicCard {
   constructor(props) {
     super(props);
 
     this.state = {
+      ...this.state,
       stats: null,
+      statsYesterday: null,
     };
   }
 
-  async componentDidMount() {
-    const { loaded } = this.props;
+  async refresh() {
+    const { start, end, previousStart, previousEnd } = this.state;
 
-    const start = new Date();
-    start.setHours(0, 0, 0);
-    const end = new Date();
+    const todayStats = await API.songsPer(start, end, 'all');
+    const yesterdayStats = await API.songsPer(previousStart, previousEnd, 'all');
 
-    const { data } = await API.listened_to(start, end);
     this.setState({
-      stats: data,
-    }, loaded);
+      stats: todayStats.data,
+      statsYesterday: yesterdayStats.data,
+    });
   }
 
-  render() {
-    const { className } = this.props;
+  isReady = () => {
     const { stats } = this.state;
 
-    if (!stats) return null;
+    return !!stats;
+  }
 
-    return (
-      <Paper className={cl(s.root, className)}>
-        <Typography>You listened to </Typography>
-        <Typography variant="h1">{stats.count}</Typography>
-        <Typography>songs today</Typography>
-      </Paper>
-    );
+  getTop = () => {
+    return 'Songs today';
+  }
+
+  getValue = () => {
+    const { stats } = this.state;
+
+    if (stats.length === 0) return 0;
+    return stats[0].count;
+  }
+
+  getBottom = () => {
+    const { stats, statsYesterday } = this.state;
+
+    const value = stats.length > 0 ? stats[0].length : 0;
+    const oldValue = statsYesterday.length > 0 ? stats[0].length : 0;
+
+    const moreOrLessThanYesterday = Math.floor(ratioValueAB(oldValue, value));
+
+    if (moreOrLessThanYesterday < 0) {
+      return (
+        <Typography variant="subtitle1">
+          <Typography color="error" component="span" variant='subtitle2'>
+            {moreOrLessThanYesterday}%
+          </Typography>
+          &nbsp;less for this period
+        </Typography>
+      );
+    } else {
+      return (
+        <Typography variant="subtitle1">
+          <Typography style={{ color: '#255E2B' }} component="span" variant='subtitle2'>
+            {moreOrLessThanYesterday}%
+          </Typography>
+          &nbsp;more for this period
+        </Typography>
+      );
+    }
   }
 }
 
