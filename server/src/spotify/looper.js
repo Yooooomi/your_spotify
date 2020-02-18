@@ -73,7 +73,6 @@ const reflect = p => p.then(v => ({ failed: false }), e => ({ failed: true, erro
 const wait = ms => new Promise((s, f) => setTimeout(s, ms));
 
 const dbLoop = async () => {
-  return;
   while (true) {
     let nbUsers = await db.getUsersNb();
     const batchSize = 1;
