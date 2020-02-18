@@ -78,6 +78,11 @@ const dbLoop = async () => {
     const batchSize = 1;
     logger.info(`Starting loop for ${nbUsers} users`);
 
+    if (nbUsers === 0) {
+      await wait(120 * 1000);
+      continue;
+    }
+
     for (let i = 0; i < nbUsers; i += batchSize) {
       const users = await db.getUsers(
         batchSize,
