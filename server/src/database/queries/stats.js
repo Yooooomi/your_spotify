@@ -185,11 +185,15 @@ const differentArtistsPer = async (userId, start, end, timeSplit = 'day') => {
         count: { $sum: 1 },
       }
     },
+    { $sort: { count: -1, '_id.artId': 1 } },
+    { $lookup: { from: 'artists', localField: '_id.artId', foreignField: 'id', as: 'artist' } },
+    { $unwind: '$artist' },
     {
       $group: {
-        _id: { year: '$_id.year', month: '$_id.month', week: '$_id.week', day: '$_id.day', hour: '$_id.hour' },
-        ids: { $push: '$_id.artId' },
+        _id: getGroupingByTimeSplit(timeSplit, '_id'),
+        artists: { $push: '$artist' },
         differents: { $sum: 1 },
+        counts: { $push: '$count' },
       }
     },
     ...sortByTimeSplit(timeSplit, '_id'),

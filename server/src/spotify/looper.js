@@ -24,13 +24,13 @@ const createHttpClient = access => {
 const loop = async user => {
   logger.info(`Refreshing songs for ${user.username}`)
 
-  if (Date.now() > user.expiresIn) {
+  // Refresh the token it it expires in less than a minute (1000ms * 60)
+  if (Date.now() > user.expiresIn - 1000 * 60) {
     user = await refresh(user);
     logger.info(`Refreshed token for ${user.username}`);
   }
 
   const client = createHttpClient(user.accessToken);
-
   const url = `https://api.spotify.com/v1/me/player/recently-played?after=${user.lastTimestamp}`;
 
   let lastDiscovery = user.lastDiscovery;
@@ -73,12 +73,14 @@ const reflect = p => p.then(v => ({ failed: false }), e => ({ failed: true, erro
 const wait = ms => new Promise((s, f) => setTimeout(s, ms));
 
 const dbLoop = async () => {
+  return;
   while (true) {
     let nbUsers = await db.getUsersNb();
     const batchSize = 1;
     logger.info(`Starting loop for ${nbUsers} users`);
 
     if (nbUsers === 0) {
+      // To prevent loop going crazy if there are no registered users
       await wait(120 * 1000);
       continue;
     }

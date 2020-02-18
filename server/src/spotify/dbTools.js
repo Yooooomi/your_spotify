@@ -114,7 +114,7 @@ const storeAlbums = async (ids, client) => {
     delete alb.tracks;
   });
 
-  await db.Album.create(albums).catch(() => { });
+  await db.Album.create(albums).catch(e => logger.error('%o', e.response.data));
 }
 
 const artistUrl = 'https://api.spotify.com/v1/artists';
