@@ -52,7 +52,7 @@ class DifferentArtists extends BasicCard {
     const { stats, statsYesterday } = this.state;
 
     const value = stats.length > 0 ? stats[0].artists.length : 0;
-    const oldValue = statsYesterday.length > 0 ? stats[0].artists.length : 0;
+    const oldValue = statsYesterday.length > 0 ? statsYesterday[0].artists.length : 0;
 
     const moreOrLessThanYesterday = Math.floor(ratioValueAB(oldValue, value));
 

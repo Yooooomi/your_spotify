@@ -6,7 +6,7 @@ import API from '../../../../../services/API';
 import { ratioValueAB } from '../../../../../services/operations';
 import BasicCard from '../BasicCard';
 
-class TimeToday extends BasicCard {
+class TimePerCard extends BasicCard {
   constructor(props) {
     super(props);
 
@@ -49,8 +49,8 @@ class TimeToday extends BasicCard {
   getBottom = () => {
     const { stats, statsYesterday } = this.state;
 
-    const value = stats.length > 0 ? stats[0].length : 0;
-    const oldValue = statsYesterday.length > 0 ? stats[0].length : 0;
+    const value = stats.length > 0 ? stats[0].count : 0;
+    const oldValue = statsYesterday.length > 0 ? statsYesterday[0].count : 0;
 
     const moreOrLessThanYesterday = Math.floor(ratioValueAB(oldValue, value));
 
@@ -76,4 +76,4 @@ class TimeToday extends BasicCard {
   }
 }
 
-export default TimeToday;
+export default TimePerCard;

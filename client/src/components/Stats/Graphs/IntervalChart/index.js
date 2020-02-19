@@ -87,7 +87,6 @@ class IntervalChart extends BasicChart {
 
   postRefreshModification = async (data) => {
     const { start, end, timeSplit } = this.state;
-
     const values = fillArray(data, start, end, timeSplit, this.dataGetter, this.fillMode);
 
     if (values.length === 1) {

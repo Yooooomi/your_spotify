@@ -21,7 +21,6 @@ class BasicChart extends DataDisplayer {
 
   refresh = async (cb) => {
     const data = await this.fetchStats();
-
     const values = await this.postRefreshModification(data);
 
     this.setState({

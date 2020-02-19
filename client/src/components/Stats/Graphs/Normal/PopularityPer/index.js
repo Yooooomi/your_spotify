@@ -6,7 +6,7 @@ import Chart from '../../../../Chart';
 
 class PopularityPer extends IntervalChart {
   constructor(props) {
-    super(props, 'Average song popularity', FillModes.PREVIOUS_VALUE);
+    super(props, 'Average song popularity', FillModes.VOID);
   }
 
   dataGetter = stats => {

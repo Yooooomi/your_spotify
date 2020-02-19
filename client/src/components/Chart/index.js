@@ -6,6 +6,7 @@ import {
   YAxis,
   LineSeries,
   VerticalBarSeries,
+  Crosshair,
 } from 'react-vis';
 import cl from 'classnames';
 import s from './index.module.css';
@@ -47,6 +48,7 @@ export default function Chart({
   timeSplit,
   onTimeSplitChange,
   xFormat = null,
+  yFormat,
   onStartChange = () => { },
   onEndChange = () => { },
   xName,
@@ -93,6 +95,7 @@ export default function Chart({
   return (
     <div className={cl(s.root, className)}>
       <FlexibleXYPlot
+        margin={{ left: 50 }}
         xType='ordinal'
         style={{
           width: '100%',
@@ -104,7 +107,7 @@ export default function Chart({
           tickFormat={xFormat}
         />
         <YAxis
-          bottom={0}
+          tickFormat={yFormat}
           title={yName}
         />
         {

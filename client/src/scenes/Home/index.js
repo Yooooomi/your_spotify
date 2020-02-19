@@ -5,8 +5,8 @@ import cl from 'classnames';
 import s from './index.module.css';
 import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
 import History from '../../components/Stats/History';
-import TimeToday from '../../components/Stats/Cards/Normal/TimeToday';
-import SongsToday from '../../components/Stats/Cards/Normal/SongsToday';
+import TimePerCard from '../../components/Stats/Cards/Normal/TimePerCard';
+import SongsPerCard from '../../components/Stats/Cards/Normal/SongsPerCard';
 import TimePer from '../../components/Stats/Graphs/Normal/TimePer';
 import BestSong from '../../components/Stats/Cards/Normal/BestSong';
 import BestArtist from '../../components/Stats/Cards/Normal/BestArtist';
@@ -39,9 +39,11 @@ class Home extends React.Component {
     const { user } = this.props;
     const { loadedNb } = this;
 
+    const { start, end } = this.inter;
+
     return (
       <div className={s.root}>
-        <div className={loadedNb === 4 ? s.welcome : s.welcomehidden}>
+        <div className={loadedNb === 7 ? s.welcome : s.welcomehidden}>
           <Typography align="left" variant="h4">
             Welcome&nbsp;
             {user.username}
@@ -49,33 +51,33 @@ class Home extends React.Component {
           </Typography>
         </div>
         <hr className={s.divider} />
-        <div className={cl(s.content, loadedNb === 4 ? s.content : s.contenthidden)}>
+        <div className={cl(s.content, loadedNb === 7 ? s.content : s.contenthidden)}>
           <Grid container spacing={3} alignContent="stretch">
             
             <Grid container item xs={12} lg={6} spacing={0}>
               <Grid item xs={12} lg={6}>
-                <div className={cl(s.left, s.firstleft)}><SongsToday loaded={this.loaded} /></div>
+                <div className={cl(s.left, s.firstleft)}><SongsPerCard start={start} end={end} loaded={this.loaded} /></div>
               </Grid>
               <Grid item xs={12} lg={6}>
-                <div className={cl(s.left, s.secondleft)}><DifferentArtists /></div>
+                <div className={cl(s.left, s.secondleft)}><DifferentArtists start={start} end={end} loaded={this.loaded} /></div>
               </Grid>
               <Grid item xs={12}>
-                <div><TimeToday loaded={this.loaded} /></div>
+                <div><TimePerCard start={start} end={end} loaded={this.loaded} /></div>
               </Grid>
             </Grid>
 
             <Grid item xs={12} lg={6}>
-              <BestArtists />
+              <BestArtists start={start} end={end} loaded={this.loaded} />
             </Grid>
 
             <Grid item xs={6} lg={3}>
-              <BestSong loaded={this.loaded} />
+              <BestSong start={start} end={end} loaded={this.loaded} />
             </Grid>
             <Grid item xs={6} lg={3}>
-              <BestArtist loaded={this.loaded} />
+              <BestArtist start={start} end={end} loaded={this.loaded} />
             </Grid>
             <Grid style={{ minHeight: '250px' }} item xs={12} lg={6}>
-              <TimePer start={this.inter.start} end={this.inter.end} timeSplit="hour" />
+              <TimePer loaded={this.loaded} start={start} end={end} timeSplit="hour" />
             </Grid>
           </Grid>
         </div>

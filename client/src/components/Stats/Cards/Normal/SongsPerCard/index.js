@@ -7,7 +7,7 @@ import { today, yesterday } from '../../../../../services/interval';
 import BasicCard from '../BasicCard';
 import { ratioValueAB } from '../../../../../services/operations';
 
-class SongsToday extends BasicCard {
+class SongsPerCard extends BasicCard {
   constructor(props) {
     super(props);
 
@@ -50,8 +50,8 @@ class SongsToday extends BasicCard {
   getBottom = () => {
     const { stats, statsYesterday } = this.state;
 
-    const value = stats.length > 0 ? stats[0].length : 0;
-    const oldValue = statsYesterday.length > 0 ? stats[0].length : 0;
+    const value = stats.length > 0 ? stats[0].count : 0;
+    const oldValue = statsYesterday.length > 0 ? statsYesterday[0].count : 0;
 
     const moreOrLessThanYesterday = Math.floor(ratioValueAB(oldValue, value));
 
@@ -77,4 +77,4 @@ class SongsToday extends BasicCard {
   }
 }
 
-export default SongsToday;
+export default SongsPerCard;

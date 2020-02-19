@@ -6,7 +6,7 @@ import Chart from '../../../../Chart';
 
 class AlbumDatePer extends IntervalChart {
   constructor(props) {
-    super(props, 'Average album release date', FillModes.PREVIOUS_VALUE);
+    super(props, 'Average album release date', FillModes.VOID);
   }
 
   dataGetter = stats => {
@@ -38,6 +38,7 @@ class AlbumDatePer extends IntervalChart {
         start={start}
         end={end}
         timeSplit={timeSplit}
+        yFormat={value => Math.trunc(value * 10) / 10}
         onTimeSplitChange={e => this.setInfos('timeSplit', e)}
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}

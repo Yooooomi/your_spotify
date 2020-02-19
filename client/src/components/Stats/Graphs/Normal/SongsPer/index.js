@@ -6,7 +6,7 @@ import Chart from '../../../../Chart';
 
 class SongsPer extends IntervalChart {
   constructor(props) {
-    super(props, 'Songs listened', FillModes.ASK);
+    super(props, 'Songs listened', FillModes.VOID);
   }
 
   dataGetter = stats => {

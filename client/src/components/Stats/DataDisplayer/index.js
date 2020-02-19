@@ -27,9 +27,9 @@ class DataDisplayer extends React.Component {
 
     this.dontFetchOnMount = dontFetchOnMount;
 
-    const thisWeek = lastWeek();
-
     if (!start || !end) {
+      const thisWeek = lastWeek();
+
       start = thisWeek.start;
       end = thisWeek.end;
     }
