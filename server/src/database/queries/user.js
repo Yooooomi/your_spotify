@@ -25,7 +25,7 @@ const createUser = (username, password) => {
     accessToken: '',
     refreshToken: '',
     expiresIn: 0,
-    lastTimestamp: Date.now(),
+    lastTimestamp: Date.now() - 1000 * 60 * 60 * 24, // Set last timestamp to yesterday so that we already have a pull of tracks
   });
 }
 

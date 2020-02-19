@@ -58,9 +58,13 @@ const loop = async user => {
 
     if (items.length > 0) {
       const tracks = items.map(e => e.track);
-      await dbTools.saveMusics(tracks, user.accessToken);
-      const infos = items.map(e => ({ played_at: e.played_at, id: e.track.id }));
-      await db.addTrackIdsToUser(user._id, infos);
+      try {
+        await dbTools.saveMusics(tracks, user.accessToken);
+        const infos = items.map(e => ({ played_at: e.played_at, id: e.track.id }));
+        await db.addTrackIdsToUser(user._id, infos);
+      } catch (e) {
+        console.log(e.response.data);
+      }
     } else {
       logger.info('User has no new music');
     }

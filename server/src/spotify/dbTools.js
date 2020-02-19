@@ -61,14 +61,28 @@ const logger = require('../tools/logger');
 //   await Promise.all(data.tracks.map(e => saveMusic(e)));
 // }
 
+const getIdsHandlingMax = async (client, url, ids, max, arrayPath) => {
+  const idsArray = [];
+  const chunkNb = Math.ceil(ids.length / max);
+
+  for (let i = 0; i < chunkNb; i++) {
+    idsArray.push(ids.slice(i * max, Math.min(ids.length, (i + 1) * max)));
+  }
+  const datas = [];
+
+  // Voluntarily waiting in loop to prevent requests limit
+  for (let i = 0; i < idsArray.length; i++) {
+    const builtUrl = `${url}?ids=${idsArray[i].join(',')}`;
+    const { data } = await client.get(builtUrl);
+    datas.push(...data[arrayPath]);
+  }
+  return datas;
+}
+
 const url = 'https://api.spotify.com/v1/tracks';
 
 const storeTracksAndReturnAlbumsArtists = async (ids, client) => {
-  const query = `?ids=${ids.join(',')}`;
-  const finalUrl = `${url}${query}`;
-
-  const { data } = await client.get(finalUrl);
-  const { tracks } = data;
+  const tracks = await getIdsHandlingMax(client, url, ids, 50, 'tracks');
 
   const artistIds = [];
   const albumIds = [];
@@ -101,11 +115,7 @@ const storeTracksAndReturnAlbumsArtists = async (ids, client) => {
 const albumUrl = 'https://api.spotify.com/v1/albums';
 
 const storeAlbums = async (ids, client) => {
-  const query = `?ids=${ids.join(',')}`;
-  const finalUrl = `${albumUrl}${query}`;
-
-  const { data } = await client.get(finalUrl);
-  const { albums } = data;
+  const albums = await getIdsHandlingMax(client, albumUrl, ids, 20, 'albums');
 
   albums.forEach(alb => {
     logger.info(`Storing non existing album ${alb.name} by ${alb.artists[0].name}`)
@@ -114,17 +124,13 @@ const storeAlbums = async (ids, client) => {
     delete alb.tracks;
   });
 
-  await db.Album.create(albums).catch(e => logger.error('%o', e.response.data));
+  await db.Album.create(albums).catch(() => { });
 }
 
 const artistUrl = 'https://api.spotify.com/v1/artists';
 
 const storeArtists = async (ids, client) => {
-  const query = `?ids=${ids.join(',')}`;
-  const finalUrl = `${artistUrl}${query}`;
-
-  const { data } = await client.get(finalUrl);
-  const { artists } = data;
+  const artists = await getIdsHandlingMax(client, artistUrl, ids, 50, 'artists');
 
   artists.forEach(artist => logger.info(`Storing non existing artist ${artist.name}`));
 

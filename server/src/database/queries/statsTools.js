@@ -22,11 +22,11 @@ const sortByTimeSplit = (timeSplit, prefix = '') => {
 }
 
 const getGroupByDateProjection = () => ({
-  year: { "$year": "$played_at" },
-  month: { "$month": "$played_at" },
-  day: { "$dayOfMonth": "$played_at" },
-  week: { "$week": "$played_at" },
-  hour: { "$hour": "$played_at" },
+  year: { "$year": { date: "$played_at", timezone: "Europe/Paris" } },
+  month: { "$month": { date: "$played_at", timezone: "Europe/Paris" } },
+  day: { "$dayOfMonth": { date: "$played_at", timezone: "Europe/Paris" } },
+  week: { "$week": { date: "$played_at", timezone: "Europe/Paris" } },
+  hour: { "$hour": { date: "$played_at", timezone: "Europe/Paris" } },
 });
 
 module.exports = {
