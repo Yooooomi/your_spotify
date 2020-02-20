@@ -2,8 +2,10 @@
 
 if [[ "$ENVIRONMENT" == "DEV" ]]
 then
+    # Modify the dev file
     VAR_PATH="/app/public/variables-final.js"
 else
+    # Modify the built file
     VAR_PATH="/app/build/variables-final.js"
 fi
 

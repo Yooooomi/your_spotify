@@ -35,7 +35,8 @@ services:
     depends_on:
       - mongo
     environment:
-      - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
+      # \/ This MUST be included as a valid URL in the spotify dashboard (here as http://localhost:8080/oauth/spotify/callback)
+      - API_ENDPOINT=http://localhost:8080
       - CLIENT_ENDPOINT=http://localhost:3000
       - SPOTIFY_PUBLIC=__your_spotify_client_id__
       - SPOTIFY_SECRET=__your_spotify_secret__
@@ -73,5 +74,5 @@ To do so, you need to create a __Spotify application__ [here](https://developer.
 2) Fill out all the informations
 3) Copy the __public__ and the __secret__ key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
 respectively
-4) Add an authorized redirect URI corresponding to your __server__ location on the internet
-  - i.e: `localhost:3000` or `home.mydomain.com/your_spotify_backend`
+4) Add an authorized redirect URI corresponding to your __server__ location on the internet adding the suffix __/oauth/spotify/callback__
+  - i.e: `localhost:3000/oauth/spotify/callback` or `home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
