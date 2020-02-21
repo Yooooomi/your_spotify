@@ -5,7 +5,7 @@ import cl from 'classnames';
 import { Settings } from '@material-ui/icons';
 import DateFnsUtils from '@date-io/date-fns';
 import {
-  Paper, Select, MenuItem, Popper, IconButton,
+  Paper, Select, MenuItem, Popper, IconButton, Chip,
 } from '@material-ui/core';
 import s from './index.module.css';
 import { setThisToMorning, setThisToEvening } from '../../services/interval';
@@ -25,9 +25,7 @@ function IntervalModifier({
   return (
     <div className={cl(s.root, autoAbsolute && s.auto, className)}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <IconButton color="primary" onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)}>
-          <Settings />
-        </IconButton>
+        <Chip label="modify" size="small" variant="outlined" color="primary" onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)} />
         <Popper
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}

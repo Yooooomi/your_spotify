@@ -56,9 +56,10 @@ const fillArray = (stats, start, end, timeSplit, dataGetter, fillMode) => {
     } else if (fillMode === FillModes.ASK) {
       values.push({ data: dataGetter(null, index), _id: new Date(tmp.getTime()) });
     } else if (fillMode === FillModes.PREVIOUS_VALUE) {
-      values.push({ data: dataGetter(stats[index - 1] || null, index - 1), _id: new Date(tmp.getTime()) });
+      const value = stats[index - 1] === undefined ? null : stats[index - 1];
+      values.push({ data: dataGetter(value, index - 1), _id: new Date(tmp.getTime()) });
     } else if (fillMode === FillModes.VOID) {
-      // Do nothing
+      values.push({ data: null, _id: new Date(tmp.getTime()) });
     }
     tmp = addTimesplit(tmp, timeSplit);
   }

@@ -60,7 +60,7 @@ class History extends React.Component {
             {
               displayTracks.map(e => (
                 <Grid item xs={xs} md={md} lg={lg} key={e.played_at}>
-                  <Track infos={e} track={e.track} />
+                  <Track className={s.trackitem} infos={e} track={e.track} />
                 </Grid>
               ))
             }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip, Paper } from '@material-ui/core';
 import s from './index.module.css';
 import API from '../../../../../services/API';
 import { lastMonth } from '../../../../../services/interval';
@@ -48,7 +48,7 @@ class BestSong extends DataDisplayer {
     }
 
     return (
-      <div className={s.root} style={{ backgroundImage: `url(${background})` }}>
+      <Paper className={s.root} style={{ backgroundImage: `url(${background})` }}>
         <IntervalModifier
           onStartChange={date => this.onInterChange('start', date)}
           onEndChange={date => this.onInterChange('end', date)}
@@ -67,7 +67,7 @@ class BestSong extends DataDisplayer {
             </div>
           </div>
         </Tooltip>
-      </div>
+      </Paper>
     );
   }
 }

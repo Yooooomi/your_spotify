@@ -7,5 +7,12 @@
 .title {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.leftTitle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }

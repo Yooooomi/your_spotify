@@ -7,7 +7,10 @@
 }
 
 .mobileDrawer {
-    width: 60vw;
+    background-color: #1B2430;
+    width: 70vw;
+    height: 100vh;
+    padding-top: 10vh;
 }
 
 .icon {
@@ -16,4 +19,11 @@
 
 .siderHeader {
     color: white !important;
+}
+
+@media only screen and (max-width: 960px) {
+    .siderHeader {
+        color: white !important;
+    }
+    
 }

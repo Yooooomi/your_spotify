@@ -1,12 +1,16 @@
 
 
 export const ratioValueAB = (oldValue, newValue) => {
+  if (oldValue === newValue) return 0;
   if (oldValue === 0) return 100;
-  const diff = newValue / oldValue;
+  if (newValue === 0) return -100;
 
-  if (diff > 1) {
-    return (diff - 1) * 100;
-  } else {
-    return -diff * 100;
+  if (oldValue > newValue) {
+    const diff = oldValue - newValue;
+    return -diff / oldValue * 100;
+  } else if (oldValue < newValue) {
+    const diff = newValue - oldValue;
+    return diff / newValue * 100;
   }
 };
+

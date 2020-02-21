@@ -63,15 +63,16 @@ export default function Chart({
     xFormat = getFormatter(data.length, start, end);
 
     if (length < nbTick) {
-      tickValues = Array.from(new Array(length).keys());
+      tickValues = undefined;
     } else {
       tickValues = [];
       for (let i = 0; i < nbTick; i++) {
-        const idx = Math.floor(i * length / nbTick);
-        tickValues.push(idx);
+        const idx = Math.floor(i / nbTick * (length - 1));
+        tickValues.push(data[idx].x);
       }
     }
   }
+
 
   const getLine = () => {
     switch (type) {

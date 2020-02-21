@@ -24,8 +24,9 @@ class Settings extends React.Component {
 
     return (
       <div className={s.root}>
+        <Typography variant="h4" center="center">Settings</Typography>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={12} lg={6}>
             <Paper className={s.paper}>
               <div>
                 <Typography variant="h5" align="left">Account infos</Typography>
@@ -41,7 +42,7 @@ class Settings extends React.Component {
             </Paper>
 
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} lg={6}>
             <Paper className={s.paper}>
               <div>
                 <Typography variant="h5" align="left">Spotify infos</Typography>
@@ -54,14 +55,14 @@ class Settings extends React.Component {
                       </div>
                     ))
                   ) : (
-                    <div>
-                      <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
-                        <Button fullWidth variant="contained" color="primary">
+                      <div>
+                        <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
+                          <Button fullWidth variant="contained" color="primary">
                             Login to Spotify
                         </Button>
-                      </a>
-                    </div>
-                  )
+                        </a>
+                      </div>
+                    )
                 }
               </div>
             </Paper>
@@ -69,26 +70,26 @@ class Settings extends React.Component {
           <Grid item xs={12}>
             <Paper className={s.footer}>
               <Grid container spacing={1}>
-                <Grid item xs={4}>
+                <Grid item xs={6} lg={4}>
                   <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
                     <Button fullWidth variant="contained" color="primary">
                       Relog to Spotify
                     </Button>
                   </a>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6} lg={4}>
                   <Button fullWidth variant="contained" color="primary">Disable this</Button>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6} lg={4}>
                   <Button fullWidth variant="contained" color="primary">Disable this</Button>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6} lg={4}>
                   <Button fullWidth variant="contained" color="primary">Disable this</Button>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6} lg={4}>
                   <Button fullWidth variant="contained" color="primary">Disable this</Button>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6} lg={4}>
                   <Button fullWidth variant="contained" color="primary">Disable this</Button>
                 </Grid>
               </Grid>

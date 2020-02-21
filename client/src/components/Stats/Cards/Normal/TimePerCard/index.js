@@ -22,7 +22,7 @@ class TimePerCard extends BasicCard {
 
     const todayStats = await API.timePer(start, end, 'all');
     const yesterdayStats = await API.timePer(previousStart, previousEnd, 'all');
-
+    
     this.setState({
       stats: todayStats.data,
       statsYesterday: yesterdayStats.data,

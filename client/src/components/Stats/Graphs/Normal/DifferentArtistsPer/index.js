@@ -24,7 +24,7 @@ class DifferentArtistsPer extends IntervalChart {
   getChartData = () => {
     const { stats } = this.state;
 
-    return stats.map((stat, k) => ({ x: k, y: stat.data }));
+    return stats.map((stat, k) => ({ x: k, y: stat.data })).filter(e => e.y !== null);;
   }
 
   getContent = () => {

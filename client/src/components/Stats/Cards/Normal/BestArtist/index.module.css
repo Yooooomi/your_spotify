@@ -5,6 +5,7 @@
     height: 50px;
     padding-top: 100%;
     background-size: cover;
+    overflow: hidden;
 }
 
 .content {

@@ -57,15 +57,29 @@
 }
 
 .listened {
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
 .firstleft {
-    padding-bottom: 24px;
-    padding-right: 12px;
+    padding-bottom: 16px;
+    padding-right: 8px;
 }
 
 .secondleft {
-    padding-bottom: 24px;
-    padding-left: 12px;
+    padding-bottom: 16px;
+    padding-left: 8px;
+}
+
+@media only screen and (max-width: 960px) {
+    .listened {
+    }
+    
+    .firstleft {
+        padding-right: unset;
+    }
+    
+    .secondleft {
+        padding-left: unset;
+    }
 }

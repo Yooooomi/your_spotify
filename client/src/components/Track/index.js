@@ -1,7 +1,7 @@
 import React from 'react';
 import cl from 'classnames';
 import { PlayCircleOutline } from '@material-ui/icons';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Paper } from '@material-ui/core';
 import s from './index.module.css';
 import API from '../../services/API';
 
@@ -16,7 +16,7 @@ class Track extends React.Component {
     const { className, track } = this.props;
 
     return (
-      <div className={cl(s.root, className)}>
+      <Paper className={cl(s.root, className)}>
         <div className={s.cover}>
           <img alt="album" src={track.full_album.images[0].url} />
         </div>
@@ -41,7 +41,7 @@ class Track extends React.Component {
             </IconButton>
           </div>
         </div>
-      </div>
+      </Paper>
     );
   }
 }

@@ -37,6 +37,7 @@
     .content {
         width: 100vw;
         padding: 0px 10px;
+        padding-top: 5vh;
     }
     .siderContainer {
         width: 0px;

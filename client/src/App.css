@@ -3,6 +3,10 @@
   box-sizing: border-box;
 }
 
+:root {
+  --mobile-limit: 960px;
+}
+
 html {
   background-color: #1B2430;
 }

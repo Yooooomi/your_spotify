@@ -11,7 +11,7 @@ import TimePer from '../../components/Stats/Graphs/Normal/TimePer';
 import BestSong from '../../components/Stats/Cards/Normal/BestSong';
 import BestArtist from '../../components/Stats/Cards/Normal/BestArtist';
 import ShowIfInScreen from '../../components/ShowIfInScreen';
-import { today } from '../../services/interval';
+import { lastDay } from '../../services/interval';
 import BestArtists from '../../components/Stats/Graphs/Normal/BestArtists';
 import DifferentArtists from '../../components/Stats/Cards/Normal/DifferentArtists';
 
@@ -20,7 +20,7 @@ class Home extends React.Component {
     super(props);
 
     this.loadedNb = 0;
-    this.inter = today();
+    this.inter = lastDay();
 
     this.state = {
       loaded: 0,
@@ -52,8 +52,8 @@ class Home extends React.Component {
         </div>
         <hr className={s.divider} />
         <div className={cl(s.content, loadedNb === 7 ? s.content : s.contenthidden)}>
-          <Grid container spacing={3} alignContent="stretch">
-            
+          <Grid container spacing={2} alignContent="stretch">
+
             <Grid container item xs={12} lg={6} spacing={0}>
               <Grid item xs={12} lg={6}>
                 <div className={cl(s.left, s.firstleft)}><SongsPerCard start={start} end={end} loaded={this.loaded} /></div>
@@ -82,10 +82,11 @@ class Home extends React.Component {
           </Grid>
         </div>
         <ShowIfInScreen>
+          <hr className={s.divider} />
           <div className={s.listened}>
             <Typography variant="h4">
               What you listened to today
-            </Typography>
+              </Typography>
           </div>
           <History xs={2} lg={4} />
         </ShowIfInScreen>

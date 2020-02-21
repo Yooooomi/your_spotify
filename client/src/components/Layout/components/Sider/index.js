@@ -80,7 +80,7 @@ class Sider extends React.Component {
               <ListItemIcon>
                 <link.Icon className={s.icon} />
               </ListItemIcon>
-              <ListItemText primary={link.label} />
+              <ListItemText style={{ color: 'white' }} primary={link.label} />
             </ListItem>
           ))
         }
