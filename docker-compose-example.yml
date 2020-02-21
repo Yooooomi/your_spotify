@@ -21,6 +21,8 @@ services:
   mongo:
     container_name: mongo
     image: mongo
+    volumes:
+      - ./your_spotify_db:/data/db
     ports:
       - "27017:27017"
 

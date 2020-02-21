@@ -35,8 +35,7 @@ services:
     depends_on:
       - mongo
     environment:
-      # \/ This MUST be included as a valid URL in the spotify dashboard (here as http://localhost:8080/oauth/spotify/callback)
-      - API_ENDPOINT=http://localhost:8080
+      - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
       - CLIENT_ENDPOINT=http://localhost:3000
       - SPOTIFY_PUBLIC=__your_spotify_client_id__
       - SPOTIFY_SECRET=__your_spotify_secret__
@@ -45,6 +44,8 @@ services:
   mongo:
     container_name: mongo
     image: mongo
+    volumes:
+      - ./your_spotify_db:/data/db
     ports:
       - "27017:27017"
 
@@ -56,6 +57,7 @@ services:
       - "3000:3000"
     environment:
       - API_ENDPOINT=http://localhost:8080
+
 ```
 
 ## CORS
