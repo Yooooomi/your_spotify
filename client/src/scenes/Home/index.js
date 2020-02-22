@@ -84,11 +84,8 @@ class Home extends React.Component {
         <ShowIfInScreen>
           <hr className={s.divider} />
           <div className={s.listened}>
-            <Typography variant="h4">
-              What you listened to today
-              </Typography>
+            <History maxOld={start} title="What you listened to today" xs={2} lg={4} />
           </div>
-          <History xs={2} lg={4} />
         </ShowIfInScreen>
         {/* <SongsPer />
         <AlbumDatePer />

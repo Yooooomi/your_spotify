@@ -1,0 +1,57 @@
+
+
+.root {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    padding-right: 20px;
+    height: 50px;
+}
+
+.coverContainer {
+    position: relative;
+    max-height: 50px;
+    max-width: 50px;
+    margin-right: 15px;
+}
+
+.cover {
+    width: 100%;
+}
+
+.info {
+    flex: 4;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-wrap: nowrap;
+}
+
+.large {
+    flex: 5;
+}
+
+.medium {
+    flex: 4;
+}
+
+.small {
+    flex: 2;
+}
+
+.tiny {
+    flex: 1;
+}
+
+.lastInfo {
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.playButton {
+    margin-right: 20px !important;
+}

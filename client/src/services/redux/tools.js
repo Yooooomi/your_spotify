@@ -3,6 +3,8 @@ import API from '../API';
 const mapStateToProps = state => ({
   user: state.userReducer.user,
   ready: state.readyReducer.ready,
+  tracks: state.tracksReducer.tracks,
+  full: state.tracksReducer.full,
 });
 
 const mapDispatchToProps = dispatch => ({

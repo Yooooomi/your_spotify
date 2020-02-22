@@ -16,3 +16,22 @@
     align-items: center;
     justify-content: flex-start;
 }
+
+.interval {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.select {
+    margin-left: 20px;
+    width: 100px;
+}
+
+.menuItem {
+    padding: 0 10px;
+}
+
+.every {
+    margin-left: 20px !important;
+}

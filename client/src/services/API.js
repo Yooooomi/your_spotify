@@ -49,6 +49,9 @@ const API = {
   differentArtistsPer: (start, end, timeSplit) => axios.get('/spotify/different_artists_per', {
     params: { start, end, timeSplit },
   }),
+  setSetting: (settingName, settingValue) => axios.post('/settings', {
+    [settingName]: settingValue,
+  }),
 };
 
 export default {

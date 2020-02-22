@@ -54,11 +54,39 @@ const theme = createMuiTheme({
     '0 0 14px 0 rgba(53,64,82,.05)',
   ],
   props: {
+    MuiSelect: {
+      disableUnderline: true,
+      disableRipple: true,
+    },
     MuiTab: {
       disableRipple: true,
     },
   },
   overrides: {
+    MuiSelect: {
+      select: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 10px',
+        minHeight: 44,
+        borderRadius: '10px !important',
+        backgroundColor: 'white !important',
+        'box-shadow': '0 0 14px 0 rgba(53,64,82,.05)',
+        border: 'none',
+      },
+    },
+    MuiToggleButtonGroup: {
+      root: {
+        backgroundColor: 'white',
+        'box-shadow': '0 0 14px 0 rgba(53,64,82,.05)',
+        border: 'none',
+      },
+    },
+    MuiToggleButton: {
+      root: {
+        border: 'none',
+      }
+    },
     MuiTabs: {
       root: {
         'box-shadow': '0 0 14px 0 rgba(53,64,82,.05)',

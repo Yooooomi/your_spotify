@@ -14,7 +14,7 @@ class HistoryScene extends React.Component {
   render() {
     return (
       <div className={s.root}>
-        <History />
+        <History title="All time history" />
       </div>
     );
   }

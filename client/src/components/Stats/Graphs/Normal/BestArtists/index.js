@@ -52,7 +52,7 @@ class BestArtists extends BasicChart {
         start={start}
         end={end}
         timeSplit={timeSplit}
-        onTimeSplitChange={e => this.setInfos('timeSplit', e.target.value)}
+        onTimeSplitChange={e => this.setInfos('timeSplit', e)}
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}
         className={s.chart}

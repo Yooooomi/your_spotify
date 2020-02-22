@@ -26,11 +26,23 @@ const createUser = (username, password) => {
     refreshToken: '',
     expiresIn: 0,
     lastTimestamp: Date.now() - 1000 * 60 * 60 * 24, // Set last timestamp to yesterday so that we already have a pull of tracks
+    settings: {
+      historyLine: false,
+      preferredStatsPeriod: 'month',
+    },
   });
 }
 
 const storeInUser = (field, value, infos) => {
   return User.findOneAndUpdate({ [field]: value }, infos, { new: true });
+}
+
+const changeSetting = (field, value, infos) => {
+  const obj = {};
+  Object.keys(infos).map(key => {
+    obj[`settings.${key}`] = infos[key];
+  })
+  return User.findOneAndUpdate({ [field]: value }, { $set: obj }, { new: true });
 }
 
 const addTrackIdsToUser = async (id, infos) => {
@@ -79,6 +91,7 @@ module.exports = {
   getUserFromField,
   createUser,
   storeInUser,
+  changeSetting,
   addTrackIdsToUser,
   getSongs,
   getSongsInterval,

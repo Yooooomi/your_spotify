@@ -10,13 +10,17 @@ const User = mongoose.model('User',
     refreshToken: String,
     activated: Boolean,
     lastTimestamp: Number,
-    tracks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Infos' }],
+    tracks: { type: [mongoose.Schema.Types.ObjectId], ref: 'Infos', select: false },
+    settings: {
+      historyLine: Boolean,
+      preferredStatsPeriod: String,
+    },
   }, { toJSON: { virtuals: true }, toObject: { virtuals: true } }),
 );
 
 const Infos = mongoose.model('Infos',
   new mongoose.Schema({
-    owner: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     id: String,
     played_at: Date,
   }, { toJSON: { virtuals: true }, toObject: { virtuals: true } }),

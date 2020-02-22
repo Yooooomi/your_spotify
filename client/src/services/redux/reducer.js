@@ -6,16 +6,24 @@ const initialUser = {};
 const userReducer = (state = initialUser, action) => {
   switch (action.type) {
   case 'UPDATE_USER':
-    action.user.tracks = action.user.tracks || [];
     return { ...state, user: action.user };
+  default:
+    return state;
+  }
+};
+
+const initialTracks = {
+  full: false,
+  tracks: [],
+};
+
+const tracksReducer = (state = initialTracks, action) => {
+  switch (action.type) {
   case 'ADD_TRACKS':
     return {
       ...state,
-      user: {
-        ...state.user,
-        tracks: [...state.user.tracks, ...action.tracks],
-        full: action.full,
-      },
+      tracks: [...state.tracks, ...action.tracks],
+      full: action.full,
     };
   default:
     return state;
@@ -36,6 +44,7 @@ const readyReducer = (state = initialReady, action) => {
 const rootReducer = combineReducers({
   userReducer,
   readyReducer,
+  tracksReducer,
 });
 
 const store = createStore(rootReducer);

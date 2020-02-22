@@ -24,7 +24,7 @@ class FeatRatioPer extends IntervalChart {
   getChartData = () => {
     const { stats } = this.state;
 
-    return stats.map((stat, k) => ({ x: k, y: stat.data })).filter(e => e.y !== null);;
+    return stats.map((stat, k) => ({ x: k, y: stat.data, date: stat._id }));
   }
 
   getContent = () => {
@@ -37,8 +37,9 @@ class FeatRatioPer extends IntervalChart {
         yName="Average person number per song"
         start={start}
         end={end}
+        tValueFormat={value => `${Math.round(value * 10) / 10} people`}
         timeSplit={timeSplit}
-        onTimeSplitChange={e => this.setInfos('timeSplit', e.target.value)}
+        onTimeSplitChange={e => this.setInfos('timeSplit', e)}
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}
         className={s.chart}

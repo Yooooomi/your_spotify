@@ -69,6 +69,24 @@ router.post('/login', validating(loginSchema), async (req, res) => {
   });
 });
 
+const settingsSchema = Joi.object().keys({
+  historyLine: Joi.bool(),
+  preferredStatsPeriod: Joi.string().only(['day', 'week', 'month', 'year']),
+});
+
+router.post('/settings', validating(settingsSchema), logged, async (req, res) => {
+  const { values, user } = req;
+
+  try {
+    const newUser = await db.changeSetting('_id', user._id, values);
+    console.log(newUser);
+    return res.status(200).end();
+  } catch (e) {
+    console.error(e);
+    return res.status(500).end();
+  }
+});
+
 router.get('/me', logged, async (req, res) => {
   return res.status(200).send(req.user);
 });

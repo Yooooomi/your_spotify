@@ -3,6 +3,7 @@ import s from './index.module.css';
 import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
 import Chart from '../../../../Chart';
+import { formatDateFromYearDecimal } from '../../../../../services/date';
 
 class AlbumDatePer extends IntervalChart {
   constructor(props) {
@@ -24,7 +25,7 @@ class AlbumDatePer extends IntervalChart {
   getChartData = () => {
     const { stats } = this.state;
 
-    return stats.map((stat, k) => ({ x: k, y: stat.data })).filter(e => e.y !== null);
+    return stats.map((stat, k) => ({ x: k, y: stat.data, date: stat._id }));
   }
 
   getContent = () => {
@@ -35,8 +36,10 @@ class AlbumDatePer extends IntervalChart {
       <Chart
         xName="Date"
         yName="Average album release date"
+        yDomain={[min => Number(min) - 1, max => Number(max) + 1]}
         start={start}
         end={end}
+        tValueFormat={formatDateFromYearDecimal}
         timeSplit={timeSplit}
         yFormat={value => Math.trunc(value * 10) / 10}
         onTimeSplitChange={e => this.setInfos('timeSplit', e)}

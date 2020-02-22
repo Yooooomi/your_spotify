@@ -31,6 +31,7 @@
     width: 85vw;
     padding: 0px 50px;
     padding-top: 5vh;
+    padding-bottom: 10vh;
 }
 
 @media only screen and (max-width: 960px) {

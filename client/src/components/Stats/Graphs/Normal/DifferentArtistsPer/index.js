@@ -24,7 +24,7 @@ class DifferentArtistsPer extends IntervalChart {
   getChartData = () => {
     const { stats } = this.state;
 
-    return stats.map((stat, k) => ({ x: k, y: stat.data })).filter(e => e.y !== null);;
+    return stats.map((stat, k) => ({ x: k, y: stat.data, date: stat._id }));
   }
 
   getContent = () => {
@@ -38,7 +38,8 @@ class DifferentArtistsPer extends IntervalChart {
         start={start}
         end={end}
         timeSplit={timeSplit}
-        onTimeSplitChange={e => this.setInfos('timeSplit', e.target.value)}
+        tValueFormat={value => `${Math.round(value * 10) / 10} artists`}
+        onTimeSplitChange={e => this.setInfos('timeSplit', e)}
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}
         className={s.chart}

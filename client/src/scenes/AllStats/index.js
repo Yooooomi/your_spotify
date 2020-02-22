@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography, Tabs, Tab } from '@material-ui/core';
+import { Grid, Typography, Tabs, Tab, Select, MenuItem } from '@material-ui/core';
 import s from './index.module.css';
 import AlbumDatePer from '../../components/Stats/Graphs/Normal/AlbumDatePer';
 import DifferentArtistsPer from '../../components/Stats/Graphs/Normal/DifferentArtistsPer';
@@ -10,6 +10,9 @@ import TimePer from '../../components/Stats/Graphs/Normal/TimePer';
 import IntervalModifier from '../../components/IntervalModifier';
 import { lastMonth, lastDay, lastWeek, lastYear } from '../../services/interval';
 import BestArtists from '../../components/Stats/Graphs/Normal/BestArtists';
+import API from '../../services/API';
+import { connect } from 'react-redux';
+import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
 
 const StatClasses = [
   BestArtists,
@@ -22,23 +25,36 @@ const StatClasses = [
 ];
 
 const PrefabToInter = [
-  () => ({ inter: lastDay(), timeSplit: 'hour' }),
-  () => ({ inter: lastWeek(), timeSplit: 'day' }),
-  () => ({ inter: lastMonth(), timeSplit: 'day' }),
-  () => ({ inter: lastYear(), timeSplit: 'month' }),
+  { name: 'day', fn: () => ({ inter: lastDay(), timeSplit: 'hour' }) },
+  { name: 'week', fn: () => ({ inter: lastWeek(), timeSplit: 'day' }) },
+  { name: 'month', fn: () => ({ inter: lastMonth(), timeSplit: 'day' }) },
+  { name: 'year', fn: () => ({ inter: lastYear(), timeSplit: 'month' }) },
+];
+
+const timeSplits = [
+  'hour',
+  'day',
+  'month',
+  'year',
 ];
 
 class AllStats extends React.Component {
   constructor(props) {
     super(props);
 
-    const { start, end } = lastMonth();
+    const { user } = this.props;
+
+    const prefabIdx = PrefabToInter.findIndex(e => e.name === user.settings.preferredStatsPeriod);
+    const prefab = PrefabToInter[prefabIdx];
+
+    const { inter, timeSplit } = prefab.fn();
+    const { start, end } = inter;
 
     this.state = {
-      prefab: 0,
+      prefab: prefabIdx,
       globalStart: start,
       globalEnd: end,
-      globalTimeSplit: 'day',
+      globalTimeSplit: timeSplit,
     };
   }
 
@@ -57,9 +73,10 @@ class AllStats extends React.Component {
   }
 
   changePrefab = (ev, idx) => {
-    const infos = PrefabToInter[idx]();
+    const infos = PrefabToInter[idx];
 
-    const { inter, timeSplit } = infos;
+    API.setSetting('preferredStatsPeriod', infos.name);
+    const { inter, timeSplit } = infos.fn();
 
     this.setState({
       prefab: idx,
@@ -77,24 +94,30 @@ class AllStats extends React.Component {
         <div className={s.title}>
           <div className={s.leftTitle}>
             <Typography variant="h4" center="left">All the statistics I could find on you</Typography>
-            {/* <IntervalModifier
-              start={globalStart}
-              end={globalEnd}
-              timeSplit={globalTimeSplit}
-              onStartChange={this.change('globalStart')}
-              onEndChange={this.change('globalEnd')}
-              onTimeSplitChange={this.change('globalTimeSplit')}
-            /> */}
           </div>
-          <Tabs
-            value={prefab}
-            onChange={this.changePrefab}
-          >
-            <Tab label="Last day" />
-            <Tab label="Last week" />
-            <Tab label="Last month" />
-            <Tab label="Last year" />
-          </Tabs>
+          <div className={s.interval}>
+            <Tabs
+              value={prefab}
+              onChange={this.changePrefab}
+            >
+              <Tab label="Last day" />
+              <Tab label="Last week" />
+              <Tab label="Last month" />
+              <Tab label="Last year" />
+            </Tabs>
+            <Typography className={s.every}>every</Typography>
+            <Select
+              className={s.select}
+              onChange={(ev) => this.change('globalTimeSplit')(ev.target.value)}
+              value={globalTimeSplit}
+            >
+              {
+                timeSplits.map(e => (
+                  <MenuItem key={e} value={e}><div className={s.menuItem}>{e}</div></MenuItem>
+                ))
+              }
+            </Select>
+          </div>
         </div>
         <Grid spacing={2} container>
           {
@@ -110,4 +133,4 @@ class AllStats extends React.Component {
   }
 }
 
-export default AllStats;
+export default connect(mapStateToProps, mapDispatchToProps)(AllStats);

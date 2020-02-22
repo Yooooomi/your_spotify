@@ -4,6 +4,7 @@ import { PlayCircleOutline } from '@material-ui/icons';
 import { IconButton, Paper } from '@material-ui/core';
 import s from './index.module.css';
 import API from '../../services/API';
+import Line from './Line';
 
 class Track extends React.Component {
   play = async () => {
@@ -12,8 +13,18 @@ class Track extends React.Component {
     await API.play(track.id);
   }
 
+  line = () => {
+    return (
+      <Line {...this.props} />
+    );
+  }
+
   render() {
-    const { className, track } = this.props;
+    const { className, track, line } = this.props;
+
+    if (line) {
+      return this.line();
+    }
 
     return (
       <Paper className={cl(s.root, className)}>
