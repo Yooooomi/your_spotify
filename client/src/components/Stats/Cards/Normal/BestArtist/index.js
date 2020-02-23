@@ -7,18 +7,6 @@ import IntervalModifier from '../../../../IntervalModifier';
 import DataDisplayer from '../../../DataDisplayer';
 
 class BestArtist extends DataDisplayer {
-  constructor(props) {
-    super(props);
-
-    const inter = lastMonth();
-
-    this.state = {
-      start: inter.start,
-      end: inter.end,
-      stats: null,
-    };
-  }
-
   onInterChange = (field, value) => {
     this.setState({
       [field]: value,

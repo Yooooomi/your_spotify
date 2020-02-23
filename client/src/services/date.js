@@ -31,10 +31,10 @@ const months = [
 
 export const formatDate = date => {
   const month = date.getMonth();
-  const day = date.getDay();
+  const day = date.getDate();
   const year = date.getFullYear();
 
-  return `${pad(day)}/${pad(month)}/${year}`;
+  return `${pad(day)}/${pad(month + 1)}/${year}`;
 }
 
 export const formatDateFromYearDecimal = year => {

@@ -34,25 +34,32 @@ class DataDisplayer extends React.Component {
       end = thisWeek.end;
     }
 
+    const previous = this.getPreviousInter(start, end);
+
+    this.state = {
+      start,
+      end,
+      previousStart: previous.start,
+      previousEnd: previous.end,
+      timeSplit: timeSplit || 'hour',
+      stats: null,
+    };
+  }
+
+  getPreviousInter = (start, end) => {
     let diff = end.getTime() - start.getTime();
-    diff /= Math.floor(1000 * 60 * 60 * 24); // Convert milliseconds to days
 
     // Previous end and previous start represent the a period of (end - start) days just before the start-end period
     // which gives something like [previousPeriod of n days][period of n days]
 
     const previousStart = new Date(start.getTime());
-    previousStart.setDate(previousStart.getDate() - diff);
+    previousStart.setTime(previousStart.getTime() - diff);
 
     const previousEnd = new Date(end.getTime());
-    previousEnd.setDate(previousEnd.getDate() - diff);
-
-    this.state = {
-      start,
-      end,
-      previousStart,
-      previousEnd,
-      timeSplit: timeSplit || 'hour',
-      stats: null,
+    previousEnd.setTime(previousEnd.getTime() - diff);
+    return {
+      start: previousStart,
+      end: previousEnd,
     };
   }
 
@@ -81,11 +88,15 @@ class DataDisplayer extends React.Component {
 
     const changes = {};
 
+    let finalStart = lastStart;
+    let finalEnd = lastEnd;
+
     if (
       (!lastStart && start)
       || (lastStart && start && lastStart.getTime() !== start.getTime())
     ) {
       changes.start = start;
+      finalStart = start;
     }
 
     if (
@@ -93,12 +104,18 @@ class DataDisplayer extends React.Component {
       || (lastEnd && end && lastEnd.getTime() !== end.getTime())
     ) {
       changes.end = end;
+      finalEnd = end;
     }
 
     if (split && lastSplit !== split) {
       changes.timeSplit = split;
     }
     if (Object.keys(changes).length > 0) {
+      const previous = this.getPreviousInter(finalStart, finalEnd);
+
+      changes.previousStart = previous.start;
+      changes.previousEnd = previous.end;
+
       this.setState(changes, this.refresh);
     }
   }

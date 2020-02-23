@@ -37,10 +37,10 @@ export const yesterday = () => {
 }
 
 export const lastDay = () => {
-  const start = setThisToMorning(new Date());
+  const start = new Date();
+  const end = new Date();
 
   start.setDate(start.getDate() - 1);
-  const end = setThisToEvening(new Date());
 
   return {
     start,

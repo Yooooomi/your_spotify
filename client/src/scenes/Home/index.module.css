@@ -32,7 +32,7 @@
     animation-iteration-count: 1;
     display: flex;
     align-items: center;
-    justify-content: start;
+    justify-content: space-between;
 }
 
 .divider {
@@ -82,4 +82,8 @@
     .secondleft {
         padding-left: unset;
     }
+}
+
+.username {
+    color: #1365ff;
 }

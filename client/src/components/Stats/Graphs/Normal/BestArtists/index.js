@@ -13,7 +13,7 @@ class BestArtists extends BasicChart {
   fetchStats = async () => {
     const { start, end } = this.state;
     const { data } = await API.mostListenedArtist(start, end, 'all');
-
+    
     return data[0] || null;
   }
 
