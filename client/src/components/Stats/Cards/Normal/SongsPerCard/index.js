@@ -1,9 +1,6 @@
 import React from 'react';
-import { Paper, Typography } from '@material-ui/core';
-import cl from 'classnames';
-import s from './index.module.css';
+import { Typography } from '@material-ui/core';
 import API from '../../../../../services/API';
-import { today, yesterday } from '../../../../../services/interval';
 import BasicCard from '../BasicCard';
 import { ratioValueAB } from '../../../../../services/operations';
 
@@ -19,7 +16,9 @@ class SongsPerCard extends BasicCard {
   }
 
   async refresh() {
-    const { start, end, previousStart, previousEnd } = this.state;
+    const {
+      start, end, previousStart, previousEnd,
+    } = this.state;
 
     const todayStats = await API.songsPer(start, end, 'all');
     const yesterdayStats = await API.songsPer(previousStart, previousEnd, 'all');
@@ -36,9 +35,7 @@ class SongsPerCard extends BasicCard {
     return !!stats;
   }
 
-  getTop = () => {
-    return 'Songs today';
-  }
+  getTop = () => 'Songs today'
 
   getValue = () => {
     const { stats } = this.state;
@@ -64,16 +61,15 @@ class SongsPerCard extends BasicCard {
           &nbsp;less for this period
         </Typography>
       );
-    } else {
-      return (
-        <Typography variant="subtitle1">
-          <Typography style={{ color: '#255E2B' }} component="span" variant='subtitle2'>
-            {moreOrLessThanYesterday}%
-          </Typography>
-          &nbsp;more for this period
-        </Typography>
-      );
     }
+    return (
+      <Typography variant="subtitle1">
+        <Typography style={{ color: '#255E2B' }} component="span" variant='subtitle2'>
+          {moreOrLessThanYesterday}%
+        </Typography>
+          &nbsp;more for this period
+      </Typography>
+    );
   }
 }
 

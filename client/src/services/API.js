@@ -22,8 +22,8 @@ const API = {
   getTracks: (number, offset) => axios.get('/spotify/gethistory', {
     params: { number, offset },
   }),
-  mostListened: (start, end) => axios.get('/spotify/most_listened', {
-    params: { start, end },
+  mostListened: (start, end, timeSplit) => axios.get('/spotify/most_listened', {
+    params: { start, end, timeSplit },
   }),
   mostListenedArtist: (start, end, timeSplit) => axios.get('/spotify/most_listened_artist', {
     params: { start, end, timeSplit },

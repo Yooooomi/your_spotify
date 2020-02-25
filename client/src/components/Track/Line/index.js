@@ -1,9 +1,9 @@
 import React from 'react';
-import s from './index.module.css';
 import { Typography, Paper, IconButton } from '@material-ui/core';
-import { duration, formatHour } from '../../../services/date';
 import cl from 'classnames';
 import { PlayCircleOutline } from '@material-ui/icons';
+import { duration, formatHour } from '../../../services/date';
+import s from './index.module.css';
 import API from '../../../services/API';
 
 class Line extends React.Component {
@@ -14,7 +14,8 @@ class Line extends React.Component {
   }
 
   render() {
-    let { track, infos, header } = this.props;
+    let { track } = this.props;
+    const { infos, header } = this.props;
 
     if (header) {
       track = {
@@ -28,11 +29,11 @@ class Line extends React.Component {
       <Paper className={s.root}>
         <div className={cl(s.info, s.large)}>
           <div className={s.coverContainer}>
-            <img src={track.full_album.images[0].url} className={s.cover} />
+            <img src={track.full_album.images[0].url} className={s.cover} alt="album" />
           </div>
           {
-            !header &&
-            <IconButton
+            !header
+            && <IconButton
               onClick={this.play}
               disableRipple
               disableFocusRipple

@@ -10,7 +10,6 @@ import {
   YAxis,
   BarChart,
   Bar,
-  ComposedChart,
 } from 'recharts';
 import s from './index.module.css';
 import IntervalModifier from '../IntervalModifier';
@@ -44,12 +43,10 @@ const getFormatter = (arrayLength, start, end) => {
   };
 };
 
-const getTooltipFormatter = (data, valueFormat) => {
-  return (value, name, props) => {
-    const finalValue = valueFormat ? valueFormat(value) : Math.round(value * 10) / 10;
-    return [finalValue, formatDate(props.payload.date)];
-  }
-}
+const getTooltipFormatter = (data, valueFormat) => (value, name, props) => {
+  const finalValue = valueFormat ? valueFormat(value) : Math.round(value * 10) / 10;
+  return [finalValue, formatDate(props.payload.date)];
+};
 
 export default function Chart({
   data,
@@ -103,21 +100,25 @@ export default function Chart({
         style={{ width: '100%' }}
       >
         <Container
-          margin={{ bottom: 0, top: 0, left: 0, right: 0 }}
+          margin={{
+            bottom: 0, top: 0, left: 0, right: 0,
+          }}
           data={data}
         >
           <XAxis
+            name={xName}
             domain={xDomain}
             tickFormatter={xFormat}
             dataKey={'x'}
           />
           <YAxis
+            name={yName}
             tickFormatter={yFormat}
             domain={yDomain}
           />
           {
-            type === 'line' &&
-            <Tooltip
+            type === 'line'
+            && <Tooltip
               formatter={tFormat}
             />
           }

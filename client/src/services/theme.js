@@ -56,7 +56,6 @@ const theme = createMuiTheme({
   props: {
     MuiSelect: {
       disableUnderline: true,
-      disableRipple: true,
     },
     MuiTab: {
       disableRipple: true,
@@ -85,7 +84,7 @@ const theme = createMuiTheme({
     MuiToggleButton: {
       root: {
         border: 'none',
-      }
+      },
     },
     MuiTabs: {
       root: {

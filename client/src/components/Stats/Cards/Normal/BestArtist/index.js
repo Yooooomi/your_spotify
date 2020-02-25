@@ -2,7 +2,6 @@ import React from 'react';
 import { Tooltip, Paper } from '@material-ui/core';
 import s from './index.module.css';
 import API from '../../../../../services/API';
-import { lastMonth } from '../../../../../services/interval';
 import IntervalModifier from '../../../../IntervalModifier';
 import DataDisplayer from '../../../DataDisplayer';
 

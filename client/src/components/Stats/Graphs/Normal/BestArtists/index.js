@@ -1,6 +1,5 @@
 import React from 'react';
 import s from './index.module.css';
-import IntervalChart, { FillModes } from '../../IntervalChart';
 import Chart from '../../../../Chart';
 import API from '../../../../../services/API';
 import BasicChart from '../../BasicChart';
@@ -13,7 +12,7 @@ class BestArtists extends BasicChart {
   fetchStats = async () => {
     const { start, end } = this.state;
     const { data } = await API.mostListenedArtist(start, end, 'all');
-    
+
     return data[0] || null;
   }
 
@@ -37,7 +36,9 @@ class BestArtists extends BasicChart {
   }
 
   getContent = () => {
-    const { stats, start, end, timeSplit } = this.state;
+    const {
+      stats, start, end, timeSplit,
+    } = this.state;
 
     if (stats === null) return null;
 

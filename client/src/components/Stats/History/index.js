@@ -1,14 +1,14 @@
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { Grid, Typography, Tabs, Tab } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { connect } from 'react-redux';
+import { ViewHeadline as LineIcon, ViewModule as NotLineIcon } from '@material-ui/icons';
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import s from './index.module.css';
 import { mapStateToProps, mapDispatchToProps } from '../../../services/redux/tools';
 import Track from '../../Track';
 import Line from '../../Track/Line';
 import API from '../../../services/API';
-import { ViewHeadline as LineIcon, ViewModule as NotLineIcon } from '@material-ui/icons';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 
 class History extends React.Component {
   constructor(props) {
@@ -33,7 +33,9 @@ class History extends React.Component {
   }
 
   render() {
-    const { tracks, user, maxOld, title, full } = this.props;
+    const {
+      tracks, user, maxOld, title, full,
+    } = this.props;
     const { settings } = user;
     const line = settings.historyLine;
 
@@ -82,7 +84,7 @@ class History extends React.Component {
         <InfiniteScroll
           pageStart={0}
           loadMore={this.loadMore}
-          hasMore={(maxOld && !this.maxOldEnd) || (!maxOld && !full)}
+          hasMore={(maxOld && !this.maxOldEnd && !full) || (!maxOld && !full)}
           loader={<div className="loader" key={0}>Loading ...</div>}
         >
           <Grid container spacing={2}>

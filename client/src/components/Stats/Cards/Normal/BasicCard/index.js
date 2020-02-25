@@ -1,7 +1,7 @@
 import React from 'react';
-import s from './index.module.css';
 import { Paper, Typography } from '@material-ui/core';
 import cl from 'classnames';
+import s from './index.module.css';
 import DataDisplayer from '../../../DataDisplayer';
 
 /*

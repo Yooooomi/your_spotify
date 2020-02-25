@@ -1,11 +1,8 @@
 import React from 'react';
-import s from './index.module.css';
+import { Typography } from '@material-ui/core';
 import API from '../../../../../services/API';
-import { lastMonth, today, yesterday } from '../../../../../services/interval';
-import IntervalModifier from '../../../../IntervalModifier';
 import BasicCard from '../BasicCard';
 import { ratioValueAB } from '../../../../../services/operations';
-import { Typography } from '@material-ui/core';
 
 class DifferentArtists extends BasicCard {
   constructor(props) {
@@ -19,7 +16,9 @@ class DifferentArtists extends BasicCard {
   }
 
   refresh = async () => {
-    const { start, end, previousStart, previousEnd } = this.state;
+    const {
+      start, end, previousStart, previousEnd,
+    } = this.state;
 
     const stats = await API.differentArtistsPer(start, end, 'all');
     const statsYesterday = await API.differentArtistsPer(previousStart, previousEnd, 'all');
@@ -36,9 +35,7 @@ class DifferentArtists extends BasicCard {
     return !!stats;
   }
 
-  getTop = () => {
-    return 'Different artists';
-  }
+  getTop = () => 'Different artists'
 
   getValue = () => {
     const { stats } = this.state;
@@ -65,16 +62,15 @@ class DifferentArtists extends BasicCard {
           &nbsp;less for this period
         </Typography>
       );
-    } else {
-      return (
-        <Typography variant="subtitle1">
-          <Typography style={{ color: '#255E2B' }} component="span" variant='subtitle2'>
-            {moreOrLessThanYesterday}%
-          </Typography>
-          &nbsp;more for this period
-        </Typography>
-      );
     }
+    return (
+      <Typography variant="subtitle1">
+        <Typography style={{ color: '#255E2B' }} component="span" variant='subtitle2'>
+          {moreOrLessThanYesterday}%
+        </Typography>
+          &nbsp;more for this period
+      </Typography>
+    );
   }
 }
 

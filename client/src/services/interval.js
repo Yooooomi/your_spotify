@@ -34,7 +34,7 @@ export const yesterday = () => {
     start,
     end,
   };
-}
+};
 
 export const lastDay = () => {
   const start = new Date();
@@ -52,7 +52,7 @@ export const lastWeek = () => {
   const start = setThisToMorning(new Date());
 
   start.setDate(start.getDate() - 7);
-  const end = setThisToMorning(new Date());
+  const end = new Date();
 
   return {
     start,
@@ -64,7 +64,7 @@ export const lastMonth = () => {
   const start = setThisToMorning(new Date());
 
   start.setMonth(start.getMonth() - 1);
-  const end = setThisToEvening(new Date());
+  const end = new Date();
 
   return {
     start,
@@ -76,7 +76,7 @@ export const lastYear = () => {
   const start = setThisToMorning(new Date());
 
   start.setFullYear(start.getFullYear() - 1);
-  const end = setThisToEvening(new Date());
+  const end = new Date();
 
   return {
     start,

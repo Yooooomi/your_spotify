@@ -8,11 +8,9 @@ export const duration = (ms) => {
   seconds -= minutes * 60;
   seconds = Math.floor(seconds);
   return `${pad(minutes)}:${pad(seconds)}`;
-}
+};
 
-export const formatHour = date => {
-  return `${pad(date.getHours())}h${pad(date.getMinutes())}`;
-}
+export const formatHour = date => `${pad(date.getHours())}h${pad(date.getMinutes())}`;
 
 const months = [
   'January',
@@ -35,11 +33,11 @@ export const formatDate = date => {
   const year = date.getFullYear();
 
   return `${pad(day)}/${pad(month + 1)}/${year}`;
-}
+};
 
 export const formatDateFromYearDecimal = year => {
   const soloYear = Math.floor(year);
   let month = year - soloYear;
   month = Math.floor(month * 1.2 * 10);
   return `${months[month]} ${soloYear}`;
-}
+};

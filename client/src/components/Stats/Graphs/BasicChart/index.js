@@ -15,9 +15,7 @@ class BasicChart extends DataDisplayer {
     throw new Error('Implement fetch stats');
   }
 
-  postRefreshModification = (data) => {
-    return data;
-  }
+  postRefreshModification = (data) => data
 
   refresh = async (cb) => {
     const data = await this.fetchStats();

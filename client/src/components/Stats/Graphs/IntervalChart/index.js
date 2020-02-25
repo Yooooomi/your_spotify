@@ -1,7 +1,3 @@
-import React from 'react';
-import { Paper, Typography } from '@material-ui/core';
-import cl from 'classnames';
-import s from './index.module.css';
 import BasicChart from '../BasicChart';
 
 const getWeek = (date) => {
@@ -67,7 +63,8 @@ const fillArray = (stats, start, end, timeSplit, dataGetter, fillMode) => {
 };
 
 /*
-* IntervalChart is built on top of BasicChart and just implemented post refresh treatment to fill up datas
+* IntervalChart is built on top of BasicChart
+* and just implements post refresh treatment to fill up datas
 * if missing, following a fillMode mode
 */
 

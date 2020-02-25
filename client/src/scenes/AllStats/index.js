@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, Typography, Tabs, Tab, Select, MenuItem } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
+import { connect } from 'react-redux';
 import s from './index.module.css';
 import AlbumDatePer from '../../components/Stats/Graphs/Normal/AlbumDatePer';
 import DifferentArtistsPer from '../../components/Stats/Graphs/Normal/DifferentArtistsPer';
@@ -7,10 +8,8 @@ import FeatRatioPer from '../../components/Stats/Graphs/Normal/FeatRatioPer';
 import PopularityPer from '../../components/Stats/Graphs/Normal/PopularityPer';
 import SongsPer from '../../components/Stats/Graphs/Normal/SongsPer';
 import TimePer from '../../components/Stats/Graphs/Normal/TimePer';
-import IntervalModifier from '../../components/IntervalModifier';
 import BestArtists from '../../components/Stats/Graphs/Normal/BestArtists';
 import API from '../../services/API';
-import { connect } from 'react-redux';
 import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
 import QuickInterval, { PrefabToInter } from '../../components/QuickInterval';
 
@@ -73,7 +72,9 @@ class AllStats extends React.Component {
   }
 
   render() {
-    const { globalStart, globalEnd, globalTimeSplit, prefab } = this.state;
+    const {
+      globalStart, globalEnd, globalTimeSplit, prefab,
+    } = this.state;
 
     return (
       <div className={s.root}>

@@ -11,13 +11,11 @@ class HistoryScene extends React.Component {
     addTracks(user.tracks.length);
   }
 
-  render() {
-    return (
-      <div className={s.root}>
-        <History title="All time history" />
-      </div>
-    );
-  }
+  render = () => (
+    <div className={s.root}>
+      <History title="All time history" />
+    </div>
+  )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HistoryScene);

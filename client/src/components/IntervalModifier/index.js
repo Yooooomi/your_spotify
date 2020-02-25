@@ -1,11 +1,9 @@
 import React from 'react';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import cl from 'classnames';
-// eslint-disable-next-line import/no-unresolved
-import { Settings } from '@material-ui/icons';
 import DateFnsUtils from '@date-io/date-fns';
 import {
-  Paper, Select, MenuItem, Popper, IconButton, Chip,
+  Paper, Select, MenuItem, Popper, Chip,
 } from '@material-ui/core';
 import s from './index.module.css';
 import { setThisToMorning, setThisToEvening } from '../../services/interval';

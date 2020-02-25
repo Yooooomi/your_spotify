@@ -1,7 +1,5 @@
 import React from 'react';
-import { Paper, Typography } from '@material-ui/core';
-import cl from 'classnames';
-import s from './index.module.css';
+import { Typography } from '@material-ui/core';
 import API from '../../../../../services/API';
 import { ratioValueAB } from '../../../../../services/operations';
 import BasicCard from '../BasicCard';
@@ -18,11 +16,13 @@ class TimePerCard extends BasicCard {
   }
 
   async refresh() {
-    const { start, end, previousStart, previousEnd } = this.state;
+    const {
+      start, end, previousStart, previousEnd,
+    } = this.state;
 
     const todayStats = await API.timePer(start, end, 'all');
     const yesterdayStats = await API.timePer(previousStart, previousEnd, 'all');
-    
+
     this.setState({
       stats: todayStats.data,
       statsYesterday: yesterdayStats.data,
@@ -35,9 +35,7 @@ class TimePerCard extends BasicCard {
     return !!stats;
   }
 
-  getTop = () => {
-    return 'Time listened';
-  }
+  getTop = () => 'Time listened'
 
   getValue = () => {
     const { stats } = this.state;
@@ -63,16 +61,15 @@ class TimePerCard extends BasicCard {
           &nbsp;less for this period
         </Typography>
       );
-    } else {
-      return (
-        <Typography variant="subtitle1">
-          <Typography style={{ color: '#255E2B' }} component="span" variant='subtitle2'>
-            {moreOrLessThanYesterday}%
-          </Typography>
-          &nbsp;more for this period
-        </Typography>
-      );
     }
+    return (
+      <Typography variant="subtitle1">
+        <Typography style={{ color: '#255E2B' }} component="span" variant='subtitle2'>
+          {moreOrLessThanYesterday}%
+        </Typography>
+          &nbsp;more for this period
+      </Typography>
+    );
   }
 }
 

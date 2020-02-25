@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Typography, Grid, Divider } from '@material-ui/core';
+import { Typography, Grid } from '@material-ui/core';
 import cl from 'classnames';
 import s from './index.module.css';
 import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
@@ -65,7 +65,9 @@ class Home extends React.Component {
     const { user } = this.props;
     const { loadedNb } = this;
 
-    const { start, end, timeSplit, prefab } = this.state;
+    const {
+      start, end, timeSplit, prefab,
+    } = this.state;
 
     return (
       <div className={s.root}>
@@ -91,33 +93,68 @@ class Home extends React.Component {
             <Grid container item xs={12} lg={6} spacing={0}>
               <Grid item xs={12} lg={6}>
                 <div className={cl(s.left, s.firstleft)}>
-                  <SongsPerCard timeSplit={timeSplit} start={start} end={end} loaded={this.loaded} />
+                  <SongsPerCard
+                    timeSplit={timeSplit}
+                    start={start}
+                    end={end}
+                    loaded={this.loaded}
+                  />
                 </div>
               </Grid>
               <Grid item xs={12} lg={6}>
                 <div className={cl(s.left, s.secondleft)}>
-                  <DifferentArtists timeSplit={timeSplit} start={start} end={end} loaded={this.loaded} />
+                  <DifferentArtists
+                    timeSplit={timeSplit}
+                    start={start}
+                    end={end}
+                    loaded={this.loaded}
+                  />
                 </div>
               </Grid>
               <Grid item xs={12}>
                 <div>
-                  <TimePerCard timeSplit={timeSplit} start={start} end={end} loaded={this.loaded} />
+                  <TimePerCard
+                    timeSplit={timeSplit}
+                    start={start}
+                    end={end}
+                    loaded={this.loaded}
+                  />
                 </div>
               </Grid>
             </Grid>
 
             <Grid item xs={12} lg={6}>
-              <BestArtists timeSplit={timeSplit} start={start} end={end} loaded={this.loaded} />
+              <BestArtists
+                timeSplit={timeSplit}
+                start={start}
+                end={end}
+                loaded={this.loaded}
+              />
             </Grid>
 
             <Grid item xs={6} lg={3}>
-              <BestSong timeSplit={timeSplit} start={start} end={end} loaded={this.loaded} />
+              <BestSong
+                timeSplit={timeSplit}
+                start={start}
+                end={end}
+                loaded={this.loaded}
+              />
             </Grid>
             <Grid item xs={6} lg={3}>
-              <BestArtist timeSplit={timeSplit} start={start} end={end} loaded={this.loaded} />
+              <BestArtist
+                timeSplit={timeSplit}
+                start={start}
+                end={end}
+                loaded={this.loaded}
+              />
             </Grid>
             <Grid style={{ minHeight: '250px' }} item xs={12} lg={6}>
-              <TimePer loaded={this.loaded} start={start} end={end} timeSplit={timeSplit} />
+              <TimePer
+                loaded={this.loaded}
+                start={start}
+                end={end}
+                timeSplit={timeSplit}
+              />
             </Grid>
           </Grid>
         </div>
@@ -137,7 +174,6 @@ class Home extends React.Component {
             Recent play history
           </Typography>
         </div> */}
-
       </div>
     );
   }

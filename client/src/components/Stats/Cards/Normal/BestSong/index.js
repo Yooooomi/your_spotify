@@ -2,7 +2,6 @@ import React from 'react';
 import { Tooltip, Paper } from '@material-ui/core';
 import s from './index.module.css';
 import API from '../../../../../services/API';
-import { lastMonth } from '../../../../../services/interval';
 import IntervalModifier from '../../../../IntervalModifier';
 import DataDisplayer from '../../../DataDisplayer';
 
@@ -17,6 +16,8 @@ class BestSong extends DataDisplayer {
     const { start, end } = this.state;
 
     const { data } = await API.mostListened(start, end, 'all');
+
+    console.log(data);
 
     this.setState({
       stats: data,
@@ -34,8 +35,9 @@ class BestSong extends DataDisplayer {
 
     if (!stats) return null;
 
-    let name; let background; let
-      counts;
+    let name;
+    let background;
+    let counts;
 
     if (!stats.length || !stats[0].tracks.length) {
       name = 'No data';

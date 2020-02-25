@@ -1,5 +1,4 @@
 import React from 'react';
-import s from './index.module.css';
 import { lastWeek } from '../../../services/interval';
 
 /*
@@ -47,9 +46,10 @@ class DataDisplayer extends React.Component {
   }
 
   getPreviousInter = (start, end) => {
-    let diff = end.getTime() - start.getTime();
+    const diff = end.getTime() - start.getTime();
 
-    // Previous end and previous start represent the a period of (end - start) days just before the start-end period
+    // Previous end and previous start represent
+    // a period of (end - start) days just before the start-end period
     // which gives something like [previousPeriod of n days][period of n days]
 
     const previousStart = new Date(start.getTime());

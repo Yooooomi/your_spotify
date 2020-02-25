@@ -13,11 +13,9 @@ class Track extends React.Component {
     await API.play(track.id);
   }
 
-  line = () => {
-    return (
-      <Line {...this.props} />
-    );
-  }
+  line = () => (
+    <Line {...this.props} />
+  )
 
   render() {
     const { className, track, line } = this.props;
