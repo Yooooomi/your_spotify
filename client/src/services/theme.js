@@ -11,7 +11,7 @@ const theme = createMuiTheme({
     error: { main: '#A90202' },
   },
   typography: {
-    fontFamily: 'Open Sans',
+    fontFamily: 'Nunito',
     fontWeightBold: 'lighter',
     subtitle1: {
       color: 'grey',
