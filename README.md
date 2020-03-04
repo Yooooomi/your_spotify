@@ -1,6 +1,10 @@
 ![Client CI](https://github.com/Yooooomi/your_spotify/workflows/Client%20CI/badge.svg)
 ![Server CI](https://github.com/Yooooomi/your_spotify/workflows/Server%20CI/badge.svg)
 
+<p align='center'>
+  <img width="100%" src="https://i.imgur.com/wbOhp0F.png">
+</p>
+
 # Your Spotify
 
 Your Spotify is a self-hosted application that tracks what you listen and offers you a dashboard to explore statistics about it !
