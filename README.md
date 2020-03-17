@@ -50,8 +50,6 @@ services:
     image: mongo
     volumes:
       - ./your_spotify_db:/data/db
-    ports:
-      - "27017:27017"
 
   web:
     image: yooooomi/your_spotify_client
