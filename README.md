@@ -78,5 +78,7 @@ To do so, you need to create a __Spotify application__ [here](https://developer.
 2) Fill out all the informations
 3) Copy the __public__ and the __secret__ key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
 respectively
-4) Add an authorized redirect URI corresponding to your __server__ location on the internet adding the suffix __/oauth/spotify/callback__
-  - i.e: `localhost:3000/oauth/spotify/callback` or `home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
+4) Add an authorized redirect URI corresponding to your __server__ location on the internet adding the suffix __/oauth/spotify/callback__,
+    1) use the `EDIT SETTINGS` button on the top right corner of the page.
+    2) add your URI under the `Redirect URIs` section
+    - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
