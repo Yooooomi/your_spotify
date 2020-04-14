@@ -45,6 +45,7 @@ services:
       - SPOTIFY_SECRET=__your_spotify_secret__
       - CORS=http://localhost:3000,http://localhost:3001
       #- CORS=all
+      #- MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
   mongo:
     container_name: mongo
     image: mongo
