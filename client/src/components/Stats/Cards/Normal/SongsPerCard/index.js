@@ -35,7 +35,7 @@ class SongsPerCard extends BasicCard {
     return !!stats;
   }
 
-  getTop = () => 'Songs today'
+  getTop = () => 'Songs'
 
   getValue = () => {
     const { stats } = this.state;

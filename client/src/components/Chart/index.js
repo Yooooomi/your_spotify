@@ -1,5 +1,5 @@
 import 'date-fns';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import cl from 'classnames';
 import {
   LineChart,
@@ -11,6 +11,7 @@ import {
   BarChart,
   Bar,
 } from 'recharts';
+import { Tooltip as MTooltip } from '@material-ui/core';
 import s from './index.module.css';
 import IntervalModifier from '../IntervalModifier';
 import { formatDate } from '../../services/date';
@@ -48,6 +49,28 @@ const getTooltipFormatter = (data, valueFormat) => (value, name, props) => {
   return [finalValue, formatDate(props.payload.date)];
 };
 
+const imgSize = 32;
+class ImageAxisTick extends PureComponent {
+  render() {
+    const {
+      x, y, stroke, xFormat, payload,
+    } = this.props;
+
+    const { name, url } = xFormat ? xFormat(payload.value, payload.name, this.props) : payload.value;
+
+    return (
+      <MTooltip title={name}>
+        <g transform={`translate(${x - imgSize / 2},${y})`}>
+          <clipPath id="yoyo">
+            <circle r={imgSize / 2} cx={imgSize / 2} cy={imgSize / 2} />
+          </clipPath>
+          <image width={imgSize} height={imgSize} href={url} clipPath="url(#yoyo)" />
+        </g>
+      </MTooltip>
+    );
+  }
+}
+
 export default function Chart({
   data,
   className,
@@ -57,6 +80,8 @@ export default function Chart({
   onTimeSplitChange,
   xFormat = null,
   yFormat,
+  forceXToDisplay,
+  xIsImage,
   tFormat = null,
   tValueFormat = null,
   onStartChange = () => { },
@@ -106,22 +131,24 @@ export default function Chart({
           data={data}
         >
           <XAxis
+            minTickGap={forceXToDisplay ? -1000 : 5}
             name={xName}
             domain={xDomain}
-            tickFormatter={xFormat}
             dataKey={'x'}
+            height={xIsImage ? imgSize + 15 : undefined}
+            tickFormatter={xIsImage ? undefined : xFormat}
+            tick={xIsImage ? <ImageAxisTick xFormat={xFormat} /> : undefined}
           />
           <YAxis
             name={yName}
             tickFormatter={yFormat}
             domain={yDomain}
           />
-          {
-            type === 'line'
-            && <Tooltip
+          {tFormat && (
+            <Tooltip
               formatter={tFormat}
             />
-          }
+          )}
           <Data
             dot={false}
             strokeWidth={3}

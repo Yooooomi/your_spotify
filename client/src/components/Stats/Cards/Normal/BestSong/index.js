@@ -17,8 +17,6 @@ class BestSong extends DataDisplayer {
 
     const { data } = await API.mostListened(start, end, 'all');
 
-    console.log(data);
-
     this.setState({
       stats: data,
     }, cb);

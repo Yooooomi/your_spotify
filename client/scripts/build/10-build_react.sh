@@ -1,4 +1,4 @@
-
+#!/bin/sh
 
 echo "ENVIRONMENT is '$ENVIRONMENT'"
 

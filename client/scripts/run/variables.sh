@@ -1,4 +1,4 @@
-
+#!/bin/sh
 
 if [[ "$ENVIRONMENT" == "DEV" ]]
 then

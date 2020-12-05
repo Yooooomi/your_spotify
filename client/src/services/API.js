@@ -52,6 +52,9 @@ const API = {
   setSetting: (settingName, settingValue) => axios.post('/settings', {
     [settingName]: settingValue,
   }),
+  timePerHourOfDay: (start, end) => axios.get('/spotify/time_per_hour_of_day', {
+    params: { start, end },
+  }),
 };
 
 export default {

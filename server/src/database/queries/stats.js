@@ -60,8 +60,9 @@ const getMostListenedArtist = async (userId, start, end, timeSplit = 'hour') => 
 const getSongsPer = async (userId, start, end, timeSplit = 'day') => {
   const res = await Infos.aggregate([
     { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
-    { $project: getGroupByDateProjection(), },
+    { $project: { ...getGroupByDateProjection(), id: 1 } },
     { $group: { _id: getGroupingByTimeSplit(timeSplit), count: { "$sum": 1 } } },
+    ...sortByTimeSplit(timeSplit, '_id'),
   ]);
   return res;
 }
@@ -202,6 +203,28 @@ const differentArtistsPer = async (userId, start, end, timeSplit = 'day') => {
   return res;
 }
 
+const getDayRepartition = async (userId, start, end) => {
+  const res = await Infos.aggregate([
+    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    {
+      $project: {
+        ...getGroupByDateProjection(),
+        id: 1,
+      }
+    },
+    { $lookup: { from: 'tracks', localField: 'id', foreignField: 'id', as: 'track' } },
+    { $unwind: '$track' },
+    {
+      $group: {
+        _id: '$hour',
+        count: { "$sum": '$track.duration_ms' },
+      }
+    },
+    { $sort: { _id: 1 } },
+  ]);
+  return res;
+};
+
 module.exports = {
   getMostListenedSongs,
   getMostListenedArtist,
@@ -210,5 +233,6 @@ module.exports = {
   albumDateRatio,
   featRatio,
   popularityPer,
-  differentArtistsPer
-}
+  differentArtistsPer,
+  getDayRepartition,
+};

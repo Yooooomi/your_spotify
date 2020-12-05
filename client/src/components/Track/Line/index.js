@@ -29,7 +29,11 @@ class Line extends React.Component {
       <Paper className={s.root}>
         <div className={cl(s.info, s.large)}>
           <div className={s.coverContainer}>
-            <img src={track.full_album.images[0].url} className={s.cover} alt="album" />
+            <img
+              style={{ opacity: header ? 0 : undefined }}
+              src={track.full_album.images[0].url}
+              className={s.cover} alt="album"
+            />
           </div>
           {
             !header

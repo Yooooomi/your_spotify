@@ -23,6 +23,8 @@ services:
   mongo:
     container_name: mongo
     image: mongo
+    logging:
+      driver: none
 
   web:
     container_name: web

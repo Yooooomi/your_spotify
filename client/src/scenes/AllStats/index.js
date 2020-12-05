@@ -12,6 +12,7 @@ import BestArtists from '../../components/Stats/Graphs/Normal/BestArtists';
 import API from '../../services/API';
 import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
 import QuickInterval, { PrefabToInter } from '../../components/QuickInterval';
+import HourOfDay from '../../components/Stats/Graphs/Normal/HourOfDay';
 
 const StatClasses = [
   BestArtists,
@@ -21,6 +22,7 @@ const StatClasses = [
   PopularityPer,
   SongsPer,
   TimePer,
+  HourOfDay,
 ];
 
 class AllStats extends React.Component {

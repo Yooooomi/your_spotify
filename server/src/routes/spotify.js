@@ -132,4 +132,12 @@ router.get('/different_artists_per', validating(intervalPerSchema, 'query'), log
   return res.status(200).send(result);
 });
 
+router.get('/time_per_hour_of_day', validating(interval, 'query'), logged, async (req, res) => {
+  const { user } = req;
+  const { start, end } = req.values;
+
+  const result = await db.getDayRepartition(user._id, start, end);
+  return res.status(200).send(result);
+});
+
 module.exports = router;

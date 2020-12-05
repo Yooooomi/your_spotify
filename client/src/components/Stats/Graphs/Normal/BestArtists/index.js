@@ -31,8 +31,9 @@ class BestArtists extends BasicChart {
 
   getXFormat = value => {
     const { stats } = this.state;
+    const art = stats.artists[value];
 
-    return stats.artists[value].name;
+    return { name: art.name, url: art?.images[art.images.length - 1]?.url };
   }
 
   getContent = () => {
@@ -46,10 +47,13 @@ class BestArtists extends BasicChart {
 
     return (
       <Chart
+        tFormat={false}
         xFormat={this.getXFormat}
         type='bar'
         xName="Date"
         yName="Different arists"
+        forceXToDisplay
+        xIsImage
         start={start}
         end={end}
         timeSplit={timeSplit}

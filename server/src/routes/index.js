@@ -79,7 +79,6 @@ router.post('/settings', validating(settingsSchema), logged, async (req, res) =>
 
   try {
     const newUser = await db.changeSetting('_id', user._id, values);
-    console.log(newUser);
     return res.status(200).end();
   } catch (e) {
     console.error(e);
