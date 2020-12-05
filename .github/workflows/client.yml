@@ -27,7 +27,7 @@ jobs:
       - name: Run Buildx
         working-directory: ./client/
         run: |
-          ls && docker build build \
+          ls && docker buildx build \
             --platform linux/386,linux/amd64,linux/arm64 \
             --output "type=image" --push \
             --tag yooooomi/your_spotify_client ./
