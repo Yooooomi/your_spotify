@@ -17,16 +17,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
         id: buildx
-        uses: crazy-max/ghaction-docker-buildx@v1
         with:
-          version: latest
+          install: true
       - name: Docker login
         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: Run Buildx
         working-directory: ./server/
         run: |
-          ls && docker buildx build \
+          ls && docker build build \
             --platform linux/386,linux/amd64,linux/arm64 \
             --output "type=image" --push \
             --tag yooooomi/your_spotify_server ./
