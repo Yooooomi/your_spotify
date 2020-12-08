@@ -55,7 +55,7 @@ const withHttpClient = async (req, res, next) => {
       } else {
         console.error(e);
       }
-      return res.status(500).end();
+      return res.status(400).end();
     }
   }
   const client = Spotify.getHttpClient(tokens.accessToken);
