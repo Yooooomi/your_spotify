@@ -17,46 +17,54 @@ class Login extends React.Component {
     };
   }
 
-    login = async ev => {
-      ev.preventDefault();
+  login = async ev => {
+    ev.preventDefault();
 
-      const { username, password } = this.state;
-      const { history, updateUser, updateReady } = this.props;
+    const { username, password } = this.state;
+    const { history, updateUser, updateReady } = this.props;
 
-      try {
-        const { data } = await API.login(username, password);
-        updateUser(data.user);
-        updateReady(true);
-        history.push(urls.home);
-      } catch (e) {
-        window.message('error', 'Wrong username or password');
-        console.error(e);
-      }
+    let user;
+    try {
+      const { data } = await API.login(username, password);
+      user = data.user;
+    } catch (e) {
+      window.message('error', 'Wrong username or password');
+      console.error(e);
     }
-
-    update = e => this.setState({ [e.target.name]: e.target.value });
-
-    render() {
-      const { username, password } = this.props;
-
-      return (
-        <form className={s.root} onSubmit={this.login}>
-          <Typography variant="h5">Login</Typography>
-          <div>
-            <TextField margin="normal" fullWidth variant="outlined" label="Username" name="username" onChange={this.update} value={username} />
-          </div>
-          <div>
-            <TextField margin="normal" fullWidth variant="outlined" label="Password" name="password" onChange={this.update} value={password} type="password" />
-          </div>
-          <div>
-            <Button color="primary" variant="contained" fullWidth type="submit">Login</Button>
-            <div className={s.underButton}>
-              <Link className={s.link} to={urls.register}>Register</Link>
-            </div>
-          </div>
-        </form>
-      );
+    try {
+      const { data: spotify } = await API.sme();
+      user.spotify = spotify;
+    } catch (e) {
+      user.spotify = {};
     }
+    updateUser(user);
+    updateReady(true);
+    history.push(urls.home);
+  }
+
+  update = e => this.setState({ [e.target.name]: e.target.value });
+
+  render() {
+    const { username, password } = this.props;
+
+    return (
+      <form className={s.root} onSubmit={this.login}>
+        <Typography variant="h5">Login</Typography>
+        <div>
+          <TextField margin="normal" fullWidth variant="outlined" label="Username" name="username" onChange={this.update} value={username} />
+        </div>
+        <div>
+          <TextField margin="normal" fullWidth variant="outlined" label="Password" name="password" onChange={this.update} value={password} type="password" />
+        </div>
+        <div>
+          <Button color="primary" variant="contained" fullWidth type="submit">Login</Button>
+          <div className={s.underButton}>
+            <Link className={s.link} to={urls.register}>Register</Link>
+          </div>
+        </div>
+      </form>
+    );
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
