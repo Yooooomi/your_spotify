@@ -7,7 +7,7 @@
     "dev": "nodemon ./src/bin/www"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bcrypt": "^3.0.8",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
