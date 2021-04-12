@@ -13,5 +13,6 @@ COPY package-lock.json /app/package-lock.json
 RUN npm install
 
 COPY src/ /app/src/
+COPY scripts/ /app/scripts/
 
-ENTRYPOINT [ "yarn", "dev" ]
+ENTRYPOINT [ "sh", "scripts/run/run.sh" ]

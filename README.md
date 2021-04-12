@@ -7,8 +7,8 @@
 
 # Your Spotify
 
-Your Spotify is a self-hosted application that tracks what you listen and offers you a dashboard to explore statistics about it !
-It's composed of a web server which polls the Spotify API every now and then and a web application on which you can explore your statistics
+Your Spotify is a self-hosted application that tracks what you listen and offers you a dashboard to explore statistics about it!
+It's composed of a web server which polls the Spotify API every now and then and a web application on which you can explore your statistics.
 
 # Prerequisites
 
@@ -83,3 +83,7 @@ respectively
     1) use the `EDIT SETTINGS` button on the top right corner of the page.
     2) add your URI under the `Redirect URIs` section
     - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
+
+# Blocking new registrations
+
+You can now block new registrations from the settings page if you created an account. Every account can block or allow new registrations.

@@ -1,57 +1,89 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { TextField, Button, Typography } from '@material-ui/core';
+import {
+  Typography, Paper, Tooltip,
+} from '@material-ui/core';
+import { connect } from 'react-redux';
 import s from '../index.module.css';
 import API from '../../../services/API';
 import urls from '../../../services/urls';
+import { mapDispatchToProps, mapStateToProps } from '../../../services/redux/tools';
+import FilledInput from '../../../components/FilledInput';
+import LoadButton from '../../../components/LoadButton';
 
-class Register extends React.Component {
-  constructor(props) {
-    super(props);
+function Register({ history, globalPreferences }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    this.state = {
-      username: '',
-      password: '',
-    };
-  }
+  const register = useCallback(async ev => {
+    ev.preventDefault();
 
-    register = async ev => {
-      ev.preventDefault();
+    setLoading(true);
 
-      const { username, password } = this.state;
-      const { history } = this.props;
-
-      try {
-        await API.register(username, password);
-        history.push(urls.login);
-      } catch (e) {
-        console.error(e);
-      }
+    try {
+      await API.register(username, password);
+      window.message('success', 'Successfully registered');
+      history.push(urls.login);
+    } catch (e) {
+      setLoading(false);
+      window.message('error', 'Could not register your account');
+      console.error(e);
     }
+  }, [username, password, history]);
 
-    update = e => this.setState({ [e.target.name]: e.target.value });
-
-    render() {
-      const { username, password } = this.props;
-
-      return (
-        <form className={s.root} onSubmit={this.register} >
-          <Typography variant="h5">Register</Typography>
-          <div>
-            <TextField fullWidth margin="normal" variant="outlined" label="Username" name="username" onChange={this.update} value={username} />
+  return (
+    <div className={s.pageHolder}>
+      <Paper className={s.root}>
+        <form onSubmit={register}>
+          <Typography variant="h5" className={s.title}>
+            Register to
+            <strong className={s.ys}>YourSpotify</strong>
+          </Typography>
+          <div className={s.fields}>
+            <div className={s.field}>
+              <span>Username</span>
+              <FilledInput
+                name="username"
+                placeholder="Your username"
+                onChange={ev => setUsername(ev.target.value)}
+                value={username}
+              />
+            </div>
+            <div className={s.field}>
+              <span>Password</span>
+              <FilledInput
+                name="password"
+                placeholder="Your password"
+                onChange={ev => setPassword(ev.target.value)}
+                value={password}
+                type="password"
+              />
+            </div>
           </div>
           <div>
-            <TextField fullWidth margin="normal" variant="outlined" label="Password" name="password" onChange={this.update} value={password} type="password" />
-          </div>
-          <div>
-            <Button fullWidth variant="contained" color="primary" type="submit">register</Button>
+            <Tooltip title={globalPreferences?.allowRegistrations ? '' : 'Registrations are disabled'}>
+              <div>
+                <LoadButton
+                  loading={loading}
+                  disabled={!globalPreferences?.allowRegistrations}
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                >
+                  Register
+                </LoadButton>
+              </div>
+            </Tooltip>
             <div className={s.underButton}>
               <Link className={s.link} to={urls.login}>Login</Link>
             </div>
           </div>
         </form>
-      );
-    }
+      </Paper>
+    </div>
+  );
 }
 
-export default withRouter(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Register));

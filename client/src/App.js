@@ -21,7 +21,14 @@ import SnackbarMessage from './components/SnackbarMessage';
 
 class App extends React.Component {
   async componentDidMount() {
-    const { updateUser, updateReady } = this.props;
+    const { updateUser, updateReady, updateGlobalPreferences } = this.props;
+
+    try {
+      const { data: globalPreferences } = await API.globalPreferences();
+      updateGlobalPreferences(globalPreferences);
+    } catch (e) {
+      window.message('error', 'Could not retrieve the global preferences of the application');
+    }
 
     try {
       const { data } = await API.me();

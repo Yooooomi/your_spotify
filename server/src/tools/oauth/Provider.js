@@ -5,30 +5,34 @@ class Provider {
   static getRedirect = () => {
   }
 
+  // eslint-disable-next-line no-unused-vars
   static exchangeCode = code => {
 
   }
 
+  // eslint-disable-next-line no-unused-vars
   static refresh = (refreshToken) => {
   }
 
+  // eslint-disable-next-line no-unused-vars
   static getUniqueID = (accessToken) => {
   }
 
+  // eslint-disable-next-line no-unused-vars
   static getHttpClient = accessToken => {
   }
 }
 
 class Spotify extends Provider {
   static getRedirect = () => {
-    const scopes = credentials.spotify.scopes;
-    const redirectUri = credentials.spotify.redirectUri;
+    const { scopes } = credentials.spotify;
+    const { redirectUri } = credentials.spotify;
 
-    return 'https://accounts.spotify.com/authorize' +
-      '?response_type=code' +
-      '&client_id=' + credentials.spotify.public +
-      (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
-      '&redirect_uri=' + encodeURIComponent(redirectUri);
+    return `${'https://accounts.spotify.com/authorize'
+      + '?response_type=code'
+      + '&client_id='}${credentials.spotify.public
+    }${scopes ? `&scope=${encodeURIComponent(scopes)}` : ''
+    }&redirect_uri=${encodeURIComponent(redirectUri)}`;
   }
 
   static exchangeCode = async code => {
@@ -60,7 +64,7 @@ class Spotify extends Provider {
       },
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${Buffer.from(credentials.spotify.public + ':' + credentials.spotify.secret).toString('base64')}`,
+        Authorization: `Basic ${Buffer.from(`${credentials.spotify.public}:${credentials.spotify.secret}`).toString('base64')}`,
       },
     });
 
@@ -70,15 +74,13 @@ class Spotify extends Provider {
     };
   }
 
-  static getHttpClient = (accessToken, expires) => {
-    return Axios.create({
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      baseURL: 'https://api.spotify.com/v1',
-    });
-  }
+  static getHttpClient = accessToken => Axios.create({
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    baseURL: 'https://api.spotify.com/v1',
+  })
 }
 
 module.exports = {

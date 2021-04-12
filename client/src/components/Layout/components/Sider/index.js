@@ -49,17 +49,20 @@ class Sider extends React.Component {
     };
   }
 
+  componentDidMount() {
+    window.openDrawer = this.openDrawer(true);
+  }
+
   openDrawer = status => () => {
     this.setState({
       drawerOpen: status,
     });
   }
 
-  componentDidMount() {
-    window.openDrawer = this.openDrawer(true);
+  goto = url => {
+    const { history } = this.props;
+    history.push(url);
   }
-
-  goto = url => this.props.history.push(url);
 
   getSider = () => {
     const { user } = this.props;
@@ -67,7 +70,8 @@ class Sider extends React.Component {
     return SiderItems.map(part => (
       <List
         key={part.label}
-        subheader={<ListSubheader className={s.siderHeader}>{part.label}</ListSubheader>}
+        component="nav"
+        subheader={<ListSubheader disableSticky className={s.siderHeader}>{part.label}</ListSubheader>}
       >
         {
           part.links.map(link => (

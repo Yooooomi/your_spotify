@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { connect } from 'react-redux';
 import s from './index.module.css';
@@ -13,6 +13,7 @@ import API from '../../services/API';
 import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
 import QuickInterval, { PrefabToInter } from '../../components/QuickInterval';
 import HourOfDay from '../../components/Stats/Graphs/Normal/HourOfDay';
+import TextScreenSize from '../../components/TextScreenSize';
 
 const StatClasses = [
   BestArtists,
@@ -25,90 +26,62 @@ const StatClasses = [
   HourOfDay,
 ];
 
-class AllStats extends React.Component {
-  constructor(props) {
-    super(props);
+function AllStats({ user }) {
+  const [prefabIdx, setPrefabIdx] = useState(
+    PrefabToInter.findIndex(e => e.name === user.settings.preferredStatsPeriod),
+  );
 
-    const { user } = this.props;
+  const prefab = useMemo(() => PrefabToInter[prefabIdx], [prefabIdx]);
+  const { inter, timeSplit } = prefab.fn();
+  const { start, end } = inter;
 
-    const prefabIdx = PrefabToInter.findIndex(e => e.name === user.settings.preferredStatsPeriod);
-    const prefab = PrefabToInter[prefabIdx];
+  const [globalStart, setGlobalStart] = useState(start);
+  const [globalEnd, setGlobalEnd] = useState(end);
+  const [globalTimeSplit, setGlobalTimeSplit] = useState(timeSplit);
 
-    const { inter, timeSplit } = prefab.fn();
-    const { start, end } = inter;
-
-    this.state = {
-      prefab: prefabIdx,
-      globalStart: start,
-      globalEnd: end,
-      globalTimeSplit: timeSplit,
-    };
-  }
-
-  change = field => value => {
-    this.setState({
-      [field]: value,
-    });
-  }
-
-  getDays = () => {
-    const { globalStart, globalEnd } = this.state;
-
-    const diff = globalEnd.getTime() - globalStart.getTime();
-    const days = diff / 1000 / 60 / 60 / 24;
-    return Math.floor(days);
-  }
-
-  changePrefab = (ev, idx) => {
+  const changePrefab = useCallback((ev, idx) => {
     const infos = PrefabToInter[idx];
 
     API.setSetting('preferredStatsPeriod', infos.name);
-    const { inter, timeSplit } = infos.fn();
+    const { inter: newInter, timeSplit: newTimeSplit } = infos.fn();
 
-    this.setState({
-      prefab: idx,
-      globalStart: inter.start,
-      globalEnd: inter.end,
-      globalTimeSplit: timeSplit,
-    });
-  }
+    setPrefabIdx(idx);
+    setGlobalStart(newInter.start);
+    setGlobalEnd(newInter.end);
+    setGlobalTimeSplit(newTimeSplit);
+  }, []);
 
-  render() {
-    const {
-      globalStart, globalEnd, globalTimeSplit, prefab,
-    } = this.state;
-
-    return (
-      <div className={s.root}>
-        <div className={s.title}>
-          <Grid container alignItems="center" justify="space-between">
-            <Grid item xs={12} lg={5} style={{ textAlign: 'left' }}>
-              <Typography variant="h4" center="left">All the statistics I could find on you</Typography>
-            </Grid>
-            <Grid item xs={12} lg={7} alignItems="center" justify="flex-end">
-              <QuickInterval
-                interval={prefab}
-                timeSplit={globalTimeSplit}
-                onChangeInterval={this.changePrefab}
-                onChangeTimesplit={this.change('globalTimeSplit')}
-              />
-            </Grid>
+  return (
+    <div className={s.root}>
+      <div className={s.title}>
+        <Grid container alignItems="center" justify="space-between">
+          <Grid item xs={12} lg={5} style={{ textAlign: 'left' }}>
+            <Typography variant="h4" center="left">
+              <TextScreenSize phone="All the statistics" plusDesktop=" I could find on you" />
+            </Typography>
           </Grid>
-          <div className={s.leftTitle}>
-          </div>
-        </div>
-        <Grid spacing={2} container>
-          {
-            StatClasses.map(Class => (
-              <Grid key={Class.name} className={s.graph} item xs={12} md={12} lg={6}>
-                <Class start={globalStart} end={globalEnd} timeSplit={globalTimeSplit} />
-              </Grid>
-            ))
-          }
+          <Grid item xs={12} lg="auto">
+            <QuickInterval
+              interval={prefabIdx}
+              timeSplit={globalTimeSplit}
+              onChangeInterval={changePrefab}
+              onChangeTimesplit={setGlobalTimeSplit}
+            />
+          </Grid>
         </Grid>
+        <div className={s.leftTitle} />
       </div>
-    );
-  }
+      <Grid spacing={2} container>
+        {
+          StatClasses.map(Class => (
+            <Grid key={Class.name} className={s.graph} item xs={12} md={12} lg={6}>
+              <Class start={globalStart} end={globalEnd} timeSplit={globalTimeSplit} />
+            </Grid>
+          ))
+        }
+      </Grid>
+    </div>
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AllStats);

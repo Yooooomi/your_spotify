@@ -49,7 +49,7 @@ class BestArtists extends BasicChart {
       <Chart
         tFormat={false}
         xFormat={this.getXFormat}
-        type='bar'
+        type="bar"
         xName="Date"
         yName="Different arists"
         forceXToDisplay
@@ -61,7 +61,8 @@ class BestArtists extends BasicChart {
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}
         className={s.chart}
-        data={data} />
+        data={data}
+      />
     );
   }
 }

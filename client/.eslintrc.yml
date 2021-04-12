@@ -1,28 +1,44 @@
-parser: 'babel-eslint'
-env:
-  commonjs: true
-  es6: true
-  node: true
-plugins: ['react']
-extends: [
-  'airbnb/base',
-  plugin:react/recommended
-]
+parser: babel-eslint
+settings:
+  pragma: React
+  version: 16.13.1
+  # linkComponents:
+  # - Hyperlink
+  # - name: Link
+  #   linkAttribute: to
 globals:
-  Atomics: readonly
-  SharedArrayBuffer: readonly
+  process: true
   window: true
-  document: true
-  localStorage: true
+env:
+  browser: true
+  jest: true
+  es6: true
+plugins:
+  - import
+extends:
+  - eslint:recommended
+  - airbnb
+  - plugin:react/recommended
+  - plugin:react-hooks/recommended
 parserOptions:
   ecmaVersion: 2018
-rules: {
-  indent: [2, 2],
-  no-underscore-dangle: off,
-  no-param-reassign: off,
-  arrow-parens: off,
-  no-async-promise-executor: off,
-  linebreak-style: off,
-  react/prop-types: off,
-  prefer-destructuring: off
-}
+  sourceType: module
+rules:
+  no-param-reassign: off
+  no-console: off
+  no-continue: off
+  no-eval: error
+  import/first: error
+  react/prop-types: 'off'
+  react/jsx-filename-extension: 'off'
+  arrow-parens: off
+  react/jsx-props-no-spreading: off
+  react/display-name: off
+  camelcase: off
+  no-underscore-dangle: off
+  import/no-unresolved: off
+  import/prefer-default-export: off
+  jsx-a11y/no-static-element-interactions: warn
+  jsx-a11y/click-events-have-key-events: warn
+  react-hooks/exhaustive-deps: error
+  max-len: ["error", 120, 2]

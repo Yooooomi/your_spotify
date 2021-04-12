@@ -5,10 +5,12 @@ import {
 import { connect } from 'react-redux';
 import s from './index.module.css';
 import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
+import API from '../../services/API';
 
 const AccountFields = [
-  { label: 'Account name', value: 'username' },
-  { label: 'Linked', value: 'activated' },
+  { label: 'Account name', value: user => user.username },
+  { label: 'Linked', value: user => user.activated },
+  { label: 'Allow new registrations', value: (user, gconfig) => `${gconfig.allowRegistrations}` },
 ];
 
 const SpotifyFields = [
@@ -19,12 +21,25 @@ const SpotifyFields = [
 ];
 
 class Settings extends React.Component {
+  allowRegistrations = async () => {
+    const { globalPreferences, updateGlobalPreferences } = this.props;
+
+    try {
+      const { data: newPrefs } = await API
+        .setGlobalPreferences({ allowRegistrations: !globalPreferences.allowRegistrations });
+      window.message('info', `Change your registration status to ${!globalPreferences.allowRegistrations}`);
+      updateGlobalPreferences(newPrefs);
+    } catch (e) {
+      window.message('error', 'Could not change the status of the registration');
+    }
+  }
+
   render() {
-    const { user } = this.props;
+    const { user, globalPreferences } = this.props;
 
     return (
       <div className={s.root}>
-        <Typography variant="h4" center="center">Settings</Typography>
+        <Typography variant="h4" align="left">Settings</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} lg={6}>
             <Paper className={s.paper}>
@@ -34,7 +49,12 @@ class Settings extends React.Component {
                   AccountFields.map(field => (
                     <div className={s.entry} key={field.value}>
                       <Typography align="left">{field.label}</Typography>
-                      <Typography align="right">{user[field.value].toString()}</Typography>
+                      <Typography
+                        align="right"
+                        className={s.value}
+                      >
+                        {field.value(user, globalPreferences).toString()}
+                      </Typography>
                     </div>
                   ))
                 }
@@ -51,14 +71,14 @@ class Settings extends React.Component {
                     SpotifyFields.map(field => (
                       <div className={s.entry} key={field.value}>
                         <Typography align="left">{field.label}</Typography>
-                        <Typography align="right">{user.spotify[field.value]}</Typography>
+                        <Typography align="right" className={s.value}>{user.spotify[field.value]}</Typography>
                       </div>
                     ))
                   ) : (
                     <div>
                       <a style={{ textDecoration: 'none' }} href={`${window.API_ENDPOINT}/oauth/spotify`}>
                         <Button fullWidth variant="contained" color="primary">
-                            Login to Spotify
+                          Login to Spotify
                         </Button>
                       </a>
                     </div>
@@ -78,19 +98,10 @@ class Settings extends React.Component {
                   </a>
                 </Grid>
                 <Grid item xs={6} lg={4}>
-                  <Button fullWidth variant="contained" color="primary">Disable this</Button>
-                </Grid>
-                <Grid item xs={6} lg={4}>
-                  <Button fullWidth variant="contained" color="primary">Disable this</Button>
-                </Grid>
-                <Grid item xs={6} lg={4}>
-                  <Button fullWidth variant="contained" color="primary">Disable this</Button>
-                </Grid>
-                <Grid item xs={6} lg={4}>
-                  <Button fullWidth variant="contained" color="primary">Disable this</Button>
-                </Grid>
-                <Grid item xs={6} lg={4}>
-                  <Button fullWidth variant="contained" color="primary">Disable this</Button>
+                  <Button fullWidth variant="contained" color="primary" onClick={this.allowRegistrations}>
+                    {globalPreferences.allowRegistrations && 'Disable registrations'}
+                    {!globalPreferences.allowRegistrations && 'Allow registrations'}
+                  </Button>
                 </Grid>
               </Grid>
             </Paper>

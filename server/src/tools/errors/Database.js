@@ -1,9 +1,4 @@
-const { YSError } = require('./Native');
-
-class DatabaseError extends YSError {
-  constructor(msg) {
-    super(msg);
-  }
+class DatabaseError extends Error {
 }
 
 class NoResult extends DatabaseError {

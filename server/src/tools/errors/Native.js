@@ -1,18 +1,18 @@
 
 class YSError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = this.constructor.name;
-    }
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name;
+  }
 }
 
 class NotImplemented extends YSError {
-    constructor() {
-        super('Not implemented');
-    }
+  constructor() {
+    super('Not implemented');
+  }
 }
 
 module.exports = {
-    YSError,
-    NotImplemented,
+  YSError,
+  NotImplemented,
 };

@@ -1,7 +1,7 @@
 .root {}
 
 .header {
-    height: 5vh;
+    height: var(--header);
     background-color: white;
 }
 
@@ -21,10 +21,10 @@
 .sider {
     padding-top: 5vh;
     background-color: #1B2430;
-    position: fixed;
     z-index: 4;
     width: 15vw;
-    height: 100vh;
+    height: var(--content);
+    position: fixed;
 }
 
 .content {
@@ -45,5 +45,6 @@
     }
     .sider {
         width: 0px;
+        height: 100vh;
     }
 }

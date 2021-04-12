@@ -36,7 +36,7 @@ class BestArtist extends DataDisplayer {
     } else {
       name = stats[0].artists[0].name;
       background = stats[0].artists[0].images[0].url;
-      counts = stats[0].counts[0];
+      ([counts] = stats[0].counts);
     }
 
     return (

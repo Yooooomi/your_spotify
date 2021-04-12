@@ -20,7 +20,7 @@ class Layout extends React.Component {
           <AppBar>
             <Toolbar className={s.toolbar}>
               <IconButton onClick={this.onDrawer} edge="start"><Menu /></IconButton>
-              <Typography variant="h6">Your spotify</Typography>
+              <Typography align="center" variant="h6">Your spotify</Typography>
             </Toolbar>
           </AppBar>
         </div>

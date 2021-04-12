@@ -53,7 +53,7 @@ const imgSize = 32;
 class ImageAxisTick extends PureComponent {
   render() {
     const {
-      x, y, stroke, xFormat, payload,
+      x, y, xFormat, payload,
     } = this.props;
 
     const { name, url } = xFormat ? xFormat(payload.value, payload.name, this.props) : payload.value;
@@ -134,7 +134,7 @@ export default function Chart({
             minTickGap={forceXToDisplay ? -1000 : 5}
             name={xName}
             domain={xDomain}
-            dataKey={'x'}
+            dataKey="x"
             height={xIsImage ? imgSize + 15 : undefined}
             tickFormatter={xIsImage ? undefined : xFormat}
             tick={xIsImage ? <ImageAxisTick xFormat={xFormat} /> : undefined}
@@ -154,7 +154,7 @@ export default function Chart({
             strokeWidth={3}
             connectNulls
             type="monotone"
-            dataKey={'y'}
+            dataKey="y"
             fill="#3182BD"
           />
         </Container>

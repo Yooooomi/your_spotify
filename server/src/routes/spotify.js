@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const router = require('express').Router();
+const Joi = require('joi');
 const { logged, validating, withHttpClient } = require('../tools/middleware');
 const db = require('../database');
-const Joi = require('joi');
+const logger = require('../tools/logger');
 
 const playSchema = Joi.object().keys({
   id: Joi.string().required(),
@@ -13,20 +13,19 @@ router.post('/play', validating(playSchema), logged, withHttpClient, async (req,
   const { id } = req.values;
 
   try {
-    const track = await db.Track.findOne({ id, });
+    const track = await db.Track.findOne({ id });
 
     if (!track) return res.status(400).end();
     await client.put('https://api.spotify.com/v1/me/player/play', {
-        uris: [track.uri],
-      }
-    );
+      uris: [track.uri],
+    });
     return res.status(200).end();
   } catch (e) {
     if (e.response) {
-      console.error(e.response.data);
+      logger.error(e.response.data);
       return res.status(400).send(e.response.data.error);
     }
-    else console.error(e);
+    logger.error(e);
     return res.status(500).end();
   }
 });
@@ -46,13 +45,13 @@ router.get('/gethistory', validating(gethistorySchema, 'query'), logged, async (
 
 const interval = Joi.object().keys({
   start: Joi.date().required(),
-  end: Joi.date().default(() => new Date(), 'End date, defaulted to now'),
+  end: Joi.date().default(() => new Date()),
 });
 
 const intervalPerSchema = Joi.object().keys({
   start: Joi.date().required(),
-  end: Joi.date().default(() => new Date(), 'End date, defaulted to now'),
-  timeSplit: Joi.string().only(['all', 'year', 'month', 'week', 'day', 'hour']).default('day'),
+  end: Joi.date().default(() => new Date()),
+  timeSplit: Joi.string().allow('all', 'year', 'month', 'week', 'day', 'hour').only().default('day'),
 });
 
 router.get('/listened_to', validating(interval, 'query'), logged, async (req, res) => {
@@ -60,12 +59,10 @@ router.get('/listened_to', validating(interval, 'query'), logged, async (req, re
   const { start, end } = req.values;
 
   const result = await db.getSongsPer(user._id, start, end);
-  ('Listened to ', result);
   if (result.length > 0) {
     return res.status(200).send({ count: result[0].count });
-  } else {
-    return res.status(200).send({ count: 0 });
   }
+  return res.status(200).send({ count: 0 });
 });
 
 router.get('/most_listened', validating(intervalPerSchema, 'query'), logged, async (req, res) => {

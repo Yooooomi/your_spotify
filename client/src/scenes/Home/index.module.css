@@ -71,7 +71,7 @@
     padding-left: 8px;
 }
 
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 1600px) {
     .listened {
     }
     
@@ -81,6 +81,10 @@
     
     .secondleft {
         padding-left: unset;
+    }
+
+    .welcome {
+        display: block;
     }
 }
 

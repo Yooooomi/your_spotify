@@ -5,9 +5,13 @@ const mapStateToProps = state => ({
   ready: state.readyReducer.ready,
   tracks: state.tracksReducer.tracks,
   full: state.tracksReducer.full,
+  globalPreferences: state.globalPreferencesReducer.preferences,
 });
 
 const mapDispatchToProps = dispatch => ({
+  updateGlobalPreferences: (pref) => {
+    dispatch({ type: 'UPDATE_GLOBAL_PREFERENCES', pref });
+  },
   updateReady: (ready) => {
     dispatch({ type: 'UPDATE_READY', ready });
   },

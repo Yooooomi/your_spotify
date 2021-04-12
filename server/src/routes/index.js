@@ -1,14 +1,15 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+
+const router = express.Router();
 const Joi = require('joi');
-const { validating, logged } = require('../tools/middleware');
-const constants = require('../tools/constants');
-const db = require('../database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { validating, logged, withGlobalPreferences } = require('../tools/middleware');
+const constants = require('../tools/constants');
+const db = require('../database');
+const logger = require('../tools/logger');
 
-/* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', (req, res) => {
   res.status(200).send('Hello !');
 });
 
@@ -17,7 +18,13 @@ const registerSchema = Joi.object().keys({
   password: Joi.string().max(constants.maxStringLength).required(),
 });
 
-router.post('/register', validating(registerSchema), async (req, res) => {
+router.post('/register', validating(registerSchema), withGlobalPreferences, async (req, res) => {
+  const { globalPreferences } = req;
+
+  if (!globalPreferences || !globalPreferences.allowRegistrations) {
+    return res.status(401).send({ code: 'REGISTRATIONS_NOT_ALLOWED' });
+  }
+
   const { username, password } = req.values;
 
   const alreadyExisting = await db.getUserFromField('username', username, false);
@@ -71,23 +78,21 @@ router.post('/login', validating(loginSchema), async (req, res) => {
 
 const settingsSchema = Joi.object().keys({
   historyLine: Joi.bool(),
-  preferredStatsPeriod: Joi.string().only(['day', 'week', 'month', 'year']),
+  preferredStatsPeriod: Joi.string().only().allow('day', 'week', 'month', 'year'),
 });
 
 router.post('/settings', validating(settingsSchema), logged, async (req, res) => {
   const { values, user } = req;
 
   try {
-    const newUser = await db.changeSetting('_id', user._id, values);
+    await db.changeSetting('_id', user._id, values);
     return res.status(200).end();
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     return res.status(500).end();
   }
 });
 
-router.get('/me', logged, async (req, res) => {
-  return res.status(200).send(req.user);
-});
+router.get('/me', logged, async (req, res) => res.status(200).send(req.user));
 
 module.exports = router;

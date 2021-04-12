@@ -5,6 +5,10 @@
 
 :root {
   --mobile-limit: 960px;
+  --tablet: 1600px;
+  --header: 5vh;
+  --content: calc(100vh - var(--header));
+  --radius: 0.25rem;
 }
 
 html {
@@ -19,7 +23,7 @@ hr {
 
 .App {
   box-sizing: border-box;
-  background-color: #F7F9FC;
+  background-color: #F6F7FC;
   text-align: center;
   min-height: 100vh;
 }
@@ -48,6 +52,10 @@ hr {
 
 .App-link {
   color: #61dafb;
+}
+
+.test {
+  color: rgb(199, 199, 199);
 }
 
 @keyframes App-logo-spin {

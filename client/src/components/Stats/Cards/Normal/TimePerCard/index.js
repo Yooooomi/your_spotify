@@ -55,8 +55,9 @@ class TimePerCard extends BasicCard {
     if (moreOrLessThanYesterday < 0) {
       return (
         <Typography variant="subtitle1">
-          <Typography color="error" component="span" variant='subtitle2'>
-            {moreOrLessThanYesterday}%
+          <Typography color="error" component="span" variant="subtitle2">
+            {moreOrLessThanYesterday}
+            %
           </Typography>
           &nbsp;less for this period
         </Typography>
@@ -64,8 +65,9 @@ class TimePerCard extends BasicCard {
     }
     return (
       <Typography variant="subtitle1">
-        <Typography style={{ color: '#255E2B' }} component="span" variant='subtitle2'>
-          {moreOrLessThanYesterday}%
+        <Typography style={{ color: '#255E2B' }} component="span" variant="subtitle2">
+          {moreOrLessThanYesterday}
+          %
         </Typography>
           &nbsp;more for this period
       </Typography>

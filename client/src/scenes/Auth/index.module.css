@@ -1,8 +1,25 @@
 
 
 .root {
-    width: 20%;
+    width: 30%;
     margin: auto;
+    padding: 40px;
+}
+
+.pageHolder {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+@media only screen and (max-width: 1450px) {
+    .root {
+        width: calc(100% - 10px);
+    }
+}
+
+.title {
+    margin-bottom: 50px !important;
 }
 
 .input {
@@ -17,4 +34,23 @@
 .link {
     color: #1365ff;
     text-decoration: none;
+}
+
+.fields {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.field {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.field > :first-child {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.ys {
+    text-transform: capitalize;
 }

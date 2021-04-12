@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-state */
+// We need state unused state variables that are used by children of this class
 import React from 'react';
 import { lastWeek } from '../../../services/interval';
 
@@ -45,24 +47,6 @@ class DataDisplayer extends React.Component {
     };
   }
 
-  getPreviousInter = (start, end) => {
-    const diff = end.getTime() - start.getTime();
-
-    // Previous end and previous start represent
-    // a period of (end - start) days just before the start-end period
-    // which gives something like [previousPeriod of n days][period of n days]
-
-    const previousStart = new Date(start.getTime());
-    previousStart.setTime(previousStart.getTime() - diff);
-
-    const previousEnd = new Date(end.getTime());
-    previousEnd.setTime(previousEnd.getTime() - diff);
-    return {
-      start: previousStart,
-      end: previousEnd,
-    };
-  }
-
   async componentDidMount() {
     if (!this.inited) {
       throw new Error('You must call parent constructor when using IntervalChart');
@@ -84,7 +68,7 @@ class DataDisplayer extends React.Component {
     const { end } = this.props;
 
     const lastSplit = prevProps.timeSplit;
-    const split = this.props.timeSplit;
+    const { timeSplit: split } = this.props;
 
     const changes = {};
 
@@ -116,8 +100,27 @@ class DataDisplayer extends React.Component {
       changes.previousStart = previous.start;
       changes.previousEnd = previous.end;
 
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState(changes, this.refresh);
     }
+  }
+
+  getPreviousInter = (start, end) => {
+    const diff = end.getTime() - start.getTime();
+
+    // Previous end and previous start represent
+    // a period of (end - start) days just before the start-end period
+    // which gives something like [previousPeriod of n days][period of n days]
+
+    const previousStart = new Date(start.getTime());
+    previousStart.setTime(previousStart.getTime() - diff);
+
+    const previousEnd = new Date(end.getTime());
+    previousEnd.setTime(previousEnd.getTime() - diff);
+    return {
+      start: previousStart,
+      end: previousEnd,
+    };
   }
 }
 

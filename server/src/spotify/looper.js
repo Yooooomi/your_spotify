@@ -1,6 +1,6 @@
+const Axios = require('axios');
 const { Spotify } = require('../tools/oauth/Provider');
 const db = require('../database');
-const Axios = require('axios');
 const dbTools = require('./dbTools');
 const occasionnal = require('./Occasionnal');
 const logger = require('../tools/logger');
@@ -9,7 +9,7 @@ const refresh = async user => {
   const infos = await Spotify.refresh(user.refreshToken);
 
   return db.storeInUser('_id', user._id, infos);
-}
+};
 
 const createHttpClient = access => {
   const axios = Axios.create({
@@ -19,10 +19,10 @@ const createHttpClient = access => {
   });
 
   return axios;
-}
+};
 
 const loop = async user => {
-  logger.info(`Refreshing songs for ${user.username}`)
+  logger.info(`Refreshing songs for ${user.username}`);
 
   // Refresh the token it it expires in less than a minute (1000ms * 60)
   if (Date.now() > user.expiresIn - 1000 * 60) {
@@ -33,7 +33,7 @@ const loop = async user => {
   const client = createHttpClient(user.accessToken);
   const url = `https://api.spotify.com/v1/me/player/recently-played?after=${user.lastTimestamp}`;
 
-  let lastDiscovery = user.lastDiscovery;
+  const { lastDiscovery } = user;
   const now = new Date();
 
   if (!lastDiscovery || lastDiscovery.getDate() !== now.getDate()) {
@@ -42,12 +42,12 @@ const loop = async user => {
 
   try {
     const items = [];
-    let data = null;
     let nextUrl = url;
 
     do {
+      // Waiting to prevent request limit
       const response = await client.get(nextUrl);
-      data = response.data;
+      const { data } = response;
       items.push(...data.items);
       nextUrl = data.next;
     } while (nextUrl);
@@ -63,22 +63,23 @@ const loop = async user => {
         const infos = items.map(e => ({ played_at: e.played_at, id: e.track.id }));
         await db.addTrackIdsToUser(user._id, infos);
       } catch (e) {
-        console.log(e.response.data);
+        logger.info(e.response.data);
       }
     } else {
       logger.info('User has no new music');
     }
   } catch (e) {
-    console.error(e);
+    logger.error(e);
   }
 };
 
-const reflect = p => p.then(v => ({ failed: false }), e => ({ failed: true, error: e }));
-const wait = ms => new Promise((s, f) => setTimeout(s, ms));
+const reflect = p => p.then(() => ({ failed: false }), e => ({ failed: true, error: e }));
+const wait = ms => new Promise((s) => setTimeout(s, ms));
 
 const dbLoop = async () => {
+  // eslint-disable-next-line no-constant-condition
   while (true) {
-    let nbUsers = await db.getUsersNb();
+    const nbUsers = await db.getUsersNb();
     const batchSize = 1;
     logger.info(`Starting loop for ${nbUsers} users`);
 
@@ -105,7 +106,7 @@ const dbLoop = async () => {
       await wait(120 * 1000);
     }
   }
-}
+};
 
 module.exports = {
   dbLoop,

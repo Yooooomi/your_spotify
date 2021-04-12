@@ -1,12 +1,13 @@
+const { NoResult } = require('../../tools/errors/Database');
 const { Infos, User } = require('../Schemas');
 
 const getSongsNbInterval = async (id, start, end) => {
   const res = await Infos.aggregate([
     { $match: { owner: id, played_at: { $gt: start, $lt: end } } },
-    { $group: { _id: null, count: { $sum: 1 } } }
+    { $group: { _id: null, count: { $sum: 1 } } },
   ]);
   return res[0].count;
-}
+};
 
 const getUserFromField = async (field, value, crash = true) => {
   const user = User.findOne({ [field]: value }, '-tracks');
@@ -15,41 +16,42 @@ const getUserFromField = async (field, value, crash = true) => {
     throw new NoResult();
   }
   return user;
-}
+};
 
-const createUser = (username, password) => {
-  return User.create({
-    username,
-    password,
-    activated: false,
-    accessToken: '',
-    refreshToken: '',
-    expiresIn: 0,
-    lastTimestamp: Date.now() - 1000 * 60 * 60 * 24, // Set last timestamp to yesterday so that we already have a pull of tracks
-    settings: {
-      historyLine: false,
-      preferredStatsPeriod: 'month',
-    },
-  });
-}
+const createUser = (username, password) => User.create({
+  username,
+  password,
+  activated: false,
+  accessToken: '',
+  refreshToken: '',
+  expiresIn: 0,
+  // Set last timestamp to yesterday so that we already have a pull of tracks
+  lastTimestamp: Date.now() - 1000 * 60 * 60 * 24,
+  settings: {
+    historyLine: false,
+    preferredStatsPeriod: 'month',
+  },
+});
 
-const storeInUser = (field, value, infos) => {
-  return User.findOneAndUpdate({ [field]: value }, infos, { new: true });
-}
+const storeInUser = (field, value, infos) => User
+  .findOneAndUpdate({ [field]: value }, infos, { new: true });
 
 const changeSetting = (field, value, infos) => {
   const obj = {};
-  Object.keys(infos).map(key => {
+  Object.keys(infos).forEach(key => {
     obj[`settings.${key}`] = infos[key];
-  })
+  });
   return User.findOneAndUpdate({ [field]: value }, { $set: obj }, { new: true });
-}
+};
 
 const addTrackIdsToUser = async (id, infos) => {
-  infos.forEach(info => info.owner = id);
+  infos.forEach(info => { info.owner = id; });
   const infosSaved = await Infos.create(infos);
-  return User.findByIdAndUpdate(id, { $push: { tracks: { $each: infosSaved.map(e => e._id.toString()) } } });
-}
+  return User.findByIdAndUpdate(
+    id,
+    { $push: { tracks: { $each: infosSaved.map(e => e._id.toString()) } } },
+  );
+};
 
 const getSongs = async (userId, offset, number) => {
   const fullUser = await User.findById(userId).populate(
@@ -63,12 +65,12 @@ const getSongs = async (userId, offset, number) => {
         populate: [
           { path: 'full_album', model: 'Album' },
           { path: 'full_artist', model: 'Artist' },
-        ]
+        ],
       },
     },
   );
   return fullUser.tracks;
-}
+};
 
 const getSongsInterval = async (id, start, end) => {
   const user = await User.findById(id).populate({
@@ -78,12 +80,12 @@ const getSongsInterval = async (id, start, end) => {
         $gte: start,
         $lt: end,
       },
-    }
+    },
   });
   return user.tracks;
-}
+};
 
-const getUsersNb = () => User.find().count();
+const getUsersNb = () => User.find().countDocuments();
 const getUsers = (nb, offset, condition) => User.find(condition).limit(nb).skip(offset);
 
 module.exports = {

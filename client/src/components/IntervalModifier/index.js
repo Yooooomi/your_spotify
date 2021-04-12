@@ -23,7 +23,13 @@ function IntervalModifier({
   return (
     <div className={cl(s.root, autoAbsolute && s.auto, className)}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Chip label="modify" size="small" variant="outlined" color="primary" onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)} />
+        <Chip
+          label="modify"
+          size="small"
+          variant="outlined"
+          color="primary"
+          onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)}
+        />
         <Popper
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
@@ -57,19 +63,20 @@ function IntervalModifier({
             </div>
             <div className={s.entry}>
               {onTimeSplitChange
-                && <Select
-                  fullWidth
-                  value={timeSplit}
-                  onChange={e => onTimeSplitChange(e.target.value)}
-                  label="Time split"
-                >
-                  <MenuItem value="hour">Hour</MenuItem>
-                  <MenuItem value="day">day</MenuItem>
-                  <MenuItem value="week">week</MenuItem>
-                  <MenuItem value="month">month</MenuItem>
-                  <MenuItem value="year">year</MenuItem>
-                </Select>
-              }
+                && (
+                  <Select
+                    fullWidth
+                    value={timeSplit}
+                    onChange={e => onTimeSplitChange(e.target.value)}
+                    label="Time split"
+                  >
+                    <MenuItem value="hour">Hour</MenuItem>
+                    <MenuItem value="day">day</MenuItem>
+                    <MenuItem value="week">week</MenuItem>
+                    <MenuItem value="month">month</MenuItem>
+                    <MenuItem value="year">year</MenuItem>
+                  </Select>
+                )}
             </div>
           </Paper>
         </Popper>

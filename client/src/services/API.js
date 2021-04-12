@@ -16,6 +16,8 @@ const API = {
   logout: () => axios.post('/logout'),
   me: () => axios.get('/me'),
   sme: () => axios.get('/oauth/spotify/me'),
+  globalPreferences: () => axios.get('/global/preferences'),
+  setGlobalPreferences: (preferences) => axios.post('/global/preferences', preferences),
   play: id => axios.post('/spotify/play', {
     id,
   }),

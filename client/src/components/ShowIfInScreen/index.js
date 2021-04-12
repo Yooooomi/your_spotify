@@ -13,6 +13,17 @@ class ShowIfInScreen extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.checkVisibility();
+    window.addEventListener('scroll', this.checkVisibility);
+  }
+
+  componentWillUnmount() {
+    if (this.listen) {
+      window.removeEventListener('scroll', this.checkVisibility);
+    }
+  }
+
   checkVisibility = () => {
     const { offsetTop } = this.ref.current;
 
@@ -26,17 +37,6 @@ class ShowIfInScreen extends React.Component {
         show: true,
       });
     }
-  }
-
-  componentWillUnmount() {
-    if (this.listen) {
-      window.removeEventListener('scroll', this.checkVisibility);
-    }
-  }
-
-  componentDidMount() {
-    this.checkVisibility();
-    window.addEventListener('scroll', this.checkVisibility);
   }
 
   render() {

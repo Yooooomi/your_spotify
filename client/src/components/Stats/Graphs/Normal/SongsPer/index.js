@@ -43,7 +43,8 @@ class SongsPer extends IntervalChart {
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}
         className={s.chart}
-        data={data} />
+        data={data}
+      />
     );
   }
 }

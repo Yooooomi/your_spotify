@@ -1,13 +1,12 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+
+const router = express.Router();
 const { logged, withHttpClient } = require('../tools/middleware');
 const { Spotify } = require('../tools/oauth/Provider');
 const db = require('../database');
-const Joi = require('joi');
+const logger = require('../tools/logger');
 
-router.get('/spotify', (req, res) => {
-  return res.redirect(Spotify.getRedirect());
-});
+router.get('/spotify', (req, res) => res.redirect(Spotify.getRedirect()));
 
 router.get('/spotify/callback', logged, async (req, res) => {
   const { query } = req;
@@ -30,7 +29,7 @@ router.get('/spotify/me', logged, withHttpClient, async (req, res) => {
     const { data } = await client.get('/me');
     return res.status(200).send(data);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     return res.status(500).end({ code: 'SPOTIFY_ERROR' });
   }
 });

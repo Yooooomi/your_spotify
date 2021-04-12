@@ -14,14 +14,8 @@ class SnackbarMessage extends React.Component {
     };
   }
 
-  setOpen = status => (ev, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    this.setState({
-      open: status,
-    });
+  componentDidMount() {
+    window.message = this.setMessage;
   }
 
   setMessage = (severity, msg) => {
@@ -32,8 +26,14 @@ class SnackbarMessage extends React.Component {
     });
   }
 
-  componentDidMount() {
-    window.message = this.setMessage;
+  setOpen = status => (ev, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({
+      open: status,
+    });
   }
 
   render() {
@@ -45,7 +45,8 @@ class SnackbarMessage extends React.Component {
           anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
           open={open}
           autoHideDuration={3000}
-          onClose={this.setOpen(false)}>
+          onClose={this.setOpen(false)}
+        >
           <Alert
             variant="filled"
             severity={severity}

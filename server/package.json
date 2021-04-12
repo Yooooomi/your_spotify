@@ -4,19 +4,31 @@
   "private": true,
   "scripts": {
     "start": "node ./src/bin/www",
+    "migrate": "node ./src/migrations.js",
+    "lint": "eslint src/ --ext .js",
+    "lint:fix": "eslint src/ --ext .js --fix",
     "dev": "nodemon ./src/bin/www"
   },
   "dependencies": {
-    "axios": "^0.19.2",
-    "bcrypt": "^3.0.8",
-    "cookie-parser": "~1.4.4",
+    "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "joi": "^14.3.1",
+    "debug": "^4.3.1",
+    "express": "^4.17.1",
+    "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.8.11",
-    "morgan": "~1.9.1",
-    "winston": "^3.2.1"
+    "migrate": "^1.7.0",
+    "mongoose": "^5.12.3",
+    "morgan": "^1.10.0",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.2"
   }
 }

@@ -1,8 +1,16 @@
 import { createMuiTheme } from '@material-ui/core';
 
+export const mobileThreshold = '960px';
+export const lessThanMobile = `(max-width:${mobileThreshold})`;
+export const moreThanMobile = `(min-width:${mobileThreshold})`;
+
+export const tabletThreshold = '1600px';
+export const lessThanTablet = `(max-width:${tabletThreshold})`;
+export const moreThanTablet = `(min-width:${tabletThreshold})`;
+
 const theme = createMuiTheme({
   shape: {
-    borderRadius: '10px',
+    borderRadius: '0.25rem',
   },
   palette: {
     primary: { main: '#1365ff' },
@@ -11,7 +19,7 @@ const theme = createMuiTheme({
     error: { main: '#A90202' },
   },
   typography: {
-    fontFamily: 'Nunito',
+    fontFamily: 'Roboto',
     fontWeightBold: 'lighter',
     subtitle1: {
       color: 'grey',
@@ -62,6 +70,11 @@ const theme = createMuiTheme({
     },
   },
   overrides: {
+    MuiButton: {
+      root: {
+        textTransform: 'capitalize',
+      },
+    },
     MuiSelect: {
       select: {
         display: 'flex',
@@ -84,6 +97,11 @@ const theme = createMuiTheme({
     MuiToggleButton: {
       root: {
         border: 'none',
+      },
+    },
+    MuiFilledInput: {
+      root: {
+        backgroundColor: '#efefef',
       },
     },
     MuiTabs: {

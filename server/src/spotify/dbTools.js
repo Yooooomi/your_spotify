@@ -1,5 +1,5 @@
-const db = require('../database');
 const Axios = require('axios');
+const db = require('../database');
 const logger = require('../tools/logger');
 
 // const saveArtist = async artist => {
@@ -65,19 +65,20 @@ const getIdsHandlingMax = async (client, url, ids, max, arrayPath) => {
   const idsArray = [];
   const chunkNb = Math.ceil(ids.length / max);
 
-  for (let i = 0; i < chunkNb; i++) {
+  for (let i = 0; i < chunkNb; i += 1) {
     idsArray.push(ids.slice(i * max, Math.min(ids.length, (i + 1) * max)));
   }
   const datas = [];
 
   // Voluntarily waiting in loop to prevent requests limit
-  for (let i = 0; i < idsArray.length; i++) {
+  for (let i = 0; i < idsArray.length; i += 1) {
     const builtUrl = `${url}?ids=${idsArray[i].join(',')}`;
+    // eslint-disable-next-line no-await-in-loop
     const { data } = await client.get(builtUrl);
     datas.push(...data[arrayPath]);
   }
   return datas;
-}
+};
 
 const url = 'https://api.spotify.com/v1/tracks';
 
@@ -110,7 +111,7 @@ const storeTracksAndReturnAlbumsArtists = async (ids, client) => {
     artists: artistIds,
     albums: albumIds,
   };
-}
+};
 
 const albumUrl = 'https://api.spotify.com/v1/albums';
 
@@ -118,14 +119,14 @@ const storeAlbums = async (ids, client) => {
   const albums = await getIdsHandlingMax(client, albumUrl, ids, 20, 'albums');
 
   albums.forEach(alb => {
-    logger.info(`Storing non existing album ${alb.name} by ${alb.artists[0].name}`)
+    logger.info(`Storing non existing album ${alb.name} by ${alb.artists[0].name}`);
 
     alb.artists = alb.artists.map(art => art.id);
     delete alb.tracks;
   });
 
   await db.Album.create(albums).catch(() => { });
-}
+};
 
 const artistUrl = 'https://api.spotify.com/v1/artists';
 
@@ -135,7 +136,7 @@ const storeArtists = async (ids, client) => {
   artists.forEach(artist => logger.info(`Storing non existing artist ${artist.name}`));
 
   await db.Artist.create(artists).catch(() => { });
-}
+};
 
 const saveMusics = async (tracks, access) => {
   const client = Axios.create({
@@ -147,11 +148,13 @@ const saveMusics = async (tracks, access) => {
   const artistIds = [];
   tracks.forEach(track => artistIds.push(...track.artists.map(art => art.id)));
 
-  tracks.forEach(track => track.artists = track.artists.map(art => art.id));
+  tracks.forEach(track => { track.artists = track.artists.map(art => art.id); });
 
   const ids = tracks.map(track => track.id);
   const storedTracks = await db.Track.find({ id: { $in: ids } });
-  const missingTrackIds = ids.filter(id => !storedTracks.find(stored => stored.id.toString() === id.toString()));
+  const missingTrackIds = ids
+    .filter(id => !storedTracks
+      .find(stored => stored.id.toString() === id.toString()));
 
   if (missingTrackIds.length === 0) {
     logger.info('No missing tracks, passing...');
@@ -161,10 +164,14 @@ const saveMusics = async (tracks, access) => {
   const { artists, albums } = await storeTracksAndReturnAlbumsArtists(missingTrackIds, client);
 
   const storedAlbums = await db.Album.find({ id: { $in: albums } });
-  const missingAlbumIds = albums.filter(alb => !storedAlbums.find(salb => salb.id.toString() === alb.toString()));
+  const missingAlbumIds = albums
+    .filter(alb => !storedAlbums
+      .find(salb => salb.id.toString() === alb.toString()));
 
   const storedArtists = await db.Artist.find({ id: { $in: artists } });
-  const missingArtistIds = artists.filter(alb => !storedArtists.find(salb => salb.id.toString() === alb.toString()));
+  const missingArtistIds = artists
+    .filter(alb => !storedArtists
+      .find(salb => salb.id.toString() === alb.toString()));
 
   if (missingAlbumIds.length > 0) {
     await storeAlbums(missingAlbumIds, client);

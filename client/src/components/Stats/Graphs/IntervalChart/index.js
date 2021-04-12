@@ -24,6 +24,7 @@ const isGoodValue = (stat, date, timeSplit) => {
     year: date.getFullYear(),
   };
 
+  // eslint-disable-next-line max-len
   if (timeSplit === 'hour') return stat.year === datas.year && stat.month === datas.month && stat.day === datas.day && stat.hour === datas.hour;
   if (timeSplit === 'day') return stat.year === datas.year && stat.month === datas.month && stat.day === datas.day;
   if (timeSplit === 'week') return stat.year === datas.year && stat.week === datas.week;

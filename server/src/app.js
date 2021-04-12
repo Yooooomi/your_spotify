@@ -1,19 +1,19 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const bp = require('body-parser');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const logger = require('./tools/logger');
 
-var app = express();
+const app = express();
 
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(cookieParser());
-app.use(bp.urlencoded({ extended: false }))
-app.use(bp.json())
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-var indexRouter = require('./routes/index');
-var oauthRouter = require('./routes/oauth');
-var spotifyRouter = require('./routes/spotify');
+const indexRouter = require('./routes/index');
+const oauthRouter = require('./routes/oauth');
+const spotifyRouter = require('./routes/spotify');
+const globalRouter = require('./routes/global');
 
 const cors = process.env.CORS || '';
 const corsList = cors.split(',');
@@ -45,8 +45,9 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/oauth', oauthRouter);
 app.use('/spotify', spotifyRouter);
+app.use('/global', globalRouter);
 
-app.use(function(err, req, res, next) {
+app.use((err, req, res) => {
   if (err) {
     logger.error(err);
   }

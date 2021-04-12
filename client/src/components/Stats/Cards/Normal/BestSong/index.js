@@ -44,7 +44,7 @@ class BestSong extends DataDisplayer {
     } else {
       name = stats[0].tracks[0].name;
       background = stats[0].tracks[0].album.images[0].url;
-      counts = stats[0].counts[0];
+      ([counts] = stats[0].counts);
     }
 
     return (

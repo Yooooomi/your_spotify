@@ -32,12 +32,14 @@ class Line extends React.Component {
             <img
               style={{ opacity: header ? 0 : undefined }}
               src={track.full_album.images[0].url}
-              className={s.cover} alt="album"
+              className={s.cover}
+              alt="album"
             />
           </div>
           {
             !header
-            && <IconButton
+            && (
+            <IconButton
               onClick={this.play}
               disableRipple
               disableFocusRipple
@@ -46,6 +48,7 @@ class Line extends React.Component {
             >
               <PlayCircleOutline fontSize="small" />
             </IconButton>
+            )
           }
           <Typography noWrap>{track.name}</Typography>
         </div>

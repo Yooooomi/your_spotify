@@ -1,13 +1,13 @@
-const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 const db = require('../database');
+const logger = require('./logger');
 const { Spotify } = require('./oauth/Provider');
 
 const validating = (schema, location = 'body') => (req, res, next) => {
-  const { error, value } = Joi.validate(req[location], schema);
+  const { error, value } = schema.validate(req[location]);
 
   if (error) {
-    console.error(error);
+    logger.error(error);
     return res.status(400).end();
   }
 
@@ -17,7 +17,7 @@ const validating = (schema, location = 'body') => (req, res, next) => {
 };
 
 const logged = async (req, res, next) => {
-  const auth = req.cookies['token'];
+  const auth = req.cookies.token;
 
   if (!auth) return res.status(401).end();
 
@@ -37,7 +37,7 @@ const logged = async (req, res, next) => {
     }
   }
   return res.status(401).end();
-}
+};
 
 const withHttpClient = async (req, res, next) => {
   const { user } = req;
@@ -51,9 +51,9 @@ const withHttpClient = async (req, res, next) => {
       tokens = newTokens;
     } catch (e) {
       if (e.response) {
-        console.error(e.response.data);
+        logger.error(e.response.data);
       } else {
-        console.error(e);
+        logger.error(e);
       }
       return res.status(400).end();
     }
@@ -61,10 +61,21 @@ const withHttpClient = async (req, res, next) => {
   const client = Spotify.getHttpClient(tokens.accessToken);
   req.client = client;
   return next();
-}
+};
+
+const withGlobalPreferences = async (req, res, next) => {
+  try {
+    const pref = await db.getGlobalPreferences();
+    req.globalPreferences = pref;
+    return next();
+  } catch (e) {
+    return res.status(500).end();
+  }
+};
 
 module.exports = {
   validating,
   logged,
   withHttpClient,
+  withGlobalPreferences,
 };

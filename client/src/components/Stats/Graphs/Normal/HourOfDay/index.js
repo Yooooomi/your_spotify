@@ -32,18 +32,18 @@ class HourOfDay extends BasicChart {
     const result = Array.from(Array(24).keys()).map((_, k) => ({ x: k, y: 0 }));
 
     stats.forEach(hour => {
-      result[hour._id].y = Math.floor(hour.count / total * 100) / 100;
+      result[hour._id].y = Math.floor((hour.count / total) * 100) / 100;
     });
     return result;
   }
 
-  tooltipFormatter = (_, __, {payload}) => {
+  tooltipFormatter = (_, __, { payload }) => {
     const { stats } = this.state;
-    const { x, y } = payload;
+    const { x } = payload;
     const total = stats.reduce((acc, curr) => acc + curr.count, 0);
-    const value = stats[x]?.count || 0
+    const value = stats[x]?.count || 0;
     const minutes = Math.floor(value / 1000 / 60);
-    const perc = Math.round(value / total * 100);
+    const perc = Math.round((value / total) * 100);
 
     return `${x.toString().padStart(2, '0')}h, listened a total of ${minutes} minutes, ${perc}% of the day average`;
   }
@@ -71,7 +71,7 @@ class HourOfDay extends BasicChart {
         xFormat={this.getXFormat}
         yFormat={this.getYFormat}
         tFormat={this.tooltipFormatter}
-        type='bar'
+        type="bar"
         xName="Date"
         yName="Percentage"
         start={start}
@@ -81,7 +81,8 @@ class HourOfDay extends BasicChart {
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}
         className={s.chart}
-        data={data} />
+        data={data}
+      />
     );
   }
 }
