@@ -30,6 +30,8 @@ const createUser = (username, password) => User.create({
   settings: {
     historyLine: false,
     preferredStatsPeriod: 'month',
+    nbElements: 10,
+    metricUsed: 'number',
   },
 });
 
@@ -54,6 +56,20 @@ const addTrackIdsToUser = async (id, infos) => {
 };
 
 const getSongs = async (userId, offset, number) => {
+  // const tracks = Infos
+  //   .find({ owner: userId })
+  //   .sort({ played_at: -1 })
+  //   .skip(offset)
+  //   .limit(number)
+  //   .populate({
+  //     path: 'track',
+  //     model: 'Track',
+  //     populate: [
+  //       { path: 'full_album', model: 'Album' },
+  //       { path: 'full_artist', model: 'Artist' },
+  //     ],
+  //   });
+
   const fullUser = await User.findById(userId).populate(
     {
       path: 'tracks',

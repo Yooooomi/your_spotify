@@ -4,17 +4,18 @@ const {
   getGroupByDateProjection,
   getGroupingByTimeSplit,
   sortByTimeSplit,
+  getTrackSumType,
 } = require('./statsTools');
 
-const getMostListenedSongs = async (userId, start, end, timeSplit = 'hour') => {
+const getMostListenedSongs = async (user, start, end, timeSplit = 'hour') => {
   const res = await Infos.aggregate([
-    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     { $project: { ...getGroupByDateProjection(), id: 1 } },
 
     { $group: { _id: { ...getGroupingByTimeSplit(timeSplit), track: '$id' }, count: { $sum: 1 } } },
     { $sort: { count: -1, '_id.track': 1 } },
     { $group: { _id: getGroupingByTimeSplit(timeSplit, '_id'), tracks: { $push: '$_id.track' }, counts: { $push: '$count' } } },
-    { $project: { _id: 1, tracks: { $slice: ['$tracks', 10] }, counts: { $slice: ['$counts', 10] } } },
+    { $project: { _id: 1, tracks: { $slice: ['$tracks', user.settings.nbElements] }, counts: { $slice: ['$counts', user.settings.nbElements] } } },
     { $unwind: { path: '$tracks', includeArrayIndex: 'trackIdx' } },
     {
       $lookup: {
@@ -40,9 +41,9 @@ const getMostListenedSongs = async (userId, start, end, timeSplit = 'hour') => {
   return res;
 };
 
-const getMostListenedArtist = async (userId, start, end, timeSplit = 'hour') => {
+const getMostListenedArtist = async (user, start, end, timeSplit = 'hour') => {
   const res = await Infos.aggregate([
-    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     { $project: { ...getGroupByDateProjection(), id: 1 } },
     {
       $lookup: {
@@ -50,10 +51,10 @@ const getMostListenedArtist = async (userId, start, end, timeSplit = 'hour') => 
       },
     },
     { $unwind: '$track' },
-    { $group: { _id: { ...getGroupingByTimeSplit(timeSplit), art: { $arrayElemAt: ['$track.artists', 0] } }, count: { $sum: 1 } } },
+    { $group: { _id: { ...getGroupingByTimeSplit(timeSplit), art: { $arrayElemAt: ['$track.artists', 0] } }, count: { $sum: getTrackSumType(user) } } },
     { $sort: { count: -1, '_id.art': 1 } },
     { $group: { _id: getGroupingByTimeSplit(timeSplit, '_id'), artists: { $push: '$_id.art' }, counts: { $push: '$count' } } },
-    { $project: { _id: 1, artists: { $slice: ['$artists', 10] }, counts: { $slice: ['$counts', 10] } } },
+    { $project: { _id: 1, artists: { $slice: ['$artists', user.settings.nbElements] }, counts: { $slice: ['$counts', user.settings.nbElements] } } },
     { $unwind: { path: '$artists', includeArrayIndex: 'artIdx' } },
     {
       $lookup: {
@@ -73,9 +74,9 @@ const getMostListenedArtist = async (userId, start, end, timeSplit = 'hour') => 
   return res;
 };
 
-const getSongsPer = async (userId, start, end, timeSplit = 'day') => {
+const getSongsPer = async (user, start, end, timeSplit = 'day') => {
   const res = await Infos.aggregate([
-    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     { $project: { ...getGroupByDateProjection(), id: 1 } },
     { $group: { _id: getGroupingByTimeSplit(timeSplit), count: { $sum: 1 } } },
     ...sortByTimeSplit(timeSplit, '_id'),
@@ -83,9 +84,9 @@ const getSongsPer = async (userId, start, end, timeSplit = 'day') => {
   return res;
 };
 
-const getTimePer = async (userId, start, end, timeSplit = 'day') => {
+const getTimePer = async (user, start, end, timeSplit = 'day') => {
   const res = await Infos.aggregate([
-    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
         ...getGroupByDateProjection(),
@@ -109,9 +110,9 @@ const getTimePer = async (userId, start, end, timeSplit = 'day') => {
   return res;
 };
 
-const albumDateRatio = async (userId, start, end, timeSplit = 'day') => {
+const albumDateRatio = async (user, start, end, timeSplit = 'day') => {
   const res = await Infos.aggregate([
-    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
         ...getGroupByDateProjection(),
@@ -144,9 +145,9 @@ const albumDateRatio = async (userId, start, end, timeSplit = 'day') => {
   return res;
 };
 
-const featRatio = async (userId, start, end, timeSplit) => {
+const featRatio = async (user, start, end, timeSplit) => {
   const res = await Infos.aggregate([
-    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
         ...getGroupByDateProjection(),
@@ -181,9 +182,9 @@ const featRatio = async (userId, start, end, timeSplit) => {
   return res;
 };
 
-const popularityPer = async (userId, start, end, timeSplit = 'day') => {
+const popularityPer = async (user, start, end, timeSplit = 'day') => {
   const res = await Infos.aggregate([
-    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
         ...getGroupByDateProjection(),
@@ -209,9 +210,9 @@ const popularityPer = async (userId, start, end, timeSplit = 'day') => {
   return res;
 };
 
-const differentArtistsPer = async (userId, start, end, timeSplit = 'day') => {
+const differentArtistsPer = async (user, start, end, timeSplit = 'day') => {
   const res = await Infos.aggregate([
-    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
         ...getGroupByDateProjection(),
@@ -251,9 +252,9 @@ const differentArtistsPer = async (userId, start, end, timeSplit = 'day') => {
   return res;
 };
 
-const getDayRepartition = async (userId, start, end) => {
+const getDayRepartition = async (user, start, end) => {
   const res = await Infos.aggregate([
-    { $match: { owner: userId, played_at: { $gt: start, $lt: end } } },
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
         ...getGroupByDateProjection(),
@@ -269,10 +270,43 @@ const getDayRepartition = async (userId, start, end) => {
     {
       $group: {
         _id: '$hour',
-        count: { $sum: '$track.duration_ms' },
+        count: { $sum: getTrackSumType(user) },
       },
     },
     { $sort: { _id: 1 } },
+  ]);
+  return res;
+};
+
+const getBestArtistsPer = async (user, start, end, timeSplit = 'day') => {
+  const res = await Infos.aggregate([
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    {
+      $lookup: {
+        from: 'tracks', localField: 'id', foreignField: 'id', as: 'track',
+      },
+    },
+    { $unwind: '$track' },
+    { $group: { _id: { ...getGroupingByTimeSplit(timeSplit), art: { $arrayElemAt: ['$track.artists', 0] } }, count: { $sum: getTrackSumType(user) } } },
+    { $sort: { count: -1, '_id.art': 1 } },
+    { $group: { _id: getGroupingByTimeSplit(timeSplit, '_id'), artists: { $push: '$_id.art' }, counts: { $push: '$count' } } },
+    { $project: { _id: 1, artists: { $slice: ['$artists', user.settings.nbElements] }, counts: { $slice: ['$counts', user.settings.nbElements] } } },
+    { $unwind: { path: '$artists', includeArrayIndex: 'artIdx' } },
+    {
+      $lookup: {
+        from: 'artists', localField: 'artists', foreignField: 'id', as: 'artists',
+      },
+    },
+    { $unwind: '$artists' },
+    {
+      $group: {
+        _id: getGroupingByTimeSplit(timeSplit, '_id'),
+        artists: { $push: '$artists' },
+        counts: { $push: { $arrayElemAt: ['$counts', '$artIdx'] } },
+      },
+    },
+    ...sortByTimeSplit(timeSplit, '_id'),
   ]);
   return res;
 };
@@ -287,4 +321,5 @@ module.exports = {
   popularityPer,
   differentArtistsPer,
   getDayRepartition,
+  getBestArtistsPer,
 };

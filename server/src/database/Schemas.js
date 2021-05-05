@@ -14,6 +14,11 @@ const User = mongoose.model('User',
     settings: {
       historyLine: Boolean,
       preferredStatsPeriod: String,
+      nbElements: Number,
+      metricUsed: {
+        type: String,
+        enum: ['number', 'duration'],
+      },
     },
   }, { toJSON: { virtuals: true }, toObject: { virtuals: true } }));
 

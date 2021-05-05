@@ -58,7 +58,7 @@ router.get('/listened_to', validating(interval, 'query'), logged, async (req, re
   const { user } = req;
   const { start, end } = req.values;
 
-  const result = await db.getSongsPer(user._id, start, end);
+  const result = await db.getSongsPer(user, start, end);
   if (result.length > 0) {
     return res.status(200).send({ count: result[0].count });
   }
@@ -69,7 +69,7 @@ router.get('/most_listened', validating(intervalPerSchema, 'query'), logged, asy
   const { user } = req;
   const { start, end, timeSplit } = req.values;
 
-  const result = await db.getMostListenedSongs(user._id, start, end, timeSplit);
+  const result = await db.getMostListenedSongs(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -77,7 +77,7 @@ router.get('/most_listened_artist', validating(intervalPerSchema, 'query'), logg
   const { user } = req;
   const { start, end, timeSplit } = req.values;
 
-  const result = await db.getMostListenedArtist(user._id, start, end, timeSplit);
+  const result = await db.getMostListenedArtist(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -85,7 +85,7 @@ router.get('/songs_per', validating(intervalPerSchema, 'query'), logged, async (
   const { user } = req;
   const { start, end, timeSplit } = req.values;
 
-  const result = await db.getSongsPer(user._id, start, end, timeSplit);
+  const result = await db.getSongsPer(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -93,7 +93,7 @@ router.get('/time_per', validating(intervalPerSchema, 'query'), logged, async (r
   const { user } = req;
   const { start, end, timeSplit } = req.values;
 
-  const result = await db.getTimePer(user._id, start, end, timeSplit);
+  const result = await db.getTimePer(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -101,7 +101,7 @@ router.get('/album_date_ratio', validating(intervalPerSchema, 'query'), logged, 
   const { user } = req;
   const { start, end, timeSplit } = req.values;
 
-  const result = await db.albumDateRatio(user._id, start, end, timeSplit);
+  const result = await db.albumDateRatio(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -109,7 +109,7 @@ router.get('/feat_ratio', validating(intervalPerSchema, 'query'), logged, async 
   const { user } = req;
   const { start, end, timeSplit } = req.values;
 
-  const result = await db.featRatio(user._id, start, end, timeSplit);
+  const result = await db.featRatio(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -117,7 +117,7 @@ router.get('/popularity_per', validating(intervalPerSchema, 'query'), logged, as
   const { user } = req;
   const { start, end, timeSplit } = req.values;
 
-  const result = await db.popularityPer(user._id, start, end, timeSplit);
+  const result = await db.popularityPer(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -125,7 +125,7 @@ router.get('/different_artists_per', validating(intervalPerSchema, 'query'), log
   const { user } = req;
   const { start, end, timeSplit } = req.values;
 
-  const result = await db.differentArtistsPer(user._id, start, end, timeSplit);
+  const result = await db.differentArtistsPer(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -133,7 +133,15 @@ router.get('/time_per_hour_of_day', validating(interval, 'query'), logged, async
   const { user } = req;
   const { start, end } = req.values;
 
-  const result = await db.getDayRepartition(user._id, start, end);
+  const result = await db.getDayRepartition(user, start, end);
+  return res.status(200).send(result);
+});
+
+router.get('/best_artists_per', validating(intervalPerSchema, 'query'), logged, async (req, res) => {
+  const { user } = req;
+  const { start, end, timeSplit } = req.values;
+
+  const result = await db.getBestArtistsPer(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 

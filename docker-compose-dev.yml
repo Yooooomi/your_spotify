@@ -20,11 +20,14 @@ services:
       - SPOTIFY_PUBLIC=__your_spotify_client_id__
       - SPOTIFY_SECRET=__your_spotify_secret__
       - CORS=all
+
   mongo:
     container_name: mongo
     image: mongo
     logging:
       driver: none
+    volumes:
+      - ./db_data:/data/db
 
   web:
     container_name: web

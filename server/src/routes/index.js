@@ -79,6 +79,8 @@ router.post('/login', validating(loginSchema), async (req, res) => {
 const settingsSchema = Joi.object().keys({
   historyLine: Joi.bool(),
   preferredStatsPeriod: Joi.string().only().allow('day', 'week', 'month', 'year'),
+  nbElements: Joi.number().min(5).max(50),
+  metricUsed: Joi.string().allow('number', 'duration').only(),
 });
 
 router.post('/settings', validating(settingsSchema), logged, async (req, res) => {

@@ -39,8 +39,19 @@ const getGroupByDateProjection = () => ({
   hour: { $hour: { date: '$played_at', timezone: 'Europe/Paris' } },
 });
 
+const getTrackSumType = user => {
+  if (user.settings.metricUsed === 'number') {
+    return 1;
+  }
+  if (user.settings.metricUsed === 'duration') {
+    return '$track.duration_ms';
+  }
+  return 1;
+};
+
 module.exports = {
   getGroupingByTimeSplit,
   sortByTimeSplit,
   getGroupByDateProjection,
+  getTrackSumType,
 };
