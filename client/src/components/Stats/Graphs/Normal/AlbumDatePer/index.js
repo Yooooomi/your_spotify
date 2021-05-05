@@ -2,7 +2,7 @@ import React from 'react';
 import s from './index.module.css';
 import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
-import Chart from '../../../../Chart';
+import SimpleLineChart from '../../../../Chart/SimpleLineChart';
 import { formatDateFromYearDecimal } from '../../../../../services/date';
 
 class AlbumDatePer extends IntervalChart {
@@ -33,10 +33,11 @@ class AlbumDatePer extends IntervalChart {
     const data = this.getChartData();
 
     return (
-      <Chart
+      <SimpleLineChart
         xName="Date"
         yName="Average album release date"
         yDomain={[min => Number(min) - 1, max => Number(max) + 1]}
+        tFormat={this.getTooltipContent}
         start={start}
         end={end}
         tValueFormat={formatDateFromYearDecimal}

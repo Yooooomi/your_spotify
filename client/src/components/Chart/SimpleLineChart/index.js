@@ -1,5 +1,5 @@
 import 'date-fns';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import cl from 'classnames';
 import {
   LineChart,
@@ -11,67 +11,16 @@ import {
   BarChart,
   Bar,
 } from 'recharts';
-import { Tooltip as MTooltip } from '@material-ui/core';
 import s from './index.module.css';
-import IntervalModifier from '../IntervalModifier';
-import { formatDate } from '../../services/date';
+import IntervalModifier from '../../IntervalModifier';
+import {
+  getFormatter,
+  getTooltipFormatter,
+  ImageAxisTick,
+  svgImgSize,
+} from '../services';
 
-const padDate = (value) => (`${value}`).padStart(2, '0');
-
-const getPrecision = (start, end) => {
-  const diff = end.getTime() - start.getTime();
-  const day = 1000 * 60 * 60 * 24;
-
-  if (diff < day * 2) return 'hour';
-  if (diff <= day * 31 * 2) return 'day';
-  if (diff <= day * 31 * 12 * 2) return 'month';
-  return 'year';
-};
-
-const getFormatter = (arrayLength, start, end) => {
-  const diff = end.getTime() - start.getTime();
-  const precision = getPrecision(start, end);
-
-  return value => {
-    const ratio = value / (arrayLength - 1);
-    const current = new Date(start.getTime() + diff * ratio);
-
-    if (precision === 'hour') return `${padDate(current.getHours())}h`;
-    if (precision === 'day') return `${padDate(current.getDate())}/${padDate(current.getMonth() + 1)}`;
-    if (precision === 'month') return `${padDate(current.getMonth() + 1)}/${current.getFullYear()}`;
-    if (precision === 'year') return `${current.getFullYear()}`;
-    return 'NO PRECISION';
-  };
-};
-
-const getTooltipFormatter = (data, valueFormat) => (value, name, props) => {
-  const finalValue = valueFormat ? valueFormat(value) : Math.round(value * 10) / 10;
-  return [finalValue, formatDate(props.payload.date)];
-};
-
-const imgSize = 32;
-class ImageAxisTick extends PureComponent {
-  render() {
-    const {
-      x, y, xFormat, payload,
-    } = this.props;
-
-    const { name, url } = xFormat ? xFormat(payload.value, payload.name, this.props) : payload.value;
-
-    return (
-      <MTooltip title={name}>
-        <g transform={`translate(${x - imgSize / 2},${y})`}>
-          <clipPath id="yoyo">
-            <circle r={imgSize / 2} cx={imgSize / 2} cy={imgSize / 2} />
-          </clipPath>
-          <image width={imgSize} height={imgSize} href={url} clipPath="url(#yoyo)" />
-        </g>
-      </MTooltip>
-    );
-  }
-}
-
-export default function Chart({
+export default function SimpleLineChart({
   data,
   className,
   start,
@@ -122,7 +71,7 @@ export default function Chart({
         onTimeSplitChange={onTimeSplitChange}
       />
       <ResponsiveContainer
-        style={{ width: '100%' }}
+        style={{ width: '100%', height: '100%' }}
       >
         <Container
           margin={{
@@ -135,7 +84,7 @@ export default function Chart({
             name={xName}
             domain={xDomain}
             dataKey="x"
-            height={xIsImage ? imgSize + 15 : undefined}
+            height={xIsImage ? svgImgSize + 15 : undefined}
             tickFormatter={xIsImage ? undefined : xFormat}
             tick={xIsImage ? <ImageAxisTick xFormat={xFormat} /> : undefined}
           />
@@ -179,7 +128,6 @@ export default function Chart({
   //     }
   //   }
   // }
-
 
   // const getLine = () => {
   //   switch (type) {

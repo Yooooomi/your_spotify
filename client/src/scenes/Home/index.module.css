@@ -35,10 +35,6 @@
     justify-content: space-between;
 }
 
-.divider {
-    margin: 20px 0px;
-}
-
 .welcomehidden {
     opacity: 0;
 }
@@ -71,10 +67,16 @@
     padding-left: 8px;
 }
 
+@media only screen and (max-width: 1280px) {
+    .minHeight {
+        min-height: 400px;
+    }
+}
+
 @media only screen and (max-width: 1600px) {
     .listened {
     }
-    
+
     .firstleft {
         padding-right: unset;
     }

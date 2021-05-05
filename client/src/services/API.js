@@ -48,6 +48,9 @@ const API = {
   popularityPer: (start, end, timeSplit) => axios.get('/spotify/popularity_per', {
     params: { start, end, timeSplit },
   }),
+  bestArtistsPer: (start, end, timeSplit) => axios.get('/spotify/best_artists_per', {
+    params: { start, end, timeSplit },
+  }),
   differentArtistsPer: (start, end, timeSplit) => axios.get('/spotify/different_artists_per', {
     params: { start, end, timeSplit },
   }),

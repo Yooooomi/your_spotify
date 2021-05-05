@@ -76,11 +76,11 @@ const theme = createMuiTheme({
       },
     },
     MuiSelect: {
-      select: {
+      selectMenu: {
         display: 'flex',
         alignItems: 'center',
         padding: '0 10px',
-        minHeight: 44,
+        minHeight: '44px',
         borderRadius: '10px !important',
         backgroundColor: 'white !important',
         'box-shadow': '0 0 14px 0 rgba(53,64,82,.05)',

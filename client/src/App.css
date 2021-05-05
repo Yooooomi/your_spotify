@@ -9,6 +9,7 @@
   --header: 5vh;
   --content: calc(100vh - var(--header));
   --radius: 0.25rem;
+  --tight: 5px;
 }
 
 html {

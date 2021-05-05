@@ -16,6 +16,7 @@ import BestArtists from '../../components/Stats/Graphs/Normal/BestArtists';
 import DifferentArtists from '../../components/Stats/Cards/Normal/DifferentArtists';
 import QuickInterval, { PrefabToInter } from '../../components/QuickInterval';
 import { lessThanMobile } from '../../services/theme';
+import Divider from '../../components/Divider';
 
 const NB_TO_BE_LOADED = 7;
 
@@ -34,8 +35,6 @@ function Home({ user }) {
     loaded[idx] = true;
     setLoadedArray([...loaded]);
   }, [loaded]);
-
-  console.log(loaded);
 
   const changePrefab = useCallback((ev, idx) => {
     const newPrefab = PrefabToInter[idx];
@@ -72,13 +71,14 @@ function Home({ user }) {
           />
         </div>
       </div>
-      <hr className={s.divider} />
+      <Divider />
       <div className={cl(s.content, isLoaded ? s.content : s.contenthidden)}>
         <Grid container spacing={2} alignContent="stretch">
           <Grid container item xs={12} lg={6} spacing={0}>
             <Grid item xs={12} lg={6}>
               <div className={cl(s.left, s.firstleft)}>
                 <SongsPerCard
+                  user={user}
                   timeSplit={timeSplit}
                   start={start}
                   end={end}
@@ -89,6 +89,7 @@ function Home({ user }) {
             <Grid item xs={12} lg={6}>
               <div className={cl(s.left, s.secondleft)}>
                 <DifferentArtists
+                  user={user}
                   timeSplit={timeSplit}
                   start={start}
                   end={end}
@@ -99,6 +100,7 @@ function Home({ user }) {
             <Grid item xs={12}>
               <div>
                 <TimePerCard
+                  user={user}
                   timeSplit={timeSplit}
                   start={start}
                   end={end}
@@ -110,6 +112,8 @@ function Home({ user }) {
 
           <Grid item xs={12} lg={6}>
             <BestArtists
+              user={user}
+              className={s.minHeight}
               timeSplit={timeSplit}
               start={start}
               end={end}
@@ -119,6 +123,7 @@ function Home({ user }) {
 
           <Grid item xs={6} lg={3}>
             <BestSong
+              user={user}
               timeSplit={timeSplit}
               start={start}
               end={end}
@@ -127,14 +132,17 @@ function Home({ user }) {
           </Grid>
           <Grid item xs={6} lg={3}>
             <BestArtist
+              user={user}
               timeSplit={timeSplit}
               start={start}
               end={end}
               loaded={() => setLoaded(5)}
             />
           </Grid>
-          <Grid style={{ minHeight: '250px' }} item xs={12} lg={6}>
+          <Grid item xs={12} lg={6}>
             <TimePer
+              user={user}
+              className={s.minHeight}
               loaded={() => setLoaded(6)}
               start={start}
               end={end}

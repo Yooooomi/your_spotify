@@ -21,6 +21,18 @@ class BestArtist extends DataDisplayer {
     }, cb);
   }
 
+  getTooltip = value => {
+    const { user } = this.props;
+
+    if (user.settings.metricUsed === 'number') {
+      return `You listened to this artist ${value} times`;
+    }
+    if (user.settings.metricUsed === 'duration') {
+      return `You listened to this artist for ${Math.floor(value / 1000 / 60)} minutes`;
+    }
+    return '';
+  }
+
   render() {
     const { stats } = this.state;
 
@@ -50,7 +62,7 @@ class BestArtist extends DataDisplayer {
           arrow
           placement="bottom"
           enterDelay={250}
-          title={`You listened to this artist ${counts} times`}
+          title={this.getTooltip(counts)}
         >
 
           <div className={s.content}>

@@ -1,0 +1,9 @@
+.root {
+    height: calc(100% - 40px);
+}
+
+.buttons {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}

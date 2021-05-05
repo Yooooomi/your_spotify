@@ -21,9 +21,9 @@ const mapDispatchToProps = dispatch => ({
   refreshUser: async () => {
     try {
       const user = await API.me();
-      dispatch({ type: 'UPDATE_USER', user: user.data });
+      dispatch({ type: 'UPDATE_USER_KEEP_SPOTIFY', user: user.data });
     } catch (e) {
-      dispatch({ type: 'UPDATE_USER', user: {} });
+      dispatch({ type: 'UPDATE_USER_KEEP_SPOTIFY', user: {} });
     }
   },
   addTracks: async (offset) => {

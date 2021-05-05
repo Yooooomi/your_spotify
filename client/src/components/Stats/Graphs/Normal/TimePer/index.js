@@ -2,7 +2,7 @@ import React from 'react';
 import s from './index.module.css';
 import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
-import Chart from '../../../../Chart';
+import SimpleLineChart from '../../../../Chart/SimpleLineChart';
 
 class TimePer extends IntervalChart {
   constructor(props) {
@@ -32,7 +32,7 @@ class TimePer extends IntervalChart {
     const data = this.getChartData();
 
     return (
-      <Chart
+      <SimpleLineChart
         xName="Date"
         yName="Time listened"
         start={start}

@@ -2,7 +2,7 @@ import React from 'react';
 import s from './index.module.css';
 import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
-import Chart from '../../../../Chart';
+import SimpleLineChart from '../../../../Chart/SimpleLineChart';
 
 class PopularityPer extends IntervalChart {
   constructor(props) {
@@ -27,14 +27,17 @@ class PopularityPer extends IntervalChart {
     return stats.map((stat, k) => ({ x: k, y: stat.data, date: stat._id }));
   }
 
+  getYFormat = value => `${value}%`;
+
   getContent = () => {
     const { start, end, timeSplit } = this.state;
     const data = this.getChartData();
 
     return (
-      <Chart
+      <SimpleLineChart
         xName="Date"
         yName="Average popularity"
+        yFormat={this.getYFormat}
         start={start}
         end={end}
         timeSplit={timeSplit}

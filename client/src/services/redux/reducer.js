@@ -7,6 +7,9 @@ const userReducer = (state = initialUser, action) => {
   switch (action.type) {
     case 'UPDATE_USER':
       return { ...state, user: action.user };
+    case 'UPDATE_USER_KEEP_SPOTIFY':
+      action.user.spotify = state.user.spotify;
+      return { ...state, user: action.user };
     default:
       return state;
   }

@@ -14,8 +14,11 @@ import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools'
 import QuickInterval, { PrefabToInter } from '../../components/QuickInterval';
 import HourOfDay from '../../components/Stats/Graphs/Normal/HourOfDay';
 import TextScreenSize from '../../components/TextScreenSize';
+import BestArtistsPer from '../../components/Stats/Graphs/Normal/BestArtistsPer';
+import Divider from '../../components/Divider';
 
 const StatClasses = [
+  BestArtistsPer,
   BestArtists,
   AlbumDatePer,
   DifferentArtistsPer,
@@ -71,11 +74,12 @@ function AllStats({ user }) {
         </Grid>
         <div className={s.leftTitle} />
       </div>
+      <Divider />
       <Grid spacing={2} container>
         {
           StatClasses.map(Class => (
             <Grid key={Class.name} className={s.graph} item xs={12} md={12} lg={6}>
-              <Class start={globalStart} end={globalEnd} timeSplit={globalTimeSplit} />
+              <Class start={globalStart} end={globalEnd} timeSplit={globalTimeSplit} user={user} />
             </Grid>
           ))
         }

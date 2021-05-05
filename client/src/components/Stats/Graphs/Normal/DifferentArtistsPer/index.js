@@ -2,11 +2,11 @@ import React from 'react';
 import s from './index.module.css';
 import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
-import Chart from '../../../../Chart';
+import SimpleLineChart from '../../../../Chart/SimpleLineChart';
 
 class DifferentArtistsPer extends IntervalChart {
   constructor(props) {
-    super(props, 'Number of different artists', FillModes.VOID);
+    super(props, 'Number of different artists listened to', FillModes.VOID);
   }
 
   dataGetter = stats => {
@@ -32,7 +32,7 @@ class DifferentArtistsPer extends IntervalChart {
     const data = this.getChartData();
 
     return (
-      <Chart
+      <SimpleLineChart
         xName="Date"
         yName="Different arists"
         start={start}

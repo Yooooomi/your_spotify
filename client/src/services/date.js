@@ -1,4 +1,3 @@
-
 const pad = nb => nb.toString().padStart(2, '0');
 
 export const duration = (ms) => {
@@ -10,7 +9,7 @@ export const duration = (ms) => {
   return `${pad(minutes)}:${pad(seconds)}`;
 };
 
-export const formatHour = date => `${pad(date.getHours())}h${pad(date.getMinutes())}`;
+export const formatHour = date => `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
 const months = [
   'January',

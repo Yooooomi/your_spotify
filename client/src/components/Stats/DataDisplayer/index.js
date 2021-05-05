@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unused-state */
 // We need state unused state variables that are used by children of this class
 import React from 'react';
+import { connect } from 'react-redux';
 import { lastWeek } from '../../../services/interval';
+import { mapDispatchToProps, mapStateToProps } from '../../../services/redux/tools';
 
 /*
 * DataDisplayer is a class to hold an interval (start, end) and a timesplit
@@ -36,6 +38,7 @@ class DataDisplayer extends React.Component {
     }
 
     const previous = this.getPreviousInter(start, end);
+    this.myRef = React.createRef();
 
     this.state = {
       start,
@@ -59,6 +62,8 @@ class DataDisplayer extends React.Component {
     } else if (loaded) {
       loaded();
     }
+    window.addEventListener('resize', this.onresize);
+    this.onresize();
   }
 
   componentDidUpdate(prevProps) {
@@ -103,6 +108,24 @@ class DataDisplayer extends React.Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState(changes, this.refresh);
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onresize);
+  }
+
+  onresize = () => {
+    const rf = this.myRef;
+    if (rf && rf.current) {
+      this.setState({ width: rf.current.clientWidth }, this.onresized);
+    }
+  }
+
+  onresized = () => { }
+
+  getWidth = () => {
+    const { width } = this.state;
+    return width;
   }
 
   getPreviousInter = (start, end) => {

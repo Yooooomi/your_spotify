@@ -28,6 +28,7 @@ function IntervalModifier({
           size="small"
           variant="outlined"
           color="primary"
+          style={{ backgroundColor: 'white' }}
           onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)}
         />
         <Popper

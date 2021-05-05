@@ -1,7 +1,35 @@
 
 
 .paper {
-    padding: 20px;
+    padding-top: 20px;
+    padding-right: 10px;
     height: 100%;
     position: relative;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    margin-bottom: var(--tight);
+}
+
+.header > :first-child {
+    margin-right: var(--tight);
+}
+
+.dialogcontainer {
+    height: 80vh;
+    width: 80vw;
+    padding-top: 25px;
+    padding-right: 25px;
+    text-align: center;
+    overflow: hidden;
+}
+
+@media only screen and (max-width: 960px) {
+    .dialogcontainer {
+        width: 85vw;
+    }
 }

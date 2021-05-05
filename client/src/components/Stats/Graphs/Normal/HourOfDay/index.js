@@ -1,6 +1,6 @@
 import React from 'react';
 import s from './index.module.css';
-import Chart from '../../../../Chart';
+import SimpleLineChart from '../../../../Chart/SimpleLineChart';
 import API from '../../../../../services/API';
 import BasicChart from '../../BasicChart';
 
@@ -25,9 +25,6 @@ class HourOfDay extends BasicChart {
   getChartData = () => {
     const { stats } = this.state;
 
-    // So that it fits the screen
-    // stats.artists = stats.artists.slice(0, Math.min(stats.artists.length, 7));
-
     const total = stats.reduce((acc, curr) => acc + curr.count, 0);
     const result = Array.from(Array(24).keys()).map((_, k) => ({ x: k, y: 0 }));
 
@@ -38,14 +35,22 @@ class HourOfDay extends BasicChart {
   }
 
   tooltipFormatter = (_, __, { payload }) => {
+    const { user } = this.props;
     const { stats } = this.state;
     const { x } = payload;
-    const total = stats.reduce((acc, curr) => acc + curr.count, 0);
+
     const value = stats[x]?.count || 0;
-    const minutes = Math.floor(value / 1000 / 60);
+    const total = stats.reduce((acc, curr) => acc + curr.count, 0);
     const perc = Math.round((value / total) * 100);
 
-    return `${x.toString().padStart(2, '0')}h, listened a total of ${minutes} minutes, ${perc}% of the day average`;
+    if (user.settings.metricUsed === 'number') {
+      return `${x.toString().padStart(2, '0')}h, listened a total of ${value} songs, ${perc}% of the day average`;
+    }
+    if (user.settings.metricUsed === 'duration') {
+      const minutes = Math.floor(value / 1000 / 60);
+      return `${x.toString().padStart(2, '0')}h, listened a total of ${minutes} minutes, ${perc}% of the day average`;
+    }
+    return '';
   }
 
   getXFormat = value => {
@@ -55,7 +60,7 @@ class HourOfDay extends BasicChart {
     return '';
   }
 
-  getYFormat = value => value * 100;
+  getYFormat = value => `${Math.floor(value * 10000) / 100}%`;
 
   getContent = () => {
     const {
@@ -67,7 +72,8 @@ class HourOfDay extends BasicChart {
     const data = this.getChartData();
 
     return (
-      <Chart
+      <SimpleLineChart
+        forceXToDisplay
         xFormat={this.getXFormat}
         yFormat={this.getYFormat}
         tFormat={this.tooltipFormatter}
