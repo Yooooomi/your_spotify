@@ -26,12 +26,17 @@ const months = [
   'December',
 ];
 
-export const formatDate = date => {
+export const formatDate = (date, withHour = false) => {
   const month = date.getMonth();
   const day = date.getDate();
   const year = date.getFullYear();
 
-  return `${pad(day)}/${pad(month + 1)}/${year}`;
+  let current = `${pad(day)}/${pad(month + 1)}/${year}`;
+  if (withHour) {
+    const hours = date.getHours();
+    current += ` - ${pad(hours)}:00`;
+  }
+  return current;
 };
 
 export const formatDateFromYearDecimal = year => {

@@ -1,9 +1,7 @@
 /* eslint-disable react/no-unused-state */
 // We need state unused state variables that are used by children of this class
 import React from 'react';
-import { connect } from 'react-redux';
 import { lastWeek } from '../../../services/interval';
-import { mapDispatchToProps, mapStateToProps } from '../../../services/redux/tools';
 
 /*
 * DataDisplayer is a class to hold an interval (start, end) and a timesplit

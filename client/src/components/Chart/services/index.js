@@ -1,25 +1,34 @@
 import React, { PureComponent } from 'react';
-import { formatDate } from '../../../services/date';
 import { Tooltip } from '@material-ui/core';
+import { formatDate } from '../../../services/date';
 
 export const padDate = (value) => (`${value}`).padStart(2, '0');
 
-export const getPrecision = (start, end) => {
+export const getPrecisionIndex = (start, end) => {
   const diff = end.getTime() - start.getTime();
   const day = 1000 * 60 * 60 * 24;
 
-  if (diff < day * 2) return 'hour';
-  if (diff <= day * 31 * 2) return 'day';
-  if (diff <= day * 31 * 12 * 2) return 'month';
-  return 'year';
+  if (diff < day * 2) return 0;
+  if (diff <= day * 31 * 2) return 1;
+  if (diff <= day * 31 * 12 * 2) return 2;
+  return 3;
 };
+
+const precisions = [
+  'hour',
+  'day',
+  'month',
+  'year',
+];
+
+export const getPrecision = (start, end) => precisions[getPrecisionIndex(start, end)];
 
 export const getFormatter = (arrayLength, start, end) => {
   const diff = end.getTime() - start.getTime();
   const precision = getPrecision(start, end);
 
-  return (value, index) => {
-    const ratio = index / (arrayLength - 1);
+  return value => {
+    const ratio = value / (arrayLength - 1);
     const current = new Date(start.getTime() + diff * ratio);
 
     if (precision === 'hour') return `${padDate(current.getHours())}h`;
@@ -30,9 +39,9 @@ export const getFormatter = (arrayLength, start, end) => {
   };
 };
 
-export const getTooltipFormatter = (data, valueFormat) => (value, name, props) => {
+export const getTooltipFormatter = (data, valueFormat, precision) => (value, name, props) => {
   const finalValue = valueFormat ? valueFormat(value) : Math.round(value * 10) / 10;
-  return [finalValue, formatDate(props.payload.date)];
+  return [finalValue, formatDate(props.payload.date, precision === 0)];
 };
 
 export const svgImgSize = 32;

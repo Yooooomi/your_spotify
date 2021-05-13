@@ -15,6 +15,7 @@ import s from './index.module.css';
 import IntervalModifier from '../../IntervalModifier';
 import {
   getFormatter,
+  getPrecisionIndex,
   getTooltipFormatter,
   ImageAxisTick,
   svgImgSize,
@@ -45,7 +46,7 @@ export default function SimpleLineChart({
     xFormat = getFormatter(data.length, start, end);
   }
   if (tFormat === null) {
-    tFormat = getTooltipFormatter(data, tValueFormat);
+    tFormat = getTooltipFormatter(data, tValueFormat, getPrecisionIndex(start, end));
   }
 
   let Container;

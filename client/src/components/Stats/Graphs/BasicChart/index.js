@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Dialog,
+  DialogContent,
   IconButton,
   Paper,
   Typography,
@@ -75,11 +76,14 @@ class BasicChart extends DataDisplayer {
           onClose={this.handleDialog(false)}
           open={dialog}
           maxWidth="lg"
+          fullWidth
         >
-          <div ref={this.dialogRef} className={s.dialogcontainer}>
-            <Typography variant="subtitle2">{this.name}</Typography>
-            {content}
-          </div>
+          <DialogContent>
+            <div ref={this.dialogRef} className={s.dialogcontainer}>
+              <Typography variant="subtitle2">{this.name}</Typography>
+              {content}
+            </div>
+          </DialogContent>
         </Dialog>
         <div className={s.header}>
           <Typography variant="subtitle2">{this.name}</Typography>
