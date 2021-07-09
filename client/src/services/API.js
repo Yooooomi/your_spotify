@@ -60,6 +60,7 @@ const API = {
   timePerHourOfDay: (start, end) => axios.get('/spotify/time_per_hour_of_day', {
     params: { start, end },
   }),
+  getArtist: (id) => axios.get(`/artist/${id}`),
 };
 
 export default {

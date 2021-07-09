@@ -30,7 +30,7 @@ function SpotifyFieldGetter(profile, fieldName) {
   return value;
 }
 
-export function Settings({
+function Settings({
   user,
   refreshUser,
   globalPreferences,

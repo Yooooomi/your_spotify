@@ -53,5 +53,27 @@
 }
 
 .playButton {
-    margin-right: 20px !important;
+    margin-right: 0px !important;
+}
+
+@media only screen and (max-width: 960px) {
+    .info {
+        flex: unset;
+    }
+
+    .large {
+        flex: unset;
+    }
+    
+    .medium {
+        flex: unset;
+    }
+    
+    .small {
+        flex: unset;
+    }
+    
+    .tiny {
+        flex: unset;
+    }
 }

@@ -14,6 +14,7 @@ const indexRouter = require('./routes/index');
 const oauthRouter = require('./routes/oauth');
 const spotifyRouter = require('./routes/spotify');
 const globalRouter = require('./routes/global');
+const artistRouter = require('./routes/artist');
 
 const cors = process.env.CORS || '';
 const corsList = cors.split(',');
@@ -46,12 +47,6 @@ app.use('/', indexRouter);
 app.use('/oauth', oauthRouter);
 app.use('/spotify', spotifyRouter);
 app.use('/global', globalRouter);
-
-app.use((err, req, res) => {
-  if (err) {
-    logger.error(err);
-  }
-  return res.status(500).end();
-});
+app.use('/artist', artistRouter);
 
 module.exports = app;

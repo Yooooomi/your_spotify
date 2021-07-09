@@ -5,33 +5,36 @@
     background-color: white;
 }
 
-.stat {
-    flex-grow: 1;
+.appbar {
+    height: var(--header);
+    justify-content: center;
 }
 
 .page {
     display: flex;
+    max-width: 100vw;
+    overflow: hidden;
 }
 
 .siderContainer {
-    width: 15vw;
-    position: relative;
+    flex: 0 0 250px;
 }
 
 .sider {
-    padding-top: 5vh;
+    position: fixed;
+    width: 100%;
+    width: 250px;
+    padding-top: 25px;
     background-color: #1B2430;
     z-index: 4;
-    width: 15vw;
     height: var(--content);
-    position: fixed;
 }
 
 .content {
-    width: 85vw;
-    padding: 0px 50px;
-    padding-top: 5vh;
-    padding-bottom: 10vh;
+    position: relative;
+    flex: 1;
+    width: 1px;
+    padding: 25px;
 }
 
 @media only screen and (max-width: 960px) {
@@ -41,6 +44,7 @@
         padding-top: 5vh;
     }
     .siderContainer {
+        flex: 0 0 0;
         width: 0px;
     }
     .sider {

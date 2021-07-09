@@ -5,6 +5,7 @@ const logger = require('../tools/logger');
 const statQueries = require('./queries/stats');
 const userQueries = require('./queries/user');
 const globalQueries = require('./queries/global');
+const artistQueries = require('./queries/artist');
 
 const connect = async () => {
   logger.debug('Trying to connect to database');
@@ -33,4 +34,5 @@ module.exports = {
   ...statQueries,
   ...userQueries,
   ...globalQueries,
+  ...artistQueries,
 };

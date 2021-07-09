@@ -18,6 +18,7 @@ import Logout from './scenes/Auth/Logout';
 import LogToSpotify from './scenes/LogToSpotify';
 import AllStats from './scenes/AllStats';
 import SnackbarMessage from './components/SnackbarMessage';
+import Artist from './scenes/Artist';
 
 class App extends React.Component {
   async componentDidMount() {
@@ -61,6 +62,7 @@ class App extends React.Component {
           <SnackbarMessage />
           <Layout>
             <Switch>
+              <PrivateRoute spotify exact path={urls.artist} component={Artist} />
               <PrivateRoute spotify exact path={urls.home} component={Home} />
               <PrivateRoute spotify exact path={urls.history} component={History} />
               <PrivateRoute exact path={urls.allStats} component={AllStats} />

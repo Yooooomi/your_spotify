@@ -6,7 +6,7 @@
 :root {
   --mobile-limit: 960px;
   --tablet: 1600px;
-  --header: 5vh;
+  --header: 6vh;
   --content: calc(100vh - var(--header));
   --radius: 0.25rem;
   --tight: 5px;
