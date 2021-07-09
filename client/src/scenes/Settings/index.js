@@ -22,6 +22,14 @@ const SpotifyFields = [
   { label: 'Product type', value: 'product' },
 ];
 
+function SpotifyFieldGetter(profile, fieldName) {
+  const value = profile?.[fieldName];
+  if (!value) {
+    return `Could not retrieve ${fieldName}`;
+  }
+  return value;
+}
+
 export function Settings({
   user,
   refreshUser,
@@ -97,7 +105,9 @@ export function Settings({
                   SpotifyFields.map(field => (
                     <div className={s.entry} key={field.value}>
                       <Typography align="left">{field.label}</Typography>
-                      <Typography align="right" className={s.value}>{user.spotify[field.value]}</Typography>
+                      <Typography align="right" className={s.value}>
+                        {SpotifyFieldGetter(user.spotify, field.value)}
+                      </Typography>
                     </div>
                   ))
                 ) : (

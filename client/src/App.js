@@ -40,7 +40,10 @@ class App extends React.Component {
           const spot = await API.sme();
           data.spotify = spot.data;
         } catch (e) {
-          window.message('error', 'Something went wrong with your Spotify profile');
+          window.message(
+            'error',
+            'Something went wrong with your Spotify profile, try relogging to Spotify through the Setttings',
+          );
         }
       }
       updateUser(data);
