@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  List, ListItem, ListSubheader, ListItemIcon, ListItemText, Drawer, withWidth, isWidthDown,
+  List, ListItem, ListSubheader, ListItemIcon, ListItemText, Drawer, withWidth, isWidthDown, Typography,
 } from '@material-ui/core';
 import {
   HomeOutlined, TimelineOutlined, SettingsOutlined, MeetingRoomOutlined, HistoryOutlined,
@@ -107,6 +107,9 @@ class Sider extends React.Component {
           onClose={this.openDrawer(false)}
         >
           <div className={s.mobileDrawer}>
+            <Typography variant="h4" className={s.title}>
+              Your Spotify
+            </Typography>
             {siderContent}
           </div>
         </Drawer>

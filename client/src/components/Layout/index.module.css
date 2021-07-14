@@ -10,6 +10,12 @@
     justify-content: center;
 }
 
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .page {
     display: flex;
     max-width: 100vw;
@@ -41,7 +47,7 @@
     .content {
         width: 100vw;
         padding: 0px 10px;
-        padding-top: 5vh;
+        padding-top: 8px;
     }
     .siderContainer {
         flex: 0 0 0;

@@ -5,6 +5,7 @@ import { IconButton, Paper } from '@material-ui/core';
 import s from './index.module.css';
 import API from '../../services/API';
 import Line from './Line';
+import SimpleArtistLine from '../SimpleArtistLine';
 
 class Track extends React.Component {
   play = async () => {
@@ -35,7 +36,7 @@ class Track extends React.Component {
               {track.name}
             </div>
             <div className={s.author}>
-              {track.full_artist[0].name}
+              <SimpleArtistLine artist={track.full_artist[0]} />
             </div>
           </div>
           <div className={s.play}>

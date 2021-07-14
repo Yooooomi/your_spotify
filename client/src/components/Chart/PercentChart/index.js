@@ -17,7 +17,7 @@ import {
   ImageAxisTick,
   svgImgSize,
 } from '../services';
-import { colors, getColor, reducePickColors } from '../../../services/colors';
+import { getColor } from '../../../services/colors';
 
 export default function PercentChart({
   data,

@@ -31,7 +31,7 @@ function QuickInterval({
   const mobile = useMediaQuery(lessThanMobile);
 
   return (
-    <Grid container alignItems="center">
+    <Grid container alignItems="center" className={s.root}>
       <Grid item>
         {!mobile && (
           <Tabs

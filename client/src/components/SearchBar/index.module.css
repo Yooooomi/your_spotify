@@ -1,0 +1,100 @@
+
+:root {
+    --search-bar-closed: 20vw;
+    --search-bar-open: 30vw;
+    --search-bar-results: 30vw;
+}
+
+.root {
+
+}
+
+.inputcontainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.137);
+}
+
+.inputcontainer:first-child {
+    padding-left: 8px;
+}
+
+.inputcontainer:focus-within, .inputcontainer:hover {
+    background: rgba(255, 255, 255, 0.320);
+}
+
+.input {
+    color: white;
+    width: var(--search-bar-closed);
+    border: none;
+    outline: none;
+    padding: 8px 8px;
+    background: none;
+    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: initial;
+}
+
+.input:focus {
+    width: var(--search-bar-open);
+}
+
+.input::placeholder {
+    transition: all 250ms;
+    color: rgba(255, 255, 255, 0.884);
+    font-size: initial;
+    overflow: visible;
+    text-align: center;
+    /* width: 100% !important; */
+}
+
+.input:focus::placeholder {
+    /* width: 0% !important; */
+}
+
+.paper {
+    width: var(--search-bar-results);
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.result {
+    padding: 10px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-decoration: none;
+    color: unset;
+}
+
+.result:hover {
+    background: lightgrey;
+}
+
+.result > img {
+    margin-right: 5px;
+    height: 32px;
+    width: 32px;
+    border-radius: 6px;
+}
+
+.result > div {
+    color: grey;
+}
+
+.resultsnb {
+    text-align: center;
+    padding-left: 10px;
+    color: grey;
+}
+
+@media only screen and (max-width: 960px) {
+    :root {
+        --search-bar-closed: 60vw;
+        --search-bar-open: 60vw;
+        --search-bar-results: 60vw;
+    }
+}

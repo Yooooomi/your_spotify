@@ -59,12 +59,17 @@
 
 .firstleft {
     padding-bottom: 16px;
-    padding-right: 8px;
+    margin-right: 8px;
 }
 
 .secondleft {
     padding-bottom: 16px;
-    padding-left: 8px;
+    margin-left: 8px;
+}
+
+.divider {
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 @media only screen and (max-width: 1280px) {
@@ -73,20 +78,21 @@
     }
 }
 
-@media only screen and (max-width: 1600px) {
+@media only screen and (max-width: 1280px) {
     .listened {
     }
 
     .firstleft {
-        padding-right: unset;
+        margin-right: 0px;
     }
     
     .secondleft {
-        padding-left: unset;
+        margin-left: 0px;
     }
 
     .welcome {
         display: block;
+        text-align: center;
     }
 }
 

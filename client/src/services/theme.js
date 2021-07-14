@@ -8,6 +8,15 @@ export const tabletThreshold = '1600px';
 export const lessThanTablet = `(max-width:${tabletThreshold})`;
 export const moreThanTablet = `(min-width:${tabletThreshold})`;
 
+const shadows = [
+  '0 0px 1.4px rgba(0, 0, 0, 0.011)',
+  '0 0px 3.5px rgba(0, 0, 0, 0.016)',
+  '0 0px 6.5px rgba(0, 0, 0, 0.02)',
+  '0 0px 11.6px rgba(0, 0, 0, 0.024)',
+  '0 0px 21.7px rgba(0, 0, 0, 0.029)',
+  '0 0px 52px rgba(0, 0, 0, 0.04)',
+].join(',');
+
 const theme = createMuiTheme({
   shape: {
     borderRadius: '0.25rem',
@@ -34,33 +43,7 @@ const theme = createMuiTheme({
     },
     fontWeightRegular: 'normal',
   },
-  shadows: [
-    'none',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-    '0 0 14px 0 rgba(53,64,82,.05)',
-  ],
+  shadows: Array.from(Array(25).keys()).map(() => shadows),
   props: {
     MuiSelect: {
       disableUnderline: true,

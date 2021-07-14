@@ -1,4 +1,3 @@
-
 export const setThisToMorning = date => {
   date.setSeconds(0);
   date.setMinutes(0);

@@ -8,6 +8,7 @@ import s from './index.module.css';
 import Sider from './components/Sider';
 import { lessThanMobile } from '../../services/theme';
 import urls from '../../services/urls';
+import SearchBar from '../SearchBar';
 
 const authUrls = [
   urls.login,
@@ -29,9 +30,15 @@ function Layout({ children }) {
     <div className={s.root}>
       <div className={s.header}>
         <AppBar className={s.appbar}>
-          <Toolbar>
-            {(siderEnabled && mobile) && <IconButton onClick={onDrawer} edge="start"><Menu /></IconButton>}
-            <Typography align="center" variant="h6">Your spotify</Typography>
+          <Toolbar className={s.toolbar}>
+            <div>
+              {(siderEnabled && mobile) && <IconButton onClick={onDrawer} edge="start"><Menu /></IconButton>}
+              {!mobile && <Typography align="center" variant="h6">Your spotify</Typography>}
+            </div>
+            <div>
+              <SearchBar />
+            </div>
+            <div />
           </Toolbar>
         </AppBar>
       </div>

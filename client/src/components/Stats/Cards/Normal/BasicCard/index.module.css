@@ -3,6 +3,9 @@
 .root {
     text-align: left;
     padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .more {
@@ -15,4 +18,7 @@
 
 .middle {
     margin: 15px 0px !important;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
 }

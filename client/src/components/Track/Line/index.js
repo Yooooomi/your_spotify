@@ -1,11 +1,14 @@
 import React, { useCallback } from 'react';
-import { Typography, Paper, IconButton, useMediaQuery } from '@material-ui/core';
+import {
+  Typography, Paper, IconButton, useMediaQuery,
+} from '@material-ui/core';
 import cl from 'classnames';
 import { PlayCircleOutline } from '@material-ui/icons';
 import { duration, formatHour } from '../../../services/date';
 import s from './index.module.css';
 import API from '../../../services/API';
 import { lessThanMobile, lessThanTablet } from '../../../services/theme';
+import SimpleArtistLine from '../../SimpleArtistLine';
 
 function Line({ track, infos, header }) {
   const play = useCallback(async () => {
@@ -51,7 +54,14 @@ function Line({ track, infos, header }) {
         <Typography noWrap>{track.name}</Typography>
       </div>
       <div className={cl(s.info, s.medium)}>
-        <Typography noWrap>{track.full_artist.map(art => art.name).join(', ')}</Typography>
+        <Typography noWrap>
+          {track.full_artist.map((art, k, a) => (
+            <React.Fragment key={art.id}>
+              <SimpleArtistLine artist={art} key={art.id} />
+              {k < a.length - 1 && ', '}
+            </React.Fragment>
+          ))}
+        </Typography>
       </div>
       {!isDownTablet && (
         <div className={cl(s.info, s.little)}>

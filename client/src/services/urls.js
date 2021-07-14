@@ -1,4 +1,3 @@
-
 export default {
   home: '/',
   artist: '/artist/:artistId',

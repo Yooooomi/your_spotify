@@ -21,6 +21,11 @@
     color: white !important;
 }
 
+.title {
+    color: white;
+    margin-left: 15px !important;
+}
+
 @media only screen and (max-width: 960px) {
     .siderHeader {
         color: white !important;

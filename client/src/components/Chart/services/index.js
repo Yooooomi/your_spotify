@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Tooltip } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { formatDate } from '../../../services/date';
 
 export const padDate = (value) => (`${value}`).padStart(2, '0');
@@ -51,9 +52,9 @@ export class ImageAxisTick extends PureComponent {
       x, y, xFormat, payload,
     } = this.props;
 
-    const { name, url } = xFormat ? xFormat(payload.value, payload.name, this.props) : payload.value;
+    const { name, url, link } = xFormat ? xFormat(payload.value, payload.name, this.props) : payload.value;
 
-    return (
+    let comp = (
       <Tooltip title={name}>
         <g transform={`translate(${x - svgImgSize / 2},${y})`}>
           <clipPath id="yoyo">
@@ -63,5 +64,9 @@ export class ImageAxisTick extends PureComponent {
         </g>
       </Tooltip>
     );
+    if (link) {
+      comp = <Link to={link}>{comp}</Link>;
+    }
+    return comp;
   }
 }

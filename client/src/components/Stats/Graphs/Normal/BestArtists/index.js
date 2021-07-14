@@ -40,7 +40,7 @@ class BestArtists extends BasicChart {
     const { stats } = this.state;
     const art = stats.artists[value];
 
-    return { name: art.name, url: art?.images[art.images.length - 1]?.url };
+    return { name: art.name, url: art?.images[art.images.length - 1]?.url, link: `/artist/${art?.id}` };
   }
 
   getYFormat = value => {

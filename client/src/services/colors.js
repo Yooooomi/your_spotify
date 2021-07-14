@@ -338,7 +338,7 @@ const _colors = [
   '#87421F',
 ];
 
-export const colors = _colors.filter((col, k) => {
+export const colors = _colors.filter(col => {
   const tmp = col.substr(1);
   const parts = [
     Number.parseInt(`0x${tmp.substring(0, 2)}`, 16),
@@ -361,5 +361,23 @@ export const reducePickColors = acc => {
   acc.push(idx);
   return acc;
 };
+
+export function getTextColorFromCSSBackgroundRGB(r, g, b) {
+  if (r + g + b < 370) {
+    return 'white';
+  }
+  return 'black';
+}
+
+export function getTextColorFromCSSBackground(bg) {
+  const hex = bg.substr(1);
+  let r = hex.substr(0, 2);
+  let g = hex.substr(2, 2);
+  let b = hex.substr(4, 2);
+  r = Number.parseInt(`${r}`, 16);
+  g = Number.parseInt(`${g}`, 16);
+  b = Number.parseInt(`${b}`, 16);
+  return getTextColorFromCSSBackgroundRGB(r, g, b);
+}
 
 export const getColor = idx => colors[idx % colors.length];

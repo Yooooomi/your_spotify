@@ -1,4 +1,3 @@
-
 export const ratioValueAB = (oldValue, newValue) => {
   if (oldValue === newValue) return 0;
   if (oldValue === 0) return 100;

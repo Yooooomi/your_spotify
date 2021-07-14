@@ -1,7 +1,11 @@
 
 
+.root {
+    display: flex;
+    justify-content: center;
+}
+
 .select {
-    margin-left: 20px !important;
     width: 100px;
 }
 
@@ -10,5 +14,5 @@
 }
 
 .every {
-    margin-left: 20px !important;
+    margin: 0px 10px;
 }

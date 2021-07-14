@@ -45,3 +45,7 @@ export const formatDateFromYearDecimal = year => {
   month = Math.floor(month * 1.2 * 10);
   return `${months[month]} ${soloYear}`;
 };
+
+export function dateObjToString(dateObj) {
+  return `${dateObj.year}/${dateObj.month}`;
+}

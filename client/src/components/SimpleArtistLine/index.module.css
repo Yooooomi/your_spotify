@@ -1,0 +1,10 @@
+
+
+.root {
+    text-decoration: none;
+    color: unset;
+}
+
+.root:hover {
+    text-decoration: underline;
+}

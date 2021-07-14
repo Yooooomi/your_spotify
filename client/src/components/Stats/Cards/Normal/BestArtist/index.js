@@ -4,6 +4,7 @@ import s from './index.module.css';
 import API from '../../../../../services/API';
 import IntervalModifier from '../../../../IntervalModifier';
 import DataDisplayer from '../../../DataDisplayer';
+import SimpleArtistLine from '../../../../SimpleArtistLine';
 
 class BestArtist extends DataDisplayer {
   onInterChange = (field, value) => {
@@ -64,11 +65,13 @@ class BestArtist extends DataDisplayer {
           enterDelay={250}
           title={this.getTooltip(counts)}
         >
-
           <div className={s.content}>
             <div className={s.text}>
               <div className={s.desc}>Best artist</div>
-              <div className={s.title}>{name}</div>
+              <div className={s.title}>
+                {counts > 0 && <SimpleArtistLine artist={stats[0].artists[0]} />}
+                {counts === 0 && name}
+              </div>
             </div>
           </div>
         </Tooltip>

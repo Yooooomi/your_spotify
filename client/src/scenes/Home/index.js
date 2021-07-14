@@ -57,7 +57,7 @@ function Home({ user }) {
   return (
     <div className={s.root}>
       <div className={isLoaded ? s.welcome : s.welcomehidden}>
-        <Typography align="left" variant="h4">
+        <Typography variant="h4">
           Welcome&nbsp;
           <span className={s.username}>{user.username}</span>
           {!mobile && ' here is your summary'}

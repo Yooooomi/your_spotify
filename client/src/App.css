@@ -10,6 +10,7 @@
   --content: calc(100vh - var(--header));
   --radius: 0.25rem;
   --tight: 5px;
+  --shadow: 0 0 14px 0 rgba(53,64,82,.05);
 }
 
 html {

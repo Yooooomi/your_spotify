@@ -1,7 +1,7 @@
 import React from 'react';
 import s from './index.module.css';
 
-function Divider(props) {
+function Divider() {
   return (
     <hr className={s.divider} />
   );

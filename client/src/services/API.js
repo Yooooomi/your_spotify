@@ -61,6 +61,8 @@ const API = {
     params: { start, end },
   }),
   getArtist: (id) => axios.get(`/artist/${id}`),
+  getArtistStats: (id) => axios.get(`/artist/${id}/stats`),
+  searchArtists: (str) => axios.get(`/artist/search/${str}`),
 };
 
 export default {
