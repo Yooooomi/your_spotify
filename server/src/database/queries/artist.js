@@ -58,7 +58,7 @@ const getMostListenedSongOfArtist = async (user, artistId) => {
     ...getArtistInfos(artistId),
     { $group: { _id: '$id', count: { $sum: 1 } } },
     { $sort: { count: -1 } },
-    { $limit: 3 },
+    { $limit: 10 },
     {
       $lookup: {
         from: 'tracks', localField: '_id', foreignField: 'id', as: 'track',
@@ -74,7 +74,9 @@ const bestPeriodOfArtist = async (user, artistId) => {
     { $match: { owner: user._id } },
     ...getArtistInfos(artistId),
     { $project: { ...getGroupByDateProjection(), artistInfos: 1 } },
-    { $group: { _id: getGroupingByTimeSplit('month'), count: { $sum: 1 } } },
+    { $group: { _id: null, items: { $push: '$$CURRENT' }, total: { $sum: 1 } } },
+    { $unwind: '$items' },
+    { $group: { _id: getGroupingByTimeSplit('month', 'items'), artist: { $last: '$items' }, count: { $sum: 1 }, total: { $last: '$total' } } },
     { $sort: { count: -1 } },
     { $limit: 2 },
   ]);
@@ -100,7 +102,7 @@ const getRankOfArtist = async (user, artistId) => {
     },
     { $unwind: '$track' },
     { $group: { _id: { $arrayElemAt: ['$track.artists', 0] }, count: { $sum: 1 } } },
-    { $sort: { count: -1, id: 1 } },
+    { $sort: { count: -1, _id: 1 } },
     { $group: { _id: 1, array: { $push: { id: '$_id', count: '$count' } } } },
     {
       $project: {

@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
-  Grid, Tabs, Tab, Typography, Select, MenuItem, useMediaQuery,
+  Grid, Tabs, Tab, Typography, Select, MenuItem, useMediaQuery, Popper, Popover, Dialog,
 } from '@material-ui/core';
 import s from './index.module.css';
 import {
-  lastMonth, lastDay, lastWeek, lastYear,
+  lastMonth, lastDay, lastWeek, lastYear, setThisToMorning, setThisToEvening,
 } from '../../services/interval';
 import { lessThanMobile } from '../../services/theme';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import CustomIcon from '@material-ui/icons/Settings';
 
 const timeSplits = [
   'hour',
@@ -23,53 +26,110 @@ const inters = [
 ];
 
 function QuickInterval({
+  defaultTab,
   interval,
   timeSplit,
   onChangeInterval,
   onChangeTimesplit,
 }) {
   const mobile = useMediaQuery(lessThanMobile);
+  const [tabIndex, setTabIndex] = useState(defaultTab || 0);
+  const [open, setOpen] = useState(false);
+
+  const onStartChange = useCallback((date) => {
+    date = setThisToMorning(date);
+    const newInterval = { ...interval, start: date };
+    onChangeInterval(newInterval);
+  }, []);
+
+  const onEndChange = useCallback((date) => {
+    date = setThisToEvening(date);
+    const newInterval = { ...interval, end: date };
+    onChangeInterval(newInterval);
+  }, []);
+
+  const changeTabIndex = useCallback((ev, value) => {
+    if (value === inters.length) {
+      setOpen(true);
+    } else {
+      onChangeInterval(PrefabToInter[value].fn().inter, value);
+      if (onChangeTimesplit) onChangeTimesplit(PrefabToInter[value].fn().timeSplit);
+    }
+    setTabIndex(value);
+  }, []);
 
   return (
     <Grid container alignItems="center" className={s.root}>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <div className={s.dialog}>
+            <div className={s.entry}>
+              <KeyboardDatePicker
+                margin="none"
+                label="From"
+                variant="inline"
+                format="MM/dd/yyyy"
+                value={interval.start}
+                onChange={onStartChange}
+                fullWidth
+              />
+            </div>
+            <div className={s.entry}>
+              <KeyboardDatePicker
+                margin="none"
+                label="To"
+                variant="inline"
+                format="MM/dd/yyyy"
+                value={interval.end}
+                onChange={onEndChange}
+                fullWidth
+              />
+            </div>
+            {timeSplit && (
+              <div>
+                <span>
+                  Data split every
+                </span>
+                <Select
+                  className={s.select}
+                  onChange={(ev, value) => onChangeTimesplit(value)}
+                  value={timeSplit}
+                >
+                  {
+                    timeSplits.map(e => (
+                      <MenuItem key={e} value={e}><div className={s.menuItem}>{e}</div></MenuItem>
+                    ))
+                  }
+                </Select>
+              </div>
+            )}
+          </div>
+        </MuiPickersUtilsProvider>
+      </Dialog>
       <Grid item>
         {!mobile && (
           <Tabs
-            value={interval}
-            onChange={onChangeInterval}
+            value={tabIndex}
+            onChange={changeTabIndex}
           >
             {inters.map(e => <Tab label={e} key={e} />)}
+            <Tab className={s.custom} label={<CustomIcon />} />
           </Tabs>
         )}
         {mobile && (
           <Select
             className={s.select}
-            onChange={ev => onChangeInterval(ev, ev.target.value)}
-            value={interval}
+            onChange={ev => changeTabIndex(ev, ev.target.value)}
+            value={tabIndex}
           >
             {
               inters.map((e, k) => (
                 <MenuItem key={e} value={k}><div className={s.menuItem}>{e}</div></MenuItem>
               ))
             }
+            <MenuItem>Custom</MenuItem>
           </Select>
         )}
-      </Grid>
-      <Grid item>
-        <Typography className={s.every} align="center">every</Typography>
-      </Grid>
-      <Grid item>
-        <Select
-          className={s.select}
-          onChange={(ev) => onChangeTimesplit(ev.target.value)}
-          value={timeSplit}
-        >
-          {
-            timeSplits.map(e => (
-              <MenuItem key={e} value={e}><div className={s.menuItem}>{e}</div></MenuItem>
-            ))
-          }
-        </Select>
       </Grid>
     </Grid>
   );

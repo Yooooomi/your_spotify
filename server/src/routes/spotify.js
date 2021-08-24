@@ -145,4 +145,35 @@ router.get('/best_artists_per', validating(intervalPerSchema, 'query'), logged, 
   return res.status(200).send(result);
 });
 
+const intervalPerSchemaNbOffset = Joi.object().keys({
+  start: Joi.date().required(),
+  end: Joi.date().default(() => new Date()),
+  nb: Joi.number().min(1).max(30).required(),
+  offset: Joi.number().min(0).default(0),
+});
+
+router.get('/top/songs', validating(intervalPerSchemaNbOffset, 'query'), logged, async (req, res) => {
+  const { user } = req;
+  const { start, end, nb, offset } = req.values;
+
+  const result = await db.getBestSongsNbOffseted(user, start, end, nb, offset);
+  return res.status(200).send(result);
+});
+
+router.get('/top/artists', validating(intervalPerSchemaNbOffset, 'query'), logged, async (req, res) => {
+  const { user } = req;
+  const { start, end, nb, offset } = req.values;
+
+  const result = await db.getBestArtistsNbOffseted(user, start, end, nb, offset);
+  return res.status(200).send(result);
+});
+
+router.get('/top/albums', validating(intervalPerSchemaNbOffset, 'query'), logged, async (req, res) => {
+  const { user } = req;
+  const { start, end, nb, offset } = req.values;
+
+  const result = await db.getBestAlbumsNbOffseted(user, start, end, nb, offset);
+  return res.status(200).send(result);
+});
+
 module.exports = router;

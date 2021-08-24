@@ -3,6 +3,7 @@
 .root {
     overflow: hidden;
     position: relative;
+    width: 100%;
 }
 
 .container {
@@ -28,4 +29,25 @@
 
 .title > :last-child {
     font-size: 12px;
+}
+
+.play {
+    margin-left: 5px;
+}
+
+.expand {
+    transition: all 1s;
+    background: white;
+    max-height: 0px;
+    overflow: hidden;
+}
+
+.expanded {
+    max-height: 400px;
+}
+
+.morebutton {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
 }

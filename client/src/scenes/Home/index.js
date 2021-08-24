@@ -22,12 +22,8 @@ const NB_TO_BE_LOADED = 7;
 
 function Home({ user }) {
   const [loaded, setLoadedArray] = useState(Array.from(Array(NB_TO_BE_LOADED).keys()).map(() => false));
-  const [prefab, setPrefab] = useState(0);
+  const [inter, setInter] = useState(lastDay());
   const [timeSplit, setTimeSplit] = useState('hour');
-
-  const inter = useMemo(lastDay, []);
-  const [start, setStart] = useState(inter.start);
-  const [end, setEnd] = useState(inter.end);
 
   const mobile = useMediaQuery(lessThanMobile);
 
@@ -35,18 +31,6 @@ function Home({ user }) {
     loaded[idx] = true;
     setLoadedArray([...loaded]);
   }, [loaded]);
-
-  const changePrefab = useCallback((ev, idx) => {
-    const newPrefab = PrefabToInter[idx];
-
-    const infos = newPrefab.fn();
-    const { inter: newInter } = infos;
-
-    setPrefab(idx);
-    setTimeSplit(infos.timeSplit);
-    setStart(newInter.start);
-    setEnd(newInter.end);
-  }, []);
 
   const changeTimesplit = useCallback(newTimeSplit => {
     setTimeSplit(newTimeSplit);
@@ -64,9 +48,10 @@ function Home({ user }) {
         </Typography>
         <div>
           <QuickInterval
-            interval={prefab}
+            defaultTab={0}
+            interval={inter}
             timeSplit={timeSplit}
-            onChangeInterval={changePrefab}
+            onChangeInterval={setInter}
             onChangeTimesplit={changeTimesplit}
           />
         </div>
@@ -80,8 +65,8 @@ function Home({ user }) {
                 <SongsPerCard
                   user={user}
                   timeSplit={timeSplit}
-                  start={start}
-                  end={end}
+                  start={inter.start}
+                  end={inter.end}
                   loaded={() => setLoaded(0)}
                 />
               </div>
@@ -91,8 +76,8 @@ function Home({ user }) {
                 <DifferentArtists
                   user={user}
                   timeSplit={timeSplit}
-                  start={start}
-                  end={end}
+                  start={inter.start}
+                  end={inter.end}
                   loaded={() => setLoaded(1)}
                 />
               </div>
@@ -102,8 +87,8 @@ function Home({ user }) {
                 <TimePerCard
                   user={user}
                   timeSplit={timeSplit}
-                  start={start}
-                  end={end}
+                  start={inter.start}
+                  end={inter.end}
                   loaded={() => setLoaded(2)}
                 />
               </div>
@@ -115,8 +100,8 @@ function Home({ user }) {
               user={user}
               className={s.minHeight}
               timeSplit={timeSplit}
-              start={start}
-              end={end}
+              start={inter.start}
+              end={inter.end}
               loaded={() => setLoaded(3)}
             />
           </Grid>
@@ -125,8 +110,8 @@ function Home({ user }) {
             <BestSong
               user={user}
               timeSplit={timeSplit}
-              start={start}
-              end={end}
+              start={inter.start}
+              end={inter.end}
               loaded={() => setLoaded(4)}
             />
           </Grid>
@@ -134,8 +119,8 @@ function Home({ user }) {
             <BestArtist
               user={user}
               timeSplit={timeSplit}
-              start={start}
-              end={end}
+              start={inter.start}
+              end={inter.end}
               loaded={() => setLoaded(5)}
             />
           </Grid>
@@ -144,8 +129,8 @@ function Home({ user }) {
               user={user}
               className={s.minHeight}
               loaded={() => setLoaded(6)}
-              start={start}
-              end={end}
+              start={inter.start}
+              end={inter.end}
               timeSplit={timeSplit}
             />
           </Grid>
@@ -154,7 +139,7 @@ function Home({ user }) {
       <ShowIfInScreen>
         <hr className={s.divider} />
         <div className={s.listened}>
-          <History maxOld={start} title="What you listened to today" xs={2} lg={4} />
+          <History maxOld={inter.start} title="What you listened to today" xs={2} lg={4} />
         </div>
       </ShowIfInScreen>
       {/* <SongsPer />

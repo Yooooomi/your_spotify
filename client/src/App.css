@@ -68,3 +68,8 @@ hr {
     transform: rotate(360deg);
   }
 }
+
+.nolink {
+  text-decoration: unset;
+  color: unset;
+}

@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import {
   AppBar, Toolbar, Typography, IconButton, useMediaQuery,
 } from '@material-ui/core';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu } from '@material-ui/icons';
 import s from './index.module.css';
 import Sider from './components/Sider';
@@ -33,7 +33,7 @@ function Layout({ children }) {
           <Toolbar className={s.toolbar}>
             <div>
               {(siderEnabled && mobile) && <IconButton onClick={onDrawer} edge="start"><Menu /></IconButton>}
-              {!mobile && <Typography align="center" variant="h6">Your spotify</Typography>}
+              {!mobile && <Link to={urls.home} className="nolink"><Typography align="center" variant="h6">Your spotify</Typography></Link>}
             </div>
             <div>
               <SearchBar />

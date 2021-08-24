@@ -6,14 +6,9 @@ import s from './index.module.css';
 import API from '../../services/API';
 import Line from './Line';
 import SimpleArtistLine from '../SimpleArtistLine';
+import PlayButton from '../PlayButton';
 
 class Track extends React.Component {
-  play = async () => {
-    const { track } = this.props;
-
-    await API.play(track.id);
-  }
-
   line = () => (
     <Line {...this.props} />
   )
@@ -40,15 +35,7 @@ class Track extends React.Component {
             </div>
           </div>
           <div className={s.play}>
-            <IconButton
-              onClick={this.play}
-              disableRipple
-              disableFocusRipple
-              disableTouchRipple
-              className={s.playButton}
-            >
-              <PlayCircleOutline fontSize="small" />
-            </IconButton>
+            <PlayButton track={track} />
           </div>
         </div>
       </Paper>

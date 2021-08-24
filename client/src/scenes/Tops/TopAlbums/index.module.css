@@ -1,0 +1,13 @@
+
+
+.title {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.album {
+  margin-bottom: 15px;
+}

@@ -25,3 +25,17 @@
 .value {
     font-weight: bold !important;
 }
+
+.title {
+    margin-bottom: 15px;
+}
+
+.changepasswordinput {
+    margin-bottom: 5px !important;
+}
+
+.changepasswordbutton {
+    margin-top: 10px;
+    margin-left: auto;
+    width: 100%;
+}

@@ -8,6 +8,11 @@ import {
 import { withRouter } from 'react-router-dom';
 import cl from 'classnames';
 import { connect } from 'react-redux';
+
+import AlbumIcon from '@material-ui/icons/Album';
+import SongIcon from '@material-ui/icons/Audiotrack';
+import ArtistIcon from '@material-ui/icons/Person';
+
 import s from './index.module.css';
 import urls from '../../../../services/urls';
 import { mapStateToProps, mapDispatchToProps } from '../../../../services/redux/tools';
@@ -25,6 +30,14 @@ const SiderItems = [
       {
         label: 'History', Icon: HistoryOutlined, link: urls.history, needActivated: true,
       },
+    ],
+  },
+  {
+    label: 'Tops',
+    links: [
+      { label: 'Top artists', Icon: ArtistIcon, link: urls.topArtists, needActivated: true },
+      { label: 'Top Albums', Icon: AlbumIcon, link: urls.topAlbums, needActivated: true },
+      { label: 'Top songs', Icon: SongIcon, link: urls.topSongs, needActivated: true },
     ],
   },
   {

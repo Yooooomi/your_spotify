@@ -13,3 +13,8 @@
 .down {
     color: red;
 }
+
+.allrank {
+    color: grey;
+    font-weight: initial;
+}

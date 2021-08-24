@@ -22,10 +22,8 @@ services:
       - CORS=all
 
   mongo:
-    container_name: mongo
-    image: mongo
-    logging:
-      driver: none
+    # logging:
+      # driver: none
     volumes:
       - ./db_data:/data/db
 

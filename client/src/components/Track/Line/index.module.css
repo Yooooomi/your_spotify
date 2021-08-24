@@ -13,11 +13,11 @@
     position: relative;
     max-height: 50px;
     max-width: 50px;
-    margin-right: 15px;
 }
 
 .cover {
-    width: 100%;
+    width: 50px;
+    height: 50px;
 }
 
 .info {
@@ -29,6 +29,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     flex-wrap: nowrap;
+    width: 100%;
+    text-align: left;
 }
 
 .large {
@@ -76,4 +78,9 @@
     .tiny {
         flex: unset;
     }
+}
+
+.littleArtist {
+    font-size: 0.8em;
+    text-align: left;
 }

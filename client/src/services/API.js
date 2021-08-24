@@ -13,6 +13,10 @@ const API = {
   register: (username, password) => axios.post('/register', {
     username, password,
   }),
+  changePassword: (oldPassword, newPassword) => axios.post('/changepassword', {
+    oldPassword,
+    newPassword,
+  }),
   logout: () => axios.post('/logout'),
   me: () => axios.get('/me'),
   sme: () => axios.get('/oauth/spotify/me'),
@@ -63,6 +67,15 @@ const API = {
   getArtist: (id) => axios.get(`/artist/${id}`),
   getArtistStats: (id) => axios.get(`/artist/${id}/stats`),
   searchArtists: (str) => axios.get(`/artist/search/${str}`),
+  getBestSongs: (start, end, nb, offset) => axios.get('/spotify/top/songs', {
+    params: { start, end, nb, offset },
+  }),
+  getBestArtists: (start, end, nb, offset) => axios.get('/spotify/top/artists', {
+    params: { start, end, nb, offset },
+  }),
+  getBestAlbums: (start, end, nb, offset) => axios.get('/spotify/top/albums', {
+    params: { start, end, nb, offset },
+  }),
 };
 
 export default {

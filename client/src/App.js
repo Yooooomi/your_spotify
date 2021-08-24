@@ -19,6 +19,9 @@ import LogToSpotify from './scenes/LogToSpotify';
 import AllStats from './scenes/AllStats';
 import SnackbarMessage from './components/SnackbarMessage';
 import Artist from './scenes/Artist';
+import TopSongs from './scenes/Tops/TopSongs';
+import TopArtists from './scenes/Tops/TopArtists';
+import TopAlbums from './scenes/Tops/TopAlbums';
 
 class App extends React.Component {
   async componentDidMount() {
@@ -68,6 +71,9 @@ class App extends React.Component {
               <PrivateRoute exact path={urls.allStats} component={AllStats} />
               <PrivateRoute exact path={urls.settings} component={Settings} />
               <PrivateRoute exact path={urls.activateSpotify} component={LogToSpotify} />
+              <PrivateRoute exact path={urls.topSongs} component={TopSongs} />
+              <PrivateRoute exact path={urls.topAlbums} component={TopAlbums} />
+              <PrivateRoute exact path={urls.topArtists} component={TopArtists} />
               <PrivateRoute exact path={urls.logout} component={Logout} />
               <Route exact path={urls.register} component={Register} />
               <Route exact path={urls.login} component={Login} />

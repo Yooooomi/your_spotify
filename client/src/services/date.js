@@ -49,3 +49,7 @@ export const formatDateFromYearDecimal = year => {
 export function dateObjToString(dateObj) {
   return `${dateObj.year}/${dateObj.month}`;
 }
+
+export function dateObjToMonthStringAndYear(dateObj) {
+  return `${months[dateObj.month]} ${dateObj.year}`;
+}

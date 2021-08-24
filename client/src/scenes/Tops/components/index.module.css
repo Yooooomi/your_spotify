@@ -1,0 +1,56 @@
+
+
+.root {
+}
+
+.cover {
+  height: 50px;
+  width: 50px;
+  margin-right: 15px;
+}
+
+.root {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.root > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rank {
+  width: 40px;
+}
+
+.small {
+  flex: 1;
+}
+
+.normal {
+  text-align: left;
+  flex: 3;
+}
+
+@media only screen and (max-width: 960px) {
+  .normal {
+      flex: 2;
+  }
+}
+
+.count {
+  text-align: right;
+  margin-right: 15px;
+  width: 100px;
+}
+
+.littleArtist {
+  font-size: 0.8em;
+}
+
+.percent {
+  color: grey;
+}

@@ -9,6 +9,8 @@ const constants = require('../tools/constants');
 const db = require('../database');
 const logger = require('../tools/logger');
 
+const BCRYPT_SALTS = 14;
+
 router.get('/', (req, res) => {
   res.status(200).send('Hello !');
 });
@@ -33,7 +35,7 @@ router.post('/register', validating(registerSchema), withGlobalPreferences, asyn
     return res.status(409).send({ code: 'USER_ALREADY_EXISTS' });
   }
 
-  const hashedPassword = bcrypt.hashSync(password, 14);
+  const hashedPassword = await bcrypt.hash(password, BCRYPT_SALTS);
 
   const newUser = await db.createUser(username, hashedPassword);
   return res.status(200).send(newUser);
@@ -74,6 +76,29 @@ router.post('/login', validating(loginSchema), async (req, res) => {
     user,
     token,
   });
+});
+
+const changePassword = Joi.object().keys({
+  oldPassword: Joi.string().max(constants.maxStringLength).required(),
+  newPassword: Joi.string().max(constants.maxStringLength).required(),
+})
+
+router.post('/changepassword', validating(changePassword), logged, async (req, res) => {
+  const { user } = req;
+  const { oldPassword, newPassword } = req.values;
+
+  try {
+    if (await bcrypt.compare(oldPassword, user.password)) {
+      const newPasswordHashed = await bcrypt.hash(newPassword, BCRYPT_SALTS);
+      await db.storeInUser('_id', user._id, { password: newPasswordHashed });
+    } else {
+      return res.status(403).end();
+    }
+    return res.status(200).end();
+  } catch (e) {
+    console.error(e);
+    return res.status(500).end();
+  }
 });
 
 const settingsSchema = Joi.object().keys({

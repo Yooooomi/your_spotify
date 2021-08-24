@@ -35,23 +35,16 @@ function AllStats({ user }) {
   );
 
   const prefab = useMemo(() => PrefabToInter[prefabIdx], [prefabIdx]);
-  const { inter, timeSplit } = prefab.fn();
-  const { start, end } = inter;
+  const [timeSplit, setTimeSplit] = useState(prefab.fn().timeSplit);
+  const [inter, setInter] = useState(prefab.fn().inter);
 
-  const [globalStart, setGlobalStart] = useState(start);
-  const [globalEnd, setGlobalEnd] = useState(end);
-  const [globalTimeSplit, setGlobalTimeSplit] = useState(timeSplit);
-
-  const changePrefab = useCallback((ev, idx) => {
+  const changeInterval = useCallback((value, idx) => {
     const infos = PrefabToInter[idx];
 
-    API.setSetting('preferredStatsPeriod', infos.name);
-    const { inter: newInter, timeSplit: newTimeSplit } = infos.fn();
-
-    setPrefabIdx(idx);
-    setGlobalStart(newInter.start);
-    setGlobalEnd(newInter.end);
-    setGlobalTimeSplit(newTimeSplit);
+    if (infos) {
+      API.setSetting('preferredStatsPeriod', infos.name);
+    }
+    setInter(value);
   }, []);
 
   return (
@@ -65,10 +58,11 @@ function AllStats({ user }) {
           </Grid>
           <Grid item xs={12} lg="auto">
             <QuickInterval
-              interval={prefabIdx}
-              timeSplit={globalTimeSplit}
-              onChangeInterval={changePrefab}
-              onChangeTimesplit={setGlobalTimeSplit}
+              defaultTab={prefabIdx}
+              interval={inter}
+              timeSplit={timeSplit}
+              onChangeInterval={changeInterval}
+              onChangeTimesplit={setTimeSplit}
             />
           </Grid>
         </Grid>
@@ -79,7 +73,7 @@ function AllStats({ user }) {
         {
           StatClasses.map(Class => (
             <Grid key={Class.name} className={s.graph} item xs={12} md={12} lg={6}>
-              <Class start={globalStart} end={globalEnd} timeSplit={globalTimeSplit} user={user} />
+              <Class start={inter.start} end={inter.end} timeSplit={timeSplit} user={user} />
             </Grid>
           ))
         }

@@ -3,16 +3,25 @@
 .root {
     display: flex;
     justify-content: center;
+    width: min-content !important;
 }
 
 .select {
-    width: 100px;
+    width: min-content;
 }
 
 .menuItem {
     padding: 0 10px;
 }
 
-.every {
-    margin: 0px 10px;
+.dialog {
+    padding: 15px;
+}
+
+.custom {
+    min-width: 2rem !important;
+}
+
+.entry {
+    margin-bottom: 15px;
 }

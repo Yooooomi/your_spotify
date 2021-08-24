@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import {
-  Paper, Typography, Grid, Button, Slider, Tabs, Tab, CircularProgress,
+  Paper, Typography, Grid, Button, Slider, Tabs, Tab, CircularProgress, TextField, Tooltip,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import s from './index.module.css';
@@ -37,6 +37,9 @@ function Settings({
   updateGlobalPreferences,
 }) {
   const [metric, setMetric] = useState(user.settings.metricUsed);
+  const [oldPassword, setOldPassword] = useState('');
+  const [oldPassword1, setOldPassword1] = useState('');
+  const [newPassword, setNewPassword] = useState('');
 
   const allowRegistrations = useCallback(async () => {
     try {
@@ -69,6 +72,16 @@ function Settings({
     }
   }, [refreshUser]);
 
+  const changePassword = useCallback(async ev => {
+    ev.preventDefault();
+    try {
+      await API.changePassword(oldPassword, newPassword);
+      window.message('success', 'Successfully changed your password');
+    } catch (e) {
+      window.message('error', 'Could not change the password');
+    }
+  }, [oldPassword, newPassword]);
+
   if (user == null) return <CircularProgress />;
 
   return (
@@ -79,7 +92,7 @@ function Settings({
         <Grid item xs={12} lg={6}>
           <Paper className={s.paper}>
             <div>
-              <Typography variant="h5" align="left">Account infos</Typography>
+              <Typography className={s.title} variant="h5" align="left">Account infos</Typography>
               {
                 AccountFields.map(field => (
                   <div className={s.entry} key={field.value}>
@@ -99,7 +112,7 @@ function Settings({
         <Grid item xs={12} lg={6}>
           <Paper className={s.paper}>
             <div>
-              <Typography variant="h5" align="left">Spotify infos</Typography>
+              <Typography className={s.title} variant="h5" align="left">Spotify infos</Typography>
               {
                 user.activated ? (
                   SpotifyFields.map(field => (
@@ -159,7 +172,60 @@ function Settings({
             </SettingField>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
+          <Paper className={s.paper}>
+            <form onSubmit={changePassword}>
+              <div>
+                <Typography className={s.title} variant="h5" align="left">Change password</Typography>
+              </div>
+              <div>
+                <TextField
+                  type="password"
+                  value={oldPassword}
+                  onChange={ev => setOldPassword(ev.target.value)}
+                  fullWidth
+                  className={s.changepasswordinput}
+                  placeholder="Old password..."
+                />
+              </div>
+              <div>
+                <TextField
+                  type="password"
+                  value={oldPassword1}
+                  onChange={ev => setOldPassword1(ev.target.value)}
+                  fullWidth
+                  className={s.changepasswordinput}
+                  placeholder="Old password again..."
+                />
+              </div>
+              <div>
+                <TextField
+                  type="password"
+                  value={newPassword}
+                  onChange={ev => setNewPassword(ev.target.value)}
+                  fullWidth
+                  className={s.changepasswordinput}
+                  placeholder="New password..."
+                />
+              </div>
+              <div >
+                <Tooltip title={oldPassword !== oldPassword1 ? 'All fields not set or old passwords differ' : ''} className={s.changepasswordbutton}>
+                  <div style={{ width: 'max-content' }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      disabled={oldPassword !== oldPassword1 || oldPassword.length === 0}
+                    >
+                      Change password
+                    </Button>
+                  </div>
+                </Tooltip>
+              </div>
+            </form>
+          </Paper>
+        </Grid>
+        <Grid item xs={6}>
           <Paper className={s.footer}>
             <Grid container spacing={1}>
               <Grid item xs={6} lg={4}>

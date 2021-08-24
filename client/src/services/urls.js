@@ -8,4 +8,7 @@ export default {
   logout: '/logout',
   register: '/register',
   activateSpotify: '/activate',
+  topArtists: '/top/artists',
+  topSongs: '/top/songs',
+  topAlbums: '/top/albums',
 };
