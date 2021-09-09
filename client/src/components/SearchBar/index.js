@@ -60,7 +60,7 @@ function SearchBar() {
   const mobile = useMediaQuery(lessThanMobile);
 
   return (
-    <div className={s.root}>
+    <div>
       <div className={s.inputcontainer} ref={anchorEl}>
         <SearchIcon />
         <input

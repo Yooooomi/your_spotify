@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MuiThemeProvider } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Login from './scenes/Auth/Login';
 import urls from './services/urls';
-import { mapStateToProps, mapDispatchToProps } from './services/redux/tools';
 import API from './services/API';
 import Register from './scenes/Auth/Register';
 import PrivateRoute from './components/PrivateRoute';
@@ -22,43 +21,47 @@ import Artist from './scenes/Artist';
 import TopSongs from './scenes/Tops/TopSongs';
 import TopArtists from './scenes/Tops/TopArtists';
 import TopAlbums from './scenes/Tops/TopAlbums';
+import { updateGlobalPreferences, updateReady, updateUser } from './services/redux/reducer';
 
-class App extends React.Component {
-  async componentDidMount() {
-    const { updateUser, updateReady, updateGlobalPreferences } = this.props;
+function App() {
+  const dispatch = useDispatch();
 
-    try {
-      const { data: globalPreferences } = await API.globalPreferences();
-      updateGlobalPreferences(globalPreferences);
-    } catch (e) {
-      window.message('error', 'Could not retrieve the global preferences of the application');
-    }
-
-    try {
-      const { data } = await API.me();
-
-      data.spotify = null;
-
-      if (data.activated) {
-        try {
-          const spot = await API.sme();
-          data.spotify = spot.data;
-        } catch (e) {
-          window.message(
-            'error',
-            'Something went wrong with your Spotify profile, try relogging to Spotify through the Setttings',
-          );
-        }
+  useEffect(() => {
+    async function init() {
+      try {
+        const { data: globalPreferences } = await API.globalPreferences();
+        dispatch(updateGlobalPreferences(globalPreferences));
+      } catch (e) {
+        window.message('error', 'Could not retrieve the global preferences of the application');
       }
-      updateUser(data);
-    } catch (e) {
-      // User is just not logged
-    } finally {
-      updateReady(true);
-    }
-  }
 
-  render = () => (
+      try {
+        const { data } = await API.me();
+
+        data.spotify = null;
+
+        if (data.activated) {
+          try {
+            const spot = await API.sme();
+            data.spotify = spot.data;
+          } catch (e) {
+            window.message(
+              'error',
+              'Something went wrong with your Spotify profile, try relogging to Spotify through the Setttings',
+            );
+          }
+        }
+        dispatch(updateUser(data));
+      } catch (e) {
+        // User is just not logged
+      } finally {
+        dispatch(updateReady(true));
+      }
+    }
+    init();
+  }, [dispatch]);
+
+  return (
     <div className="App">
       <Router>
         <MuiThemeProvider theme={theme}>
@@ -85,4 +88,4 @@ class App extends React.Component {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

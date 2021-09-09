@@ -33,16 +33,8 @@
     text-align: left;
 }
 
-.large {
-    flex: 5;
-}
-
 .medium {
     flex: 4;
-}
-
-.small {
-    flex: 2;
 }
 
 .tiny {
@@ -54,24 +46,12 @@
     justify-content: flex-end;
 }
 
-.playButton {
-    margin-right: 0px !important;
-}
-
 @media only screen and (max-width: 960px) {
     .info {
         flex: unset;
     }
 
-    .large {
-        flex: unset;
-    }
-    
     .medium {
-        flex: unset;
-    }
-    
-    .small {
         flex: unset;
     }
     

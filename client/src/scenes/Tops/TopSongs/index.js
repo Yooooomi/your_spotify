@@ -1,9 +1,9 @@
+import React, { useCallback, useState } from 'react';
+import { Typography, CircularProgress } from '@material-ui/core';
+import InfiniteScroll from 'react-infinite-scroller';
 import s from './index.module.css';
-import { Typography, CircularProgress, useMediaQuery } from '@material-ui/core';
-import { useCallback, useEffect, useState } from 'react';
 import API from '../../../services/API';
 import Song from '../components/Song';
-import InfiniteScroll from 'react-infinite-scroller';
 import QuickInterval from '../../../components/QuickInterval';
 import { lastWeek } from '../../../services/interval';
 
@@ -24,7 +24,7 @@ function TopSongs() {
     } catch (e) {
       console.error(e);
     }
-  }, [songs, ended]);
+  }, [songs, ended, inter]);
 
   const changeInter = useCallback(value => {
     setSongs([]);
@@ -53,7 +53,7 @@ function TopSongs() {
         </div>
       </InfiniteScroll>
     </div>
-  )
+  );
 }
 
 export default TopSongs;

@@ -1,54 +1,39 @@
-import React from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import s from './index.module.css';
 
-class ShowIfInScreen extends React.Component {
-  constructor(props) {
-    super(props);
+function ShowIfInScreen({ children }) {
+  const ref = useRef(null);
+  const [show, setShow] = useState(false);
 
-    this.ref = React.createRef();
-    this.listen = true;
-
-    this.state = {
-      show: false,
-    };
-  }
-
-  componentDidMount() {
-    this.checkVisibility();
-    window.addEventListener('scroll', this.checkVisibility);
-  }
-
-  componentWillUnmount() {
-    if (this.listen) {
-      window.removeEventListener('scroll', this.checkVisibility);
-    }
-  }
-
-  checkVisibility = () => {
-    const { offsetTop } = this.ref.current;
+  const checkVisibility = useCallback(() => {
+    const { offsetTop } = ref.current;
 
     const triggerPoint = window.outerHeight * (2 / 3);
 
     if (window.scrollY + triggerPoint > offsetTop) {
-      window.removeEventListener('scroll', this.checkVisibility);
-      this.listen = false;
+      window.removeEventListener('scroll', checkVisibility);
 
-      this.setState({
-        show: true,
-      });
+      setShow(true);
     }
-  }
+  }, []);
 
-  render() {
-    const { children } = this.props;
-    const { show } = this.state;
+  useEffect(() => {
+    checkVisibility();
+    if (show) return null;
+    window.addEventListener('scroll', checkVisibility);
+    return () => window.removeEventListener('scroll', checkVisibility);
+  }, [checkVisibility, show]);
 
-    return (
-      <div ref={this.ref} className={show ? s.root : s.hidden}>
-        {children}
-      </div>
-    );
-  }
+  return (
+    <div ref={ref} className={show ? s.root : s.hidden}>
+      {children}
+    </div>
+  );
 }
 
 export default ShowIfInScreen;

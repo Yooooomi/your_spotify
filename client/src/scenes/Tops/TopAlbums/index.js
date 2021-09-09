@@ -1,9 +1,9 @@
-import s from './index.module.css';
+import React, { useCallback, useState } from 'react';
 import { Typography, CircularProgress } from '@material-ui/core';
-import { useCallback, useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import s from './index.module.css';
 import API from '../../../services/API';
 import Album from '../components/Album';
-import InfiniteScroll from 'react-infinite-scroller';
 import QuickInterval from '../../../components/QuickInterval';
 import { lastWeek } from '../../../services/interval';
 
@@ -24,7 +24,7 @@ function TopAlbums() {
     } catch (e) {
       console.error(e);
     }
-  }, [albums, ended]);
+  }, [albums, ended, inter]);
 
   const changeInter = useCallback(value => {
     setAlbums([]);
@@ -53,7 +53,7 @@ function TopAlbums() {
         </div>
       </InfiniteScroll>
     </div>
-  )
+  );
 }
 
 export default TopAlbums;

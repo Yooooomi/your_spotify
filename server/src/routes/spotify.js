@@ -154,7 +154,9 @@ const intervalPerSchemaNbOffset = Joi.object().keys({
 
 router.get('/top/songs', validating(intervalPerSchemaNbOffset, 'query'), logged, async (req, res) => {
   const { user } = req;
-  const { start, end, nb, offset } = req.values;
+  const {
+    start, end, nb, offset,
+  } = req.values;
 
   const result = await db.getBestSongsNbOffseted(user, start, end, nb, offset);
   return res.status(200).send(result);
@@ -162,7 +164,9 @@ router.get('/top/songs', validating(intervalPerSchemaNbOffset, 'query'), logged,
 
 router.get('/top/artists', validating(intervalPerSchemaNbOffset, 'query'), logged, async (req, res) => {
   const { user } = req;
-  const { start, end, nb, offset } = req.values;
+  const {
+    start, end, nb, offset,
+  } = req.values;
 
   const result = await db.getBestArtistsNbOffseted(user, start, end, nb, offset);
   return res.status(200).send(result);
@@ -170,7 +174,9 @@ router.get('/top/artists', validating(intervalPerSchemaNbOffset, 'query'), logge
 
 router.get('/top/albums', validating(intervalPerSchemaNbOffset, 'query'), logged, async (req, res) => {
   const { user } = req;
-  const { start, end, nb, offset } = req.values;
+  const {
+    start, end, nb, offset,
+  } = req.values;
 
   const result = await db.getBestAlbumsNbOffseted(user, start, end, nb, offset);
   return res.status(200).send(result);

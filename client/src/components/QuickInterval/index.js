@@ -1,15 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import {
-  Grid, Tabs, Tab, Typography, Select, MenuItem, useMediaQuery, Popper, Popover, Dialog,
+  Grid, Tabs, Tab, Select, MenuItem, useMediaQuery, Dialog,
 } from '@material-ui/core';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import CustomIcon from '@material-ui/icons/Settings';
 import s from './index.module.css';
 import {
   lastMonth, lastDay, lastWeek, lastYear, setThisToMorning, setThisToEvening,
 } from '../../services/interval';
 import { lessThanMobile } from '../../services/theme';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import CustomIcon from '@material-ui/icons/Settings';
 
 const timeSplits = [
   'hour',
@@ -23,6 +23,13 @@ const inters = [
   'Last week',
   'Last month',
   'Last year',
+];
+
+export const PrefabToInter = [
+  { name: 'day', fn: () => ({ inter: lastDay(), timeSplit: 'hour' }) },
+  { name: 'week', fn: () => ({ inter: lastWeek(), timeSplit: 'day' }) },
+  { name: 'month', fn: () => ({ inter: lastMonth(), timeSplit: 'day' }) },
+  { name: 'year', fn: () => ({ inter: lastYear(), timeSplit: 'month' }) },
 ];
 
 function QuickInterval({
@@ -40,13 +47,13 @@ function QuickInterval({
     date = setThisToMorning(date);
     const newInterval = { ...interval, start: date };
     onChangeInterval(newInterval);
-  }, []);
+  }, [interval, onChangeInterval]);
 
   const onEndChange = useCallback((date) => {
     date = setThisToEvening(date);
     const newInterval = { ...interval, end: date };
     onChangeInterval(newInterval);
-  }, []);
+  }, [interval, onChangeInterval]);
 
   const changeTabIndex = useCallback((ev, value) => {
     if (value === inters.length) {
@@ -56,7 +63,7 @@ function QuickInterval({
       if (onChangeTimesplit) onChangeTimesplit(PrefabToInter[value].fn().timeSplit);
     }
     setTabIndex(value);
-  }, []);
+  }, [onChangeTimesplit, onChangeInterval]);
 
   return (
     <Grid container alignItems="center" className={s.root}>
@@ -134,12 +141,5 @@ function QuickInterval({
     </Grid>
   );
 }
-
-export const PrefabToInter = [
-  { name: 'day', fn: () => ({ inter: lastDay(), timeSplit: 'hour' }) },
-  { name: 'week', fn: () => ({ inter: lastWeek(), timeSplit: 'day' }) },
-  { name: 'month', fn: () => ({ inter: lastMonth(), timeSplit: 'day' }) },
-  { name: 'year', fn: () => ({ inter: lastYear(), timeSplit: 'month' }) },
-];
 
 export default QuickInterval;

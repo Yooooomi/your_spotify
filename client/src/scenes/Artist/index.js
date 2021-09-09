@@ -120,7 +120,7 @@ function Artist() {
   }
 
   return (
-    <div className={s.root}>
+    <div>
       <header className={s.header}>
         <img className={s.headerbg} src={artistStats.artist.images[0].url} alt="artist-blur" />
         <div className={s.headercontent}>

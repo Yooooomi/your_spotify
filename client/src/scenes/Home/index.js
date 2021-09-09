@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Typography, Grid, useMediaQuery } from '@material-ui/core';
 import cl from 'classnames';
 import s from './index.module.css';
-import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
 import History from '../../components/Stats/History';
 import TimePerCard from '../../components/Stats/Cards/Normal/TimePerCard';
 import SongsPerCard from '../../components/Stats/Cards/Normal/SongsPerCard';
@@ -14,13 +13,15 @@ import ShowIfInScreen from '../../components/ShowIfInScreen';
 import { lastDay } from '../../services/interval';
 import BestArtists from '../../components/Stats/Graphs/Normal/BestArtists';
 import DifferentArtists from '../../components/Stats/Cards/Normal/DifferentArtists';
-import QuickInterval, { PrefabToInter } from '../../components/QuickInterval';
+import QuickInterval from '../../components/QuickInterval';
 import { lessThanMobile } from '../../services/theme';
 import Divider from '../../components/Divider';
+import { selectUser } from '../../services/redux/selector';
 
 const NB_TO_BE_LOADED = 7;
 
-function Home({ user }) {
+function Home() {
+  const user = useSelector(selectUser);
   const [loaded, setLoadedArray] = useState(Array.from(Array(NB_TO_BE_LOADED).keys()).map(() => false));
   const [inter, setInter] = useState(lastDay());
   const [timeSplit, setTimeSplit] = useState('hour');
@@ -39,7 +40,7 @@ function Home({ user }) {
   const isLoaded = useMemo(() => !loaded.some(e => !e), [loaded]);
 
   return (
-    <div className={s.root}>
+    <div>
       <div className={isLoaded ? s.welcome : s.welcomehidden}>
         <Typography variant="h4">
           Welcome&nbsp;
@@ -61,7 +62,7 @@ function Home({ user }) {
         <Grid container spacing={2} alignContent="stretch">
           <Grid container item xs={12} lg={6} spacing={0}>
             <Grid item xs={12} lg={6}>
-              <div className={cl(s.left, s.firstleft)}>
+              <div className={s.firstleft}>
                 <SongsPerCard
                   user={user}
                   timeSplit={timeSplit}
@@ -72,7 +73,7 @@ function Home({ user }) {
               </div>
             </Grid>
             <Grid item xs={12} lg={6}>
-              <div className={cl(s.left, s.secondleft)}>
+              <div className={s.secondleft}>
                 <DifferentArtists
                   user={user}
                   timeSplit={timeSplit}
@@ -156,4 +157,4 @@ function Home({ user }) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;

@@ -2,17 +2,22 @@ import { Paper, useMediaQuery } from '@material-ui/core';
 import React from 'react';
 import cl from 'classnames';
 import s from '../index.module.css';
-import PlayButton from '../../../../components/PlayButton';
 import { lessThanMobile } from '../../../../services/theme';
 import SimpleArtistLine from '../../../../components/SimpleArtistLine';
 import { msToHoursAndMinutesString } from '../../../../services/operations';
 
 function Album({ className, header, ...props }) {
-  let { infos, rank } = props;
+  let { infos } = props;
+  const { rank } = props;
   let img;
   if (header) {
     img = null;
-    infos = { artist: { name: 'Artist name' }, album: { name: 'Album name', release_date: 'Release date' }, duration_ms: 'Duration', count: 'Count' };
+    infos = {
+      artist: { name: 'Artist name' },
+      album: { name: 'Album name', release_date: 'Release date' },
+      duration_ms: 'Duration',
+      count: 'Count',
+    };
   } else {
     img = infos.album.images[0].url;
   }
@@ -48,13 +53,21 @@ function Album({ className, header, ...props }) {
         <span className={s.small}>
           {header ? infos.duration_ms : msToHoursAndMinutesString(infos.duration_ms)}
           &nbsp;
-          <span className={s.percent}>({!header && Math.floor(infos.duration_ms / infos.total_duration_ms * 100)}%)</span>
+          <span className={s.percent}>
+            (
+            {!header && Math.floor((infos.duration_ms / infos.total_duration_ms) * 100)}
+            %)
+          </span>
         </span>
       )}
       <span className={s.small}>
         {infos.count}
         &nbsp;
-        <span className={s.percent}>({!header && Math.floor(infos.count / infos.total_count * 100)}%)</span>
+        <span className={s.percent}>
+          (
+          {!header && Math.floor((infos.count / infos.total_count) * 100)}
+          %)
+        </span>
       </span>
     </Paper>
   );

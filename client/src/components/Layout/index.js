@@ -27,13 +27,17 @@ function Layout({ children }) {
   const mobile = useMediaQuery(lessThanMobile);
 
   return (
-    <div className={s.root}>
+    <div>
       <div className={s.header}>
         <AppBar className={s.appbar}>
           <Toolbar className={s.toolbar}>
             <div>
               {(siderEnabled && mobile) && <IconButton onClick={onDrawer} edge="start"><Menu /></IconButton>}
-              {!mobile && <Link to={urls.home} className="nolink"><Typography align="center" variant="h6">Your spotify</Typography></Link>}
+              {!mobile && (
+                <Link to={urls.home} className="nolink">
+                  <Typography align="center" variant="h6">Your spotify</Typography>
+                </Link>
+              )}
             </div>
             <div>
               <SearchBar />

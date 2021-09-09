@@ -2,12 +2,13 @@
     position: relative;
 }
 
-.trackitem {
-}
-
 .title {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
+}
+
+.songs {
+    min-height: 50vh;
 }

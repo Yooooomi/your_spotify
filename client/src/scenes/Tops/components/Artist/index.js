@@ -3,12 +3,12 @@ import React from 'react';
 import cl from 'classnames';
 import s from '../index.module.css';
 import SimpleArtistLine from '../../../../components/SimpleArtistLine';
-import PlayButton from '../../../../components/PlayButton';
 import { lessThanMobile } from '../../../../services/theme';
 import { msToHoursAndMinutesString } from '../../../../services/operations';
 
 function Artist({ className, header, ...props }) {
-  let { infos, rank } = props;
+  let { infos } = props;
+  const { rank } = props;
   let img;
   if (header) {
     img = null;
@@ -36,11 +36,22 @@ function Artist({ className, header, ...props }) {
       )}
       {!mobile && (
         <span className={s.small}>
-          {header && <span>{infos.duration_ms} <span className={s.percent}>(%)</span></span>}
+          {header && (
+            <span>
+              {infos.duration_ms}
+              {' '}
+              <span className={s.percent}>(%)</span>
+            </span>
+          )}
           {!header && (
             <div>
-              {msToHoursAndMinutesString(infos.duration_ms)}&nbsp;
-              <span className={s.percent}>({Math.floor(infos.duration_ms / infos.total_duration_ms * 100)}%)</span>
+              {msToHoursAndMinutesString(infos.duration_ms)}
+              &nbsp;
+              <span className={s.percent}>
+                (
+                {Math.floor((infos.duration_ms / infos.total_duration_ms) * 100)}
+                %)
+              </span>
             </div>
           )}
         </span>
@@ -48,7 +59,11 @@ function Artist({ className, header, ...props }) {
       <span className={s.small}>
         {infos.count}
         &nbsp;
-        <span className={s.percent}>({!header && Math.floor(infos.count / infos.total_count * 100)}%)</span>
+        <span className={s.percent}>
+          (
+          {!header && Math.floor((infos.count / infos.total_count) * 100)}
+          %)
+        </span>
       </span>
     </Paper>
   );

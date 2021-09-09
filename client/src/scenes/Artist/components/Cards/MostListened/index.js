@@ -2,10 +2,10 @@ import React from 'react';
 import MoreIcon from '@material-ui/icons/Add';
 import LessIcon from '@material-ui/icons/Remove';
 import cl from 'classnames';
+import { IconButton } from '@material-ui/core';
 import PlayButton from '../../../../../components/PlayButton';
 import BasicCard from '../../../../../components/Stats/Cards/Normal/BasicCard';
 import s from './index.module.css';
-import { IconButton } from '@material-ui/core';
 
 class MostListened extends BasicCard {
   constructor(props) {
@@ -69,7 +69,7 @@ class MostListened extends BasicCard {
             </div>
           ))}
         </div>
-      </div >
+      </div>
     );
   }
 

@@ -1,17 +1,19 @@
 import React, { useCallback, useState } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   Typography, Paper, Tooltip,
 } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import s from '../index.module.css';
 import API from '../../../services/API';
 import urls from '../../../services/urls';
-import { mapDispatchToProps, mapStateToProps } from '../../../services/redux/tools';
 import FilledInput from '../../../components/FilledInput';
 import LoadButton from '../../../components/LoadButton';
+import { selectGlobalPreferences } from '../../../services/redux/selector';
 
-function Register({ history, globalPreferences }) {
+function Register() {
+  const history = useHistory();
+  const globalPreferences = useSelector(selectGlobalPreferences);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -86,4 +88,4 @@ function Register({ history, globalPreferences }) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Register));
+export default Register;

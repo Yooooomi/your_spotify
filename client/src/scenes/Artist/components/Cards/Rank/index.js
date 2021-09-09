@@ -1,10 +1,10 @@
 import React from 'react';
 import UpIcon from '@material-ui/icons/ArrowDropUp';
 import DownIcon from '@material-ui/icons/ArrowDropDown';
+import { Link } from 'react-router-dom';
 import s from './index.module.css';
 import BasicCard from '../../../../../components/Stats/Cards/Normal/BasicCard';
 import SimpleArtistLine from '../../../../../components/SimpleArtistLine';
-import { Link } from 'react-router-dom';
 import urls from '../../../../../services/urls';
 
 class Rank extends BasicCard {
@@ -26,7 +26,12 @@ class Rank extends BasicCard {
     return rank.results.map(e => e.id).every(e => !!artists[e]);
   }
 
-  getTop = () => <span>Artist ranking - <Link className={s.allrank} to={urls.topArtists}>View all</Link></span>
+  getTop = () => (
+    <span>
+      Artist ranking -
+      <Link className={s.allrank} to={urls.topArtists}>View all</Link>
+    </span>
+  )
 
   getValue = () => {
     const { rank, artists } = this.props;

@@ -10,7 +10,7 @@ function PlayButton({ track, nomargin, className }) {
     try {
       await API.play(track.id);
     } catch (e) {
-
+      window.message('error', 'Cannot play music, be sure to have an active player');
     }
   }, [track]);
 
@@ -20,7 +20,7 @@ function PlayButton({ track, nomargin, className }) {
       disableRipple
       disableFocusRipple
       disableTouchRipple
-      className={cl(s.playButton, nomargin && s.nomargin, className)}
+      className={cl(nomargin && s.nomargin, className)}
     >
       <PlayCircleOutline fontSize="small" />
     </IconButton>

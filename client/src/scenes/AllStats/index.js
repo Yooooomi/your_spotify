@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import s from './index.module.css';
 import AlbumDatePer from '../../components/Stats/Graphs/Normal/AlbumDatePer';
 import DifferentArtistsPer from '../../components/Stats/Graphs/Normal/DifferentArtistsPer';
@@ -10,12 +10,12 @@ import SongsPer from '../../components/Stats/Graphs/Normal/SongsPer';
 import TimePer from '../../components/Stats/Graphs/Normal/TimePer';
 import BestArtists from '../../components/Stats/Graphs/Normal/BestArtists';
 import API from '../../services/API';
-import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
 import QuickInterval, { PrefabToInter } from '../../components/QuickInterval';
 import HourOfDay from '../../components/Stats/Graphs/Normal/HourOfDay';
 import TextScreenSize from '../../components/TextScreenSize';
 import BestArtistsPer from '../../components/Stats/Graphs/Normal/BestArtistsPer';
 import Divider from '../../components/Divider';
+import { selectUser } from '../../services/redux/selector';
 
 const StatClasses = [
   BestArtistsPer,
@@ -29,8 +29,10 @@ const StatClasses = [
   HourOfDay,
 ];
 
-function AllStats({ user }) {
-  const [prefabIdx, setPrefabIdx] = useState(
+function AllStats() {
+  const user = useSelector(selectUser);
+
+  const [prefabIdx] = useState(
     PrefabToInter.findIndex(e => e.name === user.settings.preferredStatsPeriod),
   );
 
@@ -48,7 +50,7 @@ function AllStats({ user }) {
   }, []);
 
   return (
-    <div className={s.root}>
+    <div>
       <div className={s.title}>
         <Grid container alignItems="center" justify="space-between">
           <Grid item xs={12} lg={5} style={{ textAlign: 'left' }}>
@@ -66,7 +68,7 @@ function AllStats({ user }) {
             />
           </Grid>
         </Grid>
-        <div className={s.leftTitle} />
+        <div />
       </div>
       <Divider />
       <Grid spacing={2} container>
@@ -82,4 +84,4 @@ function AllStats({ user }) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllStats);
+export default AllStats;

@@ -2,12 +2,14 @@ import React, { useCallback, useState } from 'react';
 import {
   Paper, Typography, Grid, Button, Slider, Tabs, Tab, CircularProgress, TextField, Tooltip,
 } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import s from './index.module.css';
-import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
 import API from '../../services/API';
 import SettingField from './SettingField';
 import Divider from '../../components/Divider';
+import { selectGlobalPreferences, selectUser } from '../../services/redux/selector';
+import { refreshUser } from '../../services/redux/thunks';
+import { updateGlobalPreferences } from '../../services/redux/reducer';
 
 const AccountFields = [
   { label: 'Account name', value: user => user.username },
@@ -30,12 +32,12 @@ function SpotifyFieldGetter(profile, fieldName) {
   return value;
 }
 
-function Settings({
-  user,
-  refreshUser,
-  globalPreferences,
-  updateGlobalPreferences,
-}) {
+function Settings() {
+  const dispatch = useDispatch();
+
+  const user = useSelector(selectUser);
+  const globalPreferences = useSelector(selectGlobalPreferences);
+
   const [metric, setMetric] = useState(user.settings.metricUsed);
   const [oldPassword, setOldPassword] = useState('');
   const [oldPassword1, setOldPassword1] = useState('');
@@ -46,11 +48,11 @@ function Settings({
       const { data: newPrefs } = await API
         .setGlobalPreferences({ allowRegistrations: !globalPreferences.allowRegistrations });
       window.message('info', `Changed your registration status to ${!globalPreferences.allowRegistrations}`);
-      updateGlobalPreferences(newPrefs);
+      dispatch(updateGlobalPreferences(newPrefs));
     } catch (e) {
       window.message('error', 'Could not change the status of the registration');
     }
-  }, [globalPreferences, updateGlobalPreferences]);
+  }, [dispatch, globalPreferences]);
 
   const changedNbElements = useCallback(async (ev, value) => {
     try {
@@ -65,12 +67,12 @@ function Settings({
     try {
       await API.setSetting('metricUsed', value);
       setMetric(value);
-      refreshUser();
+      dispatch(refreshUser());
       window.message('info', `Successfully set metric used to ${value}`);
     } catch (e) {
       window.message('error', 'Could not change the metric used');
     }
-  }, [refreshUser]);
+  }, [dispatch]);
 
   const changePassword = useCallback(async ev => {
     ev.preventDefault();
@@ -85,7 +87,7 @@ function Settings({
   if (user == null) return <CircularProgress />;
 
   return (
-    <div className={s.root}>
+    <div>
       <Typography variant="h4" align="left">Settings</Typography>
       <Divider />
       <Grid container spacing={2}>
@@ -208,8 +210,11 @@ function Settings({
                   placeholder="New password..."
                 />
               </div>
-              <div >
-                <Tooltip title={oldPassword !== oldPassword1 ? 'All fields not set or old passwords differ' : ''} className={s.changepasswordbutton}>
+              <div>
+                <Tooltip
+                  title={oldPassword !== oldPassword1 ? 'All fields not set or old passwords differ' : ''}
+                  className={s.changepasswordbutton}
+                >
                   <div style={{ width: 'max-content' }}>
                     <Button
                       type="submit"
@@ -249,4 +254,4 @@ function Settings({
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default Settings;

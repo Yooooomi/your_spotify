@@ -76,7 +76,11 @@ const bestPeriodOfArtist = async (user, artistId) => {
     { $project: { ...getGroupByDateProjection(), artistInfos: 1 } },
     { $group: { _id: null, items: { $push: '$$CURRENT' }, total: { $sum: 1 } } },
     { $unwind: '$items' },
-    { $group: { _id: getGroupingByTimeSplit('month', 'items'), artist: { $last: '$items' }, count: { $sum: 1 }, total: { $last: '$total' } } },
+    {
+      $group: {
+        _id: getGroupingByTimeSplit('month', 'items'), artist: { $last: '$items' }, count: { $sum: 1 }, total: { $last: '$total' },
+      },
+    },
     { $sort: { count: -1 } },
     { $limit: 2 },
   ]);

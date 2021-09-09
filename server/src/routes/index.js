@@ -81,7 +81,7 @@ router.post('/login', validating(loginSchema), async (req, res) => {
 const changePassword = Joi.object().keys({
   oldPassword: Joi.string().max(constants.maxStringLength).required(),
   newPassword: Joi.string().max(constants.maxStringLength).required(),
-})
+});
 
 router.post('/changepassword', validating(changePassword), logged, async (req, res) => {
   const { user } = req;

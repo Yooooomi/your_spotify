@@ -7,6 +7,7 @@
     "migrate": "node ./src/migrations.js",
     "lint": "eslint src/ --ext .js",
     "lint:fix": "eslint src/ --ext .js --fix",
+    "lint:open": "yarn -s lint -f ../only-files.js | grep file | cut -d' ' -f 2 | xargs code",
     "dev": "nodemon ./src/bin/www"
   },
   "dependencies": {

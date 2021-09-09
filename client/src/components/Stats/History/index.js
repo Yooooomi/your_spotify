@@ -1,92 +1,88 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Grid, Typography } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ViewHeadline as LineIcon, ViewModule as NotLineIcon } from '@material-ui/icons';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import s from './index.module.css';
-import { mapStateToProps, mapDispatchToProps } from '../../../services/redux/tools';
 import Track from '../../Track';
 import Line from '../../Track/Line';
 import API from '../../../services/API';
+import { selectTracks, selectUser } from '../../../services/redux/selector';
+import { addTracks, refreshUser } from '../../../services/redux/thunks';
 
-class History extends React.Component {
-  constructor(props) {
-    super(props);
+function History({ maxOld, title }) {
+  const maxOldEnd = useRef(false);
+  const user = useSelector(selectUser);
+  const { tracks, full } = useSelector(selectTracks);
+  const dispatch = useDispatch();
 
-    this.maxOldEnd = false;
-  }
+  const loadMore = useCallback(async (page) => dispatch(addTracks((page - 1) * 20)), [dispatch]);
 
-  loadMore = async () => {
-    const { tracks, addTracks } = this.props;
-
-    await addTracks(tracks.length);
-  }
-
-  changeStyle = (ev, index) => {
+  const changeStyle = useCallback(async (ev, index) => {
     if (index === null) return;
     const line = index === 0;
 
-    const { refreshUser } = this.props;
+    try {
+      await API.setSetting('historyLine', line);
+      dispatch(refreshUser());
+    } catch (e) {
+      console.error(e);
+    }
+  }, [dispatch]);
 
-    API.setSetting('historyLine', line).then(refreshUser);
+  const { settings } = user;
+  const line = settings.historyLine;
+
+  const xs = 6;
+  const md = 4;
+  const lg = 3;
+
+  let displayTracks = tracks;
+
+  if (maxOld) {
+    displayTracks = tracks.filter(tr => {
+      const played = new Date(tr.played_at);
+      if (played.getTime() > maxOld.getTime()) {
+        return true;
+      }
+      if (!maxOldEnd.current) {
+        maxOldEnd.current = true;
+      }
+      return false;
+    });
   }
 
-  render() {
-    const {
-      tracks, user, maxOld, title, full,
-    } = this.props;
-    const { settings } = user;
-    const line = settings.historyLine;
-
-    const xs = 6;
-    const md = 4;
-    const lg = 3;
-
-    let displayTracks = tracks;
-
-    if (maxOld) {
-      displayTracks = tracks.filter(tr => {
-        const played = new Date(tr.played_at);
-        if (played.getTime() > maxOld.getTime()) {
-          return true;
-        }
-        if (!this.maxOldEnd) {
-          this.maxOldEnd = true;
-        }
-        return false;
-      });
-    }
-
-    if (user.full && displayTracks.length === 0) {
-      return (
-        <div className={s.root}>
-          <Typography align="center" variant="h5">No songs to display</Typography>
-        </div>
-      );
-    }
-
-    const gridProps = line ? ({ xs: 12 }) : ({ xs, md, lg });
-
+  if (full && displayTracks.length === 0) {
     return (
       <div className={s.root}>
-        <div className={s.title}>
-          <Typography variant="h4">{title}</Typography>
-          <ToggleButtonGroup
-            exclusive
-            value={line ? 0 : 1}
-            onChange={this.changeStyle}
-          >
-            <ToggleButton value={0}><LineIcon /></ToggleButton>
-            <ToggleButton value={1}><NotLineIcon /></ToggleButton>
-          </ToggleButtonGroup>
-        </div>
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={this.loadMore}
-          hasMore={(maxOld && !this.maxOldEnd && !full) || (!maxOld && !full)}
-          loader={<div className="loader" key={0}>Loading ...</div>}
+        <Typography align="center" variant="h5">No songs to display</Typography>
+      </div>
+    );
+  }
+
+  const gridProps = line ? ({ xs: 12 }) : ({ xs, md, lg });
+
+  return (
+    <div>
+      <div className={s.title}>
+        <Typography variant="h4">{title}</Typography>
+        <ToggleButtonGroup
+          exclusive
+          value={line ? 0 : 1}
+          onChange={changeStyle}
         >
+          <ToggleButton value={0}><LineIcon /></ToggleButton>
+          <ToggleButton value={1}><NotLineIcon /></ToggleButton>
+        </ToggleButtonGroup>
+      </div>
+      <InfiniteScroll
+        pageStart={0}
+        loadMore={loadMore}
+        hasMore={(maxOld && !maxOldEnd.current && !full) || (!maxOld && !full)}
+        loader={<div className="loader" key={0}>Loading ...</div>}
+      >
+        <div className={s.songs}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               {line && <Line header />}
@@ -94,15 +90,15 @@ class History extends React.Component {
             {
               displayTracks.map(e => (
                 <Grid item {...gridProps} key={e.played_at}>
-                  <Track line={line} className={s.trackitem} infos={e} track={e.track} />
+                  <Track line={line} infos={e} track={e.track} />
                 </Grid>
               ))
             }
           </Grid>
-        </InfiniteScroll>
-      </div>
-    );
-  }
+        </div>
+      </InfiniteScroll>
+    </div>
+  );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(History);
+export default History;

@@ -8,11 +8,14 @@ import { lessThanMobile } from '../../../../services/theme';
 import { msToHoursAndMinutesString } from '../../../../services/operations';
 
 function Song({ className, header, ...props }) {
-  let { infos, rank } = props;
+  let { infos } = props;
+  const { rank } = props;
   let img;
   if (header) {
     img = null;
-    infos = { track: { name: 'Track name' }, artist: { name: 'Artist' }, duration_ms: 'Duration', count: 'Count' };
+    infos = {
+      track: { name: 'Track name' }, artist: { name: 'Artist' }, duration_ms: 'Duration', count: 'Count',
+    };
   } else {
     img = infos.album.images[0].url;
   }
@@ -46,13 +49,21 @@ function Song({ className, header, ...props }) {
         <span className={s.small}>
           {header ? infos.duration_ms : msToHoursAndMinutesString(infos.duration_ms)}
           &nbsp;
-          <span className={s.percent}>({!header && Math.floor(infos.duration_ms / infos.total_duration_ms * 100)}%)</span>
+          <span className={s.percent}>
+            (
+            {!header && Math.floor((infos.duration_ms / infos.total_duration_ms) * 100)}
+            %)
+          </span>
         </span>
       )}
       <span className={s.small}>
         {infos.count}
         &nbsp;
-        <span className={s.percent}>({!header && Math.floor(infos.count / infos.total_count * 100)}%)</span>
+        <span className={s.percent}>
+          (
+          {!header && Math.floor((infos.count / infos.total_count) * 100)}
+          %)
+        </span>
       </span>
     </Paper>
   );

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import s from './index.module.css';
 
 class SnackbarMessage extends React.Component {
   constructor(props) {
@@ -40,7 +39,7 @@ class SnackbarMessage extends React.Component {
     const { open, severity, msg } = this.state;
 
     return (
-      <div className={s.root}>
+      <div>
         <Snackbar
           anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
           open={open}

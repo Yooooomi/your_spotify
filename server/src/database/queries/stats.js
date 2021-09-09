@@ -311,108 +311,126 @@ const getBestArtistsPer = async (user, start, end, timeSplit = 'day') => {
   return res;
 };
 
-const getBestSongsNbOffseted = (user, start, end, nb, offset) => {
-  return Infos.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
-    {
-      $lookup: {
-        from: 'tracks', localField: 'id', foreignField: 'id', as: 'track',
-      },
+const getBestSongsNbOffseted = (user, start, end, nb, offset) => Infos.aggregate([
+  { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+  { $project: { ...getGroupByDateProjection(), id: 1 } },
+  {
+    $lookup: {
+      from: 'tracks', localField: 'id', foreignField: 'id', as: 'track',
     },
-    { $unwind: '$track' },
+  },
+  { $unwind: '$track' },
 
-    // Adding the sum of the duration of all musics
-    { $group: { _id: null, tracks: { $push: '$$ROOT' }, total_duration_ms: { $sum: '$track.duration_ms' }, total_count: { $sum: 1 } } },
-    { $unwind: '$tracks' },
-    { $addFields: { 'tracks.total_duration_ms': '$total_duration_ms', 'tracks.total_count': '$total_count' } },
-    { $replaceRoot: { newRoot: '$tracks' } },
-
-    { $group: { _id: '$track.id', track: { $last: '$track' }, total_count: { $last: '$total_count' }, total_duration_ms: { $last: '$total_duration_ms' }, duration_ms: { $sum: '$track.duration_ms' }, count: { $sum: 1 } } },
-    { $sort: { count: -1, 'track.name': 1 } },
-    { $skip: offset },
-    { $limit: nb },
-    { $addFields: { 'track.mainArtist': { $first: '$track.artists' } } },
-    {
-      $lookup: {
-        from: 'artists', localField: 'track.mainArtist', foreignField: 'id', as: 'artist',
-      },
+  // Adding the sum of the duration of all musics
+  {
+    $group: {
+      _id: null, tracks: { $push: '$$ROOT' }, total_duration_ms: { $sum: '$track.duration_ms' }, total_count: { $sum: 1 },
     },
-    { $unwind: '$artist' },
-    {
-      $lookup: {
-        from: 'albums', localField: 'track.album', foreignField: 'id', as: 'album',
-      },
-    },
-    { $unwind: '$album' },
-  ]);
-};
+  },
+  { $unwind: '$tracks' },
+  { $addFields: { 'tracks.total_duration_ms': '$total_duration_ms', 'tracks.total_count': '$total_count' } },
+  { $replaceRoot: { newRoot: '$tracks' } },
 
-const getBestArtistsNbOffseted = (user, start, end, nb, offset) => {
-  return Infos.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
-    {
-      $lookup: {
-        from: 'tracks', localField: 'id', foreignField: 'id', as: 'track',
-      },
+  {
+    $group: {
+      _id: '$track.id', track: { $last: '$track' }, total_count: { $last: '$total_count' }, total_duration_ms: { $last: '$total_duration_ms' }, duration_ms: { $sum: '$track.duration_ms' }, count: { $sum: 1 },
     },
-    { $unwind: '$track' },
-
-    // Adding the sum of the duration of all musics
-    { $group: { _id: null, tracks: { $push: '$$ROOT' }, total_duration_ms: { $sum: '$track.duration_ms' }, total_count: { $sum: 1 } } },
-    { $unwind: '$tracks' },
-    { $addFields: { 'tracks.total_duration_ms': '$total_duration_ms', 'tracks.total_count': '$total_count' } },
-    { $replaceRoot: { newRoot: '$tracks' } },
-
-    { $group: { _id: { $first: '$track.artists' }, total_count: { $last: '$total_count' }, total_duration_ms: { $last: '$total_duration_ms' }, duration_ms: { $sum: '$track.duration_ms' }, count: { $sum: 1 } } },
-    { $sort: { count: -1, _id: 1 } },
-    { $skip: offset },
-    { $limit: nb },
-    {
-      $lookup: {
-        from: 'artists', localField: '_id', foreignField: 'id', as: 'artist',
-      },
+  },
+  { $sort: { count: -1, 'track.name': 1 } },
+  { $skip: offset },
+  { $limit: nb },
+  { $addFields: { 'track.mainArtist': { $first: '$track.artists' } } },
+  {
+    $lookup: {
+      from: 'artists', localField: 'track.mainArtist', foreignField: 'id', as: 'artist',
     },
-    { $unwind: '$artist' },
-  ]);
-};
-
-const getBestAlbumsNbOffseted = (user, start, end, nb, offset) => {
-  return Infos.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
-    {
-      $lookup: {
-        from: 'tracks', localField: 'id', foreignField: 'id', as: 'track',
-      },
+  },
+  { $unwind: '$artist' },
+  {
+    $lookup: {
+      from: 'albums', localField: 'track.album', foreignField: 'id', as: 'album',
     },
-    { $unwind: '$track' },
+  },
+  { $unwind: '$album' },
+]);
 
-    // Adding the sum of the duration of all musics
-    { $group: { _id: null, tracks: { $push: '$$ROOT' }, total_duration_ms: { $sum: '$track.duration_ms' }, total_count: { $sum: 1 } } },
-    { $unwind: '$tracks' },
-    { $addFields: { 'tracks.total_duration_ms': '$total_duration_ms', 'tracks.total_count': '$total_count' } },
-    { $replaceRoot: { newRoot: '$tracks' } },
+const getBestArtistsNbOffseted = (user, start, end, nb, offset) => Infos.aggregate([
+  { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+  { $project: { ...getGroupByDateProjection(), id: 1 } },
+  {
+    $lookup: {
+      from: 'tracks', localField: 'id', foreignField: 'id', as: 'track',
+    },
+  },
+  { $unwind: '$track' },
 
-    { $group: { _id: '$track.album', count: { $sum: 1 }, total_count: { $last: '$total_count' }, total_duration_ms: { $last: '$total_duration_ms' }, duration_ms: { $sum: '$track.duration_ms' }, artist: { $last: { $first: '$track.artists' } } } },
-    { $sort: { count: -1, _id: 1 } },
-    { $skip: offset },
-    { $limit: nb },
-    {
-      $lookup: {
-        from: 'artists', localField: 'artist', foreignField: 'id', as: 'artist',
-      },
+  // Adding the sum of the duration of all musics
+  {
+    $group: {
+      _id: null, tracks: { $push: '$$ROOT' }, total_duration_ms: { $sum: '$track.duration_ms' }, total_count: { $sum: 1 },
     },
-    { $unwind: '$artist' },
-    {
-      $lookup: {
-        from: 'albums', localField: '_id', foreignField: 'id', as: 'album',
-      },
+  },
+  { $unwind: '$tracks' },
+  { $addFields: { 'tracks.total_duration_ms': '$total_duration_ms', 'tracks.total_count': '$total_count' } },
+  { $replaceRoot: { newRoot: '$tracks' } },
+
+  {
+    $group: {
+      _id: { $first: '$track.artists' }, total_count: { $last: '$total_count' }, total_duration_ms: { $last: '$total_duration_ms' }, duration_ms: { $sum: '$track.duration_ms' }, count: { $sum: 1 },
     },
-    { $unwind: '$album' },
-  ]);
-};
+  },
+  { $sort: { count: -1, _id: 1 } },
+  { $skip: offset },
+  { $limit: nb },
+  {
+    $lookup: {
+      from: 'artists', localField: '_id', foreignField: 'id', as: 'artist',
+    },
+  },
+  { $unwind: '$artist' },
+]);
+
+const getBestAlbumsNbOffseted = (user, start, end, nb, offset) => Infos.aggregate([
+  { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+  { $project: { ...getGroupByDateProjection(), id: 1 } },
+  {
+    $lookup: {
+      from: 'tracks', localField: 'id', foreignField: 'id', as: 'track',
+    },
+  },
+  { $unwind: '$track' },
+
+  // Adding the sum of the duration of all musics
+  {
+    $group: {
+      _id: null, tracks: { $push: '$$ROOT' }, total_duration_ms: { $sum: '$track.duration_ms' }, total_count: { $sum: 1 },
+    },
+  },
+  { $unwind: '$tracks' },
+  { $addFields: { 'tracks.total_duration_ms': '$total_duration_ms', 'tracks.total_count': '$total_count' } },
+  { $replaceRoot: { newRoot: '$tracks' } },
+
+  {
+    $group: {
+      _id: '$track.album', count: { $sum: 1 }, total_count: { $last: '$total_count' }, total_duration_ms: { $last: '$total_duration_ms' }, duration_ms: { $sum: '$track.duration_ms' }, artist: { $last: { $first: '$track.artists' } },
+    },
+  },
+  { $sort: { count: -1, _id: 1 } },
+  { $skip: offset },
+  { $limit: nb },
+  {
+    $lookup: {
+      from: 'artists', localField: 'artist', foreignField: 'id', as: 'artist',
+    },
+  },
+  { $unwind: '$artist' },
+  {
+    $lookup: {
+      from: 'albums', localField: '_id', foreignField: 'id', as: 'album',
+    },
+  },
+  { $unwind: '$album' },
+]);
 
 module.exports = {
   getMostListenedSongs,

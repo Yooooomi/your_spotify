@@ -21,7 +21,7 @@ function IntervalModifier({
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   return (
-    <div className={cl(s.root, autoAbsolute && s.auto, className)}>
+    <div className={cl(autoAbsolute && s.auto, className)}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Chip
           label="modify"

@@ -1,15 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
-import { mapStateToProps, mapDispatchToProps } from '../../services/redux/tools';
+import { selectReady, selectUser } from '../../services/redux/selector';
 import urls from '../../services/urls';
 
 function PrivateRoute({
-  ready,
-  user,
   spotify,
   ...other
 }) {
+  const ready = useSelector(selectReady);
+  const user = useSelector(selectUser);
+
   if (ready && user) {
     if (!spotify || (spotify && user.activated)) {
       return <Route {...other} />;
@@ -20,4 +21,4 @@ function PrivateRoute({
   return <Redirect to={urls.login} />;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute);
+export default PrivateRoute;

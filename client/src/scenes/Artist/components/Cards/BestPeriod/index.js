@@ -1,6 +1,6 @@
 import React from 'react';
 import BasicCard from '../../../../../components/Stats/Cards/Normal/BasicCard';
-import { dateObjToMonthStringAndYear, dateObjToString } from '../../../../../services/date';
+import { dateObjToMonthStringAndYear } from '../../../../../services/date';
 import s from './index.module.css';
 
 class BestPeriod extends BasicCard {
@@ -32,7 +32,7 @@ class BestPeriod extends BasicCard {
           {best.count}
           &nbsp;songs
           <span className={s.percent}>
-            {Math.floor(best.count / best.total * 100)}
+            {Math.floor((best.count / best.total) * 100)}
             % of total
           </span>
         </div>
@@ -44,7 +44,7 @@ class BestPeriod extends BasicCard {
               {secondBest.count}
               &nbsp;songs
               <span className={s.percent}>
-                {Math.floor(secondBest.count / secondBest.total * 100)}
+                {Math.floor((secondBest.count / secondBest.total) * 100)}
                 % of total
               </span>
             </div>

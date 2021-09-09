@@ -1,5 +1,4 @@
 import React from 'react';
-import s from './index.module.css';
 import SimpleLineChart from '../../../../Chart/SimpleLineChart';
 import API from '../../../../../services/API';
 import BasicChart from '../../BasicChart';
@@ -86,7 +85,6 @@ class HourOfDay extends BasicChart {
         onTimeSplitChange={e => this.setInfos('timeSplit', e)}
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}
-        className={s.chart}
         data={data}
       />
     );

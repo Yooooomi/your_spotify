@@ -9,14 +9,6 @@
     position: relative;
 }
 
-.more {
-    color: green;
-}
-
-.less {
-    color: red;
-}
-
 .middle {
     margin: 15px 0px !important;
     flex-grow: 1;

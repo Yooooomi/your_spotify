@@ -68,13 +68,19 @@ const API = {
   getArtistStats: (id) => axios.get(`/artist/${id}/stats`),
   searchArtists: (str) => axios.get(`/artist/search/${str}`),
   getBestSongs: (start, end, nb, offset) => axios.get('/spotify/top/songs', {
-    params: { start, end, nb, offset },
+    params: {
+      start, end, nb, offset,
+    },
   }),
   getBestArtists: (start, end, nb, offset) => axios.get('/spotify/top/artists', {
-    params: { start, end, nb, offset },
+    params: {
+      start, end, nb, offset,
+    },
   }),
   getBestAlbums: (start, end, nb, offset) => axios.get('/spotify/top/albums', {
-    params: { start, end, nb, offset },
+    params: {
+      start, end, nb, offset,
+    },
   }),
 };
 

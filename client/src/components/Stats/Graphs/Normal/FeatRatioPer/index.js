@@ -1,5 +1,4 @@
 import React from 'react';
-import s from './index.module.css';
 import IntervalChart, { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
 import SimpleLineChart from '../../../../Chart/SimpleLineChart';
@@ -42,7 +41,6 @@ class FeatRatioPer extends IntervalChart {
         onTimeSplitChange={e => this.setInfos('timeSplit', e)}
         onStartChange={e => this.setInfos('start', e)}
         onEndChange={e => this.setInfos('end', e)}
-        className={s.chart}
         data={data}
       />
     );

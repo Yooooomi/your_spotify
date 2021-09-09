@@ -1,12 +1,10 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
-  Typography, Paper, IconButton, useMediaQuery,
+  Typography, Paper, useMediaQuery,
 } from '@material-ui/core';
 import cl from 'classnames';
-import { PlayCircleOutline } from '@material-ui/icons';
 import { duration, formatHour } from '../../../services/date';
 import s from './index.module.css';
-import API from '../../../services/API';
 import { lessThanMobile, lessThanTablet } from '../../../services/theme';
 import SimpleArtistLine from '../../SimpleArtistLine';
 import PlayButton from '../../PlayButton';

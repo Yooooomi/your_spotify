@@ -1,15 +1,17 @@
 import React, { useCallback, useState } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Paper, Typography } from '@material-ui/core';
 import s from '../index.module.css';
 import API from '../../../services/API';
 import urls from '../../../services/urls';
-import { mapStateToProps, mapDispatchToProps } from '../../../services/redux/tools';
 import FilledInput from '../../../components/FilledInput';
 import LoadButton from '../../../components/LoadButton';
+import { updateReady, updateUser } from '../../../services/redux/reducer';
 
-function Login({ history, updateUser, updateReady }) {
+function Login() {
+  const history = useHistory();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -34,10 +36,10 @@ function Login({ history, updateUser, updateReady }) {
     } catch (e) {
       user.spotify = {};
     }
-    updateUser(user);
-    updateReady(true);
+    dispatch(updateUser(user));
+    dispatch(updateReady(true));
     history.push(urls.home);
-  }, [username, password, history, updateUser, updateReady]);
+  }, [dispatch, username, password, history]);
 
   return (
     <div className={s.pageHolder}>
@@ -88,4 +90,4 @@ function Login({ history, updateUser, updateReady }) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
+export default Login;
