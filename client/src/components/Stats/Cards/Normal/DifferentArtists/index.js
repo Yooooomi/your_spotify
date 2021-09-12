@@ -1,53 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Typography } from '@material-ui/core';
 import API from '../../../../../services/API';
-import BasicCard from '../BasicCard';
 import { ratioValueAB } from '../../../../../services/operations';
+import { useAPICall, usePreviousPeriod } from '../../../../../services/hooks';
+import BasicCard from '../BasicCard';
+import { Timesplits } from '../../../../../services/stats';
 
-class DifferentArtists extends BasicCard {
-  constructor(props) {
-    super(props);
+function DifferentArtists({ start, end }) {
+  const [previousStart, previousEnd] = usePreviousPeriod(start, end);
+  const [statsYesterday, statusYesterday] = useAPICall(
+    API.differentArtistsPer,
+    [previousStart, previousEnd, Timesplits.ALL],
+  );
+  const [stats, status] = useAPICall(API.differentArtistsPer, [start, end, Timesplits.ALL]);
 
-    this.state = {
-      ...this.state,
-      statsYesterday: null,
-      stats: null,
-    };
-  }
-
-  refresh = async () => {
-    const {
-      start, end, previousStart, previousEnd,
-    } = this.state;
-
-    const stats = await API.differentArtistsPer(start, end, 'all');
-    const statsYesterday = await API.differentArtistsPer(previousStart, previousEnd, 'all');
-
-    this.setState({
-      statsYesterday: statsYesterday.data,
-      stats: stats.data,
-    });
-  }
-
-  isReady = () => {
-    const { stats } = this.state;
-
-    return !!stats;
-  }
-
-  getTop = () => 'Different artists'
-
-  getValue = () => {
-    const { stats } = this.state;
-
-    if (!stats.length) return 0;
-
-    return stats[0].artists.length;
-  }
-
-  getBottom = () => {
-    const { stats, statsYesterday } = this.state;
-
+  const bottom = useMemo(() => {
+    if (!stats || !statsYesterday) return null;
     const value = stats.length > 0 ? stats[0].artists.length : 0;
     const oldValue = statsYesterday.length > 0 ? statsYesterday[0].artists.length : 0;
 
@@ -70,10 +38,21 @@ class DifferentArtists extends BasicCard {
           {moreOrLessThanYesterday}
           %
         </Typography>
-          &nbsp;more for this period
+        &nbsp;more for this period
       </Typography>
     );
-  }
+  }, [stats, statsYesterday]);
+
+  if (!stats) return null;
+
+  return (
+    <BasicCard
+      status={[status, statusYesterday]}
+      top="Different artists"
+      value={stats?.[0]?.artists?.length || 0}
+      bottom={bottom}
+    />
+  );
 }
 
 export default DifferentArtists;

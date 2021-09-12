@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { Grid, Typography } from '@material-ui/core';
+import { CircularProgress, Grid, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { ViewHeadline as LineIcon, ViewModule as NotLineIcon } from '@material-ui/icons';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
@@ -53,14 +53,7 @@ function History({ maxOld, title }) {
     });
   }
 
-  if (full && displayTracks.length === 0) {
-    return (
-      <div className={s.root}>
-        <Typography align="center" variant="h5">No songs to display</Typography>
-      </div>
-    );
-  }
-
+  const noSongs = full && displayTracks.length === 0;
   const gridProps = line ? ({ xs: 12 }) : ({ xs, md, lg });
 
   return (
@@ -76,27 +69,41 @@ function History({ maxOld, title }) {
           <ToggleButton value={1}><NotLineIcon /></ToggleButton>
         </ToggleButtonGroup>
       </div>
-      <InfiniteScroll
-        pageStart={0}
-        loadMore={loadMore}
-        hasMore={(maxOld && !maxOldEnd.current && !full) || (!maxOld && !full)}
-        loader={<div className="loader" key={0}>Loading ...</div>}
-      >
-        <div className={s.songs}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              {line && <Line header />}
-            </Grid>
-            {
-              displayTracks.map(e => (
-                <Grid item {...gridProps} key={e.played_at}>
-                  <Track line={line} infos={e} track={e.track} />
-                </Grid>
-              ))
-            }
-          </Grid>
+      {noSongs && (
+        <div className={s.root}>
+          <Typography align="center" variant="h5">No songs to display</Typography>
         </div>
-      </InfiniteScroll>
+      )}
+      {!noSongs && (
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={loadMore}
+          hasMore={(maxOld && !maxOldEnd.current && !full) || (!maxOld && !full)}
+          loader={(
+            <div className={s.loader} key={0}>
+              <div className={s.loadercontent}>
+                <CircularProgress size={16} />
+                <span>Loading</span>
+              </div>
+            </div>
+          )}
+        >
+          <div className={s.songs}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                {line && <Line header />}
+              </Grid>
+              {
+                displayTracks.map(e => (
+                  <Grid item {...gridProps} key={e.played_at}>
+                    <Track line={line} infos={e} track={e.track} />
+                  </Grid>
+                ))
+              }
+            </Grid>
+          </div>
+        </InfiniteScroll>
+      )}
     </div>
   );
 }

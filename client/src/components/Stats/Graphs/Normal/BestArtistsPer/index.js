@@ -1,49 +1,54 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import API from '../../../../../services/API';
-import IntervalChart, { FillModes } from '../../IntervalChart';
+import { FillModes } from '../../IntervalChart';
 import PercentChart from '../../../../Chart/PercentChart';
+import { useAPICall, useFilledStats } from '../../../../../services/hooks';
+import BasicChart from '../../BasicChart';
 
 const toPercent = (decimal, fixed = 0) => `${(decimal * 100).toFixed(fixed)}%`;
 
-class BestArtistsPer extends IntervalChart {
-  constructor(props) {
-    super(props, '10 best artists repartition over time', FillModes.ASK);
-    this.state.allArtists = [];
-    this.state.artists = {};
-  }
+const STAT_NAME = '10 best artists repartition over time';
 
-  fetchStats = async () => {
-    const { start, end, timeSplit } = this.state;
-    const { data } = await API.bestArtistsPer(start, end, timeSplit);
+function BestArtistsPer({
+  className,
+  start,
+  end,
+  timeSplit,
+}) {
+  const [allArtists, setAllArtists] = useState({});
+  // const [artists, setArtists] = useState({});
 
-    const allArtists = data.reduce((acc, curr) => {
+  const treatStats = useCallback(res => {
+    const newAllArtists = res.reduce((acc, curr) => {
       curr.artists.forEach(art => {
         acc[art.id] = art;
       });
       return acc;
     }, {});
 
-    this.setState({ allArtists });
+    setAllArtists(newAllArtists);
+    return res;
+  }, []);
 
-    return data || null;
-  }
+  const [rawStats, status] = useAPICall(API.bestArtistsPer, [start, end, timeSplit], treatStats);
 
-  dataGetter = (stats) => {
-    if (stats === null) {
-      const { allArtists } = this.state;
+  const dataGetter = useCallback(st => {
+    if (st === null) {
       return { counts: new Array(Array(allArtists.length).keys()).map(() => 0), artists: Object.keys(allArtists) };
     }
-    return stats;
-  }
+    return st;
+  }, [allArtists]);
 
-  getChartData = () => {
-    const { stats } = this.state;
+  const stats = useFilledStats(rawStats, start, end, timeSplit, dataGetter, FillModes.ASK);
 
-    const allArtists = Object.keys(this.state.allArtists);
-    const data = stats.map((stat) => {
-      const obj = { date: stat._id };
+  const chartData = useMemo(() => {
+    if (!stats) return null;
+
+    const allArtistIds = Object.keys(allArtists);
+    const data = stats.map((stat, k) => {
+      const obj = { date: stat._id, x: k };
       const total = stat.data.counts.reduce((acc, curr) => acc + curr, 0);
-      allArtists.forEach(art => {
+      allArtistIds.forEach(art => {
         const artIdxForThisStat = stat.data.artists.findIndex(a => a.id === art);
         let count = 0;
         if (artIdxForThisStat >= 0) {
@@ -58,56 +63,39 @@ class BestArtistsPer extends IntervalChart {
       return obj;
     });
     return data;
-  }
+  }, [stats, allArtists]);
 
-  getXFormat = value => {
-    const { stats } = this.state;
-    const art = stats.artists[value];
+  const tooltipFormatter = useCallback((value, index) => [toPercent(-value), allArtists[index].name], [allArtists]);
 
-    return { name: art.name, url: art?.images[art.images.length - 1]?.url, link: `/artist/${art?.id}` };
-  }
-
-  tooltipFormatter = (value, index) => {
-    const { allArtists } = this.state;
-
-    return [toPercent(-value), allArtists[index].name];
-  }
-
-  getYFormat = value => {
+  const getYFormat = useCallback(value => {
     let v = Math.floor((1 + value) * 100);
     if (v < 0) v = 0;
     return `${v}%`;
-  }
+  }, []);
 
-  getContent = () => {
-    const {
-      stats, start, end, timeSplit,
-    } = this.state;
+  const allArtistIds = Object.keys(allArtists);
 
-    if (stats === null) return null;
-
-    const data = this.getChartData();
-    const allArtists = Object.keys(this.state.allArtists);
-
-    return (
+  return (
+    <BasicChart
+      name={STAT_NAME}
+      stats={stats}
+      status={status}
+      className={className}
+    >
       <PercentChart
         xName="Date"
         yName="Different arists"
-        yFormat={this.getYFormat}
+        yFormat={getYFormat}
         yDomain={[-1, 0]}
         start={start}
         end={end}
-        timeSplit={timeSplit}
-        onTimeSplitChange={e => this.setInfos('timeSplit', e)}
-        onStartChange={e => this.setInfos('start', e)}
-        onEndChange={e => this.setInfos('end', e)}
-        data={data}
-        keys={allArtists}
-        tFormat={this.tooltipFormatter}
+        data={chartData}
+        keys={allArtistIds}
+        tFormat={tooltipFormatter}
         tSorter={value => value.value}
       />
-    );
-  }
+    </BasicChart>
+  );
 }
 
 /* <AreaChart

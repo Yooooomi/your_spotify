@@ -52,7 +52,7 @@ function AllStats() {
   return (
     <div>
       <div className={s.title}>
-        <Grid container alignItems="center" justify="space-between">
+        <Grid container alignItems="center" justifyContent="space-between">
           <Grid item xs={12} lg={5} style={{ textAlign: 'left' }}>
             <Typography variant="h4" center="left">
               <TextScreenSize phone="All the statistics" plusDesktop=" I could find on you" />

@@ -33,3 +33,20 @@
         width: 85vw;
     }
 }
+
+.nostats {
+    height: 100%;
+    width: 100%;
+    background: lightgrey;
+    padding-top: 20px;
+    border-radius: var(--radius);
+}
+
+.nostats > div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    margin-top: -20px;
+    align-items: center;
+    justify-content: center;
+}

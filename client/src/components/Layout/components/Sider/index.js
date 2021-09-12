@@ -18,7 +18,7 @@ import ArtistIcon from '@material-ui/icons/Person';
 import s from './index.module.css';
 import urls from '../../../../services/urls';
 import { selectUser } from '../../../../services/redux/selector';
-import theme from '../../../../services/theme';
+import { lessThanTablet } from '../../../../services/theme';
 
 const SiderItems = [
   {
@@ -99,7 +99,7 @@ function Sider({ className }) {
     </List>
   )), [goto, user]);
 
-  const useDrawer = useMediaQuery(theme.breakpoints.down('md'));
+  const useDrawer = useMediaQuery(lessThanTablet);
 
   if (useDrawer) {
     return (

@@ -1,50 +1,45 @@
-import React from 'react';
-import IntervalChart, { FillModes } from '../../IntervalChart';
+import React, { useCallback, useMemo } from 'react';
 import API from '../../../../../services/API';
 import SimpleLineChart from '../../../../Chart/SimpleLineChart';
+import { useAPICall, useFilledStats } from '../../../../../services/hooks';
+import BasicChart from '../../BasicChart';
 
-class FeatRatioPer extends IntervalChart {
-  constructor(props) {
-    super(props, 'Average person number per song', FillModes.VOID);
-  }
+const STAT_NAME = 'Average person number per song';
 
-  dataGetter = stats => {
-    if (stats === null) return 1;
-    return stats.average;
-  }
+function FeatRatioPer({
+  className,
+  start,
+  end,
+  timeSplit,
+}) {
+  const [rawStats, status] = useAPICall(API.featRatio, [start, end, timeSplit]);
 
-  fetchStats = async () => {
-    const { start, end, timeSplit } = this.state;
-    const { data } = await API.featRatio(start, end, timeSplit);
+  const dataGetter = useCallback(st => {
+    if (st === null) return 1;
+    return st.average;
+  }, []);
 
-    return data;
-  }
+  const stats = useFilledStats(rawStats, start, end, timeSplit, dataGetter);
 
-  getChartData = () => {
-    const { stats } = this.state;
+  const chartData = useMemo(() => stats?.map((stat, k) => ({ x: k, y: stat.data, date: stat._id })) || [], [stats]);
 
-    return stats.map((stat, k) => ({ x: k, y: stat.data, date: stat._id }));
-  }
-
-  getContent = () => {
-    const { start, end, timeSplit } = this.state;
-    const data = this.getChartData();
-
-    return (
+  return (
+    <BasicChart
+      name={STAT_NAME}
+      stats={stats}
+      status={status}
+      className={className}
+    >
       <SimpleLineChart
         xName="Date"
         yName="Average person number per song"
         start={start}
         end={end}
         tValueFormat={value => `${Math.round(value * 10) / 10} people`}
-        timeSplit={timeSplit}
-        onTimeSplitChange={e => this.setInfos('timeSplit', e)}
-        onStartChange={e => this.setInfos('start', e)}
-        onEndChange={e => this.setInfos('end', e)}
-        data={data}
+        data={chartData}
       />
-    );
-  }
+    </BasicChart>
+  );
 }
 
 export default FeatRatioPer;

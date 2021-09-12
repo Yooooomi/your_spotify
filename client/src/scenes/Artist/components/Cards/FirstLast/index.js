@@ -1,27 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import BasicCard from '../../../../../components/Stats/Cards/Normal/BasicCard';
 import { formatDate } from '../../../../../services/date';
 import s from './index.module.css';
 
-class FirstLast extends BasicCard {
-  constructor(props) {
-    super(props);
+function FirstLast({ firstLast }) {
+  const top = useMemo(() => 'First and last time listened', []);
 
-    this.state = {
-      ...this.state,
-      stats: null,
-      statsYesterday: null,
-    };
-  }
-
-  refresh = () => null;
-
-  isReady = () => true;
-
-  getTop = () => 'First and last time listened'
-
-  getValue = () => {
-    const { firstLast } = this.props;
+  const value = useMemo(() => {
     const { first, last } = firstLast;
 
     return (
@@ -47,9 +32,14 @@ class FirstLast extends BasicCard {
         </div>
       </div>
     );
-  }
+  }, [firstLast]);
 
-  getBottom = () => null;
+  return (
+    <BasicCard
+      top={top}
+      value={value}
+    />
+  );
 }
 
 export default FirstLast;

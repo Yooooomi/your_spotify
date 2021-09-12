@@ -32,8 +32,9 @@ services:
     restart: always
     build:
       context: ./client
+      dockerfile: Dockerfile
       args:
-        - ENVIRONMENT=DEV
+        - NODE_ENV=development
     ports:
       - "3000:3000"
     volumes:

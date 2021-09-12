@@ -1,34 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import BasicCard from '../../../../../components/Stats/Cards/Normal/BasicCard';
 
-class SongsListened extends BasicCard {
-  constructor(props) {
-    super(props);
+function SongsListened({ total }) {
+  const top = useMemo(() => 'Songs listened', []);
 
-    this.state = {
-      ...this.state,
-      stats: null,
-      statsYesterday: null,
-    };
-  }
+  const value = useMemo(() => (
+    <div>
+      {total.count}
+    </div>
+  ), [total]);
 
-  refresh = () => null;
-
-  isReady = () => true
-
-  getTop = () => 'Songs listened'
-
-  getValue = () => {
-    const { total } = this.props;
-
-    return (
-      <div>
-        {total.count}
-      </div>
-    );
-  }
-
-  getBottom = () => null;
+  return (
+    <BasicCard
+      top={top}
+      value={value}
+    />
+  );
 }
 
 export default SongsListened;

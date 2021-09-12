@@ -1,29 +1,31 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import SimpleLineChart from '../../../../Chart/SimpleLineChart';
 import API from '../../../../../services/API';
 import BasicChart from '../../BasicChart';
+import { useAPICall } from '../../../../../services/hooks';
+import { selectUser } from '../../../../../services/redux/selector';
 
-class HourOfDay extends BasicChart {
-  constructor(props) {
-    super(props, 'Listening repartition over day');
-  }
+const STAT_NAME = 'Listening repartition over day';
 
-  fetchStats = async () => {
-    const { start, end } = this.state;
-    const { data } = await API.timePerHourOfDay(start, end);
+function HourOfDay({ className, start, end }) {
+  const user = useSelector(selectUser);
 
+  const treatStats = useCallback(res => {
     const result = Array.from(Array(24).keys()).map((_, k) => ({ _id: k, count: 0 }));
 
-    data.forEach(hour => {
+    res.forEach(hour => {
       result[hour._id].count = hour.count; // Math.floor(hour.count / total * 100) / 100;
     });
 
     return result;
-  }
+  }, []);
 
-  getChartData = () => {
-    const { stats } = this.state;
+  const [stats, status] = useAPICall(API.timePerHourOfDay, [start, end], treatStats);
+  // const stats = useFilledStats(rawStats, start, end, timeSplit, null);
 
+  const chartData = useMemo(() => {
+    if (!stats) return [];
     const total = stats.reduce((acc, curr) => acc + curr.count, 0);
     const result = Array.from(Array(24).keys()).map((_, k) => ({ x: k, y: 0 }));
 
@@ -31,11 +33,9 @@ class HourOfDay extends BasicChart {
       result[hour._id].y = Math.floor((hour.count / total) * 100) / 100;
     });
     return result;
-  }
+  }, [stats]);
 
-  tooltipFormatter = (_, __, { payload }) => {
-    const { user } = this.props;
-    const { stats } = this.state;
+  const tooltipFormatter = useCallback((_, __, { payload }) => {
     const { x } = payload;
 
     const value = stats[x]?.count || 0;
@@ -50,45 +50,38 @@ class HourOfDay extends BasicChart {
       return `${x.toString().padStart(2, '0')}h, listened a total of ${minutes} minutes, ${perc}% of the day average`;
     }
     return '';
-  }
+  }, [user, stats]);
 
-  getXFormat = value => {
+  const getXFormat = useCallback(value => {
     if (value % 2 === 0) {
       return `${value}h`;
     }
     return '';
-  }
+  }, []);
 
-  getYFormat = value => `${Math.floor(value * 10000) / 100}%`;
+  const getYFormat = useCallback(value => `${Math.floor(value * 10000) / 100}%`, []);
 
-  getContent = () => {
-    const {
-      stats, start, end, timeSplit,
-    } = this.state;
-
-    if (stats === null) return null;
-
-    const data = this.getChartData();
-
-    return (
+  return (
+    <BasicChart
+      name={STAT_NAME}
+      stats={stats}
+      status={status}
+      className={className}
+    >
       <SimpleLineChart
         forceXToDisplay
-        xFormat={this.getXFormat}
-        yFormat={this.getYFormat}
-        tFormat={this.tooltipFormatter}
+        xFormat={getXFormat}
+        yFormat={getYFormat}
+        tFormat={tooltipFormatter}
         type="bar"
         xName="Date"
         yName="Percentage"
         start={start}
         end={end}
-        timeSplit={timeSplit}
-        onTimeSplitChange={e => this.setInfos('timeSplit', e)}
-        onStartChange={e => this.setInfos('start', e)}
-        onEndChange={e => this.setInfos('end', e)}
-        data={data}
+        data={chartData}
       />
-    );
-  }
+    </BasicChart>
+  );
 }
 
 export default HourOfDay;

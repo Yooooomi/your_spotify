@@ -1,52 +1,24 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Typography } from '@material-ui/core';
 import API from '../../../../../services/API';
 import { ratioValueAB } from '../../../../../services/operations';
 import BasicCard from '../BasicCard';
+import { useAPICall, usePreviousPeriod } from '../../../../../services/hooks';
+import { Timesplits } from '../../../../../services/stats';
 
-class TimePerCard extends BasicCard {
-  constructor(props) {
-    super(props);
+function TimePerCard({ start, end }) {
+  const [previousStart, previousEnd] = usePreviousPeriod(start, end);
+  const [statsYesterday, statusYesterday] = useAPICall(API.timePer, [previousStart, previousEnd, Timesplits.ALL]);
+  const [stats, status] = useAPICall(API.timePer, [start, end, Timesplits.ALL]);
 
-    this.state = {
-      ...this.state,
-      stats: null,
-      statsYesterday: null,
-    };
-  }
-
-  async refresh() {
-    const {
-      start, end, previousStart, previousEnd,
-    } = this.state;
-
-    const todayStats = await API.timePer(start, end, 'all');
-    const yesterdayStats = await API.timePer(previousStart, previousEnd, 'all');
-
-    this.setState({
-      stats: todayStats.data,
-      statsYesterday: yesterdayStats.data,
-    });
-  }
-
-  isReady = () => {
-    const { stats } = this.state;
-
-    return !!stats;
-  }
-
-  getTop = () => 'Time listened'
-
-  getValue = () => {
-    const { stats } = this.state;
-
+  const cardValue = useMemo(() => {
+    if (!stats) return null;
     if (stats.length === 0) return 0;
     return `${Math.floor(stats[0].count / (1000 * 60))}m`;
-  }
+  }, [stats]);
 
-  getBottom = () => {
-    const { stats, statsYesterday } = this.state;
-
+  const bottom = useMemo(() => {
+    if (!stats || !statsYesterday) return null;
     const value = stats.length > 0 ? stats[0].count : 0;
     const oldValue = statsYesterday.length > 0 ? statsYesterday[0].count : 0;
 
@@ -69,10 +41,19 @@ class TimePerCard extends BasicCard {
           {moreOrLessThanYesterday}
           %
         </Typography>
-          &nbsp;more for this period
+        &nbsp;more for this period
       </Typography>
     );
-  }
+  }, [stats, statsYesterday]);
+
+  return (
+    <BasicCard
+      status={[status, statusYesterday]}
+      top="Time listened"
+      value={cardValue}
+      bottom={bottom}
+    />
+  );
 }
 
 export default TimePerCard;

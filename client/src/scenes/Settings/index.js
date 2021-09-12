@@ -90,7 +90,7 @@ function Settings() {
     <div>
       <Typography variant="h4" align="left">Settings</Typography>
       <Divider />
-      <Grid container spacing={2}>
+      <Grid container spacing={2} alignItems="stretch">
         <Grid item xs={12} lg={6}>
           <Paper className={s.paper}>
             <div>
@@ -174,7 +174,7 @@ function Settings() {
             </SettingField>
           </Paper>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} lg={6}>
           <Paper className={s.paper}>
             <form onSubmit={changePassword}>
               <div>
@@ -230,7 +230,7 @@ function Settings() {
             </form>
           </Paper>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} lg={6}>
           <Paper className={s.footer}>
             <Grid container spacing={1}>
               <Grid item xs={6} lg={4}>

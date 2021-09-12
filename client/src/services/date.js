@@ -9,8 +9,6 @@ export const duration = (ms) => {
   return `${pad(minutes)}:${pad(seconds)}`;
 };
 
-export const formatHour = date => `${pad(date.getHours())}:${pad(date.getMinutes())}`;
-
 const months = [
   'January',
   'February',
@@ -37,6 +35,19 @@ export const formatDate = (date, withHour = false) => {
     current += ` - ${pad(hours)}:00`;
   }
   return current;
+};
+
+export const formatHour = (date, dateIfMoreThanOneDay = false) => {
+  const now = new Date();
+  const base = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+
+  const diff = Math.abs(now.getTime() - date.getTime());
+  const moreThanADay = diff > (1000 * 60 * 60 * 24);
+
+  if (!dateIfMoreThanOneDay || !moreThanADay) {
+    return base;
+  }
+  return `${formatDate(date, false)} ${base}`;
 };
 
 export const formatDateFromYearDecimal = year => {

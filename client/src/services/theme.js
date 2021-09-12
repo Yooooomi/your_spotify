@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core';
 
 export const mobileThreshold = '960px';
 export const lessThanMobile = `(max-width:${mobileThreshold})`;
@@ -17,7 +17,7 @@ const shadows = [
   '0 0px 52px rgba(0, 0, 0, 0.04)',
 ].join(',');
 
-const theme = createMuiTheme({
+const theme = createTheme({
   shape: {
     borderRadius: '0.25rem',
   },

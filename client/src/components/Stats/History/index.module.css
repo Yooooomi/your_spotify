@@ -12,3 +12,18 @@
 .songs {
     min-height: 50vh;
 }
+
+.loader {
+    height: 50vh;
+}
+
+.loadercontent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loadercontent > span {
+    margin-left: var(--tight);
+    display: block;
+}

@@ -30,14 +30,19 @@ export const appSlice = createSlice({
       state.user = data;
     },
     [refreshUser.rejected]: (state, { error }) => {
-      console.log('refresh user crashed', error);
+      console.error(error);
     },
     [addTracks.fulfilled]: (state, { payload: { data } }) => {
-      state.tracks.push(...data);
+      // This means we requested already known tracks
+      if (!data) {
+        state.tracks = [...state.tracks];
+        return;
+      }
+      state.tracks = [...state.tracks, ...data];
       state.tracksFull = data.length !== 20;
     },
     [addTracks.rejected]: (state, { error }) => {
-      console.log('addtracks crashed', error);
+      console.error(error);
     },
   },
 });

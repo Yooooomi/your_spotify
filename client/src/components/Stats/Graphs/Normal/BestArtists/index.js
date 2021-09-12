@@ -1,30 +1,28 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import SimpleLineChart from '../../../../Chart/SimpleLineChart';
 import API from '../../../../../services/API';
 import BasicChart from '../../BasicChart';
+import { useAPICall } from '../../../../../services/hooks';
+import { selectUser } from '../../../../../services/redux/selector';
+import { Timesplits } from '../../../../../services/stats';
 
-class BestArtists extends BasicChart {
-  constructor(props) {
-    super(props, 'Best artists');
+const STAT_NAME = 'Best artists';
 
-    this.state.elementsShown = 7;
-  }
+function BestArtists({ className, start, end }) {
+  const user = useSelector(selectUser);
+  const [elementsShown, setElementsShown] = useState(7);
+  const [rawStats, status] = useAPICall(API.mostListenedArtist, [start, end, Timesplits.ALL]);
+  const stats = rawStats?.[0] || null;
 
-  fetchStats = async () => {
-    const { start, end } = this.state;
-    const { data } = await API.mostListenedArtist(start, end, 'all');
-    return data[0] || null;
-  }
+  const onResize = useCallback((width) => {
+    setElementsShown(Math.max(1, Math.floor(width / 50)));
+  }, []);
 
-  onresized = () => {
-    this.setState({ elementsShown: Math.max(1, Math.floor(this.getWidth() / 50)) });
-  }
-
-  getChartData = () => {
-    const { stats } = this.state;
+  const chartData = useMemo(() => {
+    if (!stats) return null;
     const { counts } = stats;
 
-    const { elementsShown } = this.state;
     const artists = stats.artists.slice(0, Math.min(stats.artists.length, elementsShown));
 
     const ret = artists.map((art, k) => ({
@@ -33,18 +31,15 @@ class BestArtists extends BasicChart {
       name: art.name,
     }));
     return ret;
-  }
+  }, [elementsShown, stats]);
 
-  getXFormat = value => {
-    const { stats } = this.state;
+  const getXFormat = useCallback(value => {
     const art = stats.artists[value];
 
     return { name: art.name, url: art?.images[art.images.length - 1]?.url, link: `/artist/${art?.id}` };
-  }
+  }, [stats]);
 
-  getYFormat = value => {
-    const { user } = this.props;
-
+  const getYFormat = useCallback(value => {
     if (user.settings.metricUsed === 'duration') {
       return Math.floor(value / 1000 / 60);
     }
@@ -52,10 +47,9 @@ class BestArtists extends BasicChart {
       return Math.floor(value);
     }
     return '';
-  }
+  }, [user]);
 
-  tooltipFormatter = (value, __, { payload }) => {
-    const { user } = this.props;
+  const tooltipFormatter = useCallback((value, __, { payload }) => {
     const { y, name } = payload;
 
     if (user.settings.metricUsed === 'number') {
@@ -66,23 +60,21 @@ class BestArtists extends BasicChart {
       return `Listened to ${name} for ${minutes} minutes${minutes > 1 ? 's' : ''}`;
     }
     return '';
-  }
+  }, [user]);
 
-  getContent = () => {
-    const {
-      stats, start, end, timeSplit,
-    } = this.state;
-
-    if (stats === null) return null;
-
-    const data = this.getChartData();
-
-    return (
+  return (
+    <BasicChart
+      className={className}
+      name={STAT_NAME}
+      stats={stats}
+      status={status}
+      onResize={onResize}
+    >
       <SimpleLineChart
-        tFormat={this.tooltipFormatter}
-        xFormat={this.getXFormat}
-        yFormat={this.getYFormat}
-        xDomain={[0, data.length - 1]}
+        tFormat={tooltipFormatter}
+        xFormat={getXFormat}
+        yFormat={getYFormat}
+        xDomain={[0, chartData ? (chartData.length - 1) : 0]}
         type="bar"
         xName="Date"
         yName="Best artists"
@@ -90,14 +82,10 @@ class BestArtists extends BasicChart {
         xIsImage
         start={start}
         end={end}
-        timeSplit={timeSplit}
-        onTimeSplitChange={e => this.setInfos('timeSplit', e)}
-        onStartChange={e => this.setInfos('start', e)}
-        onEndChange={e => this.setInfos('end', e)}
-        data={data}
+        data={chartData}
       />
-    );
-  }
+    </BasicChart>
+  );
 }
 
 export default BestArtists;

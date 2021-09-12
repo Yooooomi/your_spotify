@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,92 +9,84 @@ import {
 import cl from 'classnames';
 import FullscreenIcon from '@material-ui/icons/ZoomIn';
 import s from './index.module.css';
-import DataDisplayer from '../../DataDisplayer';
+import { APICallStatus } from '../../../../services/hooks';
+import FullWidthHeightLoading from '../../../FullWidthHeightLoading';
 
-/*
-* BasicChart is built on top of DataDisplayer,
-* it implements the refresh logic for all type of charts
-* it implements the render logic for all type of charts
-*/
-
-class BasicChart extends DataDisplayer {
-  constructor(...args) {
-    super(...args);
-    this.state.dialog = false;
-    this.dialogRef = React.createRef();
+function getStatus(status) {
+  const isArray = Array.isArray(status);
+  if (isArray && status.some(e => e === APICallStatus.PENDING)) {
+    return APICallStatus.PENDING;
   }
+  if (!isArray) {
+    return status;
+  }
+  return APICallStatus.FETCHED;
+}
 
-  getWidth = () => {
-    const rf = this.state.dialog ? this.dialogRef : this.myRef;
-    if (rf && rf.current) {
-      return rf.current.clientWidth;
+function BasicChart({
+  name,
+  className,
+  children,
+  stats,
+  status,
+  onResize,
+}) {
+  const [dialog, setDialog] = useState(false);
+  const [contentRef, setContentRef] = useState(null);
+  const [dialogRef, setDialogRef] = useState(null);
+
+  useEffect(() => {
+    let width = 0;
+    if (dialog) {
+      width = dialogRef?.clientWidth;
+    } else {
+      width = contentRef?.clientWidth;
     }
-    return -1;
-  }
+    onResize?.(width || 0);
+  }, [contentRef, dialogRef, dialog, onResize]);
 
-  fetchStats = async () => {
-    throw new Error('Implement fetch stats');
-  }
+  const realStatus = getStatus(status);
 
-  postRefreshModification = (data) => data
-
-  refresh = async (cb) => {
-    const data = await this.fetchStats();
-    const values = await this.postRefreshModification(data);
-
-    this.setState({
-      stats: values,
-    }, cb);
-  }
-
-  setInfos = (field, value, shouldRefresh = true) => {
-    this.setState({ [field]: value }, () => {
-      if (!shouldRefresh) return;
-      this.refresh();
-    });
-  }
-
-  getContent = () => {
-    throw new Error('Implement get content');
-  }
-
-  handleDialog = state => () => {
-    this.setState({ dialog: state }, () => {
-      this.onresize();
-    });
-  }
-
-  render() {
-    const { className } = this.props;
-    const { stats, dialog } = this.state;
-
-    const content = !stats ? <Typography color="error">No content</Typography> : this.getContent();
-
+  if (stats === null) {
     return (
-      <Paper className={cl(s.paper, className)} ref={this.myRef}>
-        <Dialog
-          onClose={this.handleDialog(false)}
-          open={dialog}
-          maxWidth="lg"
-          fullWidth
-        >
-          <DialogContent>
-            <div ref={this.dialogRef} className={s.dialogcontainer}>
-              <Typography variant="subtitle2">{this.name}</Typography>
-              {content}
-            </div>
-          </DialogContent>
-        </Dialog>
-        <div className={s.header}>
-          <Typography variant="subtitle2">{this.name}</Typography>
-          <IconButton onClick={this.handleDialog(true)} size="small">
-            <FullscreenIcon fontSize="small" />
-          </IconButton>
-        </div>
-        {content}
-      </Paper>
+      <div className={s.nostats}>
+        <Typography variant="subtitle2">{name}</Typography>
+        {realStatus === APICallStatus.PENDING && (
+          <FullWidthHeightLoading />
+        )}
+        {realStatus === APICallStatus.FETCHED && (
+          <div>
+            Not enough data for this graph
+          </div>
+        )}
+      </div>
     );
   }
+
+  return (
+    <Paper className={cl(s.paper, className)} ref={setContentRef}>
+      <Dialog
+        onClose={() => setDialog(false)}
+        open={dialog}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogContent>
+          <div ref={setDialogRef} className={s.dialogcontainer}>
+            <Typography variant="subtitle2">{name}</Typography>
+            {children}
+          </div>
+        </DialogContent>
+      </Dialog>
+      <div className={s.header}>
+        <Typography variant="subtitle2">{name}</Typography>
+        <IconButton onClick={() => setDialog(true)} size="small">
+          <FullscreenIcon fontSize="small" />
+        </IconButton>
+      </div>
+      {children}
+    </Paper>
+  );
 }
 
 export default BasicChart;

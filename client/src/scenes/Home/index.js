@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Typography, Grid, useMediaQuery } from '@material-ui/core';
 import cl from 'classnames';
@@ -18,26 +18,18 @@ import { lessThanMobile } from '../../services/theme';
 import Divider from '../../components/Divider';
 import { selectUser } from '../../services/redux/selector';
 
-const NB_TO_BE_LOADED = 7;
-
 function Home() {
   const user = useSelector(selectUser);
-  const [loaded, setLoadedArray] = useState(Array.from(Array(NB_TO_BE_LOADED).keys()).map(() => false));
   const [inter, setInter] = useState(lastDay());
   const [timeSplit, setTimeSplit] = useState('hour');
 
   const mobile = useMediaQuery(lessThanMobile);
 
-  const setLoaded = useCallback(idx => {
-    loaded[idx] = true;
-    setLoadedArray([...loaded]);
-  }, [loaded]);
-
   const changeTimesplit = useCallback(newTimeSplit => {
     setTimeSplit(newTimeSplit);
   }, []);
 
-  const isLoaded = useMemo(() => !loaded.some(e => !e), [loaded]);
+  const isLoaded = true;
 
   return (
     <div>
@@ -64,33 +56,24 @@ function Home() {
             <Grid item xs={12} lg={6}>
               <div className={s.firstleft}>
                 <SongsPerCard
-                  user={user}
-                  timeSplit={timeSplit}
                   start={inter.start}
                   end={inter.end}
-                  loaded={() => setLoaded(0)}
                 />
               </div>
             </Grid>
             <Grid item xs={12} lg={6}>
               <div className={s.secondleft}>
                 <DifferentArtists
-                  user={user}
-                  timeSplit={timeSplit}
                   start={inter.start}
                   end={inter.end}
-                  loaded={() => setLoaded(1)}
                 />
               </div>
             </Grid>
             <Grid item xs={12}>
               <div>
                 <TimePerCard
-                  user={user}
-                  timeSplit={timeSplit}
                   start={inter.start}
                   end={inter.end}
-                  loaded={() => setLoaded(2)}
                 />
               </div>
             </Grid>
@@ -98,38 +81,27 @@ function Home() {
 
           <Grid item xs={12} lg={6}>
             <BestArtists
-              user={user}
               className={s.minHeight}
-              timeSplit={timeSplit}
               start={inter.start}
               end={inter.end}
-              loaded={() => setLoaded(3)}
             />
           </Grid>
 
           <Grid item xs={6} lg={3}>
             <BestSong
-              user={user}
-              timeSplit={timeSplit}
               start={inter.start}
               end={inter.end}
-              loaded={() => setLoaded(4)}
             />
           </Grid>
           <Grid item xs={6} lg={3}>
             <BestArtist
-              user={user}
-              timeSplit={timeSplit}
               start={inter.start}
               end={inter.end}
-              loaded={() => setLoaded(5)}
             />
           </Grid>
           <Grid item xs={12} lg={6}>
             <TimePer
-              user={user}
               className={s.minHeight}
-              loaded={() => setLoaded(6)}
               start={inter.start}
               end={inter.end}
               timeSplit={timeSplit}
@@ -140,7 +112,7 @@ function Home() {
       <ShowIfInScreen>
         <hr className={s.divider} />
         <div className={s.listened}>
-          <History maxOld={inter.start} title="What you listened to today" xs={2} lg={4} />
+          <History maxOld={inter.start} title="Your history for this period" xs={2} lg={4} />
         </div>
       </ShowIfInScreen>
       {/* <SongsPer />

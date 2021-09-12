@@ -34,6 +34,7 @@
     background-color: #1B2430;
     z-index: 4;
     height: var(--content);
+    overflow: hidden;
 }
 
 .content {
@@ -43,11 +44,10 @@
     padding: 25px;
 }
 
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 1600px) {
     .content {
         width: 100vw;
-        padding: 0px 10px;
-        padding-top: 8px;
+        padding: 25px 10px;
     }
     .siderContainer {
         flex: 0 0 0;

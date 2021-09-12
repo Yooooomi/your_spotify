@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import UpIcon from '@material-ui/icons/ArrowDropUp';
 import DownIcon from '@material-ui/icons/ArrowDropDown';
 import { Link } from 'react-router-dom';
@@ -7,34 +7,21 @@ import BasicCard from '../../../../../components/Stats/Cards/Normal/BasicCard';
 import SimpleArtistLine from '../../../../../components/SimpleArtistLine';
 import urls from '../../../../../services/urls';
 
-class Rank extends BasicCard {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      ...this.state,
-      stats: null,
-      statsYesterday: null,
-    };
-  }
-
-  refresh = () => null;
-
-  isReady = () => {
-    const { rank, artists } = this.props;
+function Rank({ rank, artists }) {
+  const isReady = useMemo(() => {
     if (!rank) return false;
     return rank.results.map(e => e.id).every(e => !!artists[e]);
-  }
+  }, [rank, artists]);
 
-  getTop = () => (
+  const top = useMemo(() => (!isReady ? null : (
     <span>
       Artist ranking -
       <Link className={s.allrank} to={urls.topArtists}>View all</Link>
     </span>
-  )
+  )), [isReady]);
 
-  getValue = () => {
-    const { rank, artists } = this.props;
+  const value = useMemo(() => {
+    if (!isReady) return null;
     let offset = 0;
 
     if (rank.isMax) offset -= 1;
@@ -73,9 +60,14 @@ class Rank extends BasicCard {
         </div>
       </div>
     );
-  }
+  }, [artists, rank, isReady]);
 
-  getBottom = () => null;
+  return (
+    <BasicCard
+      top={top}
+      value={value}
+    />
+  );
 }
 
 export default Rank;

@@ -9,7 +9,7 @@ export const addTracks = createAsyncThunk(
     if (offset === -1) {
       offset = total;
     } else if (offset < total) {
-      return [];
+      return { data: null };
     }
     return API.getTracks(20, offset);
   },

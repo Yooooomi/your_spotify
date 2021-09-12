@@ -25,7 +25,11 @@ services:
   web:
     container_name: web
     restart: always
-    build: ./client
+    build:
+      context: ./client
+      dockerfile: Dockerfile.production
+      args:
+        - NODE_ENV=production
     ports:
       - "3000:3000"
     environment:

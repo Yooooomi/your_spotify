@@ -28,7 +28,7 @@ export const getFormatter = (arrayLength, start, end) => {
   const diff = end.getTime() - start.getTime();
   const precision = getPrecision(start, end);
 
-  return value => {
+  return (value) => {
     const ratio = value / (arrayLength - 1);
     const current = new Date(start.getTime() + diff * ratio);
 

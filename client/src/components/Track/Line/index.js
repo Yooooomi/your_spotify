@@ -22,8 +22,8 @@ function Line({ track, infos, header }) {
   const isDownMobile = useMediaQuery(lessThanMobile);
 
   const artists = track.full_artist.map((art, k, a) => (
-    <React.Fragment key={art.id}>
-      <SimpleArtistLine artist={art} key={art.id} />
+    <React.Fragment key={`song-artist-${art.id}`}>
+      <SimpleArtistLine artist={art} />
       {k < a.length - 1 && ', '}
     </React.Fragment>
   ));
@@ -58,17 +58,19 @@ function Line({ track, infos, header }) {
           </Typography>
         </div>
       )}
-      <div className={cl(s.info, s.medium)}>
-        <Typography noWrap align="left">{track.full_album.name}</Typography>
-      </div>
-      <div className={cl(s.info, s.tiny)}>
-        <Typography noWrap>{header ? 'Duration' : duration(track.duration_ms)}</Typography>
-      </div>
       {!isDownMobile && (
-        <div className={cl(s.info, s.lastInfo)}>
-          <Typography noWrap>{header ? 'Played at' : formatHour(new Date(infos.played_at))}</Typography>
+        <div className={cl(s.info, s.medium)}>
+          <Typography noWrap align="left">{track.full_album.name}</Typography>
         </div>
       )}
+      {!isDownMobile && (
+        <div className={cl(s.info, s.tiny)}>
+          <Typography noWrap>{header ? 'Duration' : duration(track.duration_ms)}</Typography>
+        </div>
+      )}
+      <div className={cl(s.info, s.lastInfo)}>
+        <Typography noWrap>{header ? 'Played at' : formatHour(new Date(infos.played_at), true)}</Typography>
+      </div>
     </Paper>
   );
 }

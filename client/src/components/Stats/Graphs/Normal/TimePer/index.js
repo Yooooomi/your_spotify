@@ -1,50 +1,49 @@
-import React from 'react';
-import IntervalChart, { FillModes } from '../../IntervalChart';
+import React, { useCallback, useMemo } from 'react';
+import { FillModes } from '../../IntervalChart';
 import API from '../../../../../services/API';
 import SimpleLineChart from '../../../../Chart/SimpleLineChart';
+import { useAPICall, useFilledStats } from '../../../../../services/hooks';
+import BasicChart from '../../BasicChart';
 
-class TimePer extends IntervalChart {
-  constructor(props) {
-    super(props, 'Time listened', FillModes.ASK);
-  }
+const STAT_NAME = 'Time listened';
 
-  dataGetter = stats => {
-    if (stats === null) return 0;
-    return stats.count;
-  }
+function TimePer({
+  className,
+  start,
+  end,
+  timeSplit,
+}) {
+  const [rawStats, status] = useAPICall(API.timePer, [start, end, timeSplit]);
 
-  fetchStats = async () => {
-    const { start, end, timeSplit } = this.state;
-    const { data } = await API.timePer(start, end, timeSplit);
+  const dataGetter = useCallback(st => {
+    if (st === null) return 0;
+    return st.count;
+  }, []);
 
-    return data;
-  }
+  const stats = useFilledStats(rawStats, start, end, timeSplit, dataGetter, FillModes.ASK);
 
-  getChartData = () => {
-    const { stats } = this.state;
+  const chartData = useMemo(
+    () => stats?.map((stat, k) => ({ x: k, y: stat.data / 1000 / 60, date: stat._id })) || [],
+    [stats],
+  );
 
-    return stats.map((stat, k) => ({ x: k, y: stat.data / 1000 / 60, date: stat._id }));
-  }
-
-  getContent = () => {
-    const { start, end, timeSplit } = this.state;
-    const data = this.getChartData();
-
-    return (
+  return (
+    <BasicChart
+      name={STAT_NAME}
+      stats={stats}
+      status={status}
+      className={className}
+    >
       <SimpleLineChart
         xName="Date"
         yName="Time listened"
         start={start}
         end={end}
-        timeSplit={timeSplit}
         tValueFormat={value => `${Math.round(value)} minutes`}
-        onTimeSplitChange={e => this.setInfos('timeSplit', e)}
-        onStartChange={e => this.setInfos('start', e)}
-        onEndChange={e => this.setInfos('end', e)}
-        data={data}
+        data={chartData}
       />
-    );
-  }
+    </BasicChart>
+  );
 }
 
 export default TimePer;

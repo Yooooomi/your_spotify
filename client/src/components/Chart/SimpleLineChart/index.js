@@ -12,7 +12,6 @@ import {
   Bar,
 } from 'recharts';
 import s from './index.module.css';
-import IntervalModifier from '../../IntervalModifier';
 import {
   getFormatter,
   getPrecisionIndex,
@@ -26,16 +25,12 @@ export default function SimpleLineChart({
   className,
   start,
   end,
-  timeSplit,
-  onTimeSplitChange,
   xFormat = null,
   yFormat,
   forceXToDisplay,
   xIsImage,
   tFormat = null,
   tValueFormat = null,
-  onStartChange = () => { },
-  onEndChange = () => { },
   xName,
   yName,
   xDomain,
@@ -62,15 +57,6 @@ export default function SimpleLineChart({
 
   return (
     <div className={cl(s.root, className)}>
-      <IntervalModifier
-        autoAbsolute
-        start={start}
-        end={end}
-        timeSplit={timeSplit}
-        onStartChange={onStartChange}
-        onEndChange={onEndChange}
-        onTimeSplitChange={onTimeSplitChange}
-      />
       <ResponsiveContainer
         style={{ width: '100%', height: '100%' }}
       >

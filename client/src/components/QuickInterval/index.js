@@ -60,7 +60,7 @@ function QuickInterval({
       setOpen(true);
     } else {
       onChangeInterval(PrefabToInter[value].fn().inter, value);
-      if (onChangeTimesplit) onChangeTimesplit(PrefabToInter[value].fn().timeSplit);
+      onChangeTimesplit?.(PrefabToInter[value].fn().timeSplit);
     }
     setTabIndex(value);
   }, [onChangeTimesplit, onChangeInterval]);
@@ -99,7 +99,7 @@ function QuickInterval({
                 </span>
                 <Select
                   className={s.select}
-                  onChange={(ev, value) => onChangeTimesplit(value)}
+                  onChange={ev => onChangeTimesplit(ev.target.value)}
                   value={timeSplit}
                 >
                   {
@@ -134,7 +134,7 @@ function QuickInterval({
                 <MenuItem key={e} value={k}><div className={s.menuItem}>{e}</div></MenuItem>
               ))
             }
-            <MenuItem>Custom</MenuItem>
+            <MenuItem value={inters.length}><div className={s.menuItem}>Custom</div></MenuItem>
           </Select>
         )}
       </Grid>

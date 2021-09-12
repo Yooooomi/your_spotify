@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [[ "$ENVIRONMENT" == "DEV" ]]
+if [[ "$NODE_ENV" == "development" ]]
 then
     # Modify the dev file
     VAR_PATH="/app/public/variables-final.js"

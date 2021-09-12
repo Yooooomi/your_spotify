@@ -6,7 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu } from '@material-ui/icons';
 import s from './index.module.css';
 import Sider from './components/Sider';
-import { lessThanMobile } from '../../services/theme';
+import { lessThanTablet } from '../../services/theme';
 import urls from '../../services/urls';
 import SearchBar from '../SearchBar';
 
@@ -24,7 +24,7 @@ function Layout({ children }) {
     window.openDrawer();
   }, []);
 
-  const mobile = useMediaQuery(lessThanMobile);
+  const mobile = useMediaQuery(lessThanTablet);
 
   return (
     <div>

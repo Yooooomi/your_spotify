@@ -1,9 +1,9 @@
-FROM node:alpine3.10
+FROM node:alpine3.10 AS builder
 
 WORKDIR /app
 
 RUN apk add python3 gcc g++ make cmake
-RUN npm install -g nodemon serve
+RUN npm install -g nodemon
 
 COPY scripts/ scripts/
 COPY package.json /app/package.json
@@ -18,5 +18,14 @@ COPY src/ /app/src/
 COPY public/ /app/public/
 
 RUN sh scripts/build/*.sh
+
+FROM node:alpine3.10 AS final
+
+WORKDIR /app
+
+RUN npm install -g serve
+
+COPY --from=builder /app/scripts/ /app/scripts/
+COPY --from=builder /app/build/ /app/build/
 
 ENTRYPOINT [ "sh", "/app/scripts/run/run.sh" ]

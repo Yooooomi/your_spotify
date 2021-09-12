@@ -1,8 +1,8 @@
 #!/bin/sh
 
-echo "ENVIRONMENT is '$ENVIRONMENT'"
+echo "NODE_ENV is '$NODE_ENV'"
 
-if [[ "$ENVIRONMENT" != "DEV" ]]
+if [[ "$NODE_ENV" != "development" ]]
 then
     yarn build
 fi
