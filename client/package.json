@@ -11,6 +11,7 @@
     "lint:open": "yarn -s lint -f ../only-files.js | grep file | cut -d' ' -f 2 | xargs code"
   },
   "dependencies": {
+    "@babel/eslint-parser": "^7.16.5",
     "@date-io/date-fns": "^1.3.13",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
@@ -26,16 +27,17 @@
     "react-infinite-scroller": "^1.2.4",
     "react-redux": "^7.2.5",
     "react-router-dom": "^5.3.0",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "^5.0.0",
     "recharts": "^2.1.2",
     "redux": "^4.1.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "svgo": "^2.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^13.2.1",
-    "eslint": "^7.32.0",
+    "eslint": "^8.0.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-react": "^7.25.1",

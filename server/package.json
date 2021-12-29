@@ -11,7 +11,7 @@
     "dev": "nodemon ./src/bin/www"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -20,13 +20,13 @@
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "migrate": "^1.7.0",
-    "mongoose": "^5.12.3",
+    "mongoose": "^6.1.4",
     "morgan": "^1.10.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.24.0",
+    "eslint": "^8.0.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",

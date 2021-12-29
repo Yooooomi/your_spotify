@@ -14,7 +14,6 @@ const connect = async () => {
     process.env.MONGO_ENDPOINT || fallbackConnection,
     {
       useNewUrlParser: true,
-      useFindAndModify: false,
       useUnifiedTopology: true,
       connectTimeoutMS: 3000,
     },

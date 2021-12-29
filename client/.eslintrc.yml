@@ -1,4 +1,4 @@
-parser: babel-eslint
+parser: "@babel/eslint-parser"
 settings:
   pragma: React
   version: 16.13.1
@@ -14,7 +14,8 @@ env:
   jest: true
   es6: true
 plugins:
-  - import
+  - "import"
+  - "@babel"
 extends:
   - eslint:recommended
   - airbnb

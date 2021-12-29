@@ -1,9 +1,9 @@
-parser: babel-eslint
+parser: "@babel/eslint-parser"
 env:
   commonjs: true
   es6: true
   node: true
-extends: 'airbnb'
+extends: 'airbnb', "@babel"
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
