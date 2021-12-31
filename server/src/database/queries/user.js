@@ -1,5 +1,5 @@
 const { NoResult } = require('../../tools/errors/Database');
-const { Infos, User } = require('../Schemas');
+const { Infos, User } = require('../Models');
 
 const getSongsNbInterval = async (id, start, end) => {
   const res = await Infos.aggregate([
@@ -56,21 +56,7 @@ const addTrackIdsToUser = async (id, infos) => {
 };
 
 const getSongs = async (userId, offset, number) => {
-  // const tracks = Infos
-  //   .find({ owner: userId })
-  //   .sort({ played_at: -1 })
-  //   .skip(offset)
-  //   .limit(number)
-  //   .populate({
-  //     path: 'track',
-  //     model: 'Track',
-  //     populate: [
-  //       { path: 'full_album', model: 'Album' },
-  //       { path: 'full_artist', model: 'Artist' },
-  //     ],
-  //   });
-
-  const fullUser = await User.findById(userId).populate(
+  const fullUser = await User.findById(userId).setOptions({ strictQuery: false }).populate(
     {
       path: 'tracks',
       model: 'Infos',

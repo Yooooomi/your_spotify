@@ -1,42 +1,33 @@
 const mongoose = require('mongoose');
 
-const User = mongoose.model('User',
-  new mongoose.Schema({
-    username: String,
-    password: String,
-    spotifyId: String,
-    expiresIn: Number,
-    accessToken: String,
-    refreshToken: String,
-    activated: Boolean,
-    lastTimestamp: Number,
-    tracks: { type: [mongoose.Schema.Types.ObjectId], ref: 'Infos', select: false },
-    settings: {
-      historyLine: Boolean,
-      preferredStatsPeriod: String,
-      nbElements: Number,
-      metricUsed: {
-        type: String,
-        enum: ['number', 'duration'],
-      },
+const UserSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  spotifyId: String,
+  expiresIn: Number,
+  accessToken: String,
+  refreshToken: String,
+  activated: Boolean,
+  lastTimestamp: Number,
+  tracks: { type: [mongoose.Schema.Types.ObjectId], ref: 'Infos', select: false },
+  settings: {
+    historyLine: Boolean,
+    preferredStatsPeriod: String,
+    nbElements: Number,
+    metricUsed: {
+      type: String,
+      enum: ['number', 'duration'],
     },
-  }, { toJSON: { virtuals: true }, toObject: { virtuals: true } }));
+  },
+}, { toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
-const Infos = mongoose.model('Infos',
-  new mongoose.Schema({
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    id: String,
-    played_at: Date,
-  }, { toJSON: { virtuals: true }, toObject: { virtuals: true } }));
+const InfosSchema = new mongoose.Schema({
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  id: String,
+  played_at: Date,
+}, { toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
-Infos.schema.virtual('track', {
-  ref: 'Track',
-  localField: 'id',
-  foreignField: 'id',
-  justOne: true,
-});
-
-const Artist = mongoose.model('Artist', {
+const ArtistSchema = new mongoose.Schema({
   external_urls: Object,
   followers: Object,
   genres: [String],
@@ -47,9 +38,9 @@ const Artist = mongoose.model('Artist', {
   popularity: Number,
   type: String,
   uri: String,
-});
+}, { toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
-const Album = mongoose.model('Album', {
+const AlbumSchema = new mongoose.Schema({
   album_type: String,
   artists: [String],
   available_markets: [String],
@@ -67,16 +58,9 @@ const Album = mongoose.model('Album', {
   //  "tracks": ,
   type: String,
   uri: String,
-});
+}, { toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
-Album.schema.virtual('artist', {
-  ref: 'Artist',
-  localField: 'artists',
-  foreignField: 'id',
-  justOne: false,
-});
-
-const Track = mongoose.model('Track', {
+const TrackSchema = new mongoose.Schema({
   album: String, // Id of the album
   artists: [String], // Ids of artists
   available_markets: [String],
@@ -94,47 +78,48 @@ const Track = mongoose.model('Track', {
   track_number: Number,
   type: String,
   uri: String,
+}, { toJSON: { virtuals: true }, toObject: { virtuals: true } })
+
+const GlobalPreferencesSchema = new mongoose.Schema({
+  allowRegistrations: { type: Boolean, default: true },
 });
 
-Track.schema.virtual('full_album', {
+const MigrationSchema = new mongoose.Schema({
+  lastRun: String, // Name of the last file ran
+  migrations: Array,
+});
+
+InfosSchema.virtual('track', {
+  ref: 'Track',
+  localField: 'id',
+  foreignField: 'id',
+  justOne: true,
+});
+AlbumSchema.virtual('artist', {
+  ref: 'Artist',
+  localField: 'artists',
+  foreignField: 'id',
+  justOne: false,
+});
+TrackSchema.virtual('full_album', {
   ref: 'Album',
   localField: 'album',
   foreignField: 'id',
   justOne: true,
 });
-
-Track.schema.virtual('full_artist', {
+TrackSchema.virtual('full_artist', {
   ref: 'Artist',
   localField: 'artists',
   foreignField: 'id',
   justOne: false,
 });
 
-const GlobalPreferences = mongoose.model('GlobalPreference', {
-  allowRegistrations: { type: Boolean, default: true },
-});
-
-const Migration = mongoose.model('Migration', {
-  lastRun: String, // Name of the last file ran
-  migrations: Array,
-});
-
-/* "played_at": "2016-12-13T20:44:04.589Z",
-  "context": {
-  "uri": "spotify:artist:5INjqkS1o8h1imAzPqGZBb",
-    "external_urls": {
-    "spotify": "https://open.spotify.com/artist/5INjqkS1o8h1imAzPqGZBb"
-  },
-  "href": "https://api.spotify.com/v1/artists/5INjqkS1o8h1imAzPqGZBb",
-    "type": "artist"
-*/
-
 module.exports = {
-  User,
-  Infos,
-  Artist,
-  Album,
-  Track,
-  GlobalPreferences,
-  Migration,
+  UserSchema,
+  InfosSchema,
+  ArtistSchema,
+  AlbumSchema,
+  TrackSchema,
+  GlobalPreferencesSchema,
+  MigrationSchema,
 };

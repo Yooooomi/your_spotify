@@ -1,4 +1,4 @@
-const { Infos, Artist } = require('../Schemas');
+const { Infos, Artist } = require('../Models');
 const { getGroupByDateProjection, getGroupingByTimeSplit } = require('./statsTools');
 
 const getArtist = (artistId) => Artist.findOne({ id: artistId });

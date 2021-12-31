@@ -39,6 +39,7 @@ function History({ maxOld, title }) {
   const lg = 3;
 
   let displayTracks = tracks;
+  console.log(displayTracks);
 
   if (maxOld) {
     displayTracks = tracks.filter(tr => {

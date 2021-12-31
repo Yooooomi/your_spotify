@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schemas = require('./Schemas');
+const Models = require('./Models');
 const logger = require('../tools/logger');
 
 const statQueries = require('./queries/stats');
@@ -13,8 +14,6 @@ const connect = async () => {
   const client = await mongoose.connect(
     process.env.MONGO_ENDPOINT || fallbackConnection,
     {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       connectTimeoutMS: 3000,
     },
   );
@@ -22,14 +21,10 @@ const connect = async () => {
   return client;
 };
 
-/* Schemas.User.findOne().then(async user => {
-  const full = await User.getFullUser(user._id);
-  console.log(JSON.stringify(full));
-}); */
-
 module.exports = {
   connect,
   ...Schemas,
+  ...Models,
   ...statQueries,
   ...userQueries,
   ...globalQueries,

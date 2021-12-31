@@ -1,4 +1,4 @@
-const { Infos } = require('../Schemas');
+const { Infos } = require('../Models');
 
 const {
   getGroupByDateProjection,

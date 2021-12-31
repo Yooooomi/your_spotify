@@ -1,4 +1,4 @@
-const { GlobalPreferences } = require('../Schemas');
+const { GlobalPreferences } = require('../Models');
 
 const getGlobalPreferences = () => GlobalPreferences.findOne();
 
