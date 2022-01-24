@@ -86,7 +86,7 @@ To do so, you need to create a __Spotify application__ [here](https://developer.
    1) use the `EDIT SETTINGS` button on the top right corner of the page.
    2) add your URI under the `Redirect URIs` section
 
-   - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
+   - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback` or `http://home.mydomain.com/oauth/spotify/callback`
 
 # Blocking new registrations
 
@@ -94,4 +94,4 @@ You can now block new registrations from the settings page if you created an acc
 
 # External Guide
 
-BreadNet  breadnet.co.uk/installing installation tutorial
+[BreadNet](https://breadnet.co.uk/installing)  installation tutorial
