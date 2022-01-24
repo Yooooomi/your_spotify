@@ -3,32 +3,34 @@ version: "3"
 services:
   app:
     image: yooooomi/your_spotify_server
-    container_name: express-mongo
+    container_name: spotify_server
     restart: always
     ports:
-      - "8080:8080"
+      - "8080:8080"              # Examlple https://spotapi.DOMAIN.COM
     links:
       - mongo
     depends_on:
       - mongo
     environment:
-      - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
-      - CLIENT_ENDPOINT=http://localhost:3000
-      - SPOTIFY_PUBLIC=__your_spotify_client_id__
-      - SPOTIFY_SECRET=__your_spotify_secret__
+      #All env values can also be added using .env file
+      - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard | Examlple https://spotapi.DOMAIN.COM
+      - CLIENT_ENDPOINT=http://localhost:3000                # Example https://spotify.DOMAIN.COM
+      - SPOTIFY_PUBLIC=__your_spotify_client_id__            # Get this from https://developer.spotify.com/dashboard/applications
+      - SPOTIFY_SECRET=__your_spotify_secret__               # Get this from https://developer.spotify.com/dashboard/applications
       - CORS=http://localhost:3000,http://localhost:3001
       #- CORS=all
+      #- MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
   mongo:
-    container_name: mongo
-    image: mongo
+    container_name: spotify_mongo
+    image: mongo                        # Use image: arm64v8/mongo:4.4 if using ARM64 devices (RaspberryPi)
     volumes:
       - ./your_spotify_db:/data/db
 
   web:
     image: yooooomi/your_spotify_client
-    container_name: web
+    container_name: spotify_web
     restart: always
     ports:
       - "3000:3000"
     environment:
-      - API_ENDPOINT=http://localhost:8080
+      - API_ENDPOINT=http://localhost:8080     #Examlple https://spotapi.DOMAIN.COM

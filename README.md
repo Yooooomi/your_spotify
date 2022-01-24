@@ -63,6 +63,8 @@ services:
 
 ```
 
+For arm64 devices, change the `image: mongo` to  `image: arm64v8/mongo:4.4`
+
 ## CORS
 
 You can edit the CORS for the server:
@@ -78,12 +80,18 @@ To do so, you need to create a __Spotify application__ [here](https://developer.
 1) Click on __Create a client ID__
 2) Fill out all the informations
 3) Copy the __public__ and the __secret__ key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
-respectively
+   respectively
 4) Add an authorized redirect URI corresponding to your __server__ location on the internet adding the suffix __/oauth/spotify/callback__,
-    1) use the `EDIT SETTINGS` button on the top right corner of the page.
-    2) add your URI under the `Redirect URIs` section
-    - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
+
+   1) use the `EDIT SETTINGS` button on the top right corner of the page.
+   2) add your URI under the `Redirect URIs` section
+
+   - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
 
 # Blocking new registrations
 
 You can now block new registrations from the settings page if you created an account. Every account can block or allow new registrations.
+
+# External Guide
+
+BreadNet  breadnet.co.uk/installing installation tutorial
