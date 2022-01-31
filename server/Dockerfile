@@ -8,9 +8,9 @@ RUN apk add python3 gcc g++ make cmake
 RUN npm install -g nodemon
 
 COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
+COPY yarn.lock /app/yarn.lock
 
-RUN npm install
+RUN yarn --frozen-lockfile
 
 COPY src/ /app/src/
 COPY scripts/ /app/scripts/

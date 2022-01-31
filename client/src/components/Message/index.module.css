@@ -1,0 +1,30 @@
+.alert {
+  color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.9em;
+}
+
+.alert > :first-child {
+  margin-right: 16px;
+  margin-top: -2px;
+}
+
+.icon {
+  color: white;
+}
+
+.info {
+  background-color: rgb(89, 89, 226);
+}
+
+.success {
+  background-color: rgb(58, 148, 58);
+}
+
+.error {
+  background-color: rgb(238, 96, 96);
+}

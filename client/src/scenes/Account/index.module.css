@@ -1,0 +1,31 @@
+.root {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  padding: 16px;
+  width: 40%;
+  box-shadow: var(--shadow);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.form > *:not(:last-child) {
+  display: block !important;
+  margin-bottom: 16px;
+}
+
+.button {
+  margin: auto;
+  margin-bottom: 8px;
+}
+
+@media screen and (max-width: 600px) {
+  .form {
+    width: 90%;
+  }
+}

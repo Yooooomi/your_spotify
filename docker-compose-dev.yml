@@ -26,6 +26,8 @@ services:
       # driver: none
     volumes:
       - ./db_data:/data/db
+    ports:
+      - "27017:27017"
 
   web:
     container_name: web
@@ -42,4 +44,5 @@ services:
       - ./client/public:/app/public/
     environment:
       - API_ENDPOINT=http://localhost:8080
+      - NODE_ENV=development
     entrypoint: "/app/scripts/run/run_dev.sh"

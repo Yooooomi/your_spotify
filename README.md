@@ -12,9 +12,9 @@ It's composed of a web server which polls the Spotify API every now and then and
 
 # Prerequisites
 
-1) You have to own a Spotify application ID that you can create through their [dashboard](https://developer.spotify.com/dashboard/applications)
-2) You need to provide the __Server__ environment the __public__ AND __secret__ key of the application (cf. [Installation](#Installation))
-3) You need to provide an __authorized__ redirect URI to the `docker-compose` file
+1. You have to own a Spotify application ID that you can create through their [dashboard](https://developer.spotify.com/dashboard/applications)
+2. You need to provide the **Server** environment the **public** AND **secret** key of the application (cf. [Installation](#Installation))
+3. You need to provide an **authorized** redirect URI to the `docker-compose` file
 
 > A tutorial is available at the end of this readme.
 
@@ -60,8 +60,13 @@ services:
       - "3000:3000"
     environment:
       - API_ENDPOINT=http://localhost:8080
-
 ```
+
+> Some ARM-based devices might have trouble with Mongo >= 5. I suggest you use the image __mongo:4.4__
+
+## Installing locally (not recommended)
+
+You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/blob/master/LOCAL_INSTALL.md). Note that you will still have to do the steps below.
 
 ## CORS
 
@@ -72,18 +77,36 @@ You can edit the CORS for the server:
 
 # Creating the Spotify Application
 
-For __Your spotify__ to work you need to provide a Spotify application __public__ AND __secret__ to the server environment.
-To do so, you need to create a __Spotify application__ [here](https://developer.spotify.com/dashboard/applications).
+For **Your spotify** to work you need to provide a Spotify application **public** AND **secret** to the server environment.
+To do so, you need to create a **Spotify application** [here](https://developer.spotify.com/dashboard/applications).
 
-1) Click on __Create a client ID__
-2) Fill out all the informations
-3) Copy the __public__ and the __secret__ key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
-respectively
-4) Add an authorized redirect URI corresponding to your __server__ location on the internet adding the suffix __/oauth/spotify/callback__,
-    1) use the `EDIT SETTINGS` button on the top right corner of the page.
-    2) add your URI under the `Redirect URIs` section
-    - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
+1. Click on **Create a client ID**
+2. Fill out all the informations
+3. Copy the **public** and the **secret** key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
+   respectively
+4. Add an authorized redirect URI corresponding to your **server** location on the internet adding the suffix **/oauth/spotify/callback**,
+   1. use the `EDIT SETTINGS` button on the top right corner of the page.
+   2. add your URI under the `Redirect URIs` section
+   - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
 
-# Blocking new registrations
+# FAQ
 
-You can now block new registrations from the settings page if you created an account. Every account can block or allow new registrations.
+> How can I block new registrations
+
+From a logged account, go to the **Settings** page and hit the **Disable new registrations** buttons
+
+> I lost the password of an account
+
+If you have or create another account, you can change the password based on an account id you can find in the settings. If the registrations are blocked you cannot recover your password without editing the database yourself.
+
+> Songs don't seem to synchronize anymore
+
+This can happen if you revoked access on your Spotify account. To re-sync the songs, go to settings and hit the **Relog to Spotify** button
+
+> The web application is telling me it cannot retrieve global preferences
+
+This means that your web application can't connect to the backend. Check that your **API_ENDPOINT** env variable is reachable from the device you're using the platform from.
+
+# External guides
+
+- [BreadNet](https://breadnet.co.uk/installing)  installation tutorial

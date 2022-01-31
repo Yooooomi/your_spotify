@@ -1,12 +1,11 @@
-
-
-.graph {
-    min-height: 350px;
+.root {
 }
 
-.title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
+.content {
+  padding: var(--page-padding);
+  height: 500px;
+}
+
+.chart {
+  height: 300px;
 }

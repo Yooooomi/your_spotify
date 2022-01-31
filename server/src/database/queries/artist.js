@@ -1,7 +1,7 @@
 const { Infos, Artist } = require('../Schemas');
 const { getGroupByDateProjection, getGroupingByTimeSplit } = require('./statsTools');
 
-const getArtist = (artistId) => Artist.findOne({ id: artistId });
+const getArtists = (artistIds) => Artist.find({ id: { $in: artistIds } });
 
 const searchArtist = (str) => Artist.find({ name: { $regex: new RegExp(str, 'i') } });
 
@@ -47,7 +47,14 @@ const getFirstAndLastListened = async (user, artistId) => {
         from: 'tracks', localField: `${e}.artistInfos.trackId`, foreignField: 'id', as: `${e}.track`,
       },
     },
-    { $unwind: `$${e}.track` }])).flat(1),
+    { $unwind: `$${e}.track` },
+    {
+      $lookup: {
+        from: 'albums', localField: `${e}.track.album`, foreignField: 'id', as: `${e}.track.album`,
+      },
+    },
+    { $unwind: `$${e}.track.album` },
+    ])).flat(1),
   ]);
   return res[0];
 };
@@ -65,6 +72,12 @@ const getMostListenedSongOfArtist = async (user, artistId) => {
       },
     },
     { $unwind: '$track' },
+    {
+      $lookup: {
+        from: 'albums', localField: 'track.album', foreignField: 'id', as: 'track.album',
+      },
+    },
+    { $unwind: '$track.album' },
   ]);
   return res;
 };
@@ -133,7 +146,7 @@ const getRankOfArtist = async (user, artistId) => {
 };
 
 module.exports = {
-  getArtist,
+  getArtists,
   searchArtist,
   getFirstAndLastListened,
   getMostListenedSongOfArtist,

@@ -4,30 +4,34 @@ const { logged, validating } = require('../tools/middleware');
 const db = require('../database');
 const logger = require('../tools/logger');
 
-const getArtist = Joi.object().keys({
-  id: Joi.string().required(),
+const getArtists = Joi.object().keys({
+  ids: Joi.string().required(),
 });
 
-router.get('/:id', validating(getArtist, 'params'), logged, async (req, res) => {
+router.get('/:ids', validating(getArtists, 'params'), logged, async (req, res) => {
   try {
-    const { id } = req.values;
-    const artist = await db.getArtist(id);
-    if (!artist) {
+    const { ids } = req.values;
+    const artists = await db.getArtists(ids.split(','));
+    if (!artists || artists.length === 0) {
       return res.status(404).end();
     }
-    return res.status(200).send(artist);
+    return res.status(200).send(artists);
   } catch (e) {
     logger.error(e);
     return res.status(500).end();
   }
 });
 
-router.get('/:id/stats', validating(getArtist, 'params'), logged, async (req, res) => {
+const getArtistStats = Joi.object().keys({
+  id: Joi.string().required(),
+});
+
+router.get('/:id/stats', validating(getArtistStats, 'params'), logged, async (req, res) => {
   try {
     const { user } = req;
     const { id } = req.values;
 
-    const artist = await db.getArtist(id);
+    const artist = await db.getArtists([id]);
     if (!artist) {
       return res.status(404).end();
     }
@@ -45,8 +49,13 @@ router.get('/:id/stats', validating(getArtist, 'params'), logged, async (req, re
       total,
       rank,
     ] = await Promise.all(promises);
+    if (!total) {
+      return res.status(200).send({
+        code: 'NEVER_LISTENED',
+      });
+    }
     return res.status(200).send({
-      artist, firstLast, mostListened, bestPeriod, total, rank,
+      artist: artist[0], firstLast, mostListened, bestPeriod, total, rank,
     });
   } catch (e) {
     logger.error(e);

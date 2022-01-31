@@ -1,0 +1,55 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 6px;
+}
+
+.root:hover {
+  background: #eaeaea;
+}
+
+.header {
+  font-weight: bold;
+}
+
+.play {
+  height: 32px;
+  width: 32px;
+  margin-left: -8px !important;
+  margin-right: 8px !important;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 4;
+}
+
+.trackname {
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.artistname {
+  font-size: 0.9em;
+  color: var(--text-grey);
+}
+
+.albumname {
+  flex: 1;
+  text-align: center;
+}
+
+.duration {
+  flex: 1;
+  text-align: center;
+}
+
+.playedat {
+  flex: 1;
+  text-align: right;
+}

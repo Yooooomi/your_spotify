@@ -1,0 +1,33 @@
+.root {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background-color: white;
+  padding: 16px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.texts > h1 {
+  margin-bottom: 8px;
+}
+
+@media screen and (max-width: 900px) {
+  .texts > h1 {
+    padding-left: 32px;
+  }
+}
+
+.texts > span {
+  color: var(--text-grey);
+}

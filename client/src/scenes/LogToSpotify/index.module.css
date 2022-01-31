@@ -1,25 +1,21 @@
-
-
-.root {
-    height: 95vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: -50px;
+.disclaimer {
+  font-size: 1.4em;
+  margin-bottom: 8px;
+  max-width: 60%;
+  text-align: center;
 }
 
-.entry {
-    margin-bottom: 25px;
-    display: block;
-    position: relative;
+.sub {
+  margin-bottom: 24px;
+  max-width: 60%;
+  text-align: center;
 }
 
-.entry > img {
-    width: 20%;
-}
-
-.desc {
-    width: 50%;
-    margin: auto;
+@media screen and (max-width: 960px) {
+  .disclaimer {
+    max-width: 95%;
+  }
+  .sub {
+    max-width: 95%;
+  }
 }

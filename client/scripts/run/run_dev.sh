@@ -2,4 +2,4 @@
 
 source /app/scripts/run/variables.sh
 
-npm start
+yarn start

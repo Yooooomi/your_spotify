@@ -101,6 +101,25 @@ router.post('/changepassword', validating(changePassword), logged, async (req, r
   }
 });
 
+const changePasswordAccountId = Joi.object().keys({
+  id: Joi.string().max(constants.maxStringLength).required(),
+  newPassword: Joi.string().max(constants.maxStringLength).required(),
+});
+
+router.post('/changepasswordaccountid', validating(changePasswordAccountId), logged, async (req, res) => {
+  const { id, newPassword } = req.values;
+
+  try {
+    const newPasswordHashed = await bcrypt.hash(newPassword, BCRYPT_SALTS);
+    await db.storeInUser('_id', id, { password: newPasswordHashed });
+    return res.status(200).end();
+  } catch (e) {
+    console.error(e);
+    return res.status(500).end();
+  }
+});
+
+
 const settingsSchema = Joi.object().keys({
   historyLine: Joi.bool(),
   preferredStatsPeriod: Joi.string().only().allow('day', 'week', 'month', 'year'),
@@ -121,5 +140,15 @@ router.post('/settings', validating(settingsSchema), logged, async (req, res) =>
 });
 
 router.get('/me', logged, async (req, res) => res.status(200).send(req.user));
+
+router.get('/accountids', logged, async (req, res) => {
+  try {
+    const users = await db.getUsers(100);
+    return res.status(200).send(users.map(us => ({ username: us.username, id: us._id })));
+  } catch (e) {
+    console.error(e);
+    return res.status(500).end();
+  }
+});
 
 module.exports = router;

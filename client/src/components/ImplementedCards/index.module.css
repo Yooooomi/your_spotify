@@ -1,0 +1,20 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.number {
+  font-size: 1.6em;
+}
+
+.more {
+  color: green;
+  font-size: 0.8em;
+}
+
+.less {
+  color: red;
+  font-size: 0.8em;
+}

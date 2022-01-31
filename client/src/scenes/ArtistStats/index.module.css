@@ -1,0 +1,86 @@
+.headerimage {
+  height: 60px;
+  width: 60px;
+  border-radius: 6px;
+  margin-right: 16px;
+}
+
+.content {
+  padding: var(--page-padding);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-right: 16px;
+}
+
+.ranks {
+  display: flex;
+  align-items: center;
+}
+
+.rank {
+  margin-right: 16px;
+}
+
+.before {
+  color: green;
+}
+
+.actual {
+  font-weight: bold;
+  color: black;
+}
+
+.after {
+  color: red;
+}
+
+.cardimg {
+  height: 48px;
+  width: 48px;
+  border-radius: 6px;
+}
+
+.songslistened {
+  font-size: 1.4em;
+}
+
+.ml {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.mlrank {
+  font-size: 1.4em;
+  width: 48px;
+}
+
+.mlstat {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+}
+
+.mlstat > :last-child {
+  color: var(--text-grey);
+}
+
+.bestperiod {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.bestperiod > strong {
+  font-size: 1.4em;
+}
+
+.bestperiod > span {
+  color: var(--text-grey);
+}

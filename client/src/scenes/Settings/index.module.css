@@ -1,35 +1,15 @@
-
-
-.paper {
-    width: 100%;
-    padding: 20px;
-    height: 100%;
+.content {
+  padding: var(--page-padding);
 }
 
-.entry {
-    display: flex;
-    justify-content: space-between;
+.form > *:not(:last-child) {
+  margin-bottom: 8px;
 }
 
-.footer {
-    padding: 20px;
-    width: 100%;
+.form {
+  text-align: right;
 }
 
-.value {
-    font-weight: bold !important;
-}
-
-.title {
-    margin-bottom: 15px;
-}
-
-.changepasswordinput {
-    margin-bottom: 5px !important;
-}
-
-.changepasswordbutton {
-    margin-top: 10px;
-    margin-left: auto;
-    width: 100%;
+.ids {
+  margin-top: 16px;
 }

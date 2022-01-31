@@ -1,0 +1,53 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.imgcontainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 10px 10px 35px -5px rgba(0,0,0,0.43);
+}
+
+.stats {
+  flex: 2;
+  margin-left: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stats > strong {
+  font-size: 1.4em;
+  color: var(--text-grey);
+}
+
+.statnumbers {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: -16px;
+}
+
+.stat {
+  display: block;
+  font-size: 1.1em;
+}

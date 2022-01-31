@@ -1,0 +1,36 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 6px;
+}
+
+.root:hover {
+  background: #eaeaea;
+}
+
+.header {
+  font-weight: bold;
+}
+
+.artistname {
+  flex: 4;
+  font-weight: bold;
+}
+
+.playedat {
+  flex: 1;
+  text-align: center;
+}
+
+.sumcount {
+  flex: 1;
+  text-align: center;
+}
+
+.sumduration {
+  flex: 1;
+  text-align: right;
+}

@@ -1,4 +1,4 @@
-FROM node:alpine3.10 AS builder
+FROM node:16-alpine AS builder
 
 WORKDIR /app
 
@@ -7,19 +7,20 @@ RUN npm install -g nodemon
 
 COPY scripts/ scripts/
 COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
+COPY yarn.lock /app/yarn.lock
+COPY tsconfig.json /app/tsconfig.json
 
 ARG NODE_ENV
 ENV NODE_ENV ${NODE_ENV:-production}
 
-RUN npm install
+RUN yarn --frozen-lockfile
 
 COPY src/ /app/src/
 COPY public/ /app/public/
 
 RUN sh scripts/build/*.sh
 
-FROM node:alpine3.10 AS final
+FROM node:16-alpine AS final
 
 WORKDIR /app
 

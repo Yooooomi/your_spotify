@@ -1,0 +1,28 @@
+.root {
+  padding: 16px;
+  box-shadow: var(--shadow) !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.root > h3 {
+  display: flex;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.root > h3::before {
+  content: "";
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 32px;
+  background-color: black;
+  margin-right: 16px;
+  border-radius: 6px;
+}
+
+.content {
+  position: relative;
+  flex-grow: 1;
+}
