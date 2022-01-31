@@ -93,7 +93,7 @@ To do so, you need to create a **Spotify application** [here](https://developer.
 
 > How can I block new registrations
 
-From a logged account, go to the **Settings** page and hit the **Disable new registrations** buttons
+From a logged account, go to the **Settings** page and hit the **Disable new registrations** button.
 
 > I lost the password of an account
 
@@ -101,7 +101,7 @@ If you have or create another account, you can change the password based on an a
 
 > Songs don't seem to synchronize anymore
 
-This can happen if you revoked access on your Spotify account. To re-sync the songs, go to settings and hit the **Relog to Spotify** button
+This can happen if you revoked access on your Spotify account. To re-sync the songs, go to settings and hit the **Relog to Spotify** button.
 
 > The web application is telling me it cannot retrieve global preferences
 
