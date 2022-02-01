@@ -95,7 +95,7 @@ To do so, you need to create a **Spotify application** [here](https://developer.
 
 > How can I block new registrations?
 
-From a logged account, go to the **Settings** page and hit the **Disable new registrations** buttons.
+From a logged account, go to the **Settings** page and hit the **Disable new registrations** button.
 
 > I lost the password of an account.
 
