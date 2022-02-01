@@ -1,3 +1,3 @@
 #!/bin/sh
 
-yarn migrate && yarn dev
+yarn migrate && yarn start

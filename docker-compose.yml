@@ -4,7 +4,11 @@ services:
   app:
     container_name: express-mongo
     restart: always
-    build: ./server
+    build:
+     context: ./server
+     dockerfile: Dockerfile.production
+     args:
+      - NODE_ENV=production
     ports:
       - "8080:8080"
     links:
@@ -18,6 +22,7 @@ services:
       - SPOTIFY_SECRET=__your_spotify_secret__
       - CORS=http://localhost:3000,http://localhost:3001
       #- MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
+
   mongo:
     container_name: mongo
     image: mongo:4.4.8

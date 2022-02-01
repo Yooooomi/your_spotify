@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import s from "./index.module.css";
 import clsx from "clsx";
 import { msToMinutesAndSeconds } from "../../../../services/stats";

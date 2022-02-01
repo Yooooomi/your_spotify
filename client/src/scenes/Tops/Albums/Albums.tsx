@@ -37,16 +37,15 @@ export default function Albums() {
     if (items.length === 0) {
       fetch();
     }
+    // Initial fetch
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interval]);
 
-  const changeInterval = useCallback(
-    (newInterval: string) => {
-      setInterval(newInterval);
-      setItems([]);
-      setHasMore(true);
-    },
-    []
-  );
+  const changeInterval = useCallback((newInterval: string) => {
+    setInterval(newInterval);
+    setItems([]);
+    setHasMore(true);
+  }, []);
 
   return (
     <div>

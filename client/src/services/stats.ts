@@ -1,10 +1,5 @@
 import { useCallback } from "react";
 import { DateId, Precision } from "./types";
-import {
-  Payload,
-  NameType,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
 
 const fresh = (d: Date) => {
   const date = new Date(d.getTime());

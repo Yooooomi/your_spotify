@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UnboxPromise } from "./types";
 
 export function useAPI<Fn extends (...args: any[]) => Promise<{ data: D }>, D>(
@@ -17,6 +17,7 @@ export function useAPI<Fn extends (...args: any[]) => Promise<{ data: D }>, D>(
 
     setValue(null);
     fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...args, call]);
 
   return value;
@@ -44,6 +45,7 @@ export function useConditionalAPI<
     if (condition) {
       fetch();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...args, condition, call]);
 
   return value;

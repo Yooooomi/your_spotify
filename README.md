@@ -22,7 +22,7 @@ It's composed of a web server which polls the Spotify API every now and then and
 
 ## Using `docker-compose`
 
-Follow the [docker-compose-example.yml](https://github.com/Yooooomi/your_spotify/blob/master/docker-compose-example.yml) to host your application through docker
+Follow the [docker-compose-example.yml](https://github.com/Yooooomi/your_spotify/blob/master/docker-compose-example.yml) to host your application through docker.
 
 ```yml
 version: "3"
@@ -62,7 +62,9 @@ services:
       - API_ENDPOINT=http://localhost:8080
 ```
 
-> Some ARM-based devices might have trouble with Mongo >= 5. I suggest you use the image __mongo:4.4__
+> Some ARM-based devices might have trouble with Mongo >= 5. I suggest you use the image **mongo:4.4**.
+
+> You can find logs in `logs.log` in `/app` in the docker in case you need to check the logs or have log driver to `none` in your compose. One thing you can do is volume the file so you can access it locally.
 
 ## Installing locally (not recommended)
 
@@ -91,22 +93,22 @@ To do so, you need to create a **Spotify application** [here](https://developer.
 
 # FAQ
 
-> How can I block new registrations
+> How can I block new registrations?
 
-From a logged account, go to the **Settings** page and hit the **Disable new registrations** buttons
+From a logged account, go to the **Settings** page and hit the **Disable new registrations** buttons.
 
-> I lost the password of an account
+> I lost the password of an account.
 
 If you have or create another account, you can change the password based on an account id you can find in the settings. If the registrations are blocked you cannot recover your password without editing the database yourself.
 
-> Songs don't seem to synchronize anymore
+> Songs don't seem to synchronize anymore.
 
-This can happen if you revoked access on your Spotify account. To re-sync the songs, go to settings and hit the **Relog to Spotify** button
+This can happen if you revoked access on your Spotify account. To re-sync the songs, go to settings and hit the **Relog to Spotify** button.
 
-> The web application is telling me it cannot retrieve global preferences
+> The web application is telling me it cannot retrieve global preferences.
 
 This means that your web application can't connect to the backend. Check that your **API_ENDPOINT** env variable is reachable from the device you're using the platform from.
 
 # External guides
 
-- [BreadNet](https://breadnet.co.uk/installing)  installation tutorial
+- [BreadNet](https://breadnet.co.uk/installing) installation tutorial

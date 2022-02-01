@@ -23,6 +23,8 @@ export default function History() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log(items);
+
   return (
     <TitleCard title="Your history">
       <Track line playable />

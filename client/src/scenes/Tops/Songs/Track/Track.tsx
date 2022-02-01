@@ -3,10 +3,7 @@ import s from "./index.module.css";
 import clsx from "clsx";
 import { IconButton, useMediaQuery } from "@material-ui/core";
 import { api } from "../../../../services/api";
-import {
-  msToMinutesAndSeconds,
-  dateToListenedAt,
-} from "../../../../services/stats";
+import { msToMinutesAndSeconds } from "../../../../services/stats";
 import { Artist, Album, Track as TrackType } from "../../../../services/types";
 import InlineArtist from "../../../../components/InlineArtist";
 import { getImage } from "../../../../services/tools";

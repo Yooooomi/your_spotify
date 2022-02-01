@@ -3,15 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./src/bin/www",
-    "migrate": "node ./src/migrations.js",
+    "start": "node lib/bin/www",
+    "start:watch": "nodemon lib/bin/www",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"yarn build:watch\" \"yarn start:watch\"",
+    "migrate": "node ./lib/migrations.js",
     "lint": "eslint src/ --ext .js",
     "lint:fix": "eslint src/ --ext .js --fix",
-    "lint:open": "yarn -s lint -f ../only-files.js | grep file | cut -d' ' -f 2 | xargs code",
-    "dev": "nodemon ./src/bin/www"
+    "lint:open": "yarn -s lint -f ../only-files.js | grep file | cut -d' ' -f 2 | xargs code"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "0.25.0",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -20,16 +23,18 @@
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "migrate": "^1.7.0",
-    "mongoose": "^5.12.3",
+    "mongoose": "6.1.8",
     "morgan": "^1.10.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.24.0",
-    "eslint-config-airbnb": "^17.1.1",
-    "eslint-plugin-import": "^2.18.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.14.2"
+    "@types/axios": "^0.14.0",
+    "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "^17.0.13",
+    "concurrently": "^7.0.0",
+    "typescript": "^4.5.5"
   }
 }

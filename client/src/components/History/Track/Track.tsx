@@ -51,6 +51,9 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
   }
 
   const { track, album, artists, listenedAt, playable } = props;
+
+  console.log("artists", artists);
+
   return (
     <div className={s.root}>
       {playable && (

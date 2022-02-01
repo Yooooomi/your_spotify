@@ -6,6 +6,10 @@ services:
     restart: always
     build:
       context: ./server
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: development
+    entrypoint: "/app/scripts/run/run_dev.sh"
     ports:
       - "8080:8080"
     volumes:
@@ -36,7 +40,8 @@ services:
       context: ./client
       dockerfile: Dockerfile
       args:
-        - NODE_ENV=development
+        NODE_ENV: development
+    entrypoint: "/app/scripts/run/run_dev.sh"
     ports:
       - "3000:3000"
     volumes:
@@ -45,4 +50,3 @@ services:
     environment:
       - API_ENDPOINT=http://localhost:8080
       - NODE_ENV=development
-    entrypoint: "/app/scripts/run/run_dev.sh"
