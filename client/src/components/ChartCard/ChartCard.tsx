@@ -1,7 +1,7 @@
-import React from "react";
-import { Paper } from "@material-ui/core";
-import s from "./index.module.css";
-import clsx from "clsx";
+import React from 'react';
+import { Paper } from '@material-ui/core';
+import clsx from 'clsx';
+import s from './index.module.css';
 
 interface ChartCardProps {
   className?: string;
@@ -9,11 +9,7 @@ interface ChartCardProps {
   children: React.ReactNode;
 }
 
-export default function ChartCard({
-  className,
-  title,
-  children,
-}: ChartCardProps) {
+export default function ChartCard({ className, title, children }: ChartCardProps) {
   return (
     <Paper className={clsx(s.root, className)}>
       <h3>{title}</h3>

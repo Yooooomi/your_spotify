@@ -1,12 +1,12 @@
-import React from "react";
-import { api } from "../../../services/api";
-import { useAPI } from "../../../services/hooks";
-import { buildXYData, useFormatXAxis } from "../../../services/stats";
-import { DateId } from "../../../services/types";
-import ChartCard from "../../ChartCard";
-import Line from "../../charts/Line";
-import LoadingImplementedChart from "../LoadingImplementedChart";
-import { ImplementedChartProps } from "../types";
+import React from 'react';
+import { api } from '../../../services/api';
+import { useAPI } from '../../../services/hooks';
+import { buildXYData, useFormatXAxis } from '../../../services/stats';
+import { DateId } from '../../../services/types';
+import ChartCard from '../../ChartCard';
+import Line from '../../charts/Line';
+import LoadingImplementedChart from '../LoadingImplementedChart';
+import { ImplementedChartProps } from '../types';
 
 interface AverageSongPopularityPerProps extends ImplementedChartProps {}
 
@@ -14,12 +14,7 @@ export default function AverageSongPopularityPer({
   className,
   interval,
 }: AverageSongPopularityPerProps) {
-  const result = useAPI(
-    api.popularityPer,
-    interval.start,
-    interval.end,
-    interval.timesplit
-  );
+  const result = useAPI(api.popularityPer, interval.start, interval.end, interval.timesplit);
 
   const data = buildXYData(
     result?.map((r) => ({
@@ -27,7 +22,7 @@ export default function AverageSongPopularityPer({
       value: Math.floor(r.totalPopularity * 100) / 100,
     })) ?? [],
     interval.start,
-    interval.end
+    interval.end,
   );
 
   const formatX = useFormatXAxis(data, interval.start, interval.end);

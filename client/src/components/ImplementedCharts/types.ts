@@ -1,4 +1,4 @@
-import { Interval } from "../../services/types";
+import { Interval } from '../../services/types';
 
 export interface ImplementedChartProps {
   className?: string;

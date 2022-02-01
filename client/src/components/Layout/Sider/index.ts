@@ -1,1 +1,1 @@
-export {default} from './Sider';
+export { default } from './Sider';

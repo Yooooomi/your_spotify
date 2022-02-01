@@ -1,1 +1,1 @@
-export { default } from "./AverageSongPopularityPer";
+export { default } from './AverageSongPopularityPer';

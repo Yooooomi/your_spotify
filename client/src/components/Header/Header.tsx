@@ -1,7 +1,7 @@
-import { useMediaQuery } from "@material-ui/core";
-import React from "react";
-import IntervalSelector from "../IntervalSelector";
-import s from "./index.module.css";
+import { useMediaQuery } from '@material-ui/core';
+import React from 'react';
+import IntervalSelector from '../IntervalSelector';
+import s from './index.module.css';
 
 interface HeaderProps {
   left?: React.ReactNode;
@@ -11,14 +11,8 @@ interface HeaderProps {
   onChange?: (newInterval: string) => void;
 }
 
-export default function Header({
-  left,
-  title,
-  subtitle,
-  interval,
-  onChange,
-}: HeaderProps) {
-  const showSider = !useMediaQuery("(max-width: 900px)");
+export default function Header({ left, title, subtitle, interval, onChange }: HeaderProps) {
+  const showSider = !useMediaQuery('(max-width: 900px)');
 
   return (
     <div className={s.root}>
@@ -31,10 +25,7 @@ export default function Header({
       </div>
       {interval && (
         <div>
-          <IntervalSelector
-            value={interval}
-            onChange={onChange ? onChange : () => {}}
-          />
+          <IntervalSelector value={interval} onChange={onChange || (() => {})} />
         </div>
       )}
     </div>

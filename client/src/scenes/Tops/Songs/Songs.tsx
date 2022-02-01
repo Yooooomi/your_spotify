@@ -1,19 +1,19 @@
-import { CircularProgress } from "@material-ui/core";
-import React, { useCallback, useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import Header from "../../../components/Header";
-import { intervals } from "../../../components/IntervalSelector/IntervalSelector";
-import TitleCard from "../../../components/TitleCard";
-import { api } from "../../../services/api";
-import { UnboxPromise } from "../../../services/types";
-import s from "./index.module.css";
-import Track from "./Track";
+import { CircularProgress } from '@material-ui/core';
+import React, { useCallback, useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import Header from '../../../components/Header';
+import { intervals } from '../../../components/IntervalSelector/IntervalSelector';
+import TitleCard from '../../../components/TitleCard';
+import { api } from '../../../services/api';
+import { UnboxPromise } from '../../../services/types';
+import s from './index.module.css';
+import Track from './Track';
 
 export default function Songs() {
-  const [interval, setInterval] = useState("0");
-  const [items, setItems] = useState<
-    UnboxPromise<ReturnType<typeof api["getBestSongs"]>>["data"]
-  >([]);
+  const [interval, setInterval] = useState('0');
+  const [items, setItems] = useState<UnboxPromise<ReturnType<typeof api['getBestSongs']>>['data']>(
+    [],
+  );
   const [hasMore, setHasMore] = useState(true);
 
   const fetch = useCallback(async () => {
@@ -23,7 +23,7 @@ export default function Songs() {
         intervals[+interval].interval.start,
         intervals[+interval].interval.end,
         10,
-        items.length
+        items.length,
       );
       setItems([...items, ...result.data]);
       setHasMore(result.data.length === 10);
@@ -61,8 +61,7 @@ export default function Songs() {
             next={fetch}
             hasMore={hasMore}
             dataLength={items.length}
-            loader={<CircularProgress />}
-          >
+            loader={<CircularProgress />}>
             {items.map((item) => (
               <Track
                 playable

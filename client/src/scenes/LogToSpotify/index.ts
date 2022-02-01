@@ -1,1 +1,1 @@
-export { default } from "./LogToSpotify";
+export { default } from './LogToSpotify';

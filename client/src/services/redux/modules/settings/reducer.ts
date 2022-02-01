@@ -1,6 +1,6 @@
-import { createReducer } from "@reduxjs/toolkit";
-import { GlobalPreferences } from "../../../types";
-import { changeRegistrations, getSettings } from "./thunk";
+import { createReducer } from '@reduxjs/toolkit';
+import { GlobalPreferences } from '../../../types';
+import { changeRegistrations, getSettings } from './thunk';
 
 interface SettingsReducer {
   settings: GlobalPreferences | null;

@@ -5,9 +5,9 @@ import {
   RadioGroup,
   Select,
   useMediaQuery,
-} from "@material-ui/core";
-import React from "react";
-import { Interval, Timesplit } from "../../services/types";
+} from '@material-ui/core';
+import React from 'react';
+import { Interval, Timesplit } from '../../services/types';
 
 interface IntervalSelectorProps {
   value: string;
@@ -26,40 +26,34 @@ const now = new Date();
 
 export const intervals: { name: string; interval: Interval }[] = [
   {
-    name: "Last day",
+    name: 'Last day',
     interval: { timesplit: Timesplit.hour, start: lastDay, end: now },
   },
   {
-    name: "Last week",
+    name: 'Last week',
     interval: { timesplit: Timesplit.day, start: lastWeek, end: now },
   },
   {
-    name: "Last month",
+    name: 'Last month',
     interval: { timesplit: Timesplit.day, start: lastMonth, end: now },
   },
   {
-    name: "Last year",
+    name: 'Last year',
     interval: { timesplit: Timesplit.month, start: lastYear, end: now },
   },
 ];
 
-export default function IntervalSelector({
-  value,
-  onChange,
-}: IntervalSelectorProps) {
-  const upmd = !useMediaQuery("(max-width: 1250px)");
+export default function IntervalSelector({ value, onChange }: IntervalSelectorProps) {
+  const upmd = !useMediaQuery('(max-width: 1250px)');
 
   if (!upmd) {
     return (
-      <Select
-        value={value}
-        onChange={(ev) => onChange(ev.target.value as string)}
-      >
+      <Select value={value} onChange={(ev) => onChange(ev.target.value as string)}>
         {intervals.map((inter, index) => (
           <MenuItem key={inter.name} value={index.toString()}>
             {inter.name}
           </MenuItem>
-        ))}{" "}
+        ))}{' '}
       </Select>
     );
   }
@@ -69,8 +63,7 @@ export default function IntervalSelector({
       row
       value={value}
       onChange={(ev) => onChange(ev.target.value)}
-      name="interval radio group"
-    >
+      name="interval radio group">
       {intervals.map((inter, index) => (
         <FormControlLabel
           key={inter.name}

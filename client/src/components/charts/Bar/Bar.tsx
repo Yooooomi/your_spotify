@@ -1,25 +1,16 @@
-import React from "react";
-import {
-  BarChart,
-  XAxis,
-  Bar as RBar,
-  Tooltip,
-  YAxis,
-  ResponsiveContainer,
-} from "recharts";
+import React from 'react';
+import { BarChart, XAxis, Bar as RBar, Tooltip, YAxis, ResponsiveContainer } from 'recharts';
 
 interface BarProps {
   data: {
     x: number | string;
     y: number;
   }[];
-  customXTick?: React.ComponentProps<typeof XAxis>["tick"];
-  xFormat?: React.ComponentProps<typeof XAxis>["tickFormatter"];
-  yFormat?: React.ComponentProps<typeof YAxis>["tickFormatter"];
-  tooltipLabelFormatter?: React.ComponentProps<
-    typeof Tooltip
-  >["labelFormatter"];
-  tooltipValueFormatter?: React.ComponentProps<typeof Tooltip>["formatter"];
+  customXTick?: React.ComponentProps<typeof XAxis>['tick'];
+  xFormat?: React.ComponentProps<typeof XAxis>['tickFormatter'];
+  yFormat?: React.ComponentProps<typeof YAxis>['tickFormatter'];
+  tooltipLabelFormatter?: React.ComponentProps<typeof Tooltip>['labelFormatter'];
+  tooltipValueFormatter?: React.ComponentProps<typeof Tooltip>['formatter'];
 }
 
 export default function Bar({
@@ -36,10 +27,7 @@ export default function Bar({
         <XAxis dataKey="x" tickFormatter={xFormat} tick={customXTick} />
         <YAxis dataKey="y" tickFormatter={yFormat} width={40} />
         <RBar dataKey="y" />
-        <Tooltip
-          labelFormatter={tooltipLabelFormatter}
-          formatter={tooltipValueFormatter}
-        />
+        <Tooltip labelFormatter={tooltipLabelFormatter} formatter={tooltipValueFormatter} />
       </BarChart>
     </ResponsiveContainer>
   );

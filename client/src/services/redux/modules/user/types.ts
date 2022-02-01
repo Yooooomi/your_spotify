@@ -13,6 +13,6 @@ export interface User {
     historyLine: boolean;
     preferredStatsPeriod: string;
     nbElements: number;
-    metricUsed: "number" | "duration";
+    metricUsed: 'number' | 'duration';
   };
 }

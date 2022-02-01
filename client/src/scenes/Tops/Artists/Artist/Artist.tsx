@@ -1,10 +1,10 @@
-import React from "react";
-import s from "./index.module.css";
-import clsx from "clsx";
-import { msToMinutesAndSeconds } from "../../../../services/stats";
-import { Artist as ArtistType } from "../../../../services/types";
-import InlineArtist from "../../../../components/InlineArtist";
-import { useMediaQuery } from "@material-ui/core";
+import React from 'react';
+import clsx from 'clsx';
+import { useMediaQuery } from '@material-ui/core';
+import s from './index.module.css';
+import { msToMinutesAndSeconds } from '../../../../services/stats';
+import { Artist as ArtistType } from '../../../../services/types';
+import InlineArtist from '../../../../components/InlineArtist';
 
 interface ArtistProps {
   line?: false;
@@ -20,7 +20,7 @@ interface HeaderArtistProps {
 }
 
 export default function Artist(props: ArtistProps | HeaderArtistProps) {
-  const upmd = useMediaQuery("(min-width: 1150px)");
+  const upmd = useMediaQuery('(min-width: 1150px)');
 
   if (props.line) {
     return (
@@ -39,16 +39,11 @@ export default function Artist(props: ArtistProps | HeaderArtistProps) {
         <InlineArtist artist={artist} />
       </span>
       <span className={s.sumcount}>
-        {count}{" "}
-        {upmd && (
-          <span>({Math.floor((count / totalCount) * 10000) / 100})</span>
-        )}
+        {count} {upmd && <span>({Math.floor((count / totalCount) * 10000) / 100})</span>}
       </span>
       <span className={s.sumduration}>
-        {msToMinutesAndSeconds(duration)}{" "}
-        {upmd && (
-          <span>({Math.floor((duration / totalDuration) * 10000) / 100})</span>
-        )}
+        {msToMinutesAndSeconds(duration)}{' '}
+        {upmd && <span>({Math.floor((duration / totalDuration) * 10000) / 100})</span>}
       </span>
     </div>
   );

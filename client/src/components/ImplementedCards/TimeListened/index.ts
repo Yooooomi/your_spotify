@@ -1,1 +1,1 @@
-export { default } from "./TimeListened";
+export { default } from './TimeListened';

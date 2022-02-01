@@ -1,20 +1,19 @@
-import { CircularProgress } from "@material-ui/core";
-import React, { useCallback, useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import Header from "../../../components/Header";
-import { intervals } from "../../../components/IntervalSelector/IntervalSelector";
-import TitleCard from "../../../components/TitleCard";
-import { api } from "../../../services/api";
-import { UnboxPromise } from "../../../services/types";
-import s from "./index.module.css";
-import Track from "./Album";
-import Album from "./Album";
+import { CircularProgress } from '@material-ui/core';
+import React, { useCallback, useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import Header from '../../../components/Header';
+import { intervals } from '../../../components/IntervalSelector/IntervalSelector';
+import TitleCard from '../../../components/TitleCard';
+import { api } from '../../../services/api';
+import { UnboxPromise } from '../../../services/types';
+import s from './index.module.css';
+import Album from './Album';
 
 export default function Albums() {
-  const [interval, setInterval] = useState("0");
-  const [items, setItems] = useState<
-    UnboxPromise<ReturnType<typeof api["getBestAlbums"]>>["data"]
-  >([]);
+  const [interval, setInterval] = useState('0');
+  const [items, setItems] = useState<UnboxPromise<ReturnType<typeof api['getBestAlbums']>>['data']>(
+    [],
+  );
   const [hasMore, setHasMore] = useState(true);
 
   const fetch = useCallback(async () => {
@@ -24,7 +23,7 @@ export default function Albums() {
         intervals[+interval].interval.start,
         intervals[+interval].interval.end,
         10,
-        items.length
+        items.length,
       );
       setItems([...items, ...result.data]);
       setHasMore(result.data.length === 10);
@@ -39,7 +38,7 @@ export default function Albums() {
     }
     // Initial fetch
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interval]);
+  }, [interval, items.length]);
 
   const changeInterval = useCallback((newInterval: string) => {
     setInterval(newInterval);
@@ -57,14 +56,13 @@ export default function Albums() {
       />
       <div className={s.content}>
         <TitleCard title="Top albums">
-          <Track line />
+          <Album line />
           <InfiniteScroll
             key={interval}
             next={fetch}
             hasMore={hasMore}
             dataLength={items.length}
-            loader={<CircularProgress />}
-          >
+            loader={<CircularProgress />}>
             {items.map((item) => (
               <Album
                 key={item.album.id}

@@ -1,1 +1,1 @@
-export { default } from "./AverageAlbumReleaseDate";
+export { default } from './AverageAlbumReleaseDate';

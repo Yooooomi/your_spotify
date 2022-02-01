@@ -1,1 +1,1 @@
-export { default } from "./ListeningRepartition";
+export { default } from './ListeningRepartition';

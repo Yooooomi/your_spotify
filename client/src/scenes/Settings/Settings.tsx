@@ -1,25 +1,25 @@
-import { Button, CircularProgress, Grid, Input } from "@material-ui/core";
-import React, { useCallback, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import FullscreenCentered from "../../components/FullscreenCentered";
-import Header from "../../components/Header";
-import TitleCard from "../../components/TitleCard";
-import { api } from "../../services/api";
-import { useAPI } from "../../services/hooks";
-import { alertMessage } from "../../services/redux/modules/message/reducer";
-import { selectSettings } from "../../services/redux/modules/settings/selector";
-import { changeRegistrations } from "../../services/redux/modules/settings/thunk";
-import { selectUser } from "../../services/redux/modules/user/selector";
-import { changePasswordForAccountId } from "../../services/redux/modules/user/thunk";
-import { getSpotifyLogUrl } from "../../services/tools";
-import s from "./index.module.css";
-import SettingLine from "./SettingLine";
+import { Button, CircularProgress, Grid, Input } from '@material-ui/core';
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import FullscreenCentered from '../../components/FullscreenCentered';
+import Header from '../../components/Header';
+import TitleCard from '../../components/TitleCard';
+import { api } from '../../services/api';
+import { useAPI } from '../../services/hooks';
+import { alertMessage } from '../../services/redux/modules/message/reducer';
+import { selectSettings } from '../../services/redux/modules/settings/selector';
+import { changeRegistrations } from '../../services/redux/modules/settings/thunk';
+import { selectUser } from '../../services/redux/modules/user/selector';
+import { changePasswordForAccountId } from '../../services/redux/modules/user/thunk';
+import { getSpotifyLogUrl } from '../../services/tools';
+import s from './index.module.css';
+import SettingLine from './SettingLine';
 
 export default function Settings() {
   const dispatch = useDispatch();
   const settings = useSelector(selectSettings);
-  const [accountId, setAccountId] = useState("");
-  const [passwordAccountId, setPasswordAccountId] = useState("");
+  const [accountId, setAccountId] = useState('');
+  const [passwordAccountId, setPasswordAccountId] = useState('');
   const sme = useAPI(api.sme);
   const userIds = useAPI(api.accountIds);
   const user = useSelector(selectUser);
@@ -37,9 +37,9 @@ export default function Settings() {
       if (passwordAccountId.length < 3) {
         dispatch(
           alertMessage({
-            level: "info",
-            message: "New password should have at least 3 characters",
-          })
+            level: 'info',
+            message: 'New password should have at least 3 characters',
+          }),
         );
       }
       const id = accountId.length === 0 ? user?._id : accountId;
@@ -50,10 +50,10 @@ export default function Settings() {
         changePasswordForAccountId({
           id,
           password: passwordAccountId,
-        })
+        }),
       );
     },
-    [accountId, dispatch, passwordAccountId, user]
+    [accountId, dispatch, passwordAccountId, user],
   );
 
   if (!settings) {
@@ -129,8 +129,8 @@ export default function Settings() {
             <TitleCard title="Miscellaneous">
               <Button onClick={allowRegistration}>
                 {settings.allowRegistrations
-                  ? "Disable new registrations"
-                  : "Enable new registrations"}
+                  ? 'Disable new registrations'
+                  : 'Enable new registrations'}
               </Button>
               <Button>
                 <a href={getSpotifyLogUrl()}>Relog to Spotify</a>

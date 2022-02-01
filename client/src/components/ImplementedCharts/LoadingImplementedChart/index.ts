@@ -1,1 +1,1 @@
-export { default } from "./LoadingImplementedChart";
+export { default } from './LoadingImplementedChart';

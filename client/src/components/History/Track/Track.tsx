@@ -1,15 +1,12 @@
-import React, { useCallback } from "react";
-import {
-  dateToListenedAt,
-  msToMinutesAndSeconds,
-} from "../../../services/stats";
-import { Album, Artist, Track as TrackType } from "../../../services/types";
-import s from "./index.module.css";
-import clsx from "clsx";
-import { IconButton } from "@material-ui/core";
-import { api } from "../../../services/api";
-import { PlayArrow } from "@material-ui/icons";
-import InlineArtist from "../../InlineArtist";
+import React, { useCallback } from 'react';
+import clsx from 'clsx';
+import { IconButton } from '@material-ui/core';
+import { PlayArrow } from '@material-ui/icons';
+import { dateToListenedAt, msToMinutesAndSeconds } from '../../../services/stats';
+import { Album, Artist, Track as TrackType } from '../../../services/types';
+import s from './index.module.css';
+import { api } from '../../../services/api';
+import InlineArtist from '../../InlineArtist';
 
 interface TrackProps {
   line?: false;
@@ -52,7 +49,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
 
   const { track, album, artists, listenedAt, playable } = props;
 
-  console.log("artists", artists);
+  console.log('artists', artists);
 
   return (
     <div className={s.root}>
@@ -70,12 +67,8 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         </span>
       </div>
       <span className={s.albumname}>{album.name}</span>
-      <span className={s.duration}>
-        {msToMinutesAndSeconds(track.duration_ms)}
-      </span>
-      {listenedAt && (
-        <span className={s.playedat}>{dateToListenedAt(listenedAt)}</span>
-      )}
+      <span className={s.duration}>{msToMinutesAndSeconds(track.duration_ms)}</span>
+      {listenedAt && <span className={s.playedat}>{dateToListenedAt(listenedAt)}</span>}
     </div>
   );
 }

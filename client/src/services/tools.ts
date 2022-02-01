@@ -1,7 +1,7 @@
-import { Album, Artist } from "./types";
+import { Album, Artist } from './types';
 
 export const getImage = (value: Artist | Album) => {
-  return value.images[0]?.url || "/no_data.png";
+  return value.images[0]?.url || '/no_data.png';
 };
 
 // @ts-ignore

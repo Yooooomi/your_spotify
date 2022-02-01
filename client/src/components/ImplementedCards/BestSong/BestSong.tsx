@@ -1,12 +1,12 @@
-import React from "react";
-import { api } from "../../../services/api";
-import { useAPI } from "../../../services/hooks";
-import { msToMinutes } from "../../../services/stats";
-import { getImage } from "../../../services/tools";
-import Card from "../../Card";
-import TitleCard from "../../TitleCard";
-import { ImplementedCardProps } from "../types";
-import s from "./index.module.css";
+import clsx from 'clsx';
+import React from 'react';
+import { api } from '../../../services/api';
+import { useAPI } from '../../../services/hooks';
+import { msToMinutes } from '../../../services/stats';
+import { getImage } from '../../../services/tools';
+import TitleCard from '../../TitleCard';
+import { ImplementedCardProps } from '../types';
+import s from './index.module.css';
 
 interface BestSongProps extends ImplementedCardProps {}
 
@@ -18,14 +18,10 @@ export default function BestSong({ className, interval }: BestSongProps) {
   }
 
   return (
-    <TitleCard title="Best song" className={s.root}>
+    <TitleCard title="Best song" className={clsx(s.root, className)}>
       <div className={s.container}>
         <div className={s.imgcontainer}>
-          <img
-            className={s.image}
-            src={getImage(result[0].album)}
-            alt="Your best song"
-          />
+          <img className={s.image} src={getImage(result[0].album)} alt="Your best song" />
         </div>
         <div className={s.stats}>
           <strong>{result[0].track.name}</strong>
@@ -34,8 +30,7 @@ export default function BestSong({ className, interval }: BestSongProps) {
               <strong>{result[0].count}</strong> times listened
             </span>
             <span className={s.stat}>
-              <strong>{msToMinutes(result[0].duration_ms)}</strong> minutes
-              listened
+              <strong>{msToMinutes(result[0].duration_ms)}</strong> minutes listened
             </span>
           </div>
         </div>

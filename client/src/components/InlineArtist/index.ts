@@ -1,1 +1,1 @@
-export { default } from "./InlineArtist";
+export { default } from './InlineArtist';

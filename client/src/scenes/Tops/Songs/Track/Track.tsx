@@ -1,13 +1,13 @@
-import React, { useCallback } from "react";
-import s from "./index.module.css";
-import clsx from "clsx";
-import { IconButton, useMediaQuery } from "@material-ui/core";
-import { api } from "../../../../services/api";
-import { msToMinutesAndSeconds } from "../../../../services/stats";
-import { Artist, Album, Track as TrackType } from "../../../../services/types";
-import InlineArtist from "../../../../components/InlineArtist";
-import { getImage } from "../../../../services/tools";
-import { PlayArrow } from "@material-ui/icons";
+import React, { useCallback } from 'react';
+import clsx from 'clsx';
+import { IconButton, useMediaQuery } from '@material-ui/core';
+import { PlayArrow } from '@material-ui/icons';
+import s from './index.module.css';
+import { api } from '../../../../services/api';
+import { msToMinutesAndSeconds } from '../../../../services/stats';
+import { Artist, Album, Track as TrackType } from '../../../../services/types';
+import InlineArtist from '../../../../components/InlineArtist';
+import { getImage } from '../../../../services/tools';
 
 interface TrackProps {
   line?: false;
@@ -37,7 +37,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
     }
   }, [trackId]);
 
-  const upmd = useMediaQuery("(min-width: 1150px)");
+  const upmd = useMediaQuery('(min-width: 1150px)');
 
   if (props.line) {
     return (
@@ -47,9 +47,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         <div className={clsx(s.name, s.header)}>
           <span className={s.trackname}>Track name / Artist</span>
         </div>
-        {upmd && (
-          <span className={clsx(s.albumname, s.header)}>Album name</span>
-        )}
+        {upmd && <span className={clsx(s.albumname, s.header)}>Album name</span>}
         {upmd && <span className={clsx(s.duration, s.header)}>Duration</span>}
         <span className={clsx(s.sumcount, s.header)}>Count</span>
         <span className={clsx(s.sumduration, s.header)}>Total duration</span>
@@ -57,16 +55,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
     );
   }
 
-  const {
-    track,
-    album,
-    artists,
-    playable,
-    duration,
-    totalDuration,
-    count,
-    totalCount,
-  } = props;
+  const { track, album, artists, playable, duration, totalDuration, count, totalCount } = props;
   return (
     <div className={s.root}>
       {playable && (
@@ -80,28 +69,19 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         <span className={s.artistname}>
           {artists.map((art) => (
             <React.Fragment key={art.id}>
-              <InlineArtist key={art.id} artist={art} />{" "}
+              <InlineArtist key={art.id} artist={art} />{' '}
             </React.Fragment>
           ))}
         </span>
       </div>
       {upmd && <span className={s.albumname}>{album.name}</span>}
-      {upmd && (
-        <span className={s.duration}>
-          {msToMinutesAndSeconds(track.duration_ms)}
-        </span>
-      )}
+      {upmd && <span className={s.duration}>{msToMinutesAndSeconds(track.duration_ms)}</span>}
       <span className={s.sumcount}>
-        {count}{" "}
-        {upmd && (
-          <span>({Math.floor((count / totalCount) * 10000) / 100})</span>
-        )}
+        {count} {upmd && <span>({Math.floor((count / totalCount) * 10000) / 100})</span>}
       </span>
       <span className={s.sumduration}>
-        {msToMinutesAndSeconds(duration)}{" "}
-        {upmd && (
-          <span>({Math.floor((duration / totalDuration) * 10000) / 100})</span>
-        )}
+        {msToMinutesAndSeconds(duration)}{' '}
+        {upmd && <span>({Math.floor((duration / totalDuration) * 10000) / 100})</span>}
       </span>
     </div>
   );

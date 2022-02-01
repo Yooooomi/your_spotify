@@ -1,1 +1,1 @@
-export { default } from "./FullscreenCentered";
+export { default } from './FullscreenCentered';

@@ -1,25 +1,17 @@
-import React, { PureComponent, useCallback, useMemo } from "react";
-import { api } from "../../../services/api";
-import { useAPI } from "../../../services/hooks";
-import Bar from "../../charts/Bar";
-import { ImplementedChartProps } from "../types";
-import {
-  Payload,
-  NameType,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
-import { Tooltip } from "@material-ui/core";
-import { Artist } from "../../../services/types";
-import { Link } from "react-router-dom";
-import ChartCard from "../../ChartCard";
-import { getImage } from "../../../services/tools";
+import React, { PureComponent, useCallback, useMemo } from 'react';
+import { Tooltip } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { api } from '../../../services/api';
+import { useAPI } from '../../../services/hooks';
+import Bar from '../../charts/Bar';
+import { ImplementedChartProps } from '../types';
+import { Artist } from '../../../services/types';
+import ChartCard from '../../ChartCard';
+import { getImage } from '../../../services/tools';
 
 interface BestArtistsBarProps extends ImplementedChartProps {}
 
-const formatXTooltip = <T extends NameType, V extends ValueType>(
-  label: string,
-  payload: Payload<V, T>[]
-) => {
+const formatXTooltip = (label: string) => {
   return `Rank ${label + 1}`;
 };
 
@@ -46,11 +38,7 @@ class ImageAxisTick extends PureComponent<{
         <Tooltip title={artist.name}>
           <g transform={`translate(${x - svgImgSize / 2},${y})`}>
             <clipPath id="yoyo">
-              <circle
-                r={svgImgSize / 2}
-                cx={svgImgSize / 2}
-                cy={svgImgSize / 2}
-              />
+              <circle r={svgImgSize / 2} cx={svgImgSize / 2} cy={svgImgSize / 2} />
             </clipPath>
             <image
               width={svgImgSize}
@@ -65,17 +53,8 @@ class ImageAxisTick extends PureComponent<{
   }
 }
 
-export default function BestArtistsBar({
-  className,
-  interval,
-}: BestArtistsBarProps) {
-  const result = useAPI(
-    api.getBestArtists,
-    interval.start,
-    interval.end,
-    10,
-    0
-  );
+export default function BestArtistsBar({ className, interval }: BestArtistsBarProps) {
+  const result = useAPI(api.getBestArtists, interval.start, interval.end, 10, 0);
 
   const data = useMemo(
     () =>
@@ -84,18 +63,18 @@ export default function BestArtistsBar({
         y: r.count,
         artist: r.artist,
       })) ?? [],
-    [result]
+    [result],
   );
 
   const formatYTooltip = useCallback(
     (a: any, b: any, c: any) => {
       const dataValue = result?.[c.payload.x];
       if (!dataValue) {
-        return "";
+        return '';
       }
       return `You listened to ${dataValue.artist.name} ${dataValue.count} times`;
     },
-    [result]
+    [result],
   );
 
   if (!result) {

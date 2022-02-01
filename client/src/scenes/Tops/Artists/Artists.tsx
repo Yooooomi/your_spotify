@@ -1,18 +1,18 @@
-import { CircularProgress } from "@material-ui/core";
-import React, { useCallback, useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import Header from "../../../components/Header";
-import { intervals } from "../../../components/IntervalSelector/IntervalSelector";
-import TitleCard from "../../../components/TitleCard";
-import { api } from "../../../services/api";
-import { UnboxPromise } from "../../../services/types";
-import Artist from "./Artist";
-import s from "./index.module.css";
+import { CircularProgress } from '@material-ui/core';
+import React, { useCallback, useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import Header from '../../../components/Header';
+import { intervals } from '../../../components/IntervalSelector/IntervalSelector';
+import TitleCard from '../../../components/TitleCard';
+import { api } from '../../../services/api';
+import { UnboxPromise } from '../../../services/types';
+import Artist from './Artist';
+import s from './index.module.css';
 
 export default function Artists() {
-  const [interval, setInterval] = useState("0");
+  const [interval, setInterval] = useState('0');
   const [items, setItems] = useState<
-    UnboxPromise<ReturnType<typeof api["getBestArtists"]>>["data"]
+    UnboxPromise<ReturnType<typeof api['getBestArtists']>>['data']
   >([]);
   const [hasMore, setHasMore] = useState(true);
 
@@ -23,7 +23,7 @@ export default function Artists() {
         intervals[+interval].interval.start,
         intervals[+interval].interval.end,
         10,
-        items.length
+        items.length,
       );
       setItems([...items, ...result.data]);
       setHasMore(result.data.length === 10);
@@ -38,7 +38,7 @@ export default function Artists() {
     }
     // Initial fetch
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interval]);
+  }, [interval, items.length]);
 
   const changeInterval = useCallback((newInterval: string) => {
     setInterval(newInterval);
@@ -61,8 +61,7 @@ export default function Artists() {
             next={fetch}
             hasMore={hasMore}
             dataLength={items.length}
-            loader={<CircularProgress />}
-          >
+            loader={<CircularProgress />}>
             {items.map((item) => (
               <Artist
                 key={item.artist.id}

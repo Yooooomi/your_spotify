@@ -1,1 +1,1 @@
-export { default } from "./AverageNumberArtistPer";
+export { default } from './AverageNumberArtistPer';

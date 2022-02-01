@@ -1,6 +1,6 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Artist } from "../../services/types";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Artist } from '../../services/types';
 import s from './index.module.css';
 
 interface InlineArtistProps {

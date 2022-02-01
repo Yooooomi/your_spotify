@@ -1,7 +1,7 @@
-import { Paper } from "@material-ui/core";
-import React from "react";
-import s from "./index.module.css";
-import clsx from "clsx";
+import { Paper } from '@material-ui/core';
+import React from 'react';
+import clsx from 'clsx';
+import s from './index.module.css';
 
 interface TitleCardProps {
   className?: string;
@@ -9,11 +9,7 @@ interface TitleCardProps {
   children: React.ReactNode;
 }
 
-export default function TitleCard({
-  className,
-  title,
-  children,
-}: TitleCardProps) {
+export default function TitleCard({ className, title, children }: TitleCardProps) {
   return (
     <Paper className={clsx(s.root, className)}>
       <h3>{title}</h3>

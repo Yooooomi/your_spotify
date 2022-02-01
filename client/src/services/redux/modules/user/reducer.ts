@@ -1,6 +1,6 @@
-import { createAction, createReducer } from "@reduxjs/toolkit";
-import { checkLogged, login } from "./thunk";
-import { User } from "./types";
+import { createAction, createReducer } from '@reduxjs/toolkit';
+import { checkLogged, login } from './thunk';
+import { User } from './types';
 
 interface UserReducer {
   loaded: boolean;
@@ -12,7 +12,7 @@ const initialState: UserReducer = {
   user: null,
 };
 
-export const logout = createAction("@user/logout");
+export const logout = createAction('@user/logout');
 
 export default createReducer(initialState, (builder) => {
   builder.addCase(logout, (state) => {

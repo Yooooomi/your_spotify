@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { DateId, Precision } from "./types";
+import { useCallback } from 'react';
+import { DateId, Precision } from './types';
 
 const fresh = (d: Date) => {
   const date = new Date(d.getTime());
@@ -21,18 +21,17 @@ export const buildFromDateId = (dateId: DateId) => {
 const getHours = (date: Date) => date.getTime() / 1000 / 60 / 60;
 const getDays = (date: Date) => date.getTime() / 1000 / 60 / 60 / 24;
 const getMonths = (date: Date) => date.getTime() / 1000 / 60 / 60 / 24 / 30;
-const getYears = (date: Date) =>
-  date.getTime() / 1000 / 60 / 60 / 24 / 30 / 365;
+const getYears = (date: Date) => date.getTime() / 1000 / 60 / 60 / 24 / 30 / 365;
 
 const countIndexes = (start: Date, targetId: DateId) => {
   const target = buildFromDateId(targetId);
-  if ("hour" in targetId) {
+  if ('hour' in targetId) {
     return getHours(target) - getHours(start);
   }
-  if ("day" in targetId) {
+  if ('day' in targetId) {
     return getDays(target) - getDays(start);
   }
-  if ("month" in targetId) {
+  if ('month' in targetId) {
     return getMonths(target) - getMonths(start);
   }
   return getYears(target) - getYears(start);
@@ -51,20 +50,13 @@ const countTotalIndexes = (precision: Precision, start: Date, end: Date) => {
   return getYears(end) - getYears(start);
 };
 
-const getDateFromIndex = (
-  index: number,
-  totalIndex: number,
-  start: Date,
-  end: Date
-) => {
+const getDateFromIndex = (index: number, totalIndex: number, start: Date, end: Date) => {
   const ratio = index / totalIndex;
-  const date = new Date(
-    start.getTime() + ratio * (end.getTime() - start.getTime())
-  );
+  const date = new Date(start.getTime() + ratio * (end.getTime() - start.getTime()));
   return date;
 };
 
-const pad = (value: number) => value.toString().padStart(2, "0");
+const pad = (value: number) => value.toString().padStart(2, '0');
 
 const getStringFromDateAndInterval = (date: Date, start: Date, end: Date) => {
   const days = (end.getTime() - start.getTime()) / 1000 / 60 / 60 / 24;
@@ -78,13 +70,13 @@ const getStringFromDateAndInterval = (date: Date, start: Date, end: Date) => {
 };
 
 const getPrecisionFromDateId = (dateId: DateId) => {
-  if ("hour" in dateId) {
+  if ('hour' in dateId) {
     return Precision.hour;
   }
-  if ("day" in dateId) {
+  if ('day' in dateId) {
     return Precision.day;
   }
-  if ("month" in dateId) {
+  if ('month' in dateId) {
     return Precision.month;
   }
   return Precision.year;
@@ -94,7 +86,7 @@ export const buildXYData = (
   data: { _id: DateId; value: number }[],
   start: Date,
   end: Date,
-  doNotFillData = false
+  doNotFillData = false,
 ) => {
   start = fresh(start);
   end = fresh(end);
@@ -141,32 +133,32 @@ export const buildXYData = (
 export const useFormatXAxis = (
   data: { x: number; y: number; date: Date }[],
   start: Date,
-  end: Date
+  end: Date,
 ) =>
   useCallback(
-    (value: number, index: number) => {
+    (value: number) => {
       const dataValue = data.find((d) => d.x === value);
       if (!dataValue) {
-        return "";
+        return '';
       }
       return getStringFromDateAndInterval(dataValue.date, start, end);
     },
-    [data, end, start]
+    [data, end, start],
   );
 
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 export const formatYAxisDate = (value: number) => {
@@ -176,21 +168,15 @@ export const formatYAxisDate = (value: number) => {
 };
 
 export const formatDateToString = (date: Date) => {
-  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(
-    date.getFullYear()
-  )}`;
+  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())}`;
 };
 
-export const formatXAxisDateTooltip = <D extends { date: Date }>(
-  label: string,
-  payload: D
-) => formatDateToString(payload.date);
+export const formatXAxisDateTooltip = <D extends { date: Date }>(label: string, payload: D) =>
+  formatDateToString(payload.date);
 
 export const msToMinutes = (ms: number) => Math.floor(ms / 1000 / 60);
 export const msToMinutesAndSeconds = (ms: number) =>
-  `${msToMinutes(ms)}:${pad(
-    Math.floor((ms - msToMinutes(ms) * 1000 * 60) / 1000)
-  )}`;
+  `${msToMinutes(ms)}:${pad(Math.floor((ms - msToMinutes(ms) * 1000 * 60) / 1000))}`;
 
 export const dateToListenedAt = (date: Date) => {
   const now = new Date();
@@ -199,9 +185,9 @@ export const dateToListenedAt = (date: Date) => {
   if (diff < day) {
     return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
-  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(
-    date.getFullYear()
-  )} at ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())} at ${pad(
+    date.getHours(),
+  )}:${pad(date.getMinutes())}`;
 };
 
 export const getLastPeriod = (start: Date, end: Date) => {

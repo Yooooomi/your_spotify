@@ -1,17 +1,17 @@
-import React from "react";
-import { api } from "../../../services/api";
-import { useAPI } from "../../../services/hooks";
+import React from 'react';
+import { api } from '../../../services/api';
+import { useAPI } from '../../../services/hooks';
 import {
   buildXYData,
   formatXAxisDateTooltip,
   formatYAxisDate,
   useFormatXAxis,
-} from "../../../services/stats";
-import { DateId } from "../../../services/types";
-import ChartCard from "../../ChartCard";
-import Line from "../../charts/Line";
-import LoadingImplementedChart from "../LoadingImplementedChart";
-import { ImplementedChartProps } from "../types";
+} from '../../../services/stats';
+import { DateId } from '../../../services/types';
+import ChartCard from '../../ChartCard';
+import Line from '../../charts/Line';
+import LoadingImplementedChart from '../LoadingImplementedChart';
+import { ImplementedChartProps } from '../types';
 
 interface AverageAlbumReleaseDateProps extends ImplementedChartProps {}
 
@@ -19,12 +19,7 @@ export default function AverageAlbumReleaseDate({
   className,
   interval,
 }: AverageAlbumReleaseDateProps) {
-  const result = useAPI(
-    api.albumDateRatio,
-    interval.start,
-    interval.end,
-    interval.timesplit
-  );
+  const result = useAPI(api.albumDateRatio, interval.start, interval.end, interval.timesplit);
 
   const data = buildXYData(
     result?.map((r) => ({
@@ -33,7 +28,7 @@ export default function AverageAlbumReleaseDate({
     })) ?? [],
     interval.start,
     interval.end,
-    true
+    true,
   );
 
   const formatX = useFormatXAxis(data, interval.start, interval.end);

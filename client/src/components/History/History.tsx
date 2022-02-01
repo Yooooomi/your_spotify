@@ -1,10 +1,10 @@
-import { CircularProgress } from "@material-ui/core";
-import React, { useCallback, useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { api } from "../../services/api";
-import { TrackInfoWithTrack } from "../../services/types";
-import TitleCard from "../TitleCard";
-import Track from "./Track";
+import { CircularProgress } from '@material-ui/core';
+import React, { useCallback, useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { api } from '../../services/api';
+import { TrackInfoWithTrack } from '../../services/types';
+import TitleCard from '../TitleCard';
+import Track from './Track';
 
 export default function History() {
   const [items, setItems] = useState<TrackInfoWithTrack[]>([]);
@@ -23,8 +23,6 @@ export default function History() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(items);
-
   return (
     <TitleCard title="Your history">
       <Track line playable />
@@ -32,8 +30,7 @@ export default function History() {
         dataLength={items.length}
         next={fetch}
         hasMore={hasMore}
-        loader={<CircularProgress />}
-      >
+        loader={<CircularProgress />}>
         {items.map((item) => (
           <Track
             playable

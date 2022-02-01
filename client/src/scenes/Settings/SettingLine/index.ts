@@ -1,1 +1,1 @@
-export { default } from "./SettingLine";
+export { default } from './SettingLine';

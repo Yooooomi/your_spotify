@@ -13,7 +13,8 @@ COPY tsconfig.json /app/tsconfig.json
 ARG NODE_ENV
 ENV NODE_ENV ${NODE_ENV:-production}
 
-RUN yarn --frozen-lockfile
+# Material UI causes installation to timeout
+RUN yarn --frozen-lockfile --network-timeout 60000
 
 COPY src/ /app/src/
 COPY public/ /app/public/

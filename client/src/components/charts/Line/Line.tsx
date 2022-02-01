@@ -1,21 +1,11 @@
-import React, { useCallback } from "react";
-import {
-  LineChart,
-  Line as RLine,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
-import {
-  Payload,
-  NameType,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
+import React, { useCallback } from 'react';
+import { LineChart, Line as RLine, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
+import { Payload, NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+
 interface LineProps<D extends { x: number; y: number }> {
   data: D[];
-  xFormat?: React.ComponentProps<typeof XAxis>["tickFormatter"];
-  yFormat?: React.ComponentProps<typeof YAxis>["tickFormatter"];
+  xFormat?: React.ComponentProps<typeof XAxis>['tickFormatter'];
+  yFormat?: React.ComponentProps<typeof YAxis>['tickFormatter'];
   tooltipLabelFormatter?: (value: string, payload: D) => string;
   tooltipValueFormatter?: (value: number, payload: D) => string;
 }
@@ -28,25 +18,19 @@ export default function Line<D extends { x: number; y: number }>({
   tooltipValueFormatter,
 }: LineProps<D>) {
   const internTooltipLabelFormatter = useCallback(
-    <T extends NameType, V extends ValueType>(
-      label: string,
-      payload: Payload<V, T>[]
-    ) =>
-      tooltipLabelFormatter
-        ? payload?.map((p) => tooltipLabelFormatter(label, p.payload))
-        : label,
-    [tooltipLabelFormatter]
+    <T extends NameType, V extends ValueType>(label: string, payload: Payload<V, T>[]) =>
+      tooltipLabelFormatter ? payload?.map((p) => tooltipLabelFormatter(label, p.payload)) : label,
+    [tooltipLabelFormatter],
   );
 
   const internTooltipValueFormatter = useCallback(
-    (value: any, b: any, props: any) => {
+    (value: any, b: any, pr: any) => {
       if (tooltipValueFormatter) {
-        return tooltipValueFormatter(value, props.payload);
-      } else {
-        return value;
+        return tooltipValueFormatter(value, pr.payload);
       }
+      return value;
     },
-    [tooltipValueFormatter]
+    [tooltipValueFormatter],
   );
 
   return (
@@ -63,12 +47,12 @@ export default function Line<D extends { x: number; y: number }>({
         />
         <XAxis
           name="X"
-          domain={["dataMin", "dataMax"]}
+          domain={['dataMin', 'dataMax']}
           dataKey="x"
           tickFormatter={xFormat}
-          style={{ fontWeight: "bold" }}
+          style={{ fontWeight: 'bold' }}
         />
-        <YAxis domain={["dataMin", "dataMax"]} tickFormatter={yFormat} />
+        <YAxis domain={['dataMin', 'dataMax']} tickFormatter={yFormat} />
         <Tooltip
           labelFormatter={internTooltipLabelFormatter}
           formatter={internTooltipValueFormatter}

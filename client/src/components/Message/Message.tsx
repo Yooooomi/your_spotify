@@ -1,15 +1,15 @@
-import { IconButton, Snackbar, SnackbarCloseReason } from "@material-ui/core";
-import { Close } from "@material-ui/icons";
-import clsx from "clsx";
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { AlertMessage } from "../../services/redux/modules/message/reducer";
-import { selectMessage } from "../../services/redux/modules/message/selector";
-import s from "./index.module.css";
+import { IconButton, Snackbar, SnackbarCloseReason } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
+import clsx from 'clsx';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { AlertMessage } from '../../services/redux/modules/message/reducer';
+import { selectMessage } from '../../services/redux/modules/message/selector';
+import s from './index.module.css';
 
 interface AlertProps {
   message: string;
-  level: AlertMessage["level"];
+  level: AlertMessage['level'];
   onClose: () => void;
 }
 
@@ -19,8 +19,7 @@ function Alert({ message, level, onClose }: AlertProps) {
       className={clsx({
         [s.alert]: true,
         [s[level]]: true,
-      })}
-    >
+      })}>
       <span>{message}</span>
       <IconButton size="small" onClick={onClose}>
         <Close className={s.icon} fontSize="small" />
@@ -34,7 +33,7 @@ export default function Message() {
   const [open, setOpen] = useState(false);
 
   const onClose = useCallback((_, reason: SnackbarCloseReason) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
     setOpen(false);
@@ -53,13 +52,8 @@ export default function Message() {
       open={open}
       autoHideDuration={2000}
       onClose={onClose}
-      anchorOrigin={{ horizontal: "center", vertical: "top" }}
-    >
-      <Alert
-        onClose={() => setOpen(false)}
-        level={message.level}
-        message={message.message}
-      />
+      anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
+      <Alert onClose={() => setOpen(false)} level={message.level} message={message.message} />
     </Snackbar>
   );
 }

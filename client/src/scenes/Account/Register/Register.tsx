@@ -1,19 +1,19 @@
-import { Button, Input } from "@material-ui/core";
-import React, { useCallback, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { alertMessage } from "../../../services/redux/modules/message/reducer";
-import { selectSettings } from "../../../services/redux/modules/settings/selector";
-import { register as registerThunk } from "../../../services/redux/modules/user/thunk";
-import s from "../index.module.css";
+import { Button, Input } from '@material-ui/core';
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { alertMessage } from '../../../services/redux/modules/message/reducer';
+import { selectSettings } from '../../../services/redux/modules/settings/selector';
+import { register as registerThunk } from '../../../services/redux/modules/user/thunk';
+import s from '../index.module.css';
 
 export default function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const settings = useSelector(selectSettings);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
 
   const register = useCallback(
     async (ev: React.SyntheticEvent) => {
@@ -21,16 +21,16 @@ export default function Register() {
       if (password !== repeatPassword) {
         dispatch(
           alertMessage({
-            level: "info",
-            message: "Password and repeat password differ",
-          })
+            level: 'info',
+            message: 'Password and repeat password differ',
+          }),
         );
         return;
       }
       await dispatch(registerThunk({ username, password }));
-      navigate("/");
+      navigate('/');
     },
-    [dispatch, navigate, password, repeatPassword, username]
+    [dispatch, navigate, password, repeatPassword, username],
   );
 
   return (
@@ -56,11 +56,7 @@ export default function Register() {
         />
         <div>
           <div className={s.button}>
-            <Button
-              variant="contained"
-              type="submit"
-              disabled={!settings?.allowRegistrations}
-            >
+            <Button variant="contained" type="submit" disabled={!settings?.allowRegistrations}>
               Register
             </Button>
           </div>

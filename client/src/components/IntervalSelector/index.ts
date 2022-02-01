@@ -1,1 +1,1 @@
-export { default } from "./IntervalSelector";
+export { default } from './IntervalSelector';

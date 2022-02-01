@@ -1,26 +1,24 @@
-export type UnboxPromise<T extends Promise<any>> = T extends Promise<infer U>
-  ? U
-  : never;
+export type UnboxPromise<T extends Promise<any>> = T extends Promise<infer U> ? U : never;
 
 export interface GlobalPreferences {
   allowRegistrations: boolean;
 }
 
 export enum Timesplit {
-  all = "all",
-  hour = "hour",
-  day = "day",
-  week = "week",
-  month = "month",
-  year = "year",
+  all = 'all',
+  hour = 'hour',
+  day = 'day',
+  week = 'week',
+  month = 'month',
+  year = 'year',
 }
 
 export enum Precision {
-  hour = "hour",
-  day = "day",
-  week = "week",
-  month = "month",
-  year = "year",
+  hour = 'hour',
+  day = 'day',
+  week = 'week',
+  month = 'month',
+  year = 'year',
 }
 
 export interface Interval {
@@ -91,7 +89,7 @@ export interface Track {
   uri: string;
 }
 
-export type TrackWithAlbum = Omit<Track, "album"> & {
+export type TrackWithAlbum = Omit<Track, 'album'> & {
   album: Album;
 };
 
@@ -114,10 +112,6 @@ export interface DateId {
   month?: number;
   day?: number;
   hour?: number;
-}
-
-export interface GlobalPreferences {
-  allowRegistrations: boolean;
 }
 
 export interface SpotifyMe {

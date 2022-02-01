@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from "react";
-import Sider from "./Sider";
-import s from "./index.module.css";
-import { Drawer, IconButton, useMediaQuery } from "@material-ui/core";
-import { Menu } from "@material-ui/icons";
-import clsx from "clsx";
+import React, { useCallback, useState } from 'react';
+import { Drawer, IconButton, useMediaQuery } from '@material-ui/core';
+import { Menu } from '@material-ui/icons';
+import clsx from 'clsx';
+import s from './index.module.css';
+import Sider from './Sider';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const [open, setOpen] = useState(false);
-  const showSider = !useMediaQuery("(max-width: 900px)");
+  const showSider = !useMediaQuery('(max-width: 900px)');
 
   const drawer = useCallback(() => {
     setOpen((old) => !old);
@@ -29,8 +29,7 @@ export default function Layout({ children }: LayoutProps) {
         className={clsx({
           [s.content]: true,
           [s.contentdrawer]: showSider,
-        })}
-      >
+        })}>
         {!showSider && (
           <IconButton onClick={drawer} className={s.drawerbutton}>
             <Menu />

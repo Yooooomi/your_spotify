@@ -1,1 +1,1 @@
-export { default } from "./Track";
+export { default } from './Track';

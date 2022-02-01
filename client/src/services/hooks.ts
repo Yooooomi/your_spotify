@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
-import { UnboxPromise } from "./types";
+import { useEffect, useState } from 'react';
+import { UnboxPromise } from './types';
 
-export function useAPI<Fn extends (...args: any[]) => Promise<{ data: D }>, D>(
+export function useAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
   call: Fn,
   ...args: Parameters<Fn>
-): null | UnboxPromise<ReturnType<Fn>>["data"] {
-  const [value, setValue] = useState<
-    UnboxPromise<ReturnType<Fn>>["data"] | null
-  >(null);
+): null | UnboxPromise<ReturnType<Fn>>['data'] {
+  const [value, setValue] = useState<UnboxPromise<ReturnType<Fn>>['data'] | null>(null);
 
   useEffect(() => {
     async function fetch() {
@@ -23,17 +21,12 @@ export function useAPI<Fn extends (...args: any[]) => Promise<{ data: D }>, D>(
   return value;
 }
 
-export function useConditionalAPI<
-  Fn extends (...args: any[]) => Promise<{ data: D }>,
-  D
->(
+export function useConditionalAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
   condition: boolean,
   call: Fn,
   ...args: Parameters<Fn>
-): null | UnboxPromise<ReturnType<Fn>>["data"] {
-  const [value, setValue] = useState<
-    UnboxPromise<ReturnType<Fn>>["data"] | null
-  >(null);
+): null | UnboxPromise<ReturnType<Fn>>['data'] {
+  const [value, setValue] = useState<UnboxPromise<ReturnType<Fn>>['data'] | null>(null);
 
   useEffect(() => {
     async function fetch() {

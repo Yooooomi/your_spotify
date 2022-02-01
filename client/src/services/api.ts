@@ -1,4 +1,4 @@
-import { User } from "./redux/modules/user/types";
+import { User } from './redux/modules/user/types';
 import {
   Album,
   Artist,
@@ -10,9 +10,9 @@ import {
   TrackInfo,
   TrackInfoWithTrack,
   SpotifyMe,
-} from "./types";
+} from './types';
 
-const Axios = require("axios");
+const Axios = require('axios');
 
 const axios = Axios.create({
   /* @ts-ignore-next-line */
@@ -20,15 +20,11 @@ const axios = Axios.create({
   withCredentials: true,
 });
 
-const get = <T>(
-  url: string,
-  params: Record<string, any> = {}
-): Promise<{ data: T }> => axios.get(url, { params });
+const get = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+  axios.get(url, { params });
 
-const post = <T>(
-  url: string,
-  params: Record<string, any> = {}
-): Promise<{ data: T }> => axios.post(url, params);
+const post = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+  axios.post(url, params);
 
 export type ArtistStatsResponse = {
   artist: Artist;
@@ -88,74 +84,68 @@ export type ArtistStatsResponse = {
 };
 
 export const api = {
-  spotify: () => get("/oauth/spotify"),
+  spotify: () => get('/oauth/spotify'),
   login: (username: string, password: string) =>
-    axios.post("/login", {
+    axios.post('/login', {
       username,
       password,
     }),
   register: (username: string, password: string) =>
-    axios.post("/register", {
+    axios.post('/register', {
       username,
       password,
     }),
   changePassword: (oldPassword: string, newPassword: string) =>
-    axios.post("/changepassword", {
+    axios.post('/changepassword', {
       oldPassword,
       newPassword,
     }),
   changePasswordAccountId: (id: string, newPassword: string) =>
-    axios.post("/changepasswordaccountid", {
+    axios.post('/changepasswordaccountid', {
       id,
       newPassword,
     }),
-  logout: () => axios.post("/logout"),
-  accountIds: () => get<{ username: string; id: string }[]>("/accountIds"),
-  me: () => get<User>("/me"),
-  sme: () => get<SpotifyMe>("/oauth/spotify/me"),
-  globalPreferences: () => get<GlobalPreferences>("/global/preferences"),
+  logout: () => axios.post('/logout'),
+  accountIds: () => get<{ username: string; id: string }[]>('/accountIds'),
+  me: () => get<User>('/me'),
+  sme: () => get<SpotifyMe>('/oauth/spotify/me'),
+  globalPreferences: () => get<GlobalPreferences>('/global/preferences'),
   setGlobalPreferences: (preferences: GlobalPreferences) =>
-    post<GlobalPreferences>("/global/preferences", preferences),
+    post<GlobalPreferences>('/global/preferences', preferences),
   play: (id: string) =>
-    axios.post("/spotify/play", {
+    axios.post('/spotify/play', {
       id,
     }),
   getTracks: (number: number, offset: number) =>
-    get<TrackInfoWithTrack[]>("/spotify/gethistory", {
+    get<TrackInfoWithTrack[]>('/spotify/gethistory', {
       number,
       offset,
     }),
   mostListened: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ tracks: TrackWithAlbum[]; counts: number[] }[]>(
-      "/spotify/most_listened",
-      {
-        start,
-        end,
-        timeSplit,
-      }
-    ),
+    get<{ tracks: TrackWithAlbum[]; counts: number[] }[]>('/spotify/most_listened', {
+      start,
+      end,
+      timeSplit,
+    }),
   mostListenedArtist: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ artists: Artist[]; counts: number[] }[]>(
-      "/spotify/most_listened_artist",
-      {
-        start,
-        end,
-        timeSplit,
-      }
-    ),
+    get<{ artists: Artist[]; counts: number[] }[]>('/spotify/most_listened_artist', {
+      start,
+      end,
+      timeSplit,
+    }),
   listened_to: (start: Date, end: Date) =>
-    get("/spotify/listened_to", {
+    get('/spotify/listened_to', {
       start,
       end,
     }),
   songsPer: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ count: number; _id: DateId | null }[]>("/spotify/songs_per", {
+    get<{ count: number; _id: DateId | null }[]>('/spotify/songs_per', {
       start,
       end,
       timeSplit,
     }),
   timePer: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ count: number; _id: DateId | null }[]>("/spotify/time_per", {
+    get<{ count: number; _id: DateId | null }[]>('/spotify/time_per', {
       start,
       end,
       timeSplit,
@@ -174,37 +164,34 @@ export const api = {
         totalPeople: number;
         _id: DateId | null;
       }[]
-    >("/spotify/feat_ratio", {
+    >('/spotify/feat_ratio', {
       start,
       end,
       timeSplit,
     }),
   albumDateRatio: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ count: number; totalYear: number; _id: DateId | null }[]>(
-      "/spotify/album_date_ratio",
-      {
-        start,
-        end,
-        timeSplit,
-      }
-    ),
+    get<{ count: number; totalYear: number; _id: DateId | null }[]>('/spotify/album_date_ratio', {
+      start,
+      end,
+      timeSplit,
+    }),
   popularityPer: (start: Date, end: Date, timeSplit: Timesplit) =>
     get<{ count: number; totalPopularity: number; _id: DateId | null }[]>(
-      "/spotify/popularity_per",
+      '/spotify/popularity_per',
       {
         start,
         end,
         timeSplit,
-      }
+      },
     ),
   bestArtistsPer: (start: Date, end: Date, timeSplit: Timesplit) =>
     get<{ artists: Artist[]; counts: number[]; _id: DateId | null }[]>(
-      "/spotify/best_artists_per",
+      '/spotify/best_artists_per',
       {
         start,
         end,
         timeSplit,
-      }
+      },
     ),
   differentArtistsPer: (start: Date, end: Date, timeSplit: Timesplit) =>
     get<
@@ -214,13 +201,13 @@ export const api = {
         differents: number;
         _id: DateId | null;
       }[]
-    >("/spotify/different_artists_per", {
+    >('/spotify/different_artists_per', {
       start,
       end,
       timeSplit,
     }),
   setSetting: (settingName: string, settingValue: any) =>
-    axios.post("/settings", {
+    axios.post('/settings', {
       [settingName]: settingValue,
     }),
   timePerHourOfDay: (start: Date, end: Date) =>
@@ -230,15 +217,13 @@ export const api = {
         _id: number;
         count: number;
       }[]
-    >("/spotify/time_per_hour_of_day", {
+    >('/spotify/time_per_hour_of_day', {
       start,
       end,
     }),
-  getArtists: (ids: string[]) => get<Artist[]>(`/artist/${ids.join(",")}`),
+  getArtists: (ids: string[]) => get<Artist[]>(`/artist/${ids.join(',')}`),
   getArtistStats: (id: string) =>
-    get<ArtistStatsResponse | { code: "NEVER_LISTENED" }>(
-      `/artist/${id}/stats`
-    ),
+    get<ArtistStatsResponse | { code: 'NEVER_LISTENED' }>(`/artist/${id}/stats`),
   searchArtists: (str: string) => get<Artist[]>(`/artist/search/${str}`),
   getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>
     get<
@@ -251,7 +236,7 @@ export const api = {
         artist: Artist;
         track: Track;
       }[]
-    >("/spotify/top/songs", {
+    >('/spotify/top/songs', {
       start,
       end,
       nb,
@@ -266,7 +251,7 @@ export const api = {
         total_duration_ms: number;
         artist: Artist;
       }[]
-    >("/spotify/top/artists", {
+    >('/spotify/top/artists', {
       start,
       end,
       nb,
@@ -282,7 +267,7 @@ export const api = {
         artist: Artist;
         album: Album;
       }[]
-    >("/spotify/top/albums", {
+    >('/spotify/top/albums', {
       start,
       end,
       nb,

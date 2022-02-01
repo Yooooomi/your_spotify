@@ -1,1 +1,1 @@
-export { default } from "./ArtistsListened";
+export { default } from './ArtistsListened';

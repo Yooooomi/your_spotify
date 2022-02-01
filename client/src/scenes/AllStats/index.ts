@@ -1,1 +1,1 @@
-export { default } from "./AllStats";
+export { default } from './AllStats';
