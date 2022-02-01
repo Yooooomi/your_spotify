@@ -4,8 +4,8 @@ name: Server CI
 on:
   push:
     paths:
-      - client/**
-      - .github/workflows/client.yml
+      - server/**
+      - .github/workflows/server.yml
     branches:
       - master
 
