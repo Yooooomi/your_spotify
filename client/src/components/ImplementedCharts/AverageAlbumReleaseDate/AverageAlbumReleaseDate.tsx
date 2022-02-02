@@ -34,7 +34,7 @@ export default function AverageAlbumReleaseDate({
   const formatX = useFormatXAxis(data, interval.start, interval.end);
 
   if (!result) {
-    return <LoadingImplementedChart />;
+    return <LoadingImplementedChart title="Average album release date" className={className} />;
   }
 
   if (result.length > 0 && result[0]._id == null) {

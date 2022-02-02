@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Link, useLocation } from 'react-router-dom';
-import { Paper, Popper } from '@material-ui/core';
+import { Paper, Popper } from '@mui/material';
 import {
   Home,
   HomeOutlined,

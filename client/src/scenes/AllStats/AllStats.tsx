@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Header from '../../components/Header';

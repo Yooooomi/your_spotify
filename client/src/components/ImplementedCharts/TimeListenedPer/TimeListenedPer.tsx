@@ -34,7 +34,7 @@ export default function TimeListenedPer({ className, interval }: TimeListenedPer
   }, []);
 
   if (!result) {
-    return <LoadingImplementedChart />;
+    return <LoadingImplementedChart title="Time listened" className={className} />;
   }
 
   if (result.length > 0 && result[0]._id == null) {

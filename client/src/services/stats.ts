@@ -199,10 +199,16 @@ export const getLastPeriod = (start: Date, end: Date) => {
 
 export const getPercentMore = (old: number, now: number) => {
   if (old === now) return 0;
-  if (old < now) {
-    return Math.floor((now / old) * 100);
+  if (old === 0) {
+    return 100;
   }
-  return -Math.floor(old / now);
+  if (now === 0) {
+    return -100;
+  }
+  if (now > old) {
+    return Math.floor((now / old - 1) * 100);
+  }
+  return -(1 - Math.floor(old / now));
 };
 
 export const dateToMonthAndYear = (date: Date) => {

@@ -37,3 +37,18 @@ h6 {
     --page-padding: 8px;
   }
 }
+
+@keyframes fadein {
+  0% {
+    opacity: 0%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
+.fade {
+  animation-name: fadein;
+  animation-duration: 1000ms;
+  animation-iteration-count: 1;
+}

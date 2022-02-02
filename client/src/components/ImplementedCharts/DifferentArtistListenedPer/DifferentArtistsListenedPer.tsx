@@ -28,7 +28,7 @@ export default function DifferentArtistsListenedPer({
   const formatX = useFormatXAxis(data, interval.start, interval.end);
 
   if (!result) {
-    return <LoadingImplementedChart />;
+    return <LoadingImplementedChart title="Different artists listened" className={className} />;
   }
 
   if (result.length > 0 && result[0]._id == null) {

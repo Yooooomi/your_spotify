@@ -1,4 +1,4 @@
-import { Button, Input } from '@material-ui/core';
+import { Button, Input } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';

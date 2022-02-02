@@ -28,7 +28,7 @@ export default function AverageNumberArtistPer({
   const formatX = useFormatXAxis(data, interval.start, interval.end);
 
   if (!result) {
-    return <LoadingImplementedChart />;
+    return <LoadingImplementedChart title="Average feats per song" className={className} />;
   }
 
   if (result.length > 0 && result[0]._id == null) {
@@ -36,7 +36,7 @@ export default function AverageNumberArtistPer({
   }
 
   return (
-    <ChartCard title="Average number of artist per song" className={className}>
+    <ChartCard title="Average feats per song" className={className}>
       <Line data={data} xFormat={formatX} />
     </ChartCard>
   );

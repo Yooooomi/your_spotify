@@ -1,5 +1,5 @@
-import { Grid } from '@material-ui/core';
-import React, { useState } from 'react';
+import { Grid } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Header from '../../components/Header';
 import History from '../../components/History';
@@ -18,6 +18,8 @@ export default function Home() {
   const user = useSelector(selectUser);
   const [interval, setInterval] = useState('0');
 
+  const inter = useMemo(() => intervals[+interval], [interval]);
+
   if (!user) {
     return null;
   }
@@ -33,28 +35,25 @@ export default function Home() {
       <div className={s.content}>
         <Grid container spacing={2} alignItems="stretch">
           <Grid item xs={12} md={12} lg={4}>
-            <SongsListened interval={intervals[+interval].interval} />
+            <SongsListened unit={inter.unit} interval={inter.interval} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <TimeListened interval={intervals[+interval].interval} />
+            <TimeListened unit={inter.unit} interval={inter.interval} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <ArtistsListened interval={intervals[+interval].interval} />
+            <ArtistsListened unit={inter.unit} interval={inter.interval} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-            <TimeListenedPer interval={intervals[+interval].interval} className={s.timelisten} />
+            <TimeListenedPer interval={inter.interval} className={s.timelisten} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <BestArtist interval={intervals[+interval].interval} />
+            <BestArtist unit={inter.unit} interval={inter.interval} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-            <ListeningRepartition
-              interval={intervals[+interval].interval}
-              className={s.timelisten}
-            />
+            <ListeningRepartition interval={inter.interval} className={s.timelisten} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <BestSong interval={intervals[+interval].interval} />
+            <BestSong unit={inter.unit} interval={inter.interval} />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             <History />

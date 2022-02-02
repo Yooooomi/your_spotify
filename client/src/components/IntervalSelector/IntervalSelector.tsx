@@ -5,7 +5,7 @@ import {
   RadioGroup,
   Select,
   useMediaQuery,
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 import { Interval, Timesplit } from '../../services/types';
 
@@ -17,28 +17,32 @@ interface IntervalSelectorProps {
 const lastDay = new Date();
 lastDay.setDate(lastDay.getDate() - 1);
 const lastWeek = new Date();
-lastWeek.setDate(lastDay.getDate() - 7);
+lastWeek.setDate(lastWeek.getDate() - 7);
 const lastMonth = new Date();
-lastMonth.setMonth(lastDay.getMonth() - 1);
+lastMonth.setMonth(lastMonth.getMonth() - 1);
 const lastYear = new Date();
-lastYear.setFullYear(lastDay.getFullYear() - 1);
+lastYear.setFullYear(lastYear.getFullYear() - 1);
 const now = new Date();
 
-export const intervals: { name: string; interval: Interval }[] = [
+export const intervals: { name: string; interval: Interval; unit: string }[] = [
   {
     name: 'Last day',
+    unit: 'day',
     interval: { timesplit: Timesplit.hour, start: lastDay, end: now },
   },
   {
     name: 'Last week',
+    unit: 'week',
     interval: { timesplit: Timesplit.day, start: lastWeek, end: now },
   },
   {
     name: 'Last month',
+    unit: 'month',
     interval: { timesplit: Timesplit.day, start: lastMonth, end: now },
   },
   {
     name: 'Last year',
+    unit: 'year',
     interval: { timesplit: Timesplit.month, start: lastYear, end: now },
   },
 ];

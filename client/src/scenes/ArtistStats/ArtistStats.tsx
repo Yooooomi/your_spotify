@@ -1,4 +1,4 @@
-import { CircularProgress, Grid } from '@material-ui/core';
+import { CircularProgress, Grid } from '@mui/material';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 import Header from '../../components/Header';

@@ -25,7 +25,7 @@ export default function SongsListenedPer({ className, interval }: SongsListenedP
   const formatX = useFormatXAxis(data, interval.start, interval.end);
 
   if (!result) {
-    return <LoadingImplementedChart />;
+    return <LoadingImplementedChart title="Songs listened" className={className} />;
   }
 
   if (result.length > 0 && result[0]._id == null) {

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
+import { Skeleton } from '@mui/material';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
 import { Timesplit } from '../../../services/types';
@@ -10,7 +11,7 @@ import { getLastPeriod, getPercentMore } from '../../../services/stats';
 
 interface ArtistsListenedProps extends ImplementedCardProps {}
 
-export default function ArtistsListened({ interval, className }: ArtistsListenedProps) {
+export default function ArtistsListened({ interval, unit, className }: ArtistsListenedProps) {
   const result = useAPI(api.differentArtistsPer, interval.start, interval.end, Timesplit.all);
   const lastPeriod = useMemo(() => getLastPeriod(interval.start, interval.end), [interval]);
   const resultOld = useAPI(
@@ -20,16 +21,30 @@ export default function ArtistsListened({ interval, className }: ArtistsListened
     Timesplit.all,
   );
 
-  if (!result || !resultOld || resultOld.length === 0 || result.length === 0) {
-    return null;
+  if (!result || !resultOld) {
+    return (
+      <TitleCard title="Artists listened" className={className} fade>
+        <div className={s.root}>
+          <span className={s.number}>
+            <Skeleton width={50} />
+          </span>
+          <span>
+            <Skeleton width={200} />
+          </span>
+        </div>
+      </TitleCard>
+    );
   }
 
-  const percentMore = getPercentMore(resultOld[0].differents, result[0].differents);
+  const count = result[0]?.differents ?? 0;
+  const oldCount = resultOld[0]?.differents ?? 0;
+
+  const percentMore = getPercentMore(oldCount, count);
 
   return (
-    <TitleCard title="Artists listened" className={className}>
+    <TitleCard title="Artists listened" className={className} fade>
       <div className={s.root}>
-        <span className={s.number}>{result[0].differents} different</span>
+        <span className={s.number}>{count} different</span>
         <span>
           <strong
             className={clsx({
@@ -38,7 +53,7 @@ export default function ArtistsListened({ interval, className }: ArtistsListened
             })}>
             {Math.abs(percentMore)}%
           </strong>
-          &nbsp;{percentMore < 0 ? 'less' : 'more'} than last period
+          &nbsp;{percentMore < 0 ? 'less' : 'more'} than last {unit}
         </span>
       </div>
     </TitleCard>

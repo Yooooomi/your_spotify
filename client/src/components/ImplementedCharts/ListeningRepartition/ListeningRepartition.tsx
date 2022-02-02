@@ -4,6 +4,7 @@ import { useAPI } from '../../../services/hooks';
 import Bar from '../../charts/Bar';
 import { ImplementedChartProps } from '../types';
 import ChartCard from '../../ChartCard';
+import LoadingImplementedChart from '../LoadingImplementedChart';
 
 interface ListeningRepartitionProps extends ImplementedChartProps {}
 
@@ -51,6 +52,10 @@ export default function ListeningRepartition({ className, interval }: ListeningR
     },
     [result],
   );
+
+  if (!result) {
+    return <LoadingImplementedChart className={className} title="Listening repartition over day" />;
+  }
 
   return (
     <ChartCard className={className} title="Listening repartition over day">

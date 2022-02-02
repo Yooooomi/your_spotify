@@ -1,10 +1,11 @@
 import React from 'react';
 import clsx from 'clsx';
-import { useMediaQuery } from '@material-ui/core';
+import { useMediaQuery } from '@mui/material';
 import s from './index.module.css';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist as ArtistType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
+import { getImage } from '../../../../services/tools';
 
 interface ArtistProps {
   line?: false;
@@ -35,6 +36,7 @@ export default function Artist(props: ArtistProps | HeaderArtistProps) {
   const { artist, duration, totalDuration, count, totalCount } = props;
   return (
     <div className={s.root}>
+      <img className={s.artistcover} src={getImage(artist)} alt="Artist cover" />
       <span className={s.artistname}>
         <InlineArtist artist={artist} />
       </span>

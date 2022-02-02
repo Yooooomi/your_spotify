@@ -20,6 +20,17 @@ const axios = Axios.create({
   withCredentials: true,
 });
 
+// Adds latency to requests without having to use chrome latency
+// const get = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+//   new Promise((res, rej) => {
+//     setTimeout(() => axios.get(url, { params }).then(res).catch(rej), 1000);
+//   });
+
+// const post = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+//   new Promise((res, rej) => {
+//     setTimeout(() => axios.post(url, params).then(res).catch(rej), 1000);
+//   });
+
 const get = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
   axios.get(url, { params });
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Drawer, IconButton, useMediaQuery } from '@material-ui/core';
+import { Drawer, IconButton, useMediaQuery } from '@mui/material';
 import { Menu } from '@material-ui/icons';
 import clsx from 'clsx';
 import s from './index.module.css';

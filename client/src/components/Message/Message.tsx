@@ -1,4 +1,4 @@
-import { IconButton, Snackbar, SnackbarCloseReason } from '@material-ui/core';
+import { IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
 import { Close } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';

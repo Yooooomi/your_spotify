@@ -15,6 +15,13 @@
   font-weight: bold;
 }
 
+.artistcover {
+  height: 48px;
+  width: 48px;
+  margin-right: 16px;
+  border-radius: 6px;
+}
+
 .artistname {
   flex: 4;
   font-weight: bold;

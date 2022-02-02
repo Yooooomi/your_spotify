@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import clsx from 'clsx';
-import { IconButton, useMediaQuery } from '@material-ui/core';
+import { IconButton, useMediaQuery } from '@mui/material';
 import { PlayArrow } from '@material-ui/icons';
 import s from './index.module.css';
 import { api } from '../../../../services/api';
@@ -42,8 +42,6 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
   if (props.line) {
     return (
       <div className={s.root}>
-        {props.playable && <div className={s.play} />}
-        <div className={s.albumcover} />
         <div className={clsx(s.name, s.header)}>
           <span className={s.trackname}>Track name / Artist</span>
         </div>

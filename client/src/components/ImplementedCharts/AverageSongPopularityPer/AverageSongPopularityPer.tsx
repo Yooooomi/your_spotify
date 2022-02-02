@@ -28,7 +28,7 @@ export default function AverageSongPopularityPer({
   const formatX = useFormatXAxis(data, interval.start, interval.end);
 
   if (!result) {
-    return <LoadingImplementedChart />;
+    return <LoadingImplementedChart title="Average song popularity" className={className} />;
   }
 
   if (result.length > 0 && result[0]._id == null) {

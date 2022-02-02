@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { useMediaQuery } from '@material-ui/core';
+import { useMediaQuery } from '@mui/material';
 import s from './index.module.css';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist, Album as AlbumType } from '../../../../services/types';
@@ -27,7 +27,6 @@ export default function Album(props: AlbumProps | HeaderAlbumProps) {
   if (props.line) {
     return (
       <div className={s.root}>
-        <div className={s.albumcover} />
         <div className={clsx(s.name, s.header)}>
           <span className={s.trackname}>Album name / Artist</span>
         </div>

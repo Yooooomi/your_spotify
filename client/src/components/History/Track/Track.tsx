@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import clsx from 'clsx';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import { PlayArrow } from '@material-ui/icons';
 import { dateToListenedAt, msToMinutesAndSeconds } from '../../../services/stats';
 import { Album, Artist, Track as TrackType } from '../../../services/types';
@@ -36,7 +36,6 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
   if (props.line) {
     return (
       <div className={s.root}>
-        {props.playable && <div className={s.play} />}
         <div className={clsx(s.name, s.header)}>
           <span className={s.trackname}>Track name / Artist</span>
         </div>
@@ -48,8 +47,6 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
   }
 
   const { track, album, artists, listenedAt, playable } = props;
-
-  console.log('artists', artists);
 
   return (
     <div className={s.root}>

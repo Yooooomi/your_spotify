@@ -21,10 +21,14 @@
 
 .image {
   width: 100%;
-  height: 100%;
+  height: 100% !important;
   object-fit: cover;
   border-radius: 6px;
   box-shadow: 10px 10px 35px -5px rgba(0,0,0,0.43);
+}
+
+.skeleton {
+  box-shadow: none;
 }
 
 .stats {

@@ -1,4 +1,4 @@
-import { useMediaQuery } from '@material-ui/core';
+import { useMediaQuery } from '@mui/material';
 import React from 'react';
 import IntervalSelector from '../IntervalSelector';
 import s from './index.module.css';

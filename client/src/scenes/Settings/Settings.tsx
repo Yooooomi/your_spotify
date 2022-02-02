@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid, Input } from '@material-ui/core';
+import { Button, CircularProgress, Grid, Input } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FullscreenCentered from '../../components/FullscreenCentered';

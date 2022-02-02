@@ -1,5 +1,5 @@
 import React, { PureComponent, useCallback, useMemo } from 'react';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
