@@ -8,6 +8,7 @@ import { getImage } from '../../../services/tools';
 import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';
 import s from './index.module.css';
+import InlineArtist from '../../InlineArtist';
 
 interface BestArtistProps extends ImplementedCardProps {}
 
@@ -48,13 +49,18 @@ export default function BestArtist({ className, interval }: BestArtistProps) {
           <img className={s.image} src={getImage(result[0].artist)} alt="Your best artist" />
         </div>
         <div className={s.stats}>
-          <strong>{result[0].artist.name}</strong>
+          <strong>
+            <InlineArtist artist={result[0].artist} />
+          </strong>
           <div className={s.statnumbers}>
             <span className={s.stat}>
               <strong>{result[0].count}</strong> songs listened
             </span>
             <span className={s.stat}>
               <strong>{msToMinutes(result[0].duration_ms)}</strong> minutes listened
+            </span>
+            <span className={s.stat}>
+              <strong>{result[0].differents}</strong> different songs
             </span>
           </div>
         </div>

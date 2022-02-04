@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
-import { buildXYData, useFormatXAxis } from '../../../services/stats';
+import { buildXYData, formatXAxisDateTooltip, useFormatXAxis } from '../../../services/stats';
 import { DateId } from '../../../services/types';
 import ChartCard from '../../ChartCard';
 import Line from '../../charts/Line';
@@ -26,6 +26,7 @@ export default function DifferentArtistsListenedPer({
   );
 
   const formatX = useFormatXAxis(data, interval.start, interval.end);
+  const tooltipValueFormatter = useCallback((value: number) => `${value} different artists`, []);
 
   if (!result) {
     return <LoadingImplementedChart title="Different artists listened" className={className} />;
@@ -37,7 +38,12 @@ export default function DifferentArtistsListenedPer({
 
   return (
     <ChartCard title="Different artists listened" className={className}>
-      <Line data={data} xFormat={formatX} />
+      <Line
+        data={data}
+        xFormat={formatX}
+        tooltipLabelFormatter={formatXAxisDateTooltip}
+        tooltipValueFormatter={tooltipValueFormatter}
+      />
     </ChartCard>
   );
 }

@@ -1,8 +1,8 @@
-import { CircularProgress } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Header from '../../../components/Header';
 import { intervals } from '../../../components/IntervalSelector/IntervalSelector';
+import Loader from '../../../components/Loader';
 import TitleCard from '../../../components/TitleCard';
 import { api } from '../../../services/api';
 import { UnboxPromise } from '../../../services/types';
@@ -61,7 +61,7 @@ export default function Songs() {
             next={fetch}
             hasMore={hasMore}
             dataLength={items.length}
-            loader={<CircularProgress />}>
+            loader={<Loader />}>
             {items.map((item) => (
               <Track
                 playable

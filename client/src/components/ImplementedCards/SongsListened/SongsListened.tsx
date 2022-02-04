@@ -34,12 +34,17 @@ export default function SongsListened({ interval, unit, className }: SongsListen
   const count = result[0]?.count ?? 0;
   const oldCount = resultOld[0]?.count ?? 0;
 
+  const different = result[0]?.differents ?? 0;
+
   const percentMore = getPercentMore(oldCount, count);
 
   return (
     <TitleCard title="Songs listened" className={className} fade>
       <div className={s.root}>
-        <span className={s.number}>{count}</span>
+        <div className={s.twonumbers}>
+          <span className={s.number}>{count}</span>
+          <span className={s.number}>{different} diff.</span>
+        </div>
         <span>
           <strong
             className={clsx({

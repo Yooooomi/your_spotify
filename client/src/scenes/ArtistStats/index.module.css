@@ -17,6 +17,10 @@
   padding-right: 16px;
 }
 
+.chart {
+  height: 300px;
+}
+
 .ranks {
   display: flex;
   align-items: center;

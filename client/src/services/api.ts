@@ -92,6 +92,11 @@ export type ArtistStatsResponse = {
   total: {
     count: number;
   };
+  dayRepartition: {
+    _id: number;
+    count: number;
+    duration: number;
+  }[];
 };
 
 export const api = {
@@ -150,7 +155,7 @@ export const api = {
       end,
     }),
   songsPer: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ count: number; _id: DateId | null }[]>('/spotify/songs_per', {
+    get<{ count: number; _id: DateId | null; differents: number }[]>('/spotify/songs_per', {
       start,
       end,
       timeSplit,
@@ -261,6 +266,7 @@ export const api = {
         total_count: number;
         total_duration_ms: number;
         artist: Artist;
+        differents: number;
       }[]
     >('/spotify/top/artists', {
       start,

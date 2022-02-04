@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { BarChart, XAxis, Bar as RBar, Tooltip, YAxis, ResponsiveContainer } from 'recharts';
 
 interface BarProps {
@@ -21,13 +21,24 @@ export default function Bar({
   tooltipValueFormatter,
   customXTick,
 }: BarProps) {
+  const realFormatter = useMemo(() => {
+    if (tooltipValueFormatter) {
+      return (...args: any[]) => [tooltipValueFormatter(...args), null];
+    }
+    return undefined;
+  }, [tooltipValueFormatter]);
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={data}>
         <XAxis dataKey="x" tickFormatter={xFormat} tick={customXTick} />
         <YAxis dataKey="y" tickFormatter={yFormat} width={40} />
         <RBar dataKey="y" />
-        <Tooltip labelFormatter={tooltipLabelFormatter} formatter={tooltipValueFormatter} />
+        <Tooltip
+          wrapperStyle={{ zIndex: 10 }}
+          labelFormatter={tooltipLabelFormatter}
+          formatter={realFormatter}
+        />
       </BarChart>
     </ResponsiveContainer>
   );

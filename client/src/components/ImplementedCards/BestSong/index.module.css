@@ -27,6 +27,10 @@
   box-shadow: 10px 10px 35px -5px rgba(0,0,0,0.43);
 }
 
+.skeleton {
+  box-shadow: none;
+}
+
 .stats {
   flex: 2;
   margin-left: 16px;

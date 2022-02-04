@@ -1,8 +1,8 @@
-import { CircularProgress } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { api } from '../../services/api';
 import { TrackInfoWithTrack } from '../../services/types';
+import Loader from '../Loader';
 import TitleCard from '../TitleCard';
 import Track from './Track';
 
@@ -26,11 +26,7 @@ export default function History() {
   return (
     <TitleCard title="Your history">
       <Track line playable />
-      <InfiniteScroll
-        dataLength={items.length}
-        next={fetch}
-        hasMore={hasMore}
-        loader={<CircularProgress />}>
+      <InfiniteScroll dataLength={items.length} next={fetch} hasMore={hasMore} loader={<Loader />}>
         {items.map((item) => (
           <Track
             playable

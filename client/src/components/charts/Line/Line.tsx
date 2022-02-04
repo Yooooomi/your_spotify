@@ -26,7 +26,7 @@ export default function Line<D extends { x: number; y: number }>({
   const internTooltipValueFormatter = useCallback(
     (value: any, b: any, pr: any) => {
       if (tooltipValueFormatter) {
-        return tooltipValueFormatter(value, pr.payload);
+        return [tooltipValueFormatter(value, pr.payload), null];
       }
       return value;
     },
@@ -54,6 +54,7 @@ export default function Line<D extends { x: number; y: number }>({
         />
         <YAxis domain={['dataMin', 'dataMax']} tickFormatter={yFormat} />
         <Tooltip
+          wrapperStyle={{ zIndex: 10 }}
           labelFormatter={internTooltipLabelFormatter}
           formatter={internTooltipValueFormatter}
         />

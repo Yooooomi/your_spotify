@@ -1,7 +1,7 @@
 import React from 'react';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
-import { buildXYData, useFormatXAxis } from '../../../services/stats';
+import { buildXYData, formatXAxisDateTooltip, useFormatXAxis } from '../../../services/stats';
 import { DateId } from '../../../services/types';
 import ChartCard from '../../ChartCard';
 import Line from '../../charts/Line';
@@ -37,7 +37,7 @@ export default function AverageSongPopularityPer({
 
   return (
     <ChartCard title="Average song popularity" className={className}>
-      <Line data={data} xFormat={formatX} />
+      <Line data={data} xFormat={formatX} tooltipLabelFormatter={formatXAxisDateTooltip} />
     </ChartCard>
   );
 }

@@ -1,7 +1,13 @@
 import React, { useCallback } from 'react';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
-import { buildXYData, formatDateToString, useFormatXAxis } from '../../../services/stats';
+import {
+  buildXYData,
+  formatDateToString,
+  formatXAxisDateTooltip,
+  msToMinutes,
+  useFormatXAxis,
+} from '../../../services/stats';
 import { DateId } from '../../../services/types';
 import Line from '../../charts/Line';
 import ChartCard from '../../ChartCard';
@@ -24,13 +30,10 @@ export default function TimeListenedPer({ className, interval }: TimeListenedPer
 
   const formatX = useFormatXAxis(data, interval.start, interval.end);
   const formatY = useCallback((value: number) => {
-    return `${Math.floor(value / 1000 / 60)}m`;
-  }, []);
-  const formatXTooltip = useCallback((value: string, payload: typeof data[number]) => {
-    return formatDateToString(payload.date);
+    return `${msToMinutes(value)}m`;
   }, []);
   const formatYTooltip = useCallback((value: number) => {
-    return `${Math.floor(value / 1000 / 60)} minutes listened`;
+    return `${msToMinutes(value)} minutes listened`;
   }, []);
 
   if (!result) {
@@ -47,7 +50,7 @@ export default function TimeListenedPer({ className, interval }: TimeListenedPer
         data={data}
         xFormat={formatX}
         yFormat={formatY}
-        tooltipLabelFormatter={formatXTooltip}
+        tooltipLabelFormatter={formatXAxisDateTooltip}
         tooltipValueFormatter={formatYTooltip}
       />
     </ChartCard>

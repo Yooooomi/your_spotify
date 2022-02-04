@@ -58,8 +58,11 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
       <div className={s.name}>
         <span className={s.trackname}>{track.name}</span>
         <span className={s.artistname}>
-          {artists.map((art) => (
-            <InlineArtist key={art.id} artist={art} />
+          {artists.map((art, k, a) => (
+            <React.Fragment key={art.id}>
+              <InlineArtist artist={art} />
+              {k !== a.length - 1 && ', '}
+            </React.Fragment>
           ))}
         </span>
       </div>

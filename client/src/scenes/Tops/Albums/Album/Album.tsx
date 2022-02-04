@@ -43,8 +43,11 @@ export default function Album(props: AlbumProps | HeaderAlbumProps) {
       <div className={s.name}>
         <span className={s.albumname}>{album.name}</span>
         <span className={s.artistname}>
-          {artists.map((art) => (
-            <InlineArtist artist={art} key={art.id} />
+          {artists.map((art, k, a) => (
+            <React.Fragment key={art.id}>
+              <InlineArtist artist={art} key={art.id} />
+              {k !== a.length - 1 && ', '}
+            </React.Fragment>
           ))}
         </span>
       </div>

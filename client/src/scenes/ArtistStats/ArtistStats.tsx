@@ -1,6 +1,6 @@
+import React, { useCallback, useEffect, useState } from 'react';
 import { CircularProgress, Grid } from '@mui/material';
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import InlineArtist from '../../components/InlineArtist';
 import TitleCard from '../../components/TitleCard';
@@ -9,6 +9,8 @@ import { buildFromDateId, dateToListenedAt, dateToMonthAndYear } from '../../ser
 import { getImage } from '../../services/tools';
 import { Artist } from '../../services/types';
 import s from './index.module.css';
+import ChartCard from '../../components/ChartCard';
+import DayRepartition from './DayRepartition';
 
 interface ArtistStatsProps {
   stats: ArtistStatsResponse;
@@ -142,6 +144,9 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
                   </div>
                 )}
               </TitleCard>
+            </Grid>
+            <Grid item xs={12}>
+              <DayRepartition stats={stats.dayRepartition} className={s.chart} />
             </Grid>
           </Grid>
           <Grid item xs={6}>

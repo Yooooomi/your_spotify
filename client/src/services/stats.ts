@@ -64,7 +64,7 @@ const getStringFromDateAndInterval = (date: Date, start: Date, end: Date) => {
     return `${pad(date.getHours())}:00`;
   }
   if (days < 365) {
-    return `${pad(date.getDay())}/${pad(date.getMonth() + 1)}`;
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}`;
   }
   return `${pad(date.getMonth() + 1)}/${pad(date.getFullYear())}`;
 };

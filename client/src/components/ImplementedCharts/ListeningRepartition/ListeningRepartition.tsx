@@ -32,11 +32,13 @@ export default function ListeningRepartition({ className, interval }: ListeningR
           return {
             x: i,
             y: 0,
+            count: 0,
           };
         }
         return {
           x: i,
           y: Math.floor((dataValue.count / total) * 1000) / 10,
+          count: dataValue.count,
         };
       }),
     [result, total],
@@ -44,13 +46,15 @@ export default function ListeningRepartition({ className, interval }: ListeningR
 
   const formatYTooltip = useCallback(
     (a: any, b: any, c: any) => {
-      const dataValue = result?.find((r) => r._id === c.payload.x);
-      if (!dataValue) {
-        return '';
-      }
-      return `A total of ${dataValue.count} songs, ${a}% of your daily listening`;
+      return (
+        <div>
+          {`${a}% of your daily listening`}
+          <br />
+          {`${c.payload.count} out of ${total} songs`}
+        </div>
+      );
     },
-    [result],
+    [total],
   );
 
   if (!result) {

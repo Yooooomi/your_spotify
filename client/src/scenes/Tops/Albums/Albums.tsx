@@ -1,4 +1,3 @@
-import { CircularProgress } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Header from '../../../components/Header';
@@ -8,6 +7,7 @@ import { api } from '../../../services/api';
 import { UnboxPromise } from '../../../services/types';
 import s from './index.module.css';
 import Album from './Album';
+import Loader from '../../../components/Loader';
 
 export default function Albums() {
   const [interval, setInterval] = useState('0');
@@ -62,7 +62,7 @@ export default function Albums() {
             next={fetch}
             hasMore={hasMore}
             dataLength={items.length}
-            loader={<CircularProgress />}>
+            loader={<Loader />}>
             {items.map((item) => (
               <Album
                 key={item.album.id}

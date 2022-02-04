@@ -24,7 +24,7 @@
   height: 100% !important;
   object-fit: cover;
   border-radius: 6px;
-  box-shadow: 10px 10px 35px -5px rgba(0,0,0,0.43);
+  box-shadow: 10px 10px 35px -5px rgba(0, 0, 0, 0.43);
 }
 
 .skeleton {
@@ -36,6 +36,11 @@
   margin-left: 16px;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.stats > :first-child {
+  z-index: 1;
 }
 
 .stats > strong {

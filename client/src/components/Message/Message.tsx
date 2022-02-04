@@ -13,20 +13,23 @@ interface AlertProps {
   onClose: () => void;
 }
 
-function Alert({ message, level, onClose }: AlertProps) {
-  return (
-    <div
-      className={clsx({
-        [s.alert]: true,
-        [s[level]]: true,
-      })}>
-      <span>{message}</span>
-      <IconButton size="small" onClick={onClose}>
-        <Close className={s.icon} fontSize="small" />
-      </IconButton>
-    </div>
-  );
-}
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
+  ({ message, level, onClose }: AlertProps, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={clsx({
+          [s.alert]: true,
+          [s[level]]: true,
+        })}>
+        <span>{message}</span>
+        <IconButton size="small" onClick={onClose}>
+          <Close className={s.icon} fontSize="small" />
+        </IconButton>
+      </div>
+    );
+  },
+);
 
 export default function Message() {
   const message = useSelector(selectMessage);

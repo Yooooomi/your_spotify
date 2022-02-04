@@ -5,6 +5,18 @@
   align-items: flex-end;
 }
 
+.twonumbers {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.twonumbers > :last-child {
+  font-size: 0.8em;
+  transform: translateY(-2px);
+  margin-left: 8px;
+}
+
 .number {
   font-size: 1.6em;
 }
