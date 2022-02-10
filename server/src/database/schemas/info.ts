@@ -1,4 +1,4 @@
-import { Schema, Types } from "mongoose";
+import { Schema, Types } from 'mongoose';
 
 export interface Infos {
   owner: Types.ObjectId;
@@ -8,16 +8,16 @@ export interface Infos {
 
 export const InfosSchema = new Schema<Infos>(
   {
-    owner: { type: Types.ObjectId, ref: "User" },
+    owner: { type: Types.ObjectId, ref: 'User' },
     id: String,
     played_at: Date,
   },
-  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
-InfosSchema.virtual("track", {
-  ref: "Track",
-  localField: "id",
-  foreignField: "id",
+InfosSchema.virtual('track', {
+  ref: 'Track',
+  localField: 'id',
+  foreignField: 'id',
   justOne: true,
 });

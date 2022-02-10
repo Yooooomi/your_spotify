@@ -1,15 +1,11 @@
-import Axios from "axios";
-import {
-  storeInUser,
-  addTrackIdsToUser,
-  getUsersNb,
-  getUsers,
-} from "../database";
-import { RecentlyPlayedTrack, SpotifyTrack } from "../database/schemas/track";
-import { User } from "../database/schemas/user";
-import { logger } from "../tools/logger";
-import { Spotify } from "../tools/oauth/Provider";
-import { saveMusics } from "./dbTools";
+/* eslint-disable no-await-in-loop */
+import Axios from 'axios';
+import { storeInUser, addTrackIdsToUser, getUsersNb, getUsers } from '../database';
+import { RecentlyPlayedTrack } from '../database/schemas/track';
+import { User } from '../database/schemas/user';
+import { logger } from '../tools/logger';
+import { Spotify } from '../tools/oauth/Provider';
+import { saveMusics } from './dbTools';
 
 const refresh = async (user: User) => {
   if (!user.refreshToken) {
@@ -17,7 +13,7 @@ const refresh = async (user: User) => {
   }
   const infos = await Spotify.refresh(user.refreshToken);
 
-  return storeInUser("_id", user._id, infos);
+  return storeInUser('_id', user._id, infos);
 };
 
 const createHttpClient = (access: string) => {
@@ -37,7 +33,7 @@ const loop = async (user: User) => {
   if (Date.now() > user.expiresIn - 1000 * 60) {
     const newUser = await refresh(user);
     if (!newUser) {
-      logger.error("No refresh token on user");
+      logger.error('No refresh token on user');
       return;
     }
     user = newUser;
@@ -45,9 +41,7 @@ const loop = async (user: User) => {
   }
 
   if (!user.accessToken) {
-    logger.error(
-      `User ${user.username} has not access token, please relog to Spotify`
-    );
+    logger.error(`User ${user.username} has not access token, please relog to Spotify`);
     return;
   }
 
@@ -66,7 +60,7 @@ const loop = async (user: User) => {
       nextUrl = data.next;
     } while (nextUrl);
 
-    await storeInUser("_id", user._id, {
+    await storeInUser('_id', user._id, {
       lastTimestamp: Date.now(),
     });
 
@@ -83,7 +77,7 @@ const loop = async (user: User) => {
         logger.info(e.response.data);
       }
     } else {
-      logger.info("User has no new music");
+      logger.info('User has no new music');
     }
   } catch (e) {
     logger.error(e);
@@ -93,7 +87,7 @@ const loop = async (user: User) => {
 const reflect = (p: Promise<any>) =>
   p.then(
     () => ({ failed: false, error: null }),
-    (e: any) => ({ failed: true, error: e })
+    (e: any) => ({ failed: true, error: e }),
   );
 const wait = (ms: number) => new Promise((s) => setTimeout(s, ms));
 

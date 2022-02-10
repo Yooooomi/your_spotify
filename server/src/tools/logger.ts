@@ -1,9 +1,9 @@
-import winston from "winston";
+import winston from 'winston';
 
 const oneMo = 1024 * 1024;
 
 export const logger = winston.createLogger({
-  level: "info",
+  level: 'info',
   format: winston.format.json(),
   transports: [
     //
@@ -11,7 +11,7 @@ export const logger = winston.createLogger({
     // - Write all logs with importance level of `info` or less to `combined.log`
     //
     new winston.transports.File({
-      filename: "logs.log",
+      filename: 'logs.log',
       maxsize: oneMo,
       maxFiles: 1,
     }),
@@ -22,10 +22,10 @@ export const logger = winston.createLogger({
 // If we're not in production then log to the `console` with the format:
 // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
 //
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   logger.add(
     new winston.transports.Console({
       format: winston.format.simple(),
-    })
+    }),
   );
 }

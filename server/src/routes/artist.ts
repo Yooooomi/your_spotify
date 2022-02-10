@@ -93,5 +93,3 @@ router.get('/search/:query', validating(search, 'params'), logged, async (req, r
     return res.status(500).end();
   }
 });
-
-module.exports = router;

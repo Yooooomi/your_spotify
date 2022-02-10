@@ -4,44 +4,20 @@
  * Module dependencies.
  */
 
-import { dbLoop } from "../spotify/looper";
-import http from "http";
-import app from "../app";
-import { logger } from "../tools/logger";
-import { connect } from "../database";
-
-/**
- * Get port from environment and store in Express.
- */
-
-var port = normalizePort(process.env.PORT || "8080");
-app.set("port", port);
-
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-connect().then(() => {
-  server.listen(port);
-  server.on("error", onError);
-  server.on("listening", onListening);
-  dbLoop();
-});
+import http from 'http';
+import { dbLoop } from '../spotify/looper';
+import app from '../app';
+import { logger } from '../tools/logger';
+import { connect } from '../database';
 
 /**
  * Normalize a port into a number, string, or false.
  */
 
 function normalizePort(val: string) {
-  var port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
-  if (isNaN(port)) {
+  if (Number.isNaN(port)) {
     // named pipe
     return val;
   }
@@ -55,24 +31,37 @@ function normalizePort(val: string) {
 }
 
 /**
+ * Get port from environment and store in Express.
+ */
+
+const port = normalizePort(process.env.PORT || '8080');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+const server = http.createServer(app);
+
+/**
  * Event listener for HTTP server "error" event.
  */
 
 function onError(error: any) {
-  if (error.syscall !== "listen") {
+  if (error.syscall !== 'listen') {
     throw error;
   }
 
-  var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges");
+    case 'EACCES':
+      console.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use");
+    case 'EADDRINUSE':
+      console.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
@@ -85,7 +74,18 @@ function onError(error: any) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr?.port;
-  logger.debug("Listening on " + bind);
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr?.port}`;
+  logger.debug(`Listening on ${bind}`);
 }
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+connect().then(() => {
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+  dbLoop();
+});

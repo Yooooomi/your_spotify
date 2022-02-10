@@ -1,4 +1,4 @@
-import { Schema, Types } from "mongoose";
+import { Schema, Types } from 'mongoose';
 
 export interface User {
   _id: Types.ObjectId;
@@ -15,7 +15,7 @@ export interface User {
     historyLine: boolean;
     preferredStatsPeriod: string;
     nbElements: number;
-    metricUsed: "number" | "duration";
+    metricUsed: 'number' | 'duration';
   };
 }
 
@@ -31,20 +31,20 @@ export const UserSchema = new Schema<User>(
     lastTimestamp: { type: Number, default: 0 },
     tracks: {
       type: [Types.ObjectId],
-      ref: "Infos",
+      ref: 'Infos',
       select: false,
       default: [],
     },
     settings: {
       historyLine: { type: Boolean, default: true },
-      preferredStatsPeriod: { type: String, default: "day" },
+      preferredStatsPeriod: { type: String, default: 'day' },
       nbElements: { type: Number, default: 10 },
       metricUsed: {
         type: String,
-        enum: ["number", "duration"],
-        default: "number",
+        enum: ['number', 'duration'],
+        default: 'number',
       },
     },
   },
-  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );

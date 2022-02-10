@@ -1,24 +1,16 @@
-import { NextFunction, Request, Response } from "express";
-import { Schema } from "joi";
-import { verify } from "jsonwebtoken";
-import { Types } from "mongoose";
-import {
-  getUserFromField,
-  storeInUser,
-  getGlobalPreferences,
-} from "../database";
-import { logger } from "./logger";
-import { Spotify } from "./oauth/Provider";
-import {
-  GlobalPreferencesRequest,
-  LoggedRequest,
-  SpotifyRequest,
-} from "./types";
+import { NextFunction, Request, Response } from 'express';
+import { Schema } from 'joi';
+import { verify } from 'jsonwebtoken';
+import { Types } from 'mongoose';
+import { getUserFromField, storeInUser, getGlobalPreferences } from '../database';
+import { logger } from './logger';
+import { Spotify } from './oauth/Provider';
+import { GlobalPreferencesRequest, LoggedRequest, SpotifyRequest } from './types';
 
-type Location = "body" | "params" | "query";
+type Location = 'body' | 'params' | 'query';
 
 export const validating =
-  (schema: Schema, location: Location = "body") =>
+  (schema: Schema, location: Location = 'body') =>
   (req: Request, res: Response, next: NextFunction) => {
     const { error, value } = schema.validate(req[location]);
 
@@ -32,24 +24,16 @@ export const validating =
     return next();
   };
 
-export const logged = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const logged = async (req: Request, res: Response, next: NextFunction) => {
   const auth = req.cookies.token;
 
   if (!auth) return res.status(401).end();
 
   if (auth) {
     try {
-      const userId = verify(auth, "MyPrivateKey") as { userId: string };
+      const userId = verify(auth, 'MyPrivateKey') as { userId: string };
 
-      const user = await getUserFromField(
-        "_id",
-        new Types.ObjectId(userId.userId),
-        false
-      );
+      const user = await getUserFromField('_id', new Types.ObjectId(userId.userId), false);
 
       if (!user) {
         return res.status(401).end();
@@ -63,11 +47,7 @@ export const logged = async (
   return res.status(401).end();
 };
 
-export const withHttpClient = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const withHttpClient = async (req: Request, res: Response, next: NextFunction) => {
   const { user } = req as LoggedRequest;
 
   let tokens = {
@@ -81,7 +61,7 @@ export const withHttpClient = async (
         return;
       }
       const newTokens = await Spotify.refresh(user.refreshToken);
-      await storeInUser("_id", user._id, newTokens);
+      await storeInUser('_id', user._id, newTokens);
       tokens = newTokens;
     } catch (e) {
       if (e.response) {
@@ -101,17 +81,11 @@ export const withHttpClient = async (
   return next();
 };
 
-export const withGlobalPreferences = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const withGlobalPreferences = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const pref = await getGlobalPreferences();
     if (!pref) {
-      logger.error(
-        "No global preferences, this is critical, try restarting the app"
-      );
+      logger.error('No global preferences, this is critical, try restarting the app');
       return;
     }
     (req as GlobalPreferencesRequest).globalPreferences = pref;

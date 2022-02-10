@@ -9,7 +9,6 @@ import { buildFromDateId, dateToListenedAt, dateToMonthAndYear } from '../../ser
 import { getImage } from '../../services/tools';
 import { Artist } from '../../services/types';
 import s from './index.module.css';
-import ChartCard from '../../components/ChartCard';
 import DayRepartition from './DayRepartition';
 
 interface ArtistStatsProps {

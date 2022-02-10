@@ -3,7 +3,6 @@ import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
 import {
   buildXYData,
-  formatDateToString,
   formatXAxisDateTooltip,
   msToMinutes,
   useFormatXAxis,

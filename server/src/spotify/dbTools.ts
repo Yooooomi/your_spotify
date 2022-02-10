@@ -1,18 +1,16 @@
-import Axios, { AxiosInstance } from "axios";
-import { TrackModel, AlbumModel, ArtistModel } from "../database/Models";
-import { SpotifyAlbum, Album } from "../database/schemas/album";
-import { SpotifyArtist, Artist } from "../database/schemas/artist";
-import { SpotifyTrack, Track } from "../database/schemas/track";
-import { logger } from "../tools/logger";
+import Axios, { AxiosInstance } from 'axios';
+import { TrackModel, AlbumModel, ArtistModel } from '../database/Models';
+import { SpotifyAlbum, Album } from '../database/schemas/album';
+import { SpotifyArtist, Artist } from '../database/schemas/artist';
+import { SpotifyTrack, Track } from '../database/schemas/track';
+import { logger } from '../tools/logger';
 
-const getIdsHandlingMax = async <
-  T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist
->(
+const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist>(
   client: AxiosInstance,
   url: string,
   ids: string[],
   max: number,
-  arrayPath: string
+  arrayPath: string,
 ) => {
   const idsArray = [];
   const chunkNb = Math.ceil(ids.length / max);
@@ -24,7 +22,7 @@ const getIdsHandlingMax = async <
 
   // Voluntarily waiting in loop to prevent requests limit
   for (let i = 0; i < idsArray.length; i += 1) {
-    const builtUrl = `${url}?ids=${idsArray[i].join(",")}`;
+    const builtUrl = `${url}?ids=${idsArray[i].join(',')}`;
     // eslint-disable-next-line no-await-in-loop
     const { data } = await client.get(builtUrl);
     datas.push(...data[arrayPath]);
@@ -32,27 +30,16 @@ const getIdsHandlingMax = async <
   return datas as T[];
 };
 
-const url = "https://api.spotify.com/v1/tracks";
+const url = 'https://api.spotify.com/v1/tracks';
 
-const storeTracksAndReturnAlbumsArtists = async (
-  ids: string[],
-  client: AxiosInstance
-) => {
-  const spotifyTracks = await getIdsHandlingMax<SpotifyTrack>(
-    client,
-    url,
-    ids,
-    50,
-    "tracks"
-  );
+const storeTracksAndReturnAlbumsArtists = async (ids: string[], client: AxiosInstance) => {
+  const spotifyTracks = await getIdsHandlingMax<SpotifyTrack>(client, url, ids, 50, 'tracks');
 
   const artistIds: string[] = [];
   const albumIds: string[] = [];
 
   const tracks: Track[] = spotifyTracks.map<Track>((track) => {
-    logger.info(
-      `Storing non existing track ${track.name} by ${track.artists[0].name}`
-    );
+    logger.info(`Storing non existing track ${track.name} by ${track.artists[0].name}`);
 
     track.artists.forEach((art) => {
       if (!artistIds.includes(art.id)) {
@@ -79,21 +66,13 @@ const storeTracksAndReturnAlbumsArtists = async (
   };
 };
 
-const albumUrl = "https://api.spotify.com/v1/albums";
+const albumUrl = 'https://api.spotify.com/v1/albums';
 
 const storeAlbums = async (ids: string[], client: AxiosInstance) => {
-  const spotifyAlbums = await getIdsHandlingMax<SpotifyAlbum>(
-    client,
-    albumUrl,
-    ids,
-    20,
-    "albums"
-  );
+  const spotifyAlbums = await getIdsHandlingMax<SpotifyAlbum>(client, albumUrl, ids, 20, 'albums');
 
   const albums: Album[] = spotifyAlbums.map((alb) => {
-    logger.info(
-      `Storing non existing album ${alb.name} by ${alb.artists[0].name}`
-    );
+    logger.info(`Storing non existing album ${alb.name} by ${alb.artists[0].name}`);
 
     return {
       ...alb,
@@ -104,20 +83,12 @@ const storeAlbums = async (ids: string[], client: AxiosInstance) => {
   await AlbumModel.create(albums).catch(() => {});
 };
 
-const artistUrl = "https://api.spotify.com/v1/artists";
+const artistUrl = 'https://api.spotify.com/v1/artists';
 
 const storeArtists = async (ids: string[], client: AxiosInstance) => {
-  const artists = await getIdsHandlingMax<SpotifyTrack>(
-    client,
-    artistUrl,
-    ids,
-    50,
-    "artists"
-  );
+  const artists = await getIdsHandlingMax<SpotifyTrack>(client, artistUrl, ids, 50, 'artists');
 
-  artists.forEach((artist) =>
-    logger.info(`Storing non existing artist ${artist.name}`)
-  );
+  artists.forEach((artist) => logger.info(`Storing non existing artist ${artist.name}`));
 
   await ArtistModel.create(artists).catch(() => {});
 };
@@ -132,31 +103,26 @@ export const saveMusics = async (tracks: SpotifyTrack[], access: string) => {
   const ids = tracks.map((track) => track.id);
   const storedTracks: Track[] = await TrackModel.find({ id: { $in: ids } });
   const missingTrackIds = ids.filter(
-    (id) =>
-      !storedTracks.find((stored) => stored.id.toString() === id.toString())
+    (id) => !storedTracks.find((stored) => stored.id.toString() === id.toString()),
   );
 
   if (missingTrackIds.length === 0) {
-    logger.info("No missing tracks, passing...");
+    logger.info('No missing tracks, passing...');
     return;
   }
 
-  const { artists, albums } = await storeTracksAndReturnAlbumsArtists(
-    missingTrackIds,
-    client
-  );
+  const { artists, albums } = await storeTracksAndReturnAlbumsArtists(missingTrackIds, client);
 
   const storedAlbums: Album[] = await AlbumModel.find({ id: { $in: albums } });
   const missingAlbumIds = albums.filter(
-    (alb) => !storedAlbums.find((salb) => salb.id.toString() === alb.toString())
+    (alb) => !storedAlbums.find((salb) => salb.id.toString() === alb.toString()),
   );
 
   const storedArtists: Artist[] = await ArtistModel.find({
     id: { $in: artists },
   });
   const missingArtistIds = artists.filter(
-    (alb) =>
-      !storedArtists.find((salb) => salb.id.toString() === alb.toString())
+    (alb) => !storedArtists.find((salb) => salb.id.toString() === alb.toString()),
   );
 
   if (missingAlbumIds.length > 0) {

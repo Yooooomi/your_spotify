@@ -1,9 +1,9 @@
-import { GlobalPreferencesModel } from "../database/Models";
+import { GlobalPreferencesModel } from '../database/Models';
 
-module.exports.up = async () => {
+export const up = async () => {
   await GlobalPreferencesModel.create({});
 };
 
-module.exports.down = async () => {
+export const down = async () => {
   await GlobalPreferencesModel.findOneAndDelete();
 };
