@@ -99,7 +99,7 @@ To do so, you need to create a **Spotify application** [here](https://developer.
 By default, Your Spotify will only retrieve data for the past 24 hours once registered. This is a technical limitation. However, you can:
 
 - Request your **privacy data** at Spotify to have access to your history for the past year [here](https://www.spotify.com/us/account/privacy/).
-- Optional: once received (after a week), you can ask for extended data that will get you your whole history since the creation of the account.
+- Optional: once received (after a week), you can ask for extended data that will get you your whole history since the creation of the account. You have to write an email at **privacy@spotify.com** saying you want your data since the account creation.
 - Go to the **settings** of your account and import your `StreamingHistoryX.json` files.
 - Now you can follow the progress of the import with the progress bar.
 
