@@ -1,9 +1,11 @@
+import { get } from '../env';
+
 export const credentials = {
   spotify: {
-    public: process.env.SPOTIFY_PUBLIC,
-    secret: process.env.SPOTIFY_SECRET,
+    public: get('SPOTIFY_PUBLIC'),
+    secret: get('SPOTIFY_SECRET'),
     scopes:
       'user-read-private user-read-email user-read-recently-played user-modify-playback-state',
-    redirectUri: `${process.env.API_ENDPOINT}/oauth/spotify/callback`,
+    redirectUri: `${get('API_ENDPOINT')}/oauth/spotify/callback`,
   },
 };

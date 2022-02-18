@@ -1,9 +1,13 @@
-import Axios, { AxiosInstance } from 'axios';
+import { AxiosInstance } from 'axios';
+import { storeInUser } from '../database';
 import { TrackModel, AlbumModel, ArtistModel } from '../database/Models';
 import { SpotifyAlbum, Album } from '../database/schemas/album';
 import { SpotifyArtist, Artist } from '../database/schemas/artist';
 import { SpotifyTrack, Track } from '../database/schemas/track';
+import { User } from '../database/schemas/user';
 import { logger } from '../tools/logger';
+import { Spotify } from '../tools/oauth/Provider';
+import { squeue } from '../tools/queue';
 
 const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist>(
   client: AxiosInstance,
@@ -24,7 +28,7 @@ const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | Spotify
   for (let i = 0; i < idsArray.length; i += 1) {
     const builtUrl = `${url}?ids=${idsArray[i].join(',')}`;
     // eslint-disable-next-line no-await-in-loop
-    const { data } = await client.get(builtUrl);
+    const { data } = await squeue.queue(() => client.get(builtUrl));
     datas.push(...data[arrayPath]);
   }
   return datas as T[];
@@ -93,13 +97,7 @@ const storeArtists = async (ids: string[], client: AxiosInstance) => {
   await ArtistModel.create(artists).catch(() => {});
 };
 
-export const saveMusics = async (tracks: SpotifyTrack[], access: string) => {
-  const client = Axios.create({
-    headers: {
-      Authorization: `Bearer ${access}`,
-    },
-  });
-
+export const saveMusics = async (tracks: SpotifyTrack[], client: AxiosInstance) => {
   const ids = tracks.map((track) => track.id);
   const storedTracks: Track[] = await TrackModel.find({ id: { $in: ids } });
   const missingTrackIds = ids.filter(
@@ -131,4 +129,20 @@ export const saveMusics = async (tracks: SpotifyTrack[], access: string) => {
   if (missingArtistIds.length > 0) {
     await storeArtists(missingArtistIds, client);
   }
+};
+
+export const refreshIfNeeded = async (user: User) => {
+  // Refresh the token it it expires in less than two minutes (1000ms * 120)
+  if (Date.now() > user.expiresIn - 1000 * 120) {
+    const token = user.refreshToken;
+    if (!token) {
+      return null;
+    }
+    const infos = await squeue.queue(() => Spotify.refresh(token));
+
+    const newUser = await storeInUser('_id', user._id, infos);
+    logger.info(`Refreshed token for ${user.username}`);
+    return newUser;
+  }
+  return user;
 };

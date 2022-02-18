@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import { getGlobalPreferences, updateGlobalPreferences } from '../database';
 import { logged, validating } from '../tools/middleware';
+import { TypedPayload } from '../tools/types';
 
 const router = Router();
 export default router;
@@ -11,12 +12,12 @@ router.get('/preferences', async (req, res) => {
   return res.status(200).send(preferences);
 });
 
-const updateGlobalPreferencesSchema = Joi.object().keys({
-  allowRegistrations: Joi.boolean().required(),
+const updateGlobalPreferencesSchema = z.object({
+  allowRegistrations: z.boolean(),
 });
 
 router.post('/preferences', validating(updateGlobalPreferencesSchema), logged, async (req, res) => {
-  const modifications = req.body;
+  const modifications = req.body as TypedPayload<typeof updateGlobalPreferencesSchema>;
 
   const newPrefs = await updateGlobalPreferences(modifications);
   return res.status(200).send(newPrefs);

@@ -1,6 +1,6 @@
+import React from 'react';
 import { Skeleton } from '@mui/material';
 import clsx from 'clsx';
-import React from 'react';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
 import { msToMinutes } from '../../../services/stats';
@@ -37,24 +37,22 @@ export default function BestSong({ className, interval }: BestSongProps) {
     );
   }
 
-  if (result.length === 0) {
-    return null;
-  }
+  const res = result[0];
 
   return (
     <TitleCard title="Best song" className={clsx(s.root, className)}>
       <div className={s.container}>
         <div className={s.imgcontainer}>
-          <img className={s.image} src={getImage(result[0].album)} alt="Your best song" />
+          <img className={s.image} src={getImage(res?.album)} alt="Your best song" />
         </div>
         <div className={s.stats}>
-          <strong>{result[0].track.name}</strong>
+          <strong>{res?.track.name ?? 'No data'}</strong>
           <div className={s.statnumbers}>
             <span className={s.stat}>
-              <strong>{result[0].count}</strong> times listened
+              <strong>{res?.count ?? 0}</strong> times listened
             </span>
             <span className={s.stat}>
-              <strong>{msToMinutes(result[0].duration_ms)}</strong> minutes listened
+              <strong>{msToMinutes(res?.duration_ms ?? 0)}</strong> minutes listened
             </span>
           </div>
         </div>

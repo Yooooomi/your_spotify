@@ -38,29 +38,28 @@ export default function BestArtist({ className, interval }: BestArtistProps) {
     );
   }
 
-  if (result.length === 0) {
-    return null;
-  }
+  const res = result[0];
 
   return (
     <TitleCard title="Best artist" className={clsx(s.root, className)} fade>
       <div className={s.container}>
         <div className={s.imgcontainer}>
-          <img className={s.image} src={getImage(result[0].artist)} alt="Your best artist" />
+          <img className={s.image} src={getImage(res?.artist)} alt="Your best artist" />
         </div>
         <div className={s.stats}>
           <strong>
-            <InlineArtist artist={result[0].artist} />
+            {res && <InlineArtist artist={res.artist} />}
+            {!res && <span>No data</span>}
           </strong>
           <div className={s.statnumbers}>
             <span className={s.stat}>
-              <strong>{result[0].count}</strong> songs listened
+              <strong>{res?.count ?? 0}</strong> songs listened
             </span>
             <span className={s.stat}>
-              <strong>{msToMinutes(result[0].duration_ms)}</strong> minutes listened
+              <strong>{msToMinutes(res?.duration_ms ?? 0)}</strong> minutes listened
             </span>
             <span className={s.stat}>
-              <strong>{result[0].differents}</strong> different songs
+              <strong>{res?.differents ?? 0}</strong> different songs
             </span>
           </div>
         </div>

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const Axios = require('axios');
-const { credentials } = require('./credentials');
+import Axios from 'axios';
+import { credentials } from './credentials';
 
 export class Provider {
   static getRedirect = () => {};
@@ -80,7 +80,3 @@ export class Spotify extends Provider {
       baseURL: 'https://api.spotify.com/v1',
     });
 }
-
-module.exports = {
-  Spotify,
-};

@@ -1,59 +1,35 @@
 /* eslint-disable no-await-in-loop */
-import Axios from 'axios';
 import { storeInUser, addTrackIdsToUser, getUsersNb, getUsers } from '../database';
 import { RecentlyPlayedTrack } from '../database/schemas/track';
 import { User } from '../database/schemas/user';
 import { logger } from '../tools/logger';
+import { wait } from '../tools/misc';
 import { Spotify } from '../tools/oauth/Provider';
-import { saveMusics } from './dbTools';
-
-const refresh = async (user: User) => {
-  if (!user.refreshToken) {
-    return null;
-  }
-  const infos = await Spotify.refresh(user.refreshToken);
-
-  return storeInUser('_id', user._id, infos);
-};
-
-const createHttpClient = (access: string) => {
-  const axios = Axios.create({
-    headers: {
-      Authorization: `Bearer ${access}`,
-    },
-  });
-
-  return axios;
-};
+import { refreshIfNeeded, saveMusics } from './dbTools';
 
 const loop = async (user: User) => {
   logger.info(`Refreshing songs for ${user.username}`);
 
-  // Refresh the token it it expires in less than a minute (1000ms * 60)
-  if (Date.now() > user.expiresIn - 1000 * 60) {
-    const newUser = await refresh(user);
-    if (!newUser) {
-      logger.error('No refresh token on user');
-      return;
-    }
-    user = newUser;
-    logger.info(`Refreshed token for ${user.username}`);
+  const newUser = await refreshIfNeeded(user);
+  if (!newUser) {
+    logger.error(`${user.username} has no refresh token`);
+    return;
   }
+  user = newUser;
 
   if (!user.accessToken) {
     logger.error(`User ${user.username} has not access token, please relog to Spotify`);
     return;
   }
 
-  const client = createHttpClient(user.accessToken);
-  const url = `https://api.spotify.com/v1/me/player/recently-played?after=${user.lastTimestamp}`;
+  const client = Spotify.getHttpClient(user.accessToken);
+  const url = `/me/player/recently-played?after=${user.lastTimestamp}`;
 
   try {
     const items: RecentlyPlayedTrack[] = [];
     let nextUrl = url;
 
     do {
-      // Waiting to prevent request limit
       const response = await client.get(nextUrl);
       const { data } = response;
       items.push(...data.items);
@@ -67,7 +43,7 @@ const loop = async (user: User) => {
     if (items.length > 0) {
       const tracks = items.map((e) => e.track);
       try {
-        await saveMusics(tracks, user.accessToken);
+        await saveMusics(tracks, client);
         const infos = items.map((e) => ({
           played_at: new Date(e.played_at),
           id: e.track.id,
@@ -89,7 +65,6 @@ const reflect = (p: Promise<any>) =>
     () => ({ failed: false, error: null }),
     (e: any) => ({ failed: true, error: e }),
   );
-const wait = (ms: number) => new Promise((s) => setTimeout(s, ms));
 
 export const dbLoop = async () => {
   // eslint-disable-next-line no-constant-condition

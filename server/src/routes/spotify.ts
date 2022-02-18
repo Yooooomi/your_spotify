@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import {
   getTrackBySpotifyId,
   getSongs,
@@ -19,18 +19,19 @@ import {
 } from '../database';
 import { logger } from '../tools/logger';
 import { logged, validating, withHttpClient } from '../tools/middleware';
-import { SpotifyRequest, LoggedRequest, Timesplit } from '../tools/types';
+import { SpotifyRequest, LoggedRequest, Timesplit, TypedPayload } from '../tools/types';
+import { toDate, toNumber } from '../tools/zod';
 
 const router = Router();
 export default router;
 
-const playSchema = Joi.object().keys({
-  id: Joi.string().required(),
+const playSchema = z.object({
+  id: z.string(),
 });
 
 router.post('/play', validating(playSchema), logged, withHttpClient, async (req, res) => {
   const { client } = req as SpotifyRequest;
-  const { id } = req.body;
+  const { id } = req.body as TypedPayload<typeof playSchema>;
 
   try {
     const track = await getTrackBySpotifyId(id);
@@ -50,42 +51,41 @@ router.post('/play', validating(playSchema), logged, withHttpClient, async (req,
   }
 });
 
-const gethistorySchema = Joi.object().keys({
-  number: Joi.number().max(20).required(),
-  offset: Joi.number().required(),
+const gethistorySchema = z.object({
+  number: z.preprocess(toNumber, z.number().max(20)),
+  offset: z.preprocess(toNumber, z.number()),
 });
 
 router.get('/gethistory', validating(gethistorySchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { number, offset } = req.query;
+  const { number, offset } = req.query as TypedPayload<typeof gethistorySchema>;
 
-  const tracks = await getSongs(
-    user._id.toString(),
-    offset as unknown as number,
-    number as unknown as number,
-  );
+  const tracks = await getSongs(user._id.toString(), offset, number);
   return res.status(200).send(tracks);
 });
 
-const interval = Joi.object().keys({
-  start: Joi.date().required(),
-  end: Joi.date().default(() => new Date()),
+const interval = z.object({
+  start: z.preprocess(toDate, z.date()),
+  end: z.preprocess(
+    toDate,
+    z.date().default(() => new Date()),
+  ),
 });
 
-const intervalPerSchema = Joi.object().keys({
-  start: Joi.date().required(),
-  end: Joi.date().default(() => new Date()),
-  timeSplit: Joi.string()
-    .allow('all', 'year', 'month', 'week', 'day', 'hour')
-    .only()
-    .default('day'),
+const intervalPerSchema = z.object({
+  start: z.preprocess(toDate, z.date()),
+  end: z.preprocess(
+    toDate,
+    z.date().default(() => new Date()),
+  ),
+  timeSplit: z.nativeEnum(Timesplit).default(Timesplit.day),
 });
 
 router.get('/listened_to', validating(interval, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end } = req.query;
+  const { start, end } = req.query as TypedPayload<typeof interval>;
 
-  const result = await getSongsPer(user, start as unknown as Date, end as unknown as Date);
+  const result = await getSongsPer(user, start, end);
   if (result.length > 0) {
     return res.status(200).send({ count: result[0].count });
   }
@@ -94,14 +94,9 @@ router.get('/listened_to', validating(interval, 'query'), logged, async (req, re
 
 router.get('/most_listened', validating(intervalPerSchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end, timeSplit } = req.query;
+  const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await getMostListenedSongs(
-    user,
-    start as unknown as Date,
-    end as unknown as Date,
-    timeSplit as Timesplit,
-  );
+  const result = await getMostListenedSongs(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -111,41 +106,26 @@ router.get(
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query;
+    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-    const result = await getMostListenedArtist(
-      user,
-      start as unknown as Date,
-      end as unknown as Date,
-      timeSplit as Timesplit,
-    );
+    const result = await getMostListenedArtist(user, start, end, timeSplit);
     return res.status(200).send(result);
   },
 );
 
 router.get('/songs_per', validating(intervalPerSchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end, timeSplit } = req.query;
+  const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await getSongsPer(
-    user,
-    start as unknown as Date,
-    end as unknown as Date,
-    timeSplit as Timesplit,
-  );
+  const result = await getSongsPer(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
 router.get('/time_per', validating(intervalPerSchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end, timeSplit } = req.query;
+  const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await getTimePer(
-    user,
-    start as unknown as Date,
-    end as unknown as Date,
-    timeSplit as Timesplit,
-  );
+  const result = await getTimePer(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -155,41 +135,26 @@ router.get(
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query;
+    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-    const result = await albumDateRatio(
-      user,
-      start as unknown as Date,
-      end as unknown as Date,
-      timeSplit as Timesplit,
-    );
+    const result = await albumDateRatio(user, start, end, timeSplit);
     return res.status(200).send(result);
   },
 );
 
 router.get('/feat_ratio', validating(intervalPerSchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end, timeSplit } = req.query;
+  const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await featRatio(
-    user,
-    start as unknown as Date,
-    end as unknown as Date,
-    timeSplit as Timesplit,
-  );
+  const result = await featRatio(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
 router.get('/popularity_per', validating(intervalPerSchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end, timeSplit } = req.query;
+  const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await popularityPer(
-    user,
-    start as unknown as Date,
-    end as unknown as Date,
-    timeSplit as Timesplit,
-  );
+  const result = await popularityPer(user, start, end, timeSplit);
   return res.status(200).send(result);
 });
 
@@ -199,23 +164,18 @@ router.get(
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query;
+    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-    const result = await differentArtistsPer(
-      user,
-      start as unknown as Date,
-      end as unknown as Date,
-      timeSplit as Timesplit,
-    );
+    const result = await differentArtistsPer(user, start, end, timeSplit);
     return res.status(200).send(result);
   },
 );
 
 router.get('/time_per_hour_of_day', validating(interval, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end } = req.query;
+  const { start, end } = req.query as TypedPayload<typeof interval>;
 
-  const result = await getDayRepartition(user, start as unknown as Date, end as unknown as Date);
+  const result = await getDayRepartition(user, start, end);
   return res.status(200).send(result);
 });
 
@@ -225,23 +185,21 @@ router.get(
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query;
+    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-    const result = await getBestArtistsPer(
-      user,
-      start as unknown as Date,
-      end as unknown as Date,
-      timeSplit as Timesplit,
-    );
+    const result = await getBestArtistsPer(user, start, end, timeSplit);
     return res.status(200).send(result);
   },
 );
 
-const intervalPerSchemaNbOffset = Joi.object().keys({
-  start: Joi.date().required(),
-  end: Joi.date().default(() => new Date()),
-  nb: Joi.number().min(1).max(30).required(),
-  offset: Joi.number().min(0).default(0),
+const intervalPerSchemaNbOffset = z.object({
+  start: z.preprocess(toDate, z.date()),
+  end: z.preprocess(
+    toDate,
+    z.date().default(() => new Date()),
+  ),
+  nb: z.preprocess(toNumber, z.number().min(1).max(30)),
+  offset: z.preprocess(toNumber, z.number().min(0).default(0)),
 });
 
 router.get(
@@ -250,15 +208,9 @@ router.get(
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, nb, offset } = req.query;
+    const { start, end, nb, offset } = req.query as TypedPayload<typeof intervalPerSchemaNbOffset>;
 
-    const result = await getBestSongsNbOffseted(
-      user,
-      start as unknown as Date,
-      end as unknown as Date,
-      nb as unknown as number,
-      offset as unknown as number,
-    );
+    const result = await getBestSongsNbOffseted(user, start, end, nb, offset);
     return res.status(200).send(result);
   },
 );
@@ -269,15 +221,9 @@ router.get(
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, nb, offset } = req.query;
+    const { start, end, nb, offset } = req.query as TypedPayload<typeof intervalPerSchemaNbOffset>;
 
-    const result = await getBestArtistsNbOffseted(
-      user,
-      start as unknown as Date,
-      end as unknown as Date,
-      nb as unknown as number,
-      offset as unknown as number,
-    );
+    const result = await getBestArtistsNbOffseted(user, start, end, nb, offset);
     return res.status(200).send(result);
   },
 );
@@ -288,15 +234,9 @@ router.get(
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, nb, offset } = req.query;
+    const { start, end, nb, offset } = req.query as TypedPayload<typeof intervalPerSchemaNbOffset>;
 
-    const result = await getBestAlbumsNbOffseted(
-      user,
-      start as unknown as Date,
-      end as unknown as Date,
-      nb as unknown as number,
-      offset as unknown as number,
-    );
+    const result = await getBestAlbumsNbOffseted(user, start, end, nb, offset);
     return res.status(200).send(result);
   },
 );

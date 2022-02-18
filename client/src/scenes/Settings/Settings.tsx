@@ -12,6 +12,7 @@ import { changeRegistrations } from '../../services/redux/modules/settings/thunk
 import { selectUser } from '../../services/redux/modules/user/selector';
 import { changePasswordForAccountId } from '../../services/redux/modules/user/thunk';
 import { getSpotifyLogUrl } from '../../services/tools';
+import Importer from './Importer';
 import s from './index.module.css';
 import SettingLine from './SettingLine';
 
@@ -135,6 +136,11 @@ export default function Settings() {
               <Button>
                 <a href={getSpotifyLogUrl()}>Relog to Spotify</a>
               </Button>
+            </TitleCard>
+          </Grid>
+          <Grid item xs={12} md={12} lg={6}>
+            <TitleCard title="Import data">
+              <Importer />
             </TitleCard>
           </Grid>
         </Grid>

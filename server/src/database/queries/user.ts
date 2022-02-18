@@ -69,6 +69,18 @@ export const addTrackIdsToUser = async (id: string, infos: Omit<Infos, 'owner'>[
   });
 };
 
+export const getCloseTrackId = async (
+  userId: string,
+  trackId: string,
+  startDate: Date,
+  endDate: Date,
+) =>
+  InfosModel.find({
+    owner: userId,
+    id: trackId,
+    played_at: { $gt: startDate, $lt: endDate },
+  });
+
 export const getSongs = async (userId: string, offset: number, number: number) => {
   const fullUser = await UserModel.findById(userId).populate({
     path: 'tracks',

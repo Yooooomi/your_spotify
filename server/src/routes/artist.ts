@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 import {
   getArtists,
   getFirstAndLastListened,
@@ -12,18 +12,18 @@ import {
 } from '../database';
 import { logger } from '../tools/logger';
 import { logged, validating } from '../tools/middleware';
-import { LoggedRequest } from '../tools/types';
+import { LoggedRequest, TypedPayload } from '../tools/types';
 
 const router = Router();
 export default router;
 
-const getArtistsSchema = Joi.object().keys({
-  ids: Joi.string().required(),
+const getArtistsSchema = z.object({
+  ids: z.string(),
 });
 
 router.get('/:ids', validating(getArtistsSchema, 'params'), logged, async (req, res) => {
   try {
-    const { ids } = req.params;
+    const { ids } = req.params as TypedPayload<typeof getArtistsSchema>;
     const artists = await getArtists(ids.split(','));
     if (!artists || artists.length === 0) {
       return res.status(404).end();
@@ -35,14 +35,14 @@ router.get('/:ids', validating(getArtistsSchema, 'params'), logged, async (req, 
   }
 });
 
-const getArtistStats = Joi.object().keys({
-  id: Joi.string().required(),
+const getArtistStats = z.object({
+  id: z.string(),
 });
 
 router.get('/:id/stats', validating(getArtistStats, 'params'), logged, async (req, res) => {
   try {
     const { user } = req as LoggedRequest;
-    const { id } = req.params;
+    const { id } = req.params as TypedPayload<typeof getArtistStats>;
 
     const artist = await getArtists([id]);
     if (!artist) {
@@ -79,12 +79,12 @@ router.get('/:id/stats', validating(getArtistStats, 'params'), logged, async (re
   }
 });
 
-const search = Joi.object().keys({
-  query: Joi.string().min(3).max(64).required(),
+const search = z.object({
+  query: z.string().min(3).max(64),
 });
 
 router.get('/search/:query', validating(search, 'params'), logged, async (req, res) => {
-  const { query } = req.params;
+  const { query } = req.params as TypedPayload<typeof search>;
 
   try {
     const results = await searchArtist(query);

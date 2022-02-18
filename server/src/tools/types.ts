@@ -1,10 +1,13 @@
 import { Request } from 'express';
+import { z } from 'zod';
 import { GlobalPreferences } from '../database/schemas/globalPreference';
 import { User } from '../database/schemas/user';
 
 export interface GlobalPreferencesRequest extends Request {
   globalPreferences: GlobalPreferences;
 }
+
+export type TypedPayload<T extends z.AnyZodObject> = z.infer<T>;
 
 export interface LoggedRequest extends Request {
   user: User;

@@ -1,9 +1,9 @@
-
 # Local installation (no docker)
 
 ## Prerequisites
 
 You will need to have
+
 - A mongo database
 - NodeJS
 
@@ -14,13 +14,7 @@ You will need to have
 - Run `yarn migrate` with the right environment variables
 - Run `node lib/bin/www.js` the right environment variables
 
-The environment variables are the same as in the docker-compose for server:
-  - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
-  - CLIENT_ENDPOINT=http://localhost:3000
-  - SPOTIFY_PUBLIC=your_spotify_client_id
-  - SPOTIFY_SECRET=your_spotify_secret
-  - CORS=http://localhost:3000,http://localhost:3001
-
+The environment variables are the same as in the docker-compose for server, with an additional `PORT` variable you can set.
 
 ## Hosting client
 

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { Schema } from 'joi';
+import { AnyZodObject } from 'zod';
 import { verify } from 'jsonwebtoken';
 import { Types } from 'mongoose';
 import { getUserFromField, storeInUser, getGlobalPreferences } from '../database';
@@ -10,18 +10,16 @@ import { GlobalPreferencesRequest, LoggedRequest, SpotifyRequest } from './types
 type Location = 'body' | 'params' | 'query';
 
 export const validating =
-  (schema: Schema, location: Location = 'body') =>
+  (schema: AnyZodObject, location: Location = 'body') =>
   (req: Request, res: Response, next: NextFunction) => {
-    const { error, value } = schema.validate(req[location]);
-
-    if (error) {
-      logger.error(error);
+    try {
+      const value = schema.parse(req[location]);
+      req[location] = value;
+      return next();
+    } catch (e) {
+      logger.error(e);
       return res.status(400).end();
     }
-
-    req[location] = value;
-
-    return next();
   };
 
 export const logged = async (req: Request, res: Response, next: NextFunction) => {

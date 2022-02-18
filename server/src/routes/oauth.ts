@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { storeInUser } from '../database';
+import { get } from '../tools/env';
 import { logger } from '../tools/logger';
 import { logged, withHttpClient } from '../tools/middleware';
 import { Spotify } from '../tools/oauth/Provider';
@@ -21,7 +22,7 @@ router.get('/spotify/callback', logged, async (req, res) => {
     activated: true,
   });
 
-  return res.redirect(process.env.CLIENT_ENDPOINT);
+  return res.redirect(get('CLIENT_ENDPOINT'));
 });
 
 router.get('/spotify/me', logged, withHttpClient, async (req, res) => {

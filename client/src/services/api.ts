@@ -1,3 +1,4 @@
+import Axios from 'axios';
 import { User } from './redux/modules/user/types';
 import {
   Album,
@@ -11,8 +12,6 @@ import {
   TrackInfoWithTrack,
   SpotifyMe,
 } from './types';
-
-const Axios = require('axios');
 
 const axios = Axios.create({
   /* @ts-ignore-next-line */
@@ -36,6 +35,10 @@ const get = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: 
 
 const post = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
   axios.post(url, params);
+
+export type GetImport =
+  | { running: false }
+  | { running: true; progress: [number, number] | undefined };
 
 export type ArtistStatsResponse = {
   artist: Artist;
@@ -290,4 +293,17 @@ export const api = {
       nb,
       offset,
     }),
+  getImport: () => get<GetImport>('/import'),
+  doImport: (files: File[]) => {
+    const formData = new FormData();
+    formData.append('importerName', 'privacy');
+    files.forEach((file) => {
+      formData.append('imports', file);
+    });
+    return axios.post('/import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
 };

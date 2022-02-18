@@ -6,7 +6,10 @@
 }
 
 .title {
+  display: block;
   margin-bottom: 32px;
+  text-decoration: none;
+  color: white;
 }
 
 .input {

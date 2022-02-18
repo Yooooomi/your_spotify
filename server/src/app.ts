@@ -7,15 +7,17 @@ import oauthRouter from './routes/oauth';
 import spotifyRouter from './routes/spotify';
 import globalRouter from './routes/global';
 import artistRouter from './routes/artist';
+import importRouter from './routes/importer';
+import { getWithDefault } from './tools/env';
 
 const app = express();
 
 app.use(morgan('dev'));
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const cors = process.env.CORS || '';
+const cors = getWithDefault('CORS', '');
 const corsList = cors.split(',');
 
 app.use((req, res, next) => {
@@ -53,5 +55,6 @@ app.use('/oauth', oauthRouter);
 app.use('/spotify', spotifyRouter);
 app.use('/global', globalRouter);
 app.use('/artist', artistRouter);
+app.use('/', importRouter);
 
 export default app;

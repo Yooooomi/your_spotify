@@ -1,4 +1,5 @@
 import { PipelineStage } from 'mongoose';
+import { getWithDefault } from '../../tools/env';
 import { Timesplit } from '../../tools/types';
 import { User } from '../schemas/user';
 
@@ -69,11 +70,13 @@ export const sortByTimeSplit = (timeSplit: Timesplit, prefix = ''): PipelineStag
 };
 
 export const getGroupByDateProjection = () => ({
-  year: { $year: { date: '$played_at', timezone: 'Europe/Paris' } },
-  month: { $month: { date: '$played_at', timezone: 'Europe/Paris' } },
-  day: { $dayOfMonth: { date: '$played_at', timezone: 'Europe/Paris' } },
-  week: { $week: { date: '$played_at', timezone: 'Europe/Paris' } },
-  hour: { $hour: { date: '$played_at', timezone: 'Europe/Paris' } },
+  year: { $year: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') } },
+  month: { $month: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') } },
+  day: {
+    $dayOfMonth: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') },
+  },
+  week: { $week: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') } },
+  hour: { $hour: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') } },
 });
 
 export const getTrackSumType = (user: User) => {

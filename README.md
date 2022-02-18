@@ -1,8 +1,9 @@
 ![Client CI](https://github.com/Yooooomi/your_spotify/workflows/Client%20CI/badge.svg)
 ![Server CI](https://github.com/Yooooomi/your_spotify/workflows/Server%20CI/badge.svg)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=BLAPT49PK9A8G)
 
 <p align='center'>
-  <img width="100%" src="https://i.imgur.com/wbOhp0F.png">
+  <img width="100%" src="https://user-images.githubusercontent.com/17204739/154752226-c2215a51-e20e-4ade-ac63-42c5abb25240.png">
 </p>
 
 # Your Spotify
@@ -46,6 +47,8 @@ services:
       - CORS=http://localhost:3000,http://localhost:3001
       #- CORS=all
       #- MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
+      #- MAX_IMPORT_CACHE_SIZE=100000 # Number of items cached during import of past history
+      #- TIMEZONE=Europe/Paris # Only affects read requests, write are in UTC time
   mongo:
     container_name: mongo
     image: mongo
@@ -91,6 +94,21 @@ To do so, you need to create a **Spotify application** [here](https://developer.
    2. add your URI under the `Redirect URIs` section
    - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
 
+# Importing past history
+
+By default, Your Spotify will only retrieve data for the past 24 hours once registered. This is a technical limitation. However, you can:
+
+- Request your **privacy data** at Spotify to have access to your history for the past year [here](https://www.spotify.com/us/account/privacy/).
+- Optional: once received (after a week), you can ask for extended data that will get you your whole history since the creation of the account.
+- Go to the **settings** of your account and import your `StreamingHistoryX.json` files.
+- Now you can follow the progress of the import with the progress bar.
+
+> It is safer to do this at the account creation. Though YourSpotify detects duplicates, some may still be inserted. However, song search is pretty accurate since it filters on artist then search for the song name.
+
+> If the server reboots, the import will be terminated. You can safely start another import with the same data as it will skip already existing items.
+
+The import process uses cache to limit requests to the Spotify API. By default, the cache size is unlimited, but you can limit is with the `MAX_IMPORT_CACHE_SIZE` env variable in the **server**.
+
 # FAQ
 
 > How can I block new registrations?
@@ -112,3 +130,11 @@ This means that your web application can't connect to the backend. Check that yo
 # External guides
 
 - [BreadNet](https://breadnet.co.uk/installing) installation tutorial
+
+# Contributing
+
+If you have any issue or any idea that could make the project better, feel free to open an [issue](https://github.com/Yooooomi/your_spotify/issues/new/choose). I'd love to hear about new ideas or bugs you are encountering.
+
+# Sponsoring
+
+I work on this project on my spare time and try to fix issues as soon as I can. If you feel generous and like this project and my investment are worth a few cents, you can consider sponsoring it with the button on the right, many thanks.

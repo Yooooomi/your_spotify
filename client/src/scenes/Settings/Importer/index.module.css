@@ -1,0 +1,27 @@
+
+.import {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.alert {
+  color: orange;
+  font-weight: bold;
+  margin: 16px 0px;
+  display: block;
+}
+
+.noalert {
+  color: green;
+  font-weight: bold;
+  margin: 16px 0px;
+  display: block;
+}
+
+.importButton {
+  margin-top: 16px !important;
+}
+
+.progress {
+  margin-bottom: 8px;
+}

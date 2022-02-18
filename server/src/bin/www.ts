@@ -9,32 +9,13 @@ import { dbLoop } from '../spotify/looper';
 import app from '../app';
 import { logger } from '../tools/logger';
 import { connect } from '../database';
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val: string) {
-  const port = parseInt(val, 10);
-
-  if (Number.isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
+import { getWithDefault } from '../tools/env';
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '8080');
+const port = getWithDefault('PORT', 8080);
 app.set('port', port);
 
 /**

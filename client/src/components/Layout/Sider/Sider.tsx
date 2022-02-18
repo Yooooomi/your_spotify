@@ -93,7 +93,9 @@ export default function Sider({ className }: SiderProps) {
 
   return (
     <div className={clsx(s.root, className)}>
-      <h1 className={s.title}>Your Spotify</h1>
+      <Link to="/" className={s.title}>
+        <h1>Your Spotify</h1>
+      </Link>
       <input
         className={s.input}
         placeholder="Search..."
