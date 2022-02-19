@@ -58,7 +58,7 @@ WorkingDirectory=/home/users/samip537/filesystem/
 WantedBy=multi-user.target
 ```
 
-- Enable the services and start them with  `systemctl --user --now enable mongodb` `systemctl --user --now enable your_spotify`.
+- Enable the services and start them with `systemctl --user --now enable mongodb` and `systemctl --user --now enable your_spotify`.
 - The backend should have started up properly.
 
 ## Hosting client
