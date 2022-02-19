@@ -22,6 +22,8 @@ const lastMonth = new Date();
 lastMonth.setMonth(lastMonth.getMonth() - 1);
 const lastYear = new Date();
 lastYear.setFullYear(lastYear.getFullYear() - 1);
+const lastYearToDecember = new Date();
+lastYearToDecember.setFullYear(new Date().getFullYear() - 1, 12, 0);
 const now = new Date();
 
 export const intervals: { name: string; interval: Interval; unit: string }[] = [
@@ -42,6 +44,11 @@ export const intervals: { name: string; interval: Interval; unit: string }[] = [
   },
   {
     name: 'Last year',
+    unit: 'year',
+    interval: { timesplit: Timesplit.month, start: lastYear, end: lastYearToDecember },
+  },
+  {
+    name: 'Last year to today',
     unit: 'year',
     interval: { timesplit: Timesplit.month, start: lastYear, end: now },
   },
