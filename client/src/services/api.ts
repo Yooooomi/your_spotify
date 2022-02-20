@@ -126,7 +126,7 @@ export const api = {
     }),
   logout: () => axios.post('/logout'),
   accountIds: () => get<{ username: string; id: string }[]>('/accountIds'),
-  me: () => get<User>('/me'),
+  me: () => get<{ status: true; user: User } | { status: false }>('/me'),
   sme: () => get<SpotifyMe>('/oauth/spotify/me'),
   globalPreferences: () => get<GlobalPreferences>('/global/preferences'),
   setGlobalPreferences: (preferences: GlobalPreferences) =>
@@ -147,11 +147,14 @@ export const api = {
       timeSplit,
     }),
   mostListenedArtist: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ artists: Artist[]; counts: number[] }[]>('/spotify/most_listened_artist', {
-      start,
-      end,
-      timeSplit,
-    }),
+    get<{ _id: DateId | undefined; artists: Artist[]; counts: number[] }[]>(
+      '/spotify/most_listened_artist',
+      {
+        start,
+        end,
+        timeSplit,
+      },
+    ),
   listened_to: (start: Date, end: Date) =>
     get('/spotify/listened_to', {
       start,

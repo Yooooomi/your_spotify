@@ -5,7 +5,12 @@ import { Types } from 'mongoose';
 import { getUserFromField, storeInUser, getGlobalPreferences } from '../database';
 import { logger } from './logger';
 import { Spotify } from './oauth/Provider';
-import { GlobalPreferencesRequest, LoggedRequest, SpotifyRequest } from './types';
+import {
+  GlobalPreferencesRequest,
+  LoggedRequest,
+  OptionalLoggedRequest,
+  SpotifyRequest,
+} from './types';
 
 type Location = 'body' | 'params' | 'query';
 
@@ -22,10 +27,10 @@ export const validating =
     }
   };
 
-export const logged = async (req: Request, res: Response, next: NextFunction) => {
+const baselogged = async (req: Request) => {
   const auth = req.cookies.token;
 
-  if (!auth) return res.status(401).end();
+  if (!auth) return null;
 
   if (auth) {
     try {
@@ -34,15 +39,29 @@ export const logged = async (req: Request, res: Response, next: NextFunction) =>
       const user = await getUserFromField('_id', new Types.ObjectId(userId.userId), false);
 
       if (!user) {
-        return res.status(401).end();
+        return null;
       }
-      (req as any).user = user;
-      return next();
+      return user;
     } catch (e) {
-      return res.status(401).end();
+      return null;
     }
   }
-  return res.status(401).end();
+  return null;
+};
+
+export const logged = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await baselogged(req);
+  if (!user) {
+    return res.status(401).end();
+  }
+  (req as LoggedRequest).user = user;
+  return next();
+};
+
+export const optionalLogged = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await baselogged(req);
+  (req as OptionalLoggedRequest).user = user;
+  return next();
 };
 
 export const withHttpClient = async (req: Request, res: Response, next: NextFunction) => {
@@ -53,7 +72,7 @@ export const withHttpClient = async (req: Request, res: Response, next: NextFunc
     expiresIn: user.expiresIn,
   };
 
-  if (user.expiresIn < Date.now()) {
+  if (Date.now() > user.expiresIn - 1000 * 120) {
     try {
       if (!user.refreshToken) {
         return;

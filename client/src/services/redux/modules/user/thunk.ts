@@ -57,7 +57,7 @@ export const register = myAsyncThunk<{ username: string; password: string }, voi
 export const checkLogged = myAsyncThunk<void, User | null>('@user/checklogged', async () => {
   try {
     const { data } = await api.me();
-    return data;
+    return data.status ? data.user : null;
   } catch (e) {
     console.error(e);
   }

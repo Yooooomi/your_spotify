@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Header from '../../components/Header';
 import History from '../../components/History';
@@ -16,9 +16,7 @@ import s from './index.module.css';
 
 export default function Home() {
   const user = useSelector(selectUser);
-  const [interval, setInterval] = useState('0');
-
-  const inter = useMemo(() => intervals[+interval], [interval]);
+  const [interval, setInterval] = useState(intervals[0]);
 
   if (!user) {
     return null;
@@ -35,25 +33,25 @@ export default function Home() {
       <div className={s.content}>
         <Grid container spacing={2} alignItems="stretch">
           <Grid item xs={12} md={12} lg={4}>
-            <SongsListened unit={inter.unit} interval={inter.interval} />
+            <SongsListened unit={interval.unit} interval={interval.interval} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <TimeListened unit={inter.unit} interval={inter.interval} />
+            <TimeListened unit={interval.unit} interval={interval.interval} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <ArtistsListened unit={inter.unit} interval={inter.interval} />
+            <ArtistsListened unit={interval.unit} interval={interval.interval} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-            <TimeListenedPer interval={inter.interval} className={s.timelisten} />
+            <TimeListenedPer interval={interval.interval} className={s.timelisten} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <BestArtist unit={inter.unit} interval={inter.interval} />
+            <BestArtist unit={interval.unit} interval={interval.interval} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-            <ListeningRepartition interval={inter.interval} className={s.timelisten} />
+            <ListeningRepartition interval={interval.interval} className={s.timelisten} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <BestSong unit={inter.unit} interval={inter.interval} />
+            <BestSong unit={interval.unit} interval={interval.interval} />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             <History />

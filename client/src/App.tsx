@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import './App.css';
 import Layout from './components/Layout';
 import Message from './components/Message';
 import PrivateRoute from './components/PrivateRoute';
@@ -16,6 +15,10 @@ import Settings from './scenes/Settings';
 import Albums from './scenes/Tops/Albums';
 import Artists from './scenes/Tops/Artists';
 import Songs from './scenes/Tops/Songs';
+
+import './App.css';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 
 function App() {
   return (

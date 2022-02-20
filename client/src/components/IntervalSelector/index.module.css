@@ -1,0 +1,14 @@
+.radiogroup {
+  display: flex;
+  align-items: center;
+}
+
+.dialogcontent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dialogcontent > :last-child {
+  margin-top: 16px;
+}

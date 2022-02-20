@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Header from '../../../components/Header';
-import { intervals } from '../../../components/IntervalSelector/IntervalSelector';
+import { IntervalDetail, intervals } from '../../../components/IntervalSelector/IntervalSelector';
 import TitleCard from '../../../components/TitleCard';
 import { api } from '../../../services/api';
 import { UnboxPromise } from '../../../services/types';
@@ -10,7 +10,7 @@ import Album from './Album';
 import Loader from '../../../components/Loader';
 
 export default function Albums() {
-  const [interval, setInterval] = useState('0');
+  const [interval, setInterval] = useState(intervals[0]);
   const [items, setItems] = useState<UnboxPromise<ReturnType<typeof api['getBestAlbums']>>['data']>(
     [],
   );
@@ -20,8 +20,8 @@ export default function Albums() {
     if (!hasMore) return;
     try {
       const result = await api.getBestAlbums(
-        intervals[+interval].interval.start,
-        intervals[+interval].interval.end,
+        interval.interval.start,
+        interval.interval.end,
         10,
         items.length,
       );
@@ -40,7 +40,7 @@ export default function Albums() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interval, items.length]);
 
-  const changeInterval = useCallback((newInterval: string) => {
+  const changeInterval = useCallback((newInterval: IntervalDetail) => {
     setInterval(newInterval);
     setItems([]);
     setHasMore(true);
@@ -58,7 +58,7 @@ export default function Albums() {
         <TitleCard title="Top albums">
           <Album line />
           <InfiniteScroll
-            key={interval}
+            key={interval.name}
             next={fetch}
             hasMore={hasMore}
             dataLength={items.length}

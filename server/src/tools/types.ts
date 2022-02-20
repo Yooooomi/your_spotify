@@ -13,6 +13,10 @@ export interface LoggedRequest extends Request {
   user: User;
 }
 
+export interface OptionalLoggedRequest extends Request {
+  user: User | null;
+}
+
 export interface SpotifyRequest extends Request {
   client: any;
 }

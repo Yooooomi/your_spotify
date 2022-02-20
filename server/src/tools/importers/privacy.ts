@@ -1,14 +1,12 @@
 /* eslint-disable no-await-in-loop */
-import { AxiosInstance } from 'axios';
 import { readFile } from 'fs/promises';
 import Joi from 'joi';
 import { addTrackIdsToUser, getCloseTrackId } from '../../database';
 import { RecentlyPlayedTrack, SpotifyTrack } from '../../database/schemas/track';
 import { User } from '../../database/schemas/user';
-import { refreshIfNeeded, saveMusics } from '../../spotify/dbTools';
+import { saveMusics } from '../../spotify/dbTools';
 import { logger } from '../logger';
 import { beforeParenthesis, removeDiacritics } from '../misc';
-import { Spotify } from '../oauth/Provider';
 import { squeue } from '../queue';
 import { getFromCache, setToCache } from './cache';
 import { HistoryImporter, PrivacyItem } from './types';
@@ -23,17 +21,17 @@ const privacyFileSchema = Joi.array().items(
 );
 
 export class PrivacyImporter implements HistoryImporter {
+  private userId: string;
+
   private user: User;
 
   private elements: PrivacyItem[] | null;
 
   private currentItem: number;
 
-  private _client: AxiosInstance | null;
-
   constructor(user: User) {
+    this.userId = user._id.toString();
     this.user = user;
-    this._client = null;
     this.elements = null;
     this.currentItem = 0;
   }
@@ -45,35 +43,23 @@ export class PrivacyImporter implements HistoryImporter {
     return [this.currentItem, this.elements.length] as [number, number];
   };
 
-  ensureClient = async () => {
-    if (this._client) return this._client;
-    const newUser = await refreshIfNeeded(this.user);
-    if (!newUser) {
-      throw new Error(`No refresh token on ${this.user.username}`);
-    }
-    this.user = newUser;
-    if (!this.user.accessToken) {
-      throw new Error(`No access token for ${this.user.username}`);
-    }
-    this._client = Spotify.getHttpClient(this.user.accessToken);
-    return this._client;
-  };
-
-  static search = async (client: AxiosInstance, track: string, artist: string) => {
-    const res = await squeue.queue(() =>
-      client.get(
-        `/search?q=track:${encodeURIComponent(track)}+artist:${encodeURIComponent(
-          artist,
-        )}&type=track&limit=10`,
-      ),
+  static search = async (userId: string, track: string, artist: string) => {
+    const res = await squeue.queue(
+      (client) =>
+        client.get(
+          `/search?q=track:${encodeURIComponent(track)}+artist:${encodeURIComponent(
+            artist,
+          )}&type=track&limit=10`,
+        ),
+      userId,
     );
     return res.data.tracks.items[0] as SpotifyTrack;
   };
 
-  storeItems = async (client: AxiosInstance, items: RecentlyPlayedTrack[]) => {
+  storeItems = async (userId: string, items: RecentlyPlayedTrack[]) => {
     await saveMusics(
+      userId,
       items.map((it) => it.track),
-      client,
     );
     const finalInfos: { played_at: Date; id: string }[] = [];
     for (let i = 0; i < items.length; i += 1) {
@@ -84,7 +70,7 @@ export class PrivacyImporter implements HistoryImporter {
       const endDate = new Date(date.getTime());
       endDate.setMinutes(endDate.getMinutes() + 1);
       const duplicate = await getCloseTrackId(
-        this.user._id.toString(),
+        this.userId.toString(),
         item.track.id,
         startDate,
         endDate,
@@ -98,7 +84,7 @@ export class PrivacyImporter implements HistoryImporter {
         id: item.track.id,
       });
     }
-    await addTrackIdsToUser(this.user._id.toString(), finalInfos);
+    await addTrackIdsToUser(this.userId.toString(), finalInfos);
   };
 
   initWithFiles = async (filePaths: string[]) => {
@@ -143,18 +129,17 @@ export class PrivacyImporter implements HistoryImporter {
         );
         continue;
       }
-      const client = await this.ensureClient();
-      let item = getFromCache(this.user._id.toString(), content.trackName, content.artistName);
+      let item = getFromCache(this.userId.toString(), content.trackName, content.artistName);
       if (!item) {
         item = await PrivacyImporter.search(
-          client,
+          this.userId,
           removeDiacritics(content.trackName),
           removeDiacritics(content.artistName),
         );
       }
       if (!item) {
         item = await PrivacyImporter.search(
-          client,
+          this.userId,
           removeDiacritics(beforeParenthesis(content.trackName)),
           removeDiacritics(beforeParenthesis(content.artistName)),
         );
@@ -163,17 +148,18 @@ export class PrivacyImporter implements HistoryImporter {
         logger.warn(`${content.trackName} by ${content.artistName} was not found by search`);
         continue;
       }
-      setToCache(this.user._id.toString(), content.trackName, content.artistName, item);
-      logger.info(`Adding ${item.name} - ${item.artists[0].name} from data`);
+      setToCache(this.userId.toString(), content.trackName, content.artistName, item);
+      logger.info(
+        `Adding ${item.name} - ${item.artists[0].name} from data (${i}/${this.elements.length})`,
+      );
       items.push({ track: item, played_at: content.endTime });
       if (items.length >= 20) {
-        await this.storeItems(client, items);
+        await this.storeItems(this.userId, items);
         items = [];
       }
     }
-    const client = await this.ensureClient();
     if (items.length > 0) {
-      await this.storeItems(client, items);
+      await this.storeItems(this.userId, items);
       items = [];
     }
     return true;

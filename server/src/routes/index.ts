@@ -4,10 +4,15 @@ import { Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { maxStringLength } from '../tools/constants';
-import { logged, validating, withGlobalPreferences } from '../tools/middleware';
+import { logged, optionalLogged, validating, withGlobalPreferences } from '../tools/middleware';
 import { getUserFromField, createUser, storeInUser, changeSetting, getUsers } from '../database';
 import { logger } from '../tools/logger';
-import { GlobalPreferencesRequest, LoggedRequest, TypedPayload } from '../tools/types';
+import {
+  GlobalPreferencesRequest,
+  LoggedRequest,
+  OptionalLoggedRequest,
+  TypedPayload,
+} from '../tools/types';
 import { toBoolean, toNumber } from '../tools/zod';
 
 const router = Router();
@@ -147,9 +152,12 @@ router.post('/settings', validating(settingsSchema), logged, async (req, res) =>
   }
 });
 
-router.get('/me', logged, async (req, res) => {
-  const { user } = req as LoggedRequest;
-  res.status(200).send(user);
+router.get('/me', optionalLogged, async (req, res) => {
+  const { user } = req as OptionalLoggedRequest;
+  if (user) {
+    return res.status(200).send({ status: true, user });
+  }
+  return res.status(200).send({ status: false });
 });
 
 router.get('/accountids', logged, async (req, res) => {

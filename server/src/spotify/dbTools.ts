@@ -1,16 +1,12 @@
-import { AxiosInstance } from 'axios';
-import { storeInUser } from '../database';
 import { TrackModel, AlbumModel, ArtistModel } from '../database/Models';
 import { SpotifyAlbum, Album } from '../database/schemas/album';
 import { SpotifyArtist, Artist } from '../database/schemas/artist';
 import { SpotifyTrack, Track } from '../database/schemas/track';
-import { User } from '../database/schemas/user';
 import { logger } from '../tools/logger';
-import { Spotify } from '../tools/oauth/Provider';
 import { squeue } from '../tools/queue';
 
 const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist>(
-  client: AxiosInstance,
+  userId: string,
   url: string,
   ids: string[],
   max: number,
@@ -28,7 +24,7 @@ const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | Spotify
   for (let i = 0; i < idsArray.length; i += 1) {
     const builtUrl = `${url}?ids=${idsArray[i].join(',')}`;
     // eslint-disable-next-line no-await-in-loop
-    const { data } = await squeue.queue(() => client.get(builtUrl));
+    const { data } = await squeue.queue((client) => client.get(builtUrl), userId);
     datas.push(...data[arrayPath]);
   }
   return datas as T[];
@@ -36,8 +32,8 @@ const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | Spotify
 
 const url = 'https://api.spotify.com/v1/tracks';
 
-const storeTracksAndReturnAlbumsArtists = async (ids: string[], client: AxiosInstance) => {
-  const spotifyTracks = await getIdsHandlingMax<SpotifyTrack>(client, url, ids, 50, 'tracks');
+const storeTracksAndReturnAlbumsArtists = async (userId: string, ids: string[]) => {
+  const spotifyTracks = await getIdsHandlingMax<SpotifyTrack>(userId, url, ids, 50, 'tracks');
 
   const artistIds: string[] = [];
   const albumIds: string[] = [];
@@ -72,8 +68,8 @@ const storeTracksAndReturnAlbumsArtists = async (ids: string[], client: AxiosIns
 
 const albumUrl = 'https://api.spotify.com/v1/albums';
 
-const storeAlbums = async (ids: string[], client: AxiosInstance) => {
-  const spotifyAlbums = await getIdsHandlingMax<SpotifyAlbum>(client, albumUrl, ids, 20, 'albums');
+const storeAlbums = async (userId: string, ids: string[]) => {
+  const spotifyAlbums = await getIdsHandlingMax<SpotifyAlbum>(userId, albumUrl, ids, 20, 'albums');
 
   const albums: Album[] = spotifyAlbums.map((alb) => {
     logger.info(`Storing non existing album ${alb.name} by ${alb.artists[0].name}`);
@@ -89,15 +85,15 @@ const storeAlbums = async (ids: string[], client: AxiosInstance) => {
 
 const artistUrl = 'https://api.spotify.com/v1/artists';
 
-const storeArtists = async (ids: string[], client: AxiosInstance) => {
-  const artists = await getIdsHandlingMax<SpotifyTrack>(client, artistUrl, ids, 50, 'artists');
+const storeArtists = async (userId: string, ids: string[]) => {
+  const artists = await getIdsHandlingMax<SpotifyTrack>(userId, artistUrl, ids, 50, 'artists');
 
   artists.forEach((artist) => logger.info(`Storing non existing artist ${artist.name}`));
 
   await ArtistModel.create(artists).catch(() => {});
 };
 
-export const saveMusics = async (tracks: SpotifyTrack[], client: AxiosInstance) => {
+export const saveMusics = async (userId: string, tracks: SpotifyTrack[]) => {
   const ids = tracks.map((track) => track.id);
   const storedTracks: Track[] = await TrackModel.find({ id: { $in: ids } });
   const missingTrackIds = ids.filter(
@@ -109,7 +105,7 @@ export const saveMusics = async (tracks: SpotifyTrack[], client: AxiosInstance) 
     return;
   }
 
-  const { artists, albums } = await storeTracksAndReturnAlbumsArtists(missingTrackIds, client);
+  const { artists, albums } = await storeTracksAndReturnAlbumsArtists(userId, missingTrackIds);
 
   const storedAlbums: Album[] = await AlbumModel.find({ id: { $in: albums } });
   const missingAlbumIds = albums.filter(
@@ -124,25 +120,9 @@ export const saveMusics = async (tracks: SpotifyTrack[], client: AxiosInstance) 
   );
 
   if (missingAlbumIds.length > 0) {
-    await storeAlbums(missingAlbumIds, client);
+    await storeAlbums(userId, missingAlbumIds);
   }
   if (missingArtistIds.length > 0) {
-    await storeArtists(missingArtistIds, client);
+    await storeArtists(userId, missingArtistIds);
   }
-};
-
-export const refreshIfNeeded = async (user: User) => {
-  // Refresh the token it it expires in less than two minutes (1000ms * 120)
-  if (Date.now() > user.expiresIn - 1000 * 120) {
-    const token = user.refreshToken;
-    if (!token) {
-      return null;
-    }
-    const infos = await squeue.queue(() => Spotify.refresh(token));
-
-    const newUser = await storeInUser('_id', user._id, infos);
-    logger.info(`Refreshed token for ${user.username}`);
-    return newUser;
-  }
-  return user;
 };

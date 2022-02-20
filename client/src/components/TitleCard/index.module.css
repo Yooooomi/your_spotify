@@ -1,6 +1,7 @@
 .root {
   background-color: white;
   box-shadow: var(--shadow) !important;
+  border-radius: 6px;
 }
 
 .container {

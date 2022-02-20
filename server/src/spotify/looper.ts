@@ -4,25 +4,17 @@ import { RecentlyPlayedTrack } from '../database/schemas/track';
 import { User } from '../database/schemas/user';
 import { logger } from '../tools/logger';
 import { wait } from '../tools/misc';
-import { Spotify } from '../tools/oauth/Provider';
-import { refreshIfNeeded, saveMusics } from './dbTools';
+import { squeue } from '../tools/queue';
+import { saveMusics } from './dbTools';
 
 const loop = async (user: User) => {
   logger.info(`Refreshing songs for ${user.username}`);
-
-  const newUser = await refreshIfNeeded(user);
-  if (!newUser) {
-    logger.error(`${user.username} has no refresh token`);
-    return;
-  }
-  user = newUser;
 
   if (!user.accessToken) {
     logger.error(`User ${user.username} has not access token, please relog to Spotify`);
     return;
   }
 
-  const client = Spotify.getHttpClient(user.accessToken);
   const url = `/me/player/recently-played?after=${user.lastTimestamp}`;
 
   try {
@@ -30,7 +22,9 @@ const loop = async (user: User) => {
     let nextUrl = url;
 
     do {
-      const response = await client.get(nextUrl);
+      // It is safe since the promise will resolve only when the callback is called
+      // eslint-disable-next-line @typescript-eslint/no-loop-func
+      const response = await squeue.queue((client) => client.get(nextUrl), user._id.toString());
       const { data } = response;
       items.push(...data.items);
       nextUrl = data.next;
@@ -43,7 +37,7 @@ const loop = async (user: User) => {
     if (items.length > 0) {
       const tracks = items.map((e) => e.track);
       try {
-        await saveMusics(tracks, client);
+        await saveMusics(user._id.toString(), tracks);
         const infos = items.map((e) => ({
           played_at: new Date(e.played_at),
           id: e.track.id,

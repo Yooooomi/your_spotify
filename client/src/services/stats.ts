@@ -130,11 +130,61 @@ export const buildXYData = (
   return built;
 };
 
-export const useFormatXAxis = (
-  data: { x: number; y: number; date: Date }[],
+export const buildXYDataObjSpread = (
+  data: ({ _id: DateId } & any)[],
+  keys: string[],
   start: Date,
   end: Date,
-) =>
+  doNotFillData = false,
+) => {
+  start = fresh(start);
+  end = fresh(end);
+  if (data.length === 0) {
+    return [];
+  }
+  const precision = getPrecisionFromDateId(data[0]._id);
+  const built: { x: number; date: Date }[] = [];
+  const totalIndex = countTotalIndexes(precision, start, end);
+  const zeros = keys.reduce<Record<string, number>>((acc, curr) => {
+    acc[curr] = 0;
+    return acc;
+  }, {});
+  data.forEach((d) => {
+    const nextIndex = Math.floor(countIndexes(start, d._id));
+    if (!doNotFillData) {
+      const currentIndex = built.length;
+      const diff = nextIndex - currentIndex;
+      for (let i = 0; i < diff; i += 1) {
+        built.push({
+          ...zeros,
+          x: currentIndex + i,
+          date: getDateFromIndex(currentIndex + i, totalIndex, start, end),
+        });
+      }
+    }
+    built.push({
+      ...zeros,
+      ...d,
+      x: nextIndex,
+      date: getDateFromIndex(nextIndex, totalIndex, start, end),
+    });
+  });
+  if (!doNotFillData) {
+    const nextIndex = totalIndex - 1;
+    const currentIndex = built.length;
+    const diff = nextIndex - currentIndex;
+    for (let i = 0; i < diff; i += 1) {
+      built.push({
+        ...zeros,
+        x: currentIndex + i,
+        date: getDateFromIndex(currentIndex + i, totalIndex, start, end),
+      });
+    }
+  }
+  return built;
+};
+
+export const useFormatXAxis = (data: { x: number; date: Date }[], start: Date, end: Date) =>
   useCallback(
     (value: number) => {
       const dataValue = data.find((d) => d.x === value);

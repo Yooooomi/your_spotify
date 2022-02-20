@@ -23,13 +23,13 @@
 }
 
 .artistname {
-  flex: 4;
+  flex: 2;
   font-weight: bold;
 }
 
-.playedat {
-  flex: 1;
+.genres {
   text-align: center;
+  flex: 4;
 }
 
 .sumcount {

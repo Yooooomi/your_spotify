@@ -2,6 +2,7 @@ import { Grid } from '@mui/material';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Header from '../../components/Header';
+import ArtistListeningRepartition from '../../components/ImplementedCharts/ArtistListeningRepartition';
 import AverageAlbumReleaseDate from '../../components/ImplementedCharts/AverageAlbumReleaseDate';
 import AverageNumberArtistPer from '../../components/ImplementedCharts/AverageNumberArtistPer';
 import AverageSongPopularityPer from '../../components/ImplementedCharts/AverageSongPopularityPer';
@@ -16,7 +17,7 @@ import s from './index.module.css';
 
 export default function AllStats() {
   const user = useSelector(selectUser);
-  const [interval, setInterval] = useState('0');
+  const [interval, setInterval] = useState(intervals[0]);
 
   if (!user) {
     return null;
@@ -34,34 +35,31 @@ export default function AllStats() {
       <div className={s.content}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={6}>
-            <BestArtistsBar interval={intervals[+interval].interval} className={s.chart} />
+            <BestArtistsBar interval={interval.interval} className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
-            <ListeningRepartition interval={intervals[+interval].interval} className={s.chart} />
+            <ListeningRepartition interval={interval.interval} className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
-            <AverageSongPopularityPer
-              interval={intervals[+interval].interval}
-              className={s.chart}
-            />
+            <ArtistListeningRepartition interval={interval.interval} className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
-            <AverageAlbumReleaseDate interval={intervals[+interval].interval} className={s.chart} />
+            <AverageSongPopularityPer interval={interval.interval} className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
-            <DifferentArtistListenedPer
-              interval={intervals[+interval].interval}
-              className={s.chart}
-            />
+            <AverageAlbumReleaseDate interval={interval.interval} className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
-            <AverageNumberArtistPer interval={intervals[+interval].interval} className={s.chart} />
+            <DifferentArtistListenedPer interval={interval.interval} className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
-            <SongsListenedPer interval={intervals[+interval].interval} className={s.chart} />
+            <AverageNumberArtistPer interval={interval.interval} className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
-            <TimeListenedPer interval={intervals[+interval].interval} className={s.chart} />
+            <SongsListenedPer interval={interval.interval} className={s.chart} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={6}>
+            <TimeListenedPer interval={interval.interval} className={s.chart} />
           </Grid>
         </Grid>
       </div>

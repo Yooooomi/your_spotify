@@ -22,11 +22,13 @@ interface HeaderArtistProps {
 
 export default function Artist(props: ArtistProps | HeaderArtistProps) {
   const upmd = useMediaQuery('(min-width: 1150px)');
+  const upmobile = useMediaQuery('(min-width: 600px)');
 
   if (props.line) {
     return (
       <div className={s.root}>
         <span className={s.artistname}>Artist name</span>
+        {upmobile && <span className={clsx(s.genres, s.header)}>Genres</span>}
         <span className={clsx(s.sumcount, s.header)}>Count</span>
         <span className={clsx(s.sumduration, s.header)}>Total duration</span>
       </div>
@@ -40,6 +42,7 @@ export default function Artist(props: ArtistProps | HeaderArtistProps) {
       <span className={s.artistname}>
         <InlineArtist artist={artist} />
       </span>
+      {upmobile && <span className={s.genres}>{artist.genres.join(', ')}</span>}
       <span className={s.sumcount}>
         {count} {upmd && <span>({Math.floor((count / totalCount) * 10000) / 100})</span>}
       </span>

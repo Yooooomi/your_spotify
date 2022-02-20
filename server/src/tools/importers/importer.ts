@@ -1,6 +1,5 @@
 import { unlink } from 'fs/promises';
 import { User } from '../../database/schemas/user';
-import { refreshIfNeeded } from '../../spotify/dbTools';
 import { logger } from '../logger';
 import { clearCache } from './cache';
 import { PrivacyImporter } from './privacy';
@@ -32,14 +31,8 @@ export async function runImporter(
     logger.error(`${name} importer was not found`);
     return;
   }
-  const newUser = await refreshIfNeeded(user);
-  if (!newUser) {
-    logger.error(`Could not refresh token for ${user.username}`);
-    return;
-  }
-  user = newUser;
-  if (!user.accessToken) {
-    logger.error(`No access token for ${user.username}`);
+  if (!user.accessToken || !user.refreshToken) {
+    logger.error(`User ${user.username} has no accessToken or no refreshToken`);
     return;
   }
   const instance = importerClass(user);

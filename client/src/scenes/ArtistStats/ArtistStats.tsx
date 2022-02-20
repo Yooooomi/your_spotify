@@ -49,7 +49,7 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
       <Header
         left={<img className={s.headerimage} src={getImage(stats.artist)} alt="Artist" />}
         title={stats.artist.name}
-        subtitle={`All the stats about ${stats.artist.name}`}
+        subtitle={stats.artist.genres.join(', ')}
       />
       <div className={s.content}>
         <div className={s.header}>

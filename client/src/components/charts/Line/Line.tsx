@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { LineChart, Line as RLine, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-import { Payload, NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import { useRawTooltipLabelFormatter, useRawTooltipValueFormatter } from '../../../services/chart';
 
-interface LineProps<D extends { x: number; y: number }> {
+interface LineProps<D extends { x: number; y: number; date: Date }> {
   data: D[];
   xFormat?: React.ComponentProps<typeof XAxis>['tickFormatter'];
   yFormat?: React.ComponentProps<typeof YAxis>['tickFormatter'];
@@ -10,28 +10,15 @@ interface LineProps<D extends { x: number; y: number }> {
   tooltipValueFormatter?: (value: number, payload: D) => string;
 }
 
-export default function Line<D extends { x: number; y: number }>({
+export default function Line<D extends { x: number; y: number; date: Date }>({
   data,
   xFormat,
   yFormat,
   tooltipLabelFormatter,
   tooltipValueFormatter,
 }: LineProps<D>) {
-  const internTooltipLabelFormatter = useCallback(
-    <T extends NameType, V extends ValueType>(label: string, payload: Payload<V, T>[]) =>
-      tooltipLabelFormatter ? payload?.map((p) => tooltipLabelFormatter(label, p.payload)) : label,
-    [tooltipLabelFormatter],
-  );
-
-  const internTooltipValueFormatter = useCallback(
-    (value: any, b: any, pr: any) => {
-      if (tooltipValueFormatter) {
-        return [tooltipValueFormatter(value, pr.payload), null];
-      }
-      return value;
-    },
-    [tooltipValueFormatter],
-  );
+  const internTooltipLabelFormatter = useRawTooltipLabelFormatter(tooltipLabelFormatter);
+  const internTooltipValueFormatter = useRawTooltipValueFormatter(tooltipValueFormatter);
 
   return (
     <ResponsiveContainer width="100%" height="100%">
