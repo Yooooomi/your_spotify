@@ -144,8 +144,8 @@ export default function IntervalSelector({ value, onChange }: IntervalSelectorPr
     }
     onChange({
       interval: {
-        start: customIntervalDate.startDate,
-        end: customIntervalDate.endDate,
+        start: cloneDate(customIntervalDate.startDate),
+        end: cloneDate(customIntervalDate.endDate),
         timesplit: getAppropriateTimesplitFromRange(
           customIntervalDate.startDate,
           customIntervalDate.endDate,

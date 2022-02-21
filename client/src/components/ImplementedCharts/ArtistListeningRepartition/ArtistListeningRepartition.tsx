@@ -66,7 +66,7 @@ export default function ArtistListeningRepartition({
       return obj;
     }, []);
     return buildXYDataObjSpread(d, Object.keys(allArtists), interval.start, interval.end, false);
-  }, [allArtists, interval.end, interval.start, resultsWithCount]);
+  }, [allArtists, interval, resultsWithCount]);
 
   const tooltipLabelFormatter = useRawTooltipLabelFormatter(formatXAxisDateTooltip, false);
 

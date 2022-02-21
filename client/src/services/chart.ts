@@ -6,7 +6,10 @@ export const useRawTooltipLabelFormatter = <D extends { x: number; y: number; da
   forEveryEntry = true,
 ) => {
   const fn = useCallback(
-    <T extends NameType, V extends ValueType>(label: string, payload: Payload<V, T>[]) => {
+    <T extends NameType, V extends ValueType>(label: string, payload?: Payload<V, T>[]) => {
+      if (!payload) {
+        return null;
+      }
       if (tooltipLabelFormatter) {
         if (forEveryEntry) {
           return payload?.map((p) => tooltipLabelFormatter(label, p.payload));

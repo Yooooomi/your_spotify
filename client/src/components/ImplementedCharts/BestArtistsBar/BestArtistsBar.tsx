@@ -8,6 +8,7 @@ import { ImplementedChartProps } from '../types';
 import { Artist } from '../../../services/types';
 import ChartCard from '../../ChartCard';
 import { getImage } from '../../../services/tools';
+import LoadingImplementedChart from '../LoadingImplementedChart';
 
 interface BestArtistsBarProps extends ImplementedChartProps {}
 
@@ -78,7 +79,7 @@ export default function BestArtistsBar({ className, interval }: BestArtistsBarPr
   );
 
   if (!result) {
-    return null;
+    return <LoadingImplementedChart title="Best artists" className={className} />;
   }
 
   return (

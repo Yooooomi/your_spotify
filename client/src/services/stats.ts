@@ -82,11 +82,13 @@ const getPrecisionFromDateId = (dateId: DateId) => {
   return Precision.year;
 };
 
-export const buildXYData = (
+const buildXYDataWithGetters = <Dict extends Record<string, any>>(
   data: { _id: DateId; value: number }[],
   start: Date,
   end: Date,
-  doNotFillData = false,
+  doNotFillData: boolean,
+  getData: (index: number) => Dict,
+  getDefaultData: () => Dict,
 ) => {
   start = fresh(start);
   end = fresh(end);
@@ -94,9 +96,17 @@ export const buildXYData = (
     return [];
   }
   const precision = getPrecisionFromDateId(data[0]._id);
-  const built: { x: number; y: number; date: Date }[] = [];
+  const built: ({ x: number; date: Date } & Dict)[] = [];
   const totalIndex = countTotalIndexes(precision, start, end);
-  data.forEach((d) => {
+  for (let dataIndex = 0; dataIndex < data.length; dataIndex += 1) {
+    const d = data[dataIndex];
+    const thisDate = buildFromDateId(d._id);
+    if (thisDate.getTime() < start.getTime()) {
+      continue;
+    }
+    if (thisDate.getTime() > end.getTime()) {
+      return built;
+    }
     const nextIndex = Math.floor(countIndexes(start, d._id));
     if (!doNotFillData) {
       const currentIndex = built.length;
@@ -104,17 +114,17 @@ export const buildXYData = (
       for (let i = 0; i < diff; i += 1) {
         built.push({
           x: currentIndex + i,
-          y: 0,
           date: getDateFromIndex(currentIndex + i, totalIndex, start, end),
+          ...getDefaultData(),
         });
       }
     }
     built.push({
       x: nextIndex,
-      y: d.value,
       date: getDateFromIndex(nextIndex, totalIndex, start, end),
+      ...getData(dataIndex),
     });
-  });
+  }
   if (!doNotFillData) {
     const nextIndex = totalIndex - 1;
     const currentIndex = built.length;
@@ -122,13 +132,28 @@ export const buildXYData = (
     for (let i = 0; i < diff; i += 1) {
       built.push({
         x: currentIndex + i,
-        y: 0,
         date: getDateFromIndex(currentIndex + i, totalIndex, start, end),
+        ...getDefaultData(),
       });
     }
   }
   return built;
 };
+
+export const buildXYData = (
+  data: { _id: DateId; value: number }[],
+  start: Date,
+  end: Date,
+  doNotFillData?: boolean,
+) =>
+  buildXYDataWithGetters(
+    data,
+    start,
+    end,
+    Boolean(doNotFillData),
+    (idx) => ({ y: data[idx].value }),
+    () => ({ y: 0 }),
+  );
 
 export const buildXYDataObjSpread = (
   data: ({ _id: DateId } & any)[],
@@ -137,51 +162,18 @@ export const buildXYDataObjSpread = (
   end: Date,
   doNotFillData = false,
 ) => {
-  start = fresh(start);
-  end = fresh(end);
-  if (data.length === 0) {
-    return [];
-  }
-  const precision = getPrecisionFromDateId(data[0]._id);
-  const built: { x: number; date: Date }[] = [];
-  const totalIndex = countTotalIndexes(precision, start, end);
   const zeros = keys.reduce<Record<string, number>>((acc, curr) => {
     acc[curr] = 0;
     return acc;
   }, {});
-  data.forEach((d) => {
-    const nextIndex = Math.floor(countIndexes(start, d._id));
-    if (!doNotFillData) {
-      const currentIndex = built.length;
-      const diff = nextIndex - currentIndex;
-      for (let i = 0; i < diff; i += 1) {
-        built.push({
-          ...zeros,
-          x: currentIndex + i,
-          date: getDateFromIndex(currentIndex + i, totalIndex, start, end),
-        });
-      }
-    }
-    built.push({
-      ...zeros,
-      ...d,
-      x: nextIndex,
-      date: getDateFromIndex(nextIndex, totalIndex, start, end),
-    });
-  });
-  if (!doNotFillData) {
-    const nextIndex = totalIndex - 1;
-    const currentIndex = built.length;
-    const diff = nextIndex - currentIndex;
-    for (let i = 0; i < diff; i += 1) {
-      built.push({
-        ...zeros,
-        x: currentIndex + i,
-        date: getDateFromIndex(currentIndex + i, totalIndex, start, end),
-      });
-    }
-  }
-  return built;
+  return buildXYDataWithGetters(
+    data,
+    start,
+    end,
+    Boolean(doNotFillData),
+    (idx) => data[idx],
+    () => zeros,
+  );
 };
 
 export const useFormatXAxis = (data: { x: number; date: Date }[], start: Date, end: Date) =>
