@@ -1,33 +1,36 @@
-FROM node:16-alpine AS builder
+FROM node:alpine3.13 as build
+
+#use env variables defined in docker compose args section, so react builds with them
+ARG NODE_ENV
+ENV NODE_ENV: ${NODE_ENV}
 
 WORKDIR /app
-
-RUN apk add python3 gcc g++ make cmake
-RUN npm install -g nodemon
-
-COPY scripts/ scripts/
 COPY package.json /app/package.json
 COPY yarn.lock /app/yarn.lock
 COPY tsconfig.json /app/tsconfig.json
+
+COPY src src
+COPY public public
+COPY nginx nginx
 
 ARG NODE_ENV
 ENV NODE_ENV ${NODE_ENV:-production}
 
 # Material UI causes installation to timeout
 RUN yarn --production=false --frozen-lockfile --network-timeout 60000
+RUN yarn build
 
-COPY src/ /app/src/
-COPY public/ /app/public/
 
-RUN sh scripts/build/*.sh
+FROM nginx:1.19-alpine
 
-FROM node:16-alpine AS final
+# Remove default nginx static assets
+RUN rm -rf /usr/share/nginx/html
 
-WORKDIR /app
+COPY --from=build /app/build /usr/share/nginx/html
+#Overriding default conf file created by nginx image
+COPY --from=build /app/nginx/templates /etc/nginx/templates
+EXPOSE 80
 
-RUN npm install -g serve
-
-COPY --from=builder /app/scripts/ /app/scripts/
-COPY --from=builder /app/build/ /app/build/
-
-ENTRYPOINT [ "sh", "/app/scripts/run/run.sh" ]
+#Nginx runs in the background, so if we don't disable daemon,
+#   container will shut down immediately upon build
+CMD [ "nginx", "-g", "daemon off;" ]

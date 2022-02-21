@@ -15,7 +15,7 @@ import { getWithDefault } from '../tools/env';
  * Get port from environment and store in Express.
  */
 
-const port = getWithDefault('PORT', 8080);
+const port = getWithDefault('APP_PORT', 8080);
 app.set('port', port);
 
 /**
@@ -40,11 +40,9 @@ function onError(error: any) {
     case 'EACCES':
       console.error(`${bind} requires elevated privileges`);
       process.exit(1);
-      break;
     case 'EADDRINUSE':
       console.error(`${bind} is already in use`);
       process.exit(1);
-      break;
     default:
       throw error;
   }

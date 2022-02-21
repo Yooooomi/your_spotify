@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+
+  proxy: 
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    ports:
+      - 80:80 
+    env_file:
+      - ./prod.env
+
+  app:
+    container_name: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile.production
+      args:
+        NODE_ENV: ${NODE_ENV}
+    volumes:
+      - ./server/src/:/app/src/
+    env_file:
+      - ./prod.env
+
+  mongo:
+    volumes:
+      - ./db_data:/data/db
+
+  web:
+    container_name: web
+    build:
+      context: ./client
+      dockerfile: Dockerfile.production
+      args:
+        NODE_ENV: ${NODE_ENV}
+    volumes:
+      - ./client/src:/app/src/
+      - ./client/public:/app/public/
+    env_file:
+      - ./prod.env
+  

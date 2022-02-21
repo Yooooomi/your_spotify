@@ -3,14 +3,12 @@ import { logger } from './logger';
 import { toNumber } from './zod';
 
 const validators = {
-  CLIENT_ENDPOINT: z.string(),
   MAX_IMPORT_CACHE_SIZE: z.preprocess(toNumber, z.number().optional()),
   CORS: z.string().optional(),
-  MONGO_ENDPOINT: z.string().optional(),
   SPOTIFY_PUBLIC: z.string(),
   SPOTIFY_SECRET: z.string(),
-  API_ENDPOINT: z.string(),
-  PORT: z.preprocess(toNumber, z.number().optional()),
+  APP_PORT: z.preprocess(toNumber, z.number().optional()),
+  DB_PORT: z.preprocess(toNumber, z.number().optional()),
   TIMEZONE: z.string().optional(),
 } as const;
 

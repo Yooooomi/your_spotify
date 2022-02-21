@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+
+  proxy: 
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    ports:
+      - 80:80
+    env_file:
+      - ./prod.env
+
+  app:
+    container_name: express-mongo
+    image: yooooomi/your_spotify_server
+    env_file:
+      - ./prod.env
+
+  mongo:
+    container_name: mongo
+    volumes:
+      - spotify-data:/data/db
+
+  web:
+    container_name: web
+    image: yooooomi/your_spotify_client
+    env_file:
+      - ./prod.env
+
+
+volumes:
+  spotify-data:

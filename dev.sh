@@ -1,4 +1,3 @@
 #!/bin/sh
 
-# docker-compose-personal.yml is local only overriding spotify public and secret for development
-docker-compose -f docker-compose.yml -f docker-compose-dev.yml -f docker-compose-personal.yml up --build
+docker-compose -f base.yml -f dev.yml --env-file=dev.env up --build

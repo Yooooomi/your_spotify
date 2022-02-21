@@ -1,0 +1,62 @@
+upstream web {
+    server web:${WEB_PORT};
+}
+upstream app {
+    server app:${APP_PORT};
+}
+
+#Cors Config:
+map $http_origin $cors_cred {
+    # indicates all map values are hostnames and should be parsed as such
+
+    default "";
+    http://localhost 'true';
+    http://localhost:80 'true';
+    #www.yourdomain.com "true;
+}
+
+map $http_origin $cors_origin_header {
+    # indicates all map values are hostnames and should be parsed as such
+
+    # default value
+    default 'false';
+
+    # all your domains
+    #www.yourdomain.com $http_origin;
+}
+
+
+server {
+    listen 80 default_server;
+    server_name localhost;
+
+    #so that the NGINX version doesn’t appear in the response headers
+    server_tokens off;
+
+    #gzip config
+    gzip on;
+    gzip_vary on;
+    gzip_comp_level 4;
+    gzip_proxied expired no-cache no-store private auth;
+    gzip_types text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/xml+rss text/javascript application/vnd.ms-fontobject application/x-font-ttf font/opentype image/svg+xml image/x-icon;
+    gzip_disable "MSIE [1-6]\.";
+
+    location / {
+        proxy_pass http://web;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_intercept_errors on;
+    }
+
+    location /api/ {
+        include conf.d/corsdefault.conf;
+        proxy_pass http://app/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_intercept_errors on;
+    }
+}

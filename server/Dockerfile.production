@@ -2,31 +2,17 @@ FROM node:16-alpine AS builder
 
 WORKDIR /app
 
-ENV MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
-
 RUN apk add python3 gcc g++ make cmake
 
 COPY tsconfig.json /app/tsconfig.json
 COPY package.json /app/package.json
 COPY yarn.lock /app/yarn.lock
 
-RUN yarn --dev --frozen-lockfile
+RUN yarn install --frozen-lockfile
 
 COPY src/ /app/src/
 COPY scripts/ /app/scripts/
 
 RUN yarn build
-
-FROM node:16-alpine AS final
-
-WORKDIR /app
-
-RUN apk add python3 gcc g++ make cmake
-
-COPY --from=builder /app/scripts/ /app/scripts/
-COPY --from=builder /app/package.json /app/package.json
-COPY --from=builder /app/lib/ /app/lib/
-
-RUN yarn --production
 
 ENTRYPOINT [ "sh", "/app/scripts/run/run.sh" ]

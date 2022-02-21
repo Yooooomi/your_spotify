@@ -22,7 +22,7 @@ router.get('/spotify/callback', logged, async (req, res) => {
     activated: true,
   });
 
-  return res.redirect(get('CLIENT_ENDPOINT'));
+  return res.redirect('http://localhost');
 });
 
 router.get('/spotify/me', logged, withHttpClient, async (req, res) => {

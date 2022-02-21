@@ -1,0 +1,53 @@
+version: "3"
+
+services:
+
+  proxy:
+    labels:
+      com.app.description: "Reverse Proxy"
+    container_name: spotify-proxy
+    image: nginx:1.19-alpine
+    restart: always
+    networks:
+      - spotify
+      - nginx-internal
+    depends_on:
+      - web 
+      - mongo
+      - app
+
+  app:
+    restart: always
+    labels:
+      com.app.description: "Backend Server"
+    links:
+      - mongo
+    depends_on:
+      - mongo
+    networks:
+      - spotify
+
+  mongo:
+    labels:
+      com.app.description: "Mongo Database"
+    image: mongo:4.4.8
+    networks:
+      - spotify
+
+  web:
+    labels:
+      com.app.description: "Frontend"
+    restart: always
+    networks:
+      - spotify
+    depends_on:
+      - mongo
+
+
+networks:
+  spotify:
+    driver: bridge
+    name: spotify
+  nginx-internal:
+    driver: bridge
+    name: nginx-internal

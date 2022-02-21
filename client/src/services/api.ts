@@ -15,7 +15,7 @@ import {
 
 const axios = Axios.create({
   /* @ts-ignore-next-line */
-  baseURL: window.API_ENDPOINT,
+  baseURL: 'http://localhost/api',
   withCredentials: true,
 });
 

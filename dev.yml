@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+
+  proxy: 
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1k"
+        max-file: "3"
+    ports:
+      - 80:80
+    env_file:
+      - ./dev.env
+
+  app:
+    container_name: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV}
+    volumes:
+      - ./server/src/:/app/src/
+    env_file:
+      - ./dev.env
+
+  mongo:
+    # logging:
+      # driver: none
+    volumes:
+      - ./db_data:/data/db
+    # ports:
+    #   - ${DB_PORT}:${DB_PORT}
+
+  web:
+    container_name: web
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV}
+    volumes:
+      - ./client/src:/app/src/
+      - ./client/public:/app/public/
+    env_file:
+      - ./dev.env
+  
+ 

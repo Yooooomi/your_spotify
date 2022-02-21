@@ -1,0 +1,48 @@
+map $sent_http_content_type $expires {
+  default off;
+  text/html epoch;
+  text/css max;
+  application/javascript max;
+}
+
+server {
+  listen ${WEB_PORT};
+  server_name localhost;
+
+  root /usr/share/nginx/html;
+
+  gzip on;
+  gzip_min_length 1000;
+  gzip_buffers 4 32k;
+  gzip_proxied any;
+  gzip_types text/plain
+    application/javascript
+    application/x-javascript
+    text/javascript
+    text/xml
+    text/css;
+  gzip_vary on;
+  gzip_disable “MSIE [1–6]\.(?!.*SV1)”;
+  access_log /var/log/nginx/access.log;
+  error_log /var/log/nginx/error.log;
+
+  # Media: images, icons, video, audio, HTC
+  location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+    expires 1M;
+    access_log off;
+    add_header Cache-Control "max-age=2629746, public";
+  }
+
+  # CSS and Javascript
+  location ~* \.(?:css|js)$ {
+    expires 1y;
+    access_log off;
+    add_header Cache-Control "max-age=31556952, public";
+  }
+
+  location / {
+    client_max_body_size 100M;
+    index index.html index.htm;
+    try_files $uri /index.html =404;
+  }
+}

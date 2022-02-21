@@ -6,6 +6,6 @@ export const credentials = {
     secret: get('SPOTIFY_SECRET'),
     scopes:
       'user-read-private user-read-email user-read-recently-played user-modify-playback-state',
-    redirectUri: `${get('API_ENDPOINT')}/oauth/spotify/callback`,
+    redirectUri: `http://localhost/api/oauth/spotify/callback`,
   },
 };

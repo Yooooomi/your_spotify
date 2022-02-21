@@ -5,4 +5,4 @@ export const getImage = (value: Artist | Album | undefined) => {
 };
 
 // @ts-ignore
-export const getSpotifyLogUrl = () => `${window.API_ENDPOINT}/oauth/spotify`;
+export const getSpotifyLogUrl = () => `http://localhost/api/oauth/spotify`;

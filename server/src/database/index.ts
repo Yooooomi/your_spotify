@@ -9,8 +9,8 @@ export * from './queries/artist';
 export * from './queries/track';
 
 export const connect = async () => {
-  const fallbackConnection = 'mongodb://mongo:27017/your_spotify';
-  const endpoint = getWithDefault('MONGO_ENDPOINT', fallbackConnection);
+  const DB_PORT = getWithDefault('DB_PORT', 27017);
+  const endpoint = `mongodb://mongo:${DB_PORT}/your_spotify`;
   logger.info(`Trying to connect to database at ${endpoint}`);
   const client = await connectToDb(endpoint, {
     connectTimeoutMS: 3000,

@@ -1,0 +1,8 @@
+# As of Nginx 1.7.5, add_header supports an "always" parameter which
+# allows CORS to work if the backend returns 4xx or 5xx status code.
+
+    add_header 'Access-Control-Allow-Origin' $cors_origin_header always;
+    add_header 'Access-Control-Allow-Credentials' $cors_cred always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, PATCH, DELETE, HEAD' always;
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
+    add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range,Set-Cookie' always;
