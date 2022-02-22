@@ -65,16 +65,7 @@ export class PrivacyImporter implements HistoryImporter {
     for (let i = 0; i < items.length; i += 1) {
       const item = items[i];
       const date = new Date(`${item.played_at}Z`);
-      const startDate = new Date(date.getTime());
-      startDate.setMinutes(startDate.getMinutes() - 1);
-      const endDate = new Date(date.getTime());
-      endDate.setMinutes(endDate.getMinutes() + 1);
-      const duplicate = await getCloseTrackId(
-        this.userId.toString(),
-        item.track.id,
-        startDate,
-        endDate,
-      );
+      const duplicate = await getCloseTrackId(this.userId.toString(), item.track.id, date, 60);
       if (duplicate.length > 0) {
         logger.info(`${item.track.name} - ${item.track.artists[0].name} was duplicate`);
         continue;
