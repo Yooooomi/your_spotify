@@ -54,13 +54,20 @@ router.post('/play', validating(playSchema), logged, withHttpClient, async (req,
 const gethistorySchema = z.object({
   number: z.preprocess(toNumber, z.number().max(20)),
   offset: z.preprocess(toNumber, z.number()),
+  start: z.preprocess(toDate, z.date().optional()),
+  end: z.preprocess(toDate, z.date().optional()),
 });
 
 router.get('/gethistory', validating(gethistorySchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { number, offset } = req.query as TypedPayload<typeof gethistorySchema>;
+  const { number, offset, start, end } = req.query as TypedPayload<typeof gethistorySchema>;
 
-  const tracks = await getSongs(user._id.toString(), offset, number);
+  const tracks = await getSongs(
+    user._id.toString(),
+    offset,
+    number,
+    start && end ? { start, end } : undefined,
+  );
   return res.status(200).send(tracks);
 });
 
