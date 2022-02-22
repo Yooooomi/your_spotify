@@ -4,6 +4,12 @@ export function cloneDate(date: Date) {
   return new Date(date.getTime());
 }
 
+export function startOfDay(date: Date) {
+  const d = cloneDate(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 export function endOfDay(date: Date) {
   const d = cloneDate(date);
   d.setHours(23, 59, 59);

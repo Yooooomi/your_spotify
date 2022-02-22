@@ -9,6 +9,7 @@ import {
   Select,
   useMediaQuery,
 } from '@mui/material';
+import { startOfDay } from 'date-fns';
 import React, { useState, useCallback, useMemo } from 'react';
 import { DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
 import { cloneDate, endOfDay, getAppropriateTimesplitFromRange } from '../../services/date';
@@ -144,7 +145,7 @@ export default function IntervalSelector({ value, onChange }: IntervalSelectorPr
     }
     onChange({
       interval: {
-        start: cloneDate(customIntervalDate.startDate),
+        start: startOfDay(customIntervalDate.startDate),
         end: endOfDay(customIntervalDate.endDate),
         timesplit: getAppropriateTimesplitFromRange(
           customIntervalDate.startDate,
