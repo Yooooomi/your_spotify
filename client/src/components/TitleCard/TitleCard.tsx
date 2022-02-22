@@ -7,13 +7,17 @@ interface TitleCardProps {
   title: string;
   children: React.ReactNode;
   fade?: boolean;
+  right?: React.ReactNode;
 }
 
-export default function TitleCard({ className, title, children, fade }: TitleCardProps) {
+export default function TitleCard({ className, title, children, fade, right }: TitleCardProps) {
   return (
     <div className={clsx(s.root, className)}>
       <div className={s.container}>
-        <h3>{title}</h3>
+        <div className={s.title}>
+          <h3>{title}</h3>
+          <div>{right}</div>
+        </div>
         <div className={clsx(s.content, { fade })}>{children}</div>
       </div>
     </div>

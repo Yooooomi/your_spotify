@@ -72,19 +72,30 @@ export const addTrackIdsToUser = async (id: string, infos: Omit<Infos, 'owner'>[
 export const getCloseTrackId = async (
   userId: string,
   trackId: string,
-  startDate: Date,
-  endDate: Date,
-) =>
-  InfosModel.find({
+  date: Date,
+  secondsPlusMinus: number,
+) => {
+  const startDate = new Date(date.getTime());
+  const endDate = new Date(date.getTime());
+  startDate.setSeconds(startDate.getSeconds() - secondsPlusMinus);
+  endDate.setSeconds(endDate.getSeconds() + secondsPlusMinus);
+  return InfosModel.find({
     owner: userId,
     id: trackId,
     played_at: { $gt: startDate, $lt: endDate },
   });
+};
 
-export const getSongs = async (userId: string, offset: number, number: number) => {
+export const getSongs = async (
+  userId: string,
+  offset: number,
+  number: number,
+  inter?: { start: Date; end: Date },
+) => {
   const fullUser = await UserModel.findById(userId).populate({
     path: 'tracks',
     model: 'Infos',
+    match: inter ? { played_at: { $gt: inter.start, $lt: inter.end } } : undefined,
     options: { skip: offset, limit: number, sort: { played_at: -1 } },
     populate: {
       path: 'track',

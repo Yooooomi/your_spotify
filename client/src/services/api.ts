@@ -135,10 +135,12 @@ export const api = {
     axios.post('/spotify/play', {
       id,
     }),
-  getTracks: (number: number, offset: number) =>
+  getTracks: (number: number, offset: number, start?: Date, end?: Date) =>
     get<TrackInfoWithTrack[]>('/spotify/gethistory', {
       number,
       offset,
+      start,
+      end,
     }),
   mostListened: (start: Date, end: Date, timeSplit: Timesplit) =>
     get<{ tracks: TrackWithAlbum[]; counts: number[] }[]>('/spotify/most_listened', {

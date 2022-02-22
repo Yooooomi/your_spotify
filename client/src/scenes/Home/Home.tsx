@@ -54,7 +54,7 @@ export default function Home() {
             <BestSong unit={interval.unit} interval={interval.interval} />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
-            <History />
+            <History interval={interval.interval} />
           </Grid>
         </Grid>
       </div>

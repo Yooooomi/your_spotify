@@ -4,6 +4,12 @@ export function cloneDate(date: Date) {
   return new Date(date.getTime());
 }
 
+export function endOfDay(date: Date) {
+  const d = cloneDate(date);
+  d.setHours(23, 59, 59);
+  return d;
+}
+
 export function getAppropriateTimesplitFromRange(start: Date, end: Date) {
   const diff = end.getTime() - start.getTime();
   const days = diff / (1000 * 60 * 60 * 24);

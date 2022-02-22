@@ -11,13 +11,17 @@
   height: 100%;
 }
 
-.container > h3 {
+.title {
   display: flex;
   align-items: center;
   padding-bottom: 16px;
 }
 
-.container > h3::before {
+.title > :last-child {
+  margin-left: auto;
+}
+
+.title::before {
   content: "";
   position: relative;
   display: inline-block;

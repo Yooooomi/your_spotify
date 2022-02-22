@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import React, { useState, useCallback, useMemo } from 'react';
 import { DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
-import { cloneDate, getAppropriateTimesplitFromRange } from '../../services/date';
+import { cloneDate, endOfDay, getAppropriateTimesplitFromRange } from '../../services/date';
 import { Interval, Timesplit } from '../../services/types';
 import Dialog from '../Dialog';
 import s from './index.module.css';
@@ -145,7 +145,7 @@ export default function IntervalSelector({ value, onChange }: IntervalSelectorPr
     onChange({
       interval: {
         start: cloneDate(customIntervalDate.startDate),
-        end: cloneDate(customIntervalDate.endDate),
+        end: endOfDay(customIntervalDate.endDate),
         timesplit: getAppropriateTimesplitFromRange(
           customIntervalDate.startDate,
           customIntervalDate.endDate,

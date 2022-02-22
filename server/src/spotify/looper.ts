@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { storeInUser, addTrackIdsToUser, getUsersNb, getUsers } from '../database';
+import { storeInUser, addTrackIdsToUser, getUsersNb, getUsers, getCloseTrackId } from '../database';
 import { RecentlyPlayedTrack } from '../database/schemas/track';
 import { User } from '../database/schemas/user';
 import { logger } from '../tools/logger';
@@ -15,7 +15,7 @@ const loop = async (user: User) => {
     return;
   }
 
-  const url = `/me/player/recently-played?after=${user.lastTimestamp}`;
+  const url = `/me/player/recently-played?after=${user.lastTimestamp - 1000 * 60 * 60 * 2}`;
 
   try {
     const items: RecentlyPlayedTrack[] = [];
@@ -38,10 +38,18 @@ const loop = async (user: User) => {
       const tracks = items.map((e) => e.track);
       try {
         await saveMusics(user._id.toString(), tracks);
-        const infos = items.map((e) => ({
-          played_at: new Date(e.played_at),
-          id: e.track.id,
-        }));
+        const infos: { played_at: Date; id: string }[] = [];
+        for (let i = 0; i < items.length; i += 1) {
+          const item = items[i];
+          const date = new Date(item.played_at);
+          const duplicate = await getCloseTrackId(user._id.toString(), item.track.id, date, 30);
+          if (duplicate.length === 0) {
+            infos.push({
+              played_at: new Date(item.played_at),
+              id: item.track.id,
+            });
+          }
+        }
         await addTrackIdsToUser(user._id.toString(), infos);
       } catch (e) {
         logger.info(e.response.data);
