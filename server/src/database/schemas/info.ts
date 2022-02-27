@@ -8,8 +8,8 @@ export interface Infos {
 
 export const InfosSchema = new Schema<Infos>(
   {
-    owner: { type: Types.ObjectId, ref: 'User' },
-    id: String,
+    owner: { type: Schema.Types.ObjectId, ref: 'User' },
+    id: { type: String, index: true },
     played_at: Date,
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },

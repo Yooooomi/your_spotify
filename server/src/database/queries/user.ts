@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { NoResult } from '../../tools/errors/Database';
-import { InfosModel, UserModel } from '../Models';
+import { AlbumModel, ArtistModel, InfosModel, TrackModel, UserModel } from '../Models';
 import { Infos } from '../schemas/info';
 import { User } from '../schemas/user';
 
@@ -25,11 +25,11 @@ export const getUserFromField = async <F extends keyof User>(
   return user;
 };
 
-export const createUser = (username: string, password: string) =>
+export const createUser = (username: string, spotifyId: string, admin: boolean) =>
   UserModel.create({
     username,
-    password,
-    activated: false,
+    admin,
+    spotifyId,
     accessToken: '',
     refreshToken: '',
     expiresIn: 0,
@@ -131,3 +131,77 @@ export const getSongsInterval = async (id: string, start: Date, end: Date) => {
 export const getUsersNb = () => UserModel.find().countDocuments();
 export const getUsers = (nb: number, offset: number, condition: Partial<User>) =>
   UserModel.find(condition).limit(nb).skip(offset);
+
+export const getNumberOfUsers = () => UserModel.find().count();
+export const getAllUsers = () => UserModel.find({}, '-tracks');
+
+export const deleteAllInfosFromUserId = (userId: string) =>
+  InfosModel.deleteMany({ owner: userId });
+export const deleteUser = (userId: string) => UserModel.findByIdAndDelete(userId);
+
+export const deleteAllOrphanTracks = async () => {
+  const tracks = await TrackModel.aggregate([
+    {
+      $lookup: {
+        as: 'infos',
+        from: 'infos',
+        localField: 'id',
+        foreignField: 'id',
+      },
+    },
+    { $match: { $expr: { $eq: [{ $size: '$infos' }, 0] } } },
+  ]);
+
+  const tracksToDelete = tracks.map((tr) => tr._id);
+  await TrackModel.deleteMany({ _id: { $in: tracksToDelete } });
+
+  const albums = await AlbumModel.aggregate([
+    {
+      $lookup: {
+        as: 'tracks',
+        from: 'tracks',
+        localField: 'id',
+        foreignField: 'album',
+      },
+    },
+    { $match: { $expr: { $eq: [{ $size: '$tracks' }, 0] } } },
+  ]);
+
+  const albumsToDelete = albums.map((alb) => alb._id);
+  await AlbumModel.deleteMany({ _id: { $in: albumsToDelete } });
+
+  const artists = await ArtistModel.aggregate([
+    {
+      $lookup: {
+        as: 'albums',
+        from: 'albums',
+        localField: 'id',
+        foreignField: 'artists',
+      },
+    },
+    {
+      $lookup: {
+        as: 'tracks',
+        from: 'tracks',
+        localField: 'id',
+        foreignField: 'artists',
+      },
+    },
+    {
+      $match: {
+        $expr: { $and: [{ $eq: [{ $size: '$albums' }, 0] }, { $eq: [{ $size: '$tracks' }, 0] }] },
+      },
+    },
+  ]);
+
+  const artistsToDelete = artists.map((art) => art._id);
+  await ArtistModel.deleteMany({ _id: { $in: artistsToDelete } });
+
+  return { tracksToDelete, albumsToDelete, artistsToDelete };
+};
+
+export const getFirstInfo = (userId: string) =>
+  InfosModel.find({ owner: userId }).sort({ played_at: 'asc' }).limit(1);
+
+export const setUserAdmin = (userId: string, admin: boolean) =>
+  UserModel.findByIdAndUpdate(userId, { admin });

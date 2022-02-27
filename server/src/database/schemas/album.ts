@@ -30,7 +30,7 @@ export type SpotifyAlbum = Omit<Album, 'artists'> & {
 export const AlbumSchema = new Schema<Album>(
   {
     album_type: String,
-    artists: [String],
+    artists: { type: [String], index: true },
     available_markets: [String],
     copyrights: [Object],
     external_ids: Object,

@@ -14,7 +14,7 @@ It's composed of a web server which polls the Spotify API every now and then and
 # Prerequisites
 
 1. You have to own a Spotify application ID that you can create through their [dashboard](https://developer.spotify.com/dashboard/applications)
-2. You need to provide the **Server** environment the **public** AND **secret** key of the application (cf. [Installation](#Installation))
+2. You need to provide the **Server** environment the **public** AND **secret** key of the application (cf. [Installation](#installation))
 3. You need to provide an **authorized** redirect URI to the `docker-compose` file
 
 > A tutorial is available at the end of this readme.
@@ -29,9 +29,8 @@ Follow the [docker-compose-example.yml](https://github.com/Yooooomi/your_spotify
 version: "3"
 
 services:
-  app:
+  server:
     image: yooooomi/your_spotify_server
-    container_name: express-mongo
     restart: always
     ports:
       - "8080:8080"
@@ -44,20 +43,15 @@ services:
       - CLIENT_ENDPOINT=http://localhost:3000
       - SPOTIFY_PUBLIC=__your_spotify_client_id__
       - SPOTIFY_SECRET=__your_spotify_secret__
-      - CORS=http://localhost:3000,http://localhost:3001
-      #- CORS=all
-      #- MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
-      #- MAX_IMPORT_CACHE_SIZE=100000 # Number of items cached during import of past history
-      #- TIMEZONE=Europe/Paris # Only affects read requests, write are in UTC time
+      - CORS=http://localhost:3000,http://localhost:3001 # all if you want to allow every origin
   mongo:
     container_name: mongo
-    image: mongo
+    image: mongo:4.4.8
     volumes:
       - ./your_spotify_db:/data/db
 
   web:
     image: yooooomi/your_spotify_client
-    container_name: web
     restart: always
     ports:
       - "3000:3000"
@@ -72,6 +66,21 @@ services:
 ## Installing locally (not recommended)
 
 You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/blob/master/LOCAL_INSTALL.md). Note that you will still have to do the steps below.
+
+## Environment
+
+| Key | Default value (if any) | Description |
+| :--- | :--- | :--- |
+| CLIENT_ENDPOINT       | REQUIRED | The endpoint of your web application |
+| API_ENDPOINT          | REQUIRED | The endpoint of your server |
+| SPOTIFY_PUBLIC        | REQUIRED | The public key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
+| SPOTIFY_SECRET        | REQUIRED | The secret key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
+| CORS                  | all      | List of comma-separated origin allowed, or all to allow any origin |
+| MAX_IMPORT_CACHE_SIZE | Infinite | The maximum element in the cache when importing data from an outside source, more cache means less requests to Spotify, resulting in faster imports |
+| MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database |
+| PORT                  | 8080 | The port of the server, do not modify if you're using docker |
+| TIMEZONE              | Europe/Paris | The timezone of your stats, only affects read requests since data is saved with UTC time |
+| LOG_LEVEL             | info | The log level, debug is useful if you encouter any bugs |
 
 ## CORS
 

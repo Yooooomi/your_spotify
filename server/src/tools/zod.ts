@@ -1,8 +1,14 @@
 export function toBoolean(str: unknown) {
-  return str ? (str as string).toLowerCase() === 'true' : undefined;
+  if (typeof str === 'boolean') {
+    return str;
+  }
+  return str != null ? (str as string).toLowerCase() === 'true' : undefined;
 }
 
 export function toNumber(str: unknown) {
+  if (typeof str === 'number') {
+    return str;
+  }
   return str ? parseFloat(str as string) : undefined;
 }
 

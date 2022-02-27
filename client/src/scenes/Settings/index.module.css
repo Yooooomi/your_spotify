@@ -13,3 +13,9 @@
 .ids {
   margin-top: 16px;
 }
+
+.onlyadmin {
+  font-style: italic;
+  color: grey;
+  font-weight: normal;
+}

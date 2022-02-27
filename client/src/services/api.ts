@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { AdminAccount } from './redux/modules/admin/reducer';
 import { User } from './redux/modules/user/types';
 import {
   Album,
@@ -35,6 +36,12 @@ const get = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: 
 
 const post = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
   axios.post(url, params);
+
+const put = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+  axios.put(url, params);
+
+const delet = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+  axios.delete(url, params);
 
 export type GetImport =
   | { running: false }
@@ -104,31 +111,17 @@ export type ArtistStatsResponse = {
 
 export const api = {
   spotify: () => get('/oauth/spotify'),
-  login: (username: string, password: string) =>
-    axios.post('/login', {
-      username,
-      password,
-    }),
-  register: (username: string, password: string) =>
-    axios.post('/register', {
-      username,
-      password,
-    }),
-  changePassword: (oldPassword: string, newPassword: string) =>
-    axios.post('/changepassword', {
-      oldPassword,
-      newPassword,
-    }),
-  changePasswordAccountId: (id: string, newPassword: string) =>
-    axios.post('/changepasswordaccountid', {
-      id,
-      newPassword,
-    }),
   logout: () => axios.post('/logout'),
-  accountIds: () => get<{ username: string; id: string }[]>('/accountIds'),
   me: () => get<{ status: true; user: User } | { status: false }>('/me'),
   sme: () => get<SpotifyMe>('/oauth/spotify/me'),
   globalPreferences: () => get<GlobalPreferences>('/global/preferences'),
+  rename: (newName: string) => put('/rename', { newName }),
+  getAccounts: () => get<AdminAccount[]>('/accounts'),
+  setAdmin: (id: string, status: boolean) =>
+    put(`/admin/${id}`, {
+      status,
+    }),
+  deleteUser: (id: string) => delet(`/account/${id}`),
   setGlobalPreferences: (preferences: GlobalPreferences) =>
     post<GlobalPreferences>('/global/preferences', preferences),
   play: (id: string) =>

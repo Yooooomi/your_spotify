@@ -64,6 +64,15 @@ export const optionalLogged = async (req: Request, res: Response, next: NextFunc
   return next();
 };
 
+export const admin = (req: Request, res: Response, next: NextFunction) => {
+  const { user } = req as LoggedRequest;
+
+  if (!user || !user.admin) {
+    return res.status(401).end();
+  }
+  return next();
+};
+
 export const withHttpClient = async (req: Request, res: Response, next: NextFunction) => {
   const { user } = req as LoggedRequest;
 

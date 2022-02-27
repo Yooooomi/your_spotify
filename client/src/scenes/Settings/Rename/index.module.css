@@ -1,0 +1,11 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.root > :last-child {
+  margin-left: 16px !important;
+  margin-top: 8px !important;
+  text-align: right;
+}

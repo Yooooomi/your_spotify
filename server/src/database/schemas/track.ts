@@ -34,8 +34,8 @@ export interface RecentlyPlayedTrack {
 
 export const TrackSchema = new Schema<Track>(
   {
-    album: String, // Id of the album
-    artists: [String], // Ids of artists
+    album: { type: String, index: true }, // Id of the album
+    artists: { type: [String], index: true }, // Ids of artists
     available_markets: [String],
     disc_number: Number,
     duration_ms: Number,

@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const cors = getWithDefault('CORS', '');
+const cors = getWithDefault('CORS', 'all');
 const corsList = cors.split(',');
 
 app.use((req, res, next) => {

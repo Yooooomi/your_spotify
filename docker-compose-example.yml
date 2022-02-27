@@ -1,9 +1,8 @@
 version: "3"
 
 services:
-  app:
+  server:
     image: yooooomi/your_spotify_server
-    container_name: express-mongo
     restart: always
     ports:
       - "8080:8080"
@@ -16,8 +15,7 @@ services:
       - CLIENT_ENDPOINT=http://localhost:3000
       - SPOTIFY_PUBLIC=__your_spotify_client_id__
       - SPOTIFY_SECRET=__your_spotify_secret__
-      - CORS=http://localhost:3000,http://localhost:3001
-      #- CORS=all
+      - CORS=http://localhost:3000,http://localhost:3001 # all if you want to allow every origin
   mongo:
     container_name: mongo
     image: mongo:4.4.8
@@ -26,7 +24,6 @@ services:
 
   web:
     image: yooooomi/your_spotify_client
-    container_name: web
     restart: always
     ports:
       - "3000:3000"

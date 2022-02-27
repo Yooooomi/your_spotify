@@ -2,6 +2,7 @@
 import { storeInUser, addTrackIdsToUser, getUsersNb, getUsers, getCloseTrackId } from '../database';
 import { RecentlyPlayedTrack } from '../database/schemas/track';
 import { User } from '../database/schemas/user';
+import { longWriteDbLock } from '../tools/lock';
 import { logger } from '../tools/logger';
 import { wait } from '../tools/misc';
 import { squeue } from '../tools/queue';
@@ -82,12 +83,12 @@ export const dbLoop = async () => {
     }
 
     for (let i = 0; i < nbUsers; i += batchSize) {
-      const users = await getUsers(batchSize, i * batchSize, {
-        activated: true,
-      });
+      const users = await getUsers(batchSize, i * batchSize, {});
 
+      await longWriteDbLock.lock();
       const promises = users.map((us) => reflect(loop(us)));
       const results = await Promise.all(promises);
+      longWriteDbLock.unlock();
 
       results.filter((e) => e.failed).forEach((e) => logger.error(e.error));
 

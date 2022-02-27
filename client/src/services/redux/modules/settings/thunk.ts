@@ -51,7 +51,7 @@ export const changeRegistrations = myAsyncThunk<boolean, GlobalPreferences | nul
           message: `Could not update registration status to ${newStatus}`,
         }),
       );
+      throw e;
     }
-    return null;
   },
 );

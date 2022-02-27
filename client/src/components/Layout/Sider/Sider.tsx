@@ -16,7 +16,7 @@ import {
   Settings,
   SettingsOutlined,
   ExitToApp,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import s from './index.module.css';
 import { useConditionalAPI } from '../../../services/hooks';
 import { api } from '../../../services/api';

@@ -10,50 +10,6 @@ const myAsyncThunk = <P, R>(
 ): AsyncThunk<R, P, { state: RootState }> =>
   createAsyncThunk<R, P, { state: RootState }>(name, payloadCreator);
 
-export const login = myAsyncThunk<{ username: string; password: string }, User | null>(
-  '@user/login',
-  async ({ username, password }, tapi) => {
-    try {
-      const { data } = await api.login(username, password);
-      return data.user;
-    } catch (e) {
-      console.error(e);
-      tapi.dispatch(
-        alertMessage({
-          level: 'error',
-          message: 'Could not login, username or password incorrect',
-        }),
-      );
-    }
-    return null;
-  },
-);
-
-export const register = myAsyncThunk<{ username: string; password: string }, void>(
-  '@user/register',
-  async ({ username, password }, tapi) => {
-    try {
-      await api.register(username, password);
-      tapi.dispatch(
-        alertMessage({
-          level: 'success',
-          message: 'Successfully registered',
-        }),
-      );
-    } catch (e) {
-      console.error(e);
-      if ((e as any)?.response?.data?.code === 'REGISTRATIONS_NOT_ALLOWED') {
-        tapi.dispatch(
-          alertMessage({
-            level: 'error',
-            message: 'Registrations are disabled',
-          }),
-        );
-      }
-    }
-  },
-);
-
 export const checkLogged = myAsyncThunk<void, User | null>('@user/checklogged', async () => {
   try {
     const { data } = await api.me();
@@ -64,15 +20,15 @@ export const checkLogged = myAsyncThunk<void, User | null>('@user/checklogged', 
   return null;
 });
 
-export const changePasswordForAccountId = myAsyncThunk<{ id: string; password: string }, void>(
-  '@user/change-password-account-id',
-  async ({ id, password }, tapi) => {
+export const changeUsername = myAsyncThunk<string, void>(
+  '@user/change-username',
+  async (newName, tapi) => {
     try {
-      await api.changePasswordAccountId(id, password);
+      await api.rename(newName);
       tapi.dispatch(
         alertMessage({
           level: 'success',
-          message: 'Successfully changed the password for this account ID',
+          message: `Successfully renamed to ${newName}`,
         }),
       );
     } catch (e) {
@@ -80,9 +36,10 @@ export const changePasswordForAccountId = myAsyncThunk<{ id: string; password: s
       tapi.dispatch(
         alertMessage({
           level: 'error',
-          message: 'Could not change the password for this account ID',
+          message: `Could not rename to ${newName}`,
         }),
       );
+      throw e;
     }
   },
 );

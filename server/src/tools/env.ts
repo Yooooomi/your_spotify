@@ -12,6 +12,7 @@ const validators = {
   API_ENDPOINT: z.string(),
   PORT: z.preprocess(toNumber, z.number().optional()),
   TIMEZONE: z.string().optional(),
+  LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).optional(),
 } as const;
 
 const env: Record<string, any> = {};

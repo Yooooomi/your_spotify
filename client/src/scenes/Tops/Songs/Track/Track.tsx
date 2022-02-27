@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import clsx from 'clsx';
 import { IconButton, useMediaQuery } from '@mui/material';
-import { PlayArrow } from '@material-ui/icons';
+import { PlayArrow } from '@mui/icons-material';
 import s from './index.module.css';
 import { api } from '../../../../services/api';
 import { msToMinutesAndSeconds } from '../../../../services/stats';

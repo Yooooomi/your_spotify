@@ -1,5 +1,5 @@
 import { IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
-import { Close } from '@material-ui/icons';
+import { Close } from '@mui/icons-material';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';

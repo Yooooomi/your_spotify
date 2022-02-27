@@ -1,137 +1,30 @@
 import { Router } from 'express';
-import { z } from 'zod';
 import { Types } from 'mongoose';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { maxStringLength } from '../tools/constants';
-import { logged, optionalLogged, validating, withGlobalPreferences } from '../tools/middleware';
-import { getUserFromField, createUser, storeInUser, changeSetting, getUsers } from '../database';
-import { logger } from '../tools/logger';
+import { z } from 'zod';
+import { admin, logged, optionalLogged, validating } from '../tools/middleware';
 import {
-  GlobalPreferencesRequest,
-  LoggedRequest,
-  OptionalLoggedRequest,
-  TypedPayload,
-} from '../tools/types';
+  changeSetting,
+  getAllUsers,
+  getUserFromField,
+  setUserAdmin,
+  storeInUser,
+} from '../database';
+import { logger } from '../tools/logger';
+import { LoggedRequest, OptionalLoggedRequest, TypedPayload } from '../tools/types';
 import { toBoolean, toNumber } from '../tools/zod';
+import { deleteUser } from '../tools/user';
 
 const router = Router();
 export default router;
 
-const BCRYPT_SALTS = 14;
-
 router.get('/', (req, res) => {
   res.status(200).send('Hello !');
-});
-
-const registerSchema = z.object({
-  username: z.string().max(maxStringLength),
-  password: z.string().max(maxStringLength),
-});
-
-router.post('/register', validating(registerSchema), withGlobalPreferences, async (req, res) => {
-  const { globalPreferences } = req as GlobalPreferencesRequest;
-
-  if (!globalPreferences || !globalPreferences.allowRegistrations) {
-    return res.status(401).send({ code: 'REGISTRATIONS_NOT_ALLOWED' });
-  }
-
-  const { username, password } = req.body as TypedPayload<typeof registerSchema>;
-
-  const alreadyExisting = await getUserFromField('username', username, false);
-
-  if (alreadyExisting) {
-    return res.status(409).send({ code: 'USER_ALREADY_EXISTS' });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, BCRYPT_SALTS);
-
-  const newUser = await createUser(username, hashedPassword);
-  return res.status(200).send(newUser);
 });
 
 router.post('/logout', async (req, res) => {
   res.clearCookie('token');
   return res.status(200).end();
 });
-
-const loginSchema = z.object({
-  username: z.string().max(maxStringLength),
-  password: z.string().max(maxStringLength),
-});
-
-router.post('/login', validating(loginSchema), async (req, res) => {
-  const { username, password } = req.body as TypedPayload<typeof loginSchema>;
-
-  const user = await getUserFromField('username', username, false);
-
-  if (!user) {
-    return res.status(400).send({ code: 'INCORRET_PASSWORD' });
-  }
-
-  // TODO filter user
-
-  if (!bcrypt.compareSync(password, user.password)) {
-    return res.status(401).send({ code: 'INCORRECT_PASSWORD' });
-  }
-
-  const token = jwt.sign({ userId: user._id.toString() }, 'MyPrivateKey', {
-    expiresIn: '1h',
-  });
-
-  res.cookie('token', token);
-
-  return res.status(200).send({
-    user,
-    token,
-  });
-});
-
-const changePassword = z.object({
-  oldPassword: z.string().max(maxStringLength),
-  newPassword: z.string().max(maxStringLength),
-});
-
-router.post('/changepassword', validating(changePassword), logged, async (req, res) => {
-  const { user } = req as LoggedRequest;
-  const { oldPassword, newPassword } = req.body as TypedPayload<typeof changePassword>;
-
-  try {
-    if (await bcrypt.compare(oldPassword, user.password)) {
-      const newPasswordHashed = await bcrypt.hash(newPassword, BCRYPT_SALTS);
-      await storeInUser('_id', user._id, { password: newPasswordHashed });
-    } else {
-      return res.status(403).end();
-    }
-    return res.status(200).end();
-  } catch (e) {
-    console.error(e);
-    return res.status(500).end();
-  }
-});
-
-const changePasswordAccountId = z.object({
-  id: z.string().max(maxStringLength),
-  newPassword: z.string().max(maxStringLength),
-});
-
-router.post(
-  '/changepasswordaccountid',
-  validating(changePasswordAccountId),
-  logged,
-  async (req, res) => {
-    const { id, newPassword } = req.body as TypedPayload<typeof changePasswordAccountId>;
-
-    try {
-      const newPasswordHashed = await bcrypt.hash(newPassword, BCRYPT_SALTS);
-      await storeInUser('_id', new Types.ObjectId(id), { password: newPasswordHashed });
-      return res.status(200).end();
-    } catch (e) {
-      console.error(e);
-      return res.status(500).end();
-    }
-  },
-);
 
 const settingsSchema = z.object({
   historyLine: z.string().transform(toBoolean).optional(),
@@ -160,12 +53,89 @@ router.get('/me', optionalLogged, async (req, res) => {
   return res.status(200).send({ status: false });
 });
 
-router.get('/accountids', logged, async (req, res) => {
+router.get('/accounts', logged, admin, async (req, res) => {
   try {
-    const users = await getUsers(100, 0, {});
-    return res.status(200).send(users.map((us) => ({ username: us.username, id: us._id })));
+    const users = await getAllUsers();
+    return res.status(200).send(
+      users.map((user) => ({
+        id: user._id.toString(),
+        username: user.username,
+        admin: user.admin,
+      })),
+    );
   } catch (e) {
-    console.error(e);
+    logger.error(e);
+    return res.status(500).end();
+  }
+});
+
+const setAdmin = z.object({
+  id: z.string(),
+});
+
+const setAdminBody = z.object({
+  status: z.preprocess(toBoolean, z.boolean()),
+});
+
+router.put(
+  '/admin/:id',
+  validating(setAdmin, 'params'),
+  validating(setAdminBody),
+  logged,
+  admin,
+  async (req, res) => {
+    const { id } = req.params as TypedPayload<typeof setAdmin>;
+    const { status } = req.body as TypedPayload<typeof setAdminBody>;
+
+    try {
+      await setUserAdmin(id, status);
+      return res.status(204).end();
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+const deleteAccount = z.object({
+  id: z.string(),
+});
+
+router.delete(
+  '/account/:id',
+  validating(deleteAccount, 'params'),
+  logged,
+  admin,
+  async (req, res) => {
+    const { id } = req.params as TypedPayload<typeof deleteAccount>;
+
+    try {
+      const user = await getUserFromField('_id', new Types.ObjectId(id));
+      if (!user) {
+        return res.status(404).end();
+      }
+      await deleteUser(id);
+      return res.status(204).end();
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+const rename = z.object({
+  newName: z.string().max(64).min(2),
+});
+
+router.put('/rename', validating(rename), logged, async (req, res) => {
+  const { user } = req as LoggedRequest;
+  const { newName } = req.body as TypedPayload<typeof rename>;
+
+  try {
+    await storeInUser('_id', user._id, { username: newName });
+    return res.status(204).end();
+  } catch (e) {
+    logger.error(e);
     return res.status(500).end();
   }
 });

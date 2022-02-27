@@ -1,5 +1,5 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
-import { checkLogged, login } from './thunk';
+import { changeUsername, checkLogged } from './thunk';
 import { User } from './types';
 
 interface UserReducer {
@@ -18,12 +18,13 @@ export default createReducer(initialState, (builder) => {
   builder.addCase(logout, (state) => {
     state.user = null;
   });
-  builder.addCase(login.fulfilled, (state, { payload }) => {
-    state.user = payload;
-    state.loaded = true;
-  });
   builder.addCase(checkLogged.fulfilled, (state, { payload }) => {
     state.user = payload;
     state.loaded = true;
+  });
+  builder.addCase(changeUsername.fulfilled, (state, { meta: { arg } }) => {
+    if (state.user) {
+      state.user.username = arg;
+    }
   });
 });

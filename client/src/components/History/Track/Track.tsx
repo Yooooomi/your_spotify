@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import clsx from 'clsx';
 import { IconButton } from '@mui/material';
-import { PlayArrow } from '@material-ui/icons';
+import { PlayArrow } from '@mui/icons-material';
 import { dateToListenedAt, msToMinutesAndSeconds } from '../../../services/stats';
 import { Album, Artist, Track as TrackType } from '../../../services/types';
 import s from './index.module.css';

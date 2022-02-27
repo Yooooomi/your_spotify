@@ -2,30 +2,28 @@
   height: 100vh;
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.form {
-  padding: 16px;
-  width: 40%;
-  box-shadow: var(--shadow);
-  border-radius: 6px;
-  text-align: center;
+.title {
+  margin-bottom: 32px;
+  font-size: 4em;
 }
 
-.form > *:not(:last-child) {
-  display: block !important;
-  margin-bottom: 16px;
-}
-
-.button {
-  margin: auto;
+.welcome {
   margin-bottom: 8px;
 }
 
-@media screen and (max-width: 600px) {
-  .form {
-    width: 90%;
-  }
+.link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  background-color: #1BD760;
+  color: white;
+  height: 40px;
+  border-radius: 20px;
+  padding: 0px 24px;
+  font-weight: bold;
 }

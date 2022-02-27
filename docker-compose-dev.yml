@@ -24,10 +24,11 @@ services:
       - SPOTIFY_PUBLIC=__your_spotify_client_id__
       - SPOTIFY_SECRET=__your_spotify_secret__
       - CORS=all
+      - LOG_LEVEL=debug
 
   mongo:
-    # logging:
-      # driver: none
+    logging:
+      driver: none
     volumes:
       - ./db_data:/data/db
     ports:
