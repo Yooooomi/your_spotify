@@ -122,11 +122,7 @@ The import process uses cache to limit requests to the Spotify API. By default, 
 
 > How can I block new registrations?
 
-From a logged account, go to the **Settings** page and hit the **Disable new registrations** button.
-
-> I lost the password of an account.
-
-If you have or create another account, you can change the password based on an account id you can find in the settings. If the registrations are blocked you cannot recover your password without editing the database yourself.
+From an admin account, go to the **Settings** page and hit the **Disable new registrations** button.
 
 > Songs don't seem to synchronize anymore.
 
