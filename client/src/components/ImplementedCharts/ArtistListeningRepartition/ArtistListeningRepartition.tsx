@@ -81,7 +81,7 @@ export default function ArtistListeningRepartition({
     return -a.payload[a.dataKey];
   }, []);
 
-  const formatX = useFormatXAxis(data, interval.start, interval.end);
+  const formatX = useFormatXAxis(data);
 
   if (!results) {
     return <LoadingImplementedChart title="Artist listening repartition" className={className} />;

@@ -65,7 +65,7 @@ class PromiseQueue<T, Meta, MetaResult> {
 }
 
 export const squeue = new PromiseQueue<any, string, AxiosInstance>(async (userId: string) => {
-  // Refresh the token it it expires in less than two minutes (1000ms * 120)
+  // Refresh the token if it expires in less than two minutes (1000ms * 120)
   const user = await getUserFromField('_id', new Types.ObjectId(userId));
   let access: string | null | undefined = user?.accessToken;
   if (!user) {

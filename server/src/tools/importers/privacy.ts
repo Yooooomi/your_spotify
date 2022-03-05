@@ -1,26 +1,32 @@
 /* eslint-disable no-await-in-loop */
-import { readFile } from 'fs/promises';
-import Joi from 'joi';
+import { readFile, unlink } from 'fs/promises';
+import { z } from 'zod';
 import { addTrackIdsToUser, getCloseTrackId } from '../../database';
+import { setImporterStateCurrent } from '../../database/queries/importer';
 import { RecentlyPlayedTrack, SpotifyTrack } from '../../database/schemas/track';
 import { User } from '../../database/schemas/user';
 import { saveMusics } from '../../spotify/dbTools';
 import { logger } from '../logger';
-import { beforeParenthesis, removeDiacritics } from '../misc';
+import { beforeParenthesis, removeDiacritics, retryPromise } from '../misc';
 import { squeue } from '../queue';
+import { Unpack } from '../types';
 import { getFromCache, setToCache } from './cache';
-import { HistoryImporter, PrivacyItem } from './types';
+import { HistoryImporter, ImporterStateTypes, PrivacyImporterState } from './types';
 
-const privacyFileSchema = Joi.array().items(
-  Joi.object({
-    endTime: Joi.string().required(),
-    artistName: Joi.string().required(),
-    trackName: Joi.string().required(),
-    msPlayed: Joi.number().required(),
+const privacyFileSchema = z.array(
+  z.object({
+    endTime: z.string(),
+    artistName: z.string(),
+    trackName: z.string(),
+    msPlayed: z.number(),
   }),
 );
 
-export class PrivacyImporter implements HistoryImporter {
+export type PrivacyItem = Unpack<z.infer<typeof privacyFileSchema>>;
+
+export class PrivacyImporter implements HistoryImporter<ImporterStateTypes.privacy> {
+  private id: string;
+
   private userId: string;
 
   private user: User;
@@ -30,28 +36,27 @@ export class PrivacyImporter implements HistoryImporter {
   private currentItem: number;
 
   constructor(user: User) {
+    this.id = '';
     this.userId = user._id.toString();
     this.user = user;
     this.elements = null;
     this.currentItem = 0;
   }
 
-  getProgress = () => {
-    if (!this.elements) {
-      return undefined;
-    }
-    return [this.currentItem, this.elements.length] as [number, number];
-  };
-
   static search = async (userId: string, track: string, artist: string) => {
-    const res = await squeue.queue(
-      (client) =>
-        client.get(
-          `/search?q=track:${encodeURIComponent(track)}+artist:${encodeURIComponent(
-            artist,
-          )}&type=track&limit=10`,
+    const res = await retryPromise(
+      () =>
+        squeue.queue(
+          (client) =>
+            client.get(
+              `/search?q=track:${encodeURIComponent(track)}+artist:${encodeURIComponent(
+                artist,
+              )}&type=track&limit=10`,
+            ),
+          userId,
         ),
-      userId,
+      10,
+      30,
     );
     return res.data.tracks.items[0] as SpotifyTrack;
   };
@@ -75,40 +80,57 @@ export class PrivacyImporter implements HistoryImporter {
         id: item.track.id,
       });
     }
+    await setImporterStateCurrent(this.id, this.currentItem + 1);
     await addTrackIdsToUser(this.userId.toString(), finalInfos);
+  };
+
+  initWithJSONContent = async (content: any[]) => {
+    try {
+      const validations = privacyFileSchema.parse(content);
+      this.elements = validations;
+      return content;
+    } catch (e) {
+      logger.error(e);
+    }
+    return null;
   };
 
   initWithFiles = async (filePaths: string[]) => {
     const files = await Promise.all(filePaths.map((f) => readFile(f)));
     const filesContent = files.map((f) => JSON.parse(f.toString()));
-    const validations = filesContent.map((f) => privacyFileSchema.validate(f));
-    if (validations.some((v) => v.error !== undefined)) {
-      return false;
-    }
+
     const totalContent = filesContent.reduce<PrivacyItem[]>((acc, curr) => {
       acc.push(...curr);
       return acc;
     }, []);
-    this.elements = totalContent;
+
+    if (!this.initWithJSONContent(totalContent)) {
+      return false;
+    }
+
     return true;
   };
 
-  init = async (filePaths: string[]) => {
+  init = async (existingState: PrivacyImporterState | null, filePaths: string[]) => {
     try {
+      this.currentItem = existingState?.current ?? 0;
       const success = await this.initWithFiles(filePaths);
-      return success;
+      if (success) {
+        return { total: this.elements!.length };
+      }
     } catch (e) {
       logger.error(e);
     }
-    return false;
+    return null;
   };
 
-  run = async () => {
+  run = async (id: string) => {
+    this.id = id;
     let items: RecentlyPlayedTrack[] = [];
     if (!this.elements) {
       return false;
     }
-    for (let i = 0; i < this.elements.length; i += 1) {
+    for (let i = this.currentItem; i < this.elements.length; i += 1) {
       this.currentItem = i;
       const content = this.elements[i];
       if (content.msPlayed < 30 * 1000) {
@@ -154,5 +176,10 @@ export class PrivacyImporter implements HistoryImporter {
       items = [];
     }
     return true;
+  };
+
+  // eslint-disable-next-line class-methods-use-this
+  cleanup = async (filePaths: string[]) => {
+    await Promise.all(filePaths.map((f) => unlink(f)));
   };
 }

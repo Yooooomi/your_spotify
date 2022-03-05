@@ -4,7 +4,7 @@ import { RecentlyPlayedTrack } from '../database/schemas/track';
 import { User } from '../database/schemas/user';
 import { longWriteDbLock } from '../tools/lock';
 import { logger } from '../tools/logger';
-import { wait } from '../tools/misc';
+import { retryPromise, wait } from '../tools/misc';
 import { squeue } from '../tools/queue';
 import { saveMusics } from './dbTools';
 
@@ -23,9 +23,13 @@ const loop = async (user: User) => {
     let nextUrl = url;
 
     do {
-      // It is safe since the promise will resolve only when the callback is called
-      // eslint-disable-next-line @typescript-eslint/no-loop-func
-      const response = await squeue.queue((client) => client.get(nextUrl), user._id.toString());
+      const userId = user._id.toString();
+      const response = await retryPromise(
+        // eslint-disable-next-line @typescript-eslint/no-loop-func
+        () => squeue.queue((client) => client.get(nextUrl), userId),
+        10,
+        30,
+      );
       const { data } = response;
       items.push(...data.items);
       nextUrl = data.next;

@@ -3,6 +3,7 @@ import { SpotifyAlbum, Album } from '../database/schemas/album';
 import { SpotifyArtist, Artist } from '../database/schemas/artist';
 import { SpotifyTrack, Track } from '../database/schemas/track';
 import { logger } from '../tools/logger';
+import { retryPromise } from '../tools/misc';
 import { squeue } from '../tools/queue';
 
 const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist>(
@@ -24,7 +25,11 @@ const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | Spotify
   for (let i = 0; i < idsArray.length; i += 1) {
     const builtUrl = `${url}?ids=${idsArray[i].join(',')}`;
     // eslint-disable-next-line no-await-in-loop
-    const { data } = await squeue.queue((client) => client.get(builtUrl), userId);
+    const { data } = await retryPromise(
+      () => squeue.queue((client) => client.get(builtUrl), userId),
+      10,
+      30,
+    );
     datas.push(...data[arrayPath]);
   }
   return datas as T[];
@@ -68,7 +73,7 @@ const storeTracksAndReturnAlbumsArtists = async (userId: string, ids: string[]) 
 
 const albumUrl = 'https://api.spotify.com/v1/albums';
 
-const storeAlbums = async (userId: string, ids: string[]) => {
+export const storeAlbums = async (userId: string, ids: string[]) => {
   const spotifyAlbums = await getIdsHandlingMax<SpotifyAlbum>(userId, albumUrl, ids, 20, 'albums');
 
   const albums: Album[] = spotifyAlbums.map((alb) => {
@@ -85,7 +90,7 @@ const storeAlbums = async (userId: string, ids: string[]) => {
 
 const artistUrl = 'https://api.spotify.com/v1/artists';
 
-const storeArtists = async (userId: string, ids: string[]) => {
+export const storeArtists = async (userId: string, ids: string[]) => {
   const artists = await getIdsHandlingMax<SpotifyTrack>(userId, artistUrl, ids, 50, 'artists');
 
   artists.forEach((artist) => logger.info(`Storing non existing artist ${artist.name}`));

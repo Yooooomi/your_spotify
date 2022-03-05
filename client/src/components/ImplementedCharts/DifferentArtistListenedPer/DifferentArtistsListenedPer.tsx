@@ -25,7 +25,7 @@ export default function DifferentArtistsListenedPer({
     interval.end,
   );
 
-  const formatX = useFormatXAxis(data, interval.start, interval.end);
+  const formatX = useFormatXAxis(data);
   const tooltipValueFormatter = useCallback((value: number) => `${value} different artists`, []);
 
   if (!result) {

@@ -1,143 +1,91 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, CircularProgress, LinearProgress } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { api, GetImport } from '../../../services/api';
-import SettingLine from '../SettingLine';
+import {
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  LinearProgress,
+  MenuItem,
+  Select,
+} from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { getImports } from '../../../services/redux/modules/import/thunk';
+import { selectImportStates } from '../../../services/redux/modules/import/selector';
+import ImportHistory from './ImportHistory';
 import s from './index.module.css';
-import { alertMessage } from '../../../services/redux/modules/message/reducer';
+import Privacy from './Privacy';
+import { ImporterStateTypes } from '../../../services/redux/modules/import/types';
+import FullPrivacy from './FullPrivacy';
+
+const ImportTypeToComponent: Record<ImporterStateTypes, any> = {
+  privacy: Privacy,
+  'full-privacy': FullPrivacy,
+};
 
 export default function Importer() {
   const dispatch = useDispatch();
-  const [status, setStatus] = useState<GetImport | null>(null);
-  const [files, setFiles] = useState<FileList | null>(null);
-  const [loading, setLoading] = useState(false);
+  const imports = useSelector(selectImportStates);
+  const [importType, setImportType] = useState<ImporterStateTypes>(ImporterStateTypes.privacy);
 
-  const fetch = useCallback(async () => {
-    try {
-      const result = await api.getImport();
-      setStatus(result.data);
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
-
-  const onImport = useCallback(async () => {
-    setLoading(true);
-    try {
-      if (!files) {
-        return;
-      }
-      const filesArray = Array.from(Array(files.length).keys())
-        .map((i) => files.item(i))
-        .filter((f) => f);
-      await api.doImport(filesArray as File[]);
-      dispatch(
-        alertMessage({
-          level: 'success',
-          message: 'Successfully started importing',
-        }),
-      );
-      fetch();
-    } catch (e: any) {
-      if (e?.response?.data?.code === 'ALREADY_IMPORTING') {
-        dispatch(
-          alertMessage({
-            level: 'error',
-            message: 'An import is already running on this account',
-          }),
-        );
-      } else if (e?.response?.data?.code === 'IMPORT_INIT_FAILED') {
-        dispatch(
-          alertMessage({
-            level: 'error',
-            message: 'The initialization failed, maybe your files are wrongly formatted',
-          }),
-        );
-      }
-      console.error(e);
-    }
-    setLoading(false);
-  }, [fetch, files, dispatch]);
+  const fetch = useCallback(
+    async (force = false) => {
+      dispatch(getImports(force));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     fetch();
-    // initial fetch
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetch]);
 
-  const wrongFiles = useMemo(() => {
-    if (!files) {
-      return false;
-    }
-    return Array.from(Array(files.length).keys()).some(
-      (i) => !files.item(i)?.name.startsWith('StreamingHistory'),
-    );
-  }, [files]);
+  const running = useMemo(() => imports?.find((st) => st.status === 'progress'), [imports]);
+  const Component = useMemo(
+    () => (importType ? ImportTypeToComponent[importType] : null),
+    [importType],
+  );
 
-  if (!status) {
+  if (!imports) {
     return <CircularProgress />;
   }
 
   return (
     <div>
-      {!status.running && (
-        <span className={s.import}>
-          Here you can import previous data from Spotify privacy data. You can request them{' '}
-          <a target="_blank" href="https://www.spotify.com/us/account/privacy/" rel="noreferrer">
-            here
-          </a>
-          . It usually takes a week for them to get back to you. Once received, upload here your
-          files beginning with <code>StreamingHistory</code>.
-        </span>
-      )}
-      <SettingLine left="Importing" right={status.running.toString()} />
-      {!status.running && (
-        <label htmlFor="contained-button-file">
-          <input
-            accept=".json"
-            id="contained-button-file"
-            multiple
-            type="file"
-            style={{ display: 'none' }}
-            onChange={(ev) => setFiles(ev.target.files)}
-          />
-          <Button component="span">Select your StreamingHistoryX.json files</Button>
-        </label>
-      )}
-      {files && Array.from(Array(files.length).keys()).map((i) => <div>{files.item(i)?.name}</div>)}
-      {wrongFiles && (
-        <span className={s.alert}>
-          Some file do not being with <code>StreamingHistory</code>, import might not work
-        </span>
-      )}
-      {files && !wrongFiles && (
-        <span className={s.noalert}>Everything looks fine for the import to work</span>
-      )}
-      {files && (
-        <div className={s.importButton}>
-          {!status.running && !loading && (
-            <Button variant="contained" onClick={onImport}>
-              Import
-            </Button>
-          )}
-          {loading && <CircularProgress size={16} />}
-        </div>
-      )}
-      {status.running && !status.progress && <span>Initializing import...</span>}
-      {status.running && status.progress && (
-        <div>
-          <div className={s.progress}>
-            <span>
-              {status.progress[0]} / {status.progress[1]}
-            </span>
+      <div>
+        {running && (
+          <div>
+            <span>Importing...</span>
+            <div className={s.progress}>
+              <span>
+                {running.current} / {running.total}
+              </span>
+            </div>
+            <LinearProgress
+              style={{ width: '100%' }}
+              variant="determinate"
+              value={(running.current / running.total) * 100}
+            />
           </div>
-          <LinearProgress
-            style={{ width: '100%' }}
-            variant="determinate"
-            value={(status.progress[0] / status.progress[1]) * 100}
-          />
+        )}
+      </div>
+      {!running && (
+        <div>
+          <FormControl className={s.selectimport}>
+            <InputLabel id="import-type-select">Import type</InputLabel>
+            <Select
+              labelId="import-type-select"
+              value={importType}
+              label="Import type"
+              onChange={(ev) => setImportType(ev.target.value as ImporterStateTypes)}>
+              {Object.values(ImporterStateTypes).map((typ) => (
+                <MenuItem value={typ} key={typ}>
+                  {typ}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {Component && <Component />}
         </div>
       )}
+      {imports.length > 0 && <ImportHistory />}
     </div>
   );
 }

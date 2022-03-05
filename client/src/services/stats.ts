@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
 import { DateId, Precision } from './types';
 
-const fresh = (d: Date) => {
+export const fresh = (d: Date, eraseHour = false) => {
   const date = new Date(d.getTime());
   date.setMilliseconds(0);
   date.setSeconds(0);
   date.setMinutes(0);
+  if (eraseHour) {
+    date.setHours(0);
+  }
   return date;
 };
 
@@ -13,61 +16,41 @@ export const buildFromDateId = (dateId: DateId) => {
   const date = fresh(new Date());
   date.setFullYear(dateId.year);
   date.setMonth((dateId.month ?? 1) - 1);
-  date.setDate(dateId.day ?? 0);
+  date.setDate(dateId.day ?? 1);
   date.setHours(dateId.hour ?? 0);
   return date;
 };
 
-const getHours = (date: Date) => date.getTime() / 1000 / 60 / 60;
-const getDays = (date: Date) => date.getTime() / 1000 / 60 / 60 / 24;
-const getMonths = (date: Date) => date.getTime() / 1000 / 60 / 60 / 24 / 30;
-const getYears = (date: Date) => date.getTime() / 1000 / 60 / 60 / 24 / 30 / 365;
-
-const countIndexes = (start: Date, targetId: DateId) => {
-  const target = buildFromDateId(targetId);
-  if ('hour' in targetId) {
-    return getHours(target) - getHours(start);
-  }
-  if ('day' in targetId) {
-    return getDays(target) - getDays(start);
-  }
-  if ('month' in targetId) {
-    return getMonths(target) - getMonths(start);
-  }
-  return getYears(target) - getYears(start);
-};
-
-const countTotalIndexes = (precision: Precision, start: Date, end: Date) => {
-  if (precision === Precision.hour) {
-    return getHours(end) - getHours(start);
-  }
-  if (precision === Precision.day) {
-    return getDays(end) - getDays(start);
+const getDateFromIndex = (index: number, start: Date, precision: Precision) => {
+  const date = fresh(start, precision !== Precision.hour);
+  if (precision === Precision.year) {
+    date.setFullYear(date.getFullYear() + index);
+    return date;
   }
   if (precision === Precision.month) {
-    return getMonths(end) - getMonths(start);
+    date.setMonth(date.getMonth() + index);
+    return date;
   }
-  return getYears(end) - getYears(start);
-};
-
-const getDateFromIndex = (index: number, totalIndex: number, start: Date, end: Date) => {
-  const ratio = index / totalIndex;
-  const date = new Date(start.getTime() + ratio * (end.getTime() - start.getTime()));
+  if (precision === Precision.week) {
+    date.setDate(date.getDate() + index * 7);
+    return date;
+  }
+  if (precision === Precision.day) {
+    date.setDate(date.getDate() + index);
+    return date;
+  }
+  if (precision === Precision.hour) {
+    date.setHours(date.getHours() + index);
+    return date;
+  }
+  console.warn('No precision on getDateFromIndex');
   return date;
+  // const ratio = index / totalIndex;
+  // const date = new Date(start.getTime() + ratio * (end.getTime() - start.getTime()));
+  // return date;
 };
 
 const pad = (value: number) => value.toString().padStart(2, '0');
-
-const getStringFromDateAndInterval = (date: Date, start: Date, end: Date) => {
-  const days = (end.getTime() - start.getTime()) / 1000 / 60 / 60 / 24;
-  if (days <= 1) {
-    return `${pad(date.getHours())}:00`;
-  }
-  if (days < 365) {
-    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}`;
-  }
-  return `${pad(date.getMonth() + 1)}/${pad(date.getFullYear())}`;
-};
 
 const getPrecisionFromDateId = (dateId: DateId) => {
   if ('hour' in dateId) {
@@ -82,6 +65,39 @@ const getPrecisionFromDateId = (dateId: DateId) => {
   return Precision.year;
 };
 
+export interface DateWithPrecision {
+  date: Date;
+  precision: Precision;
+}
+
+export interface DefaultGraphItem {
+  x: number;
+  dateWithPrecision: DateWithPrecision;
+}
+
+const cleanDateFromPrecision = (date: Date, precision: Precision) => {
+  const d = fresh(date, true);
+  if (precision === Precision.year) {
+    d.setMonth(0);
+    d.setDate(1);
+    return d;
+  }
+  if (precision === Precision.month) {
+    return d;
+  }
+  if (precision === Precision.week) {
+    return d;
+  }
+  if (precision === Precision.day) {
+    return d;
+  }
+  if (precision === Precision.hour) {
+    return fresh(date, false);
+  }
+  console.warn('No precision on cleanDateFromPrecision');
+  return date;
+};
+
 const buildXYDataWithGetters = <Dict extends Record<string, any>>(
   data: { _id: DateId; value: number }[],
   start: Date,
@@ -90,14 +106,14 @@ const buildXYDataWithGetters = <Dict extends Record<string, any>>(
   getData: (index: number) => Dict,
   getDefaultData: () => Dict,
 ) => {
-  start = fresh(start);
-  end = fresh(end);
   if (data.length === 0) {
     return [];
   }
   const precision = getPrecisionFromDateId(data[0]._id);
-  const built: ({ x: number; date: Date } & Dict)[] = [];
-  const totalIndex = countTotalIndexes(precision, start, end);
+  start = cleanDateFromPrecision(start, precision);
+  end = fresh(end, precision !== Precision.hour);
+  const built: (DefaultGraphItem & Dict)[] = [];
+  let currentIndex = 0;
   for (let dataIndex = 0; dataIndex < data.length; dataIndex += 1) {
     const d = data[dataIndex];
     const thisDate = buildFromDateId(d._id);
@@ -107,34 +123,49 @@ const buildXYDataWithGetters = <Dict extends Record<string, any>>(
     if (thisDate.getTime() > end.getTime()) {
       return built;
     }
-    const nextIndex = Math.floor(countIndexes(start, d._id));
-    if (!doNotFillData) {
-      const currentIndex = built.length;
-      const diff = nextIndex - currentIndex;
-      for (let i = 0; i < diff; i += 1) {
+    let currentDate = getDateFromIndex(currentIndex, start, precision);
+    for (let i = 0; currentDate.getTime() !== thisDate.getTime(); i += 1) {
+      if (currentDate.getTime() > thisDate.getTime()) {
+        console.warn('Could not build missing data correctly');
+        return built;
+      }
+      if (!doNotFillData) {
         built.push({
-          x: currentIndex + i,
-          date: getDateFromIndex(currentIndex + i, totalIndex, start, end),
+          x: currentIndex,
+          dateWithPrecision: {
+            date: currentDate,
+            precision,
+          },
           ...getDefaultData(),
         });
       }
+      currentIndex += 1;
+      currentDate = getDateFromIndex(currentIndex, start, precision);
     }
     built.push({
-      x: nextIndex,
-      date: getDateFromIndex(nextIndex, totalIndex, start, end),
+      x: currentIndex,
+      dateWithPrecision: {
+        date: getDateFromIndex(currentIndex, start, precision),
+        precision,
+      },
       ...getData(dataIndex),
     });
+    currentIndex += 1;
   }
   if (!doNotFillData) {
-    const nextIndex = totalIndex - 1;
-    const currentIndex = built.length;
-    const diff = nextIndex - currentIndex;
-    for (let i = 0; i < diff; i += 1) {
+    let currentDate = getDateFromIndex(currentIndex, start, precision);
+    // eslint-disable-next-line no-constant-condition
+    for (let i = 0; currentDate.getTime() <= end.getTime(); i += 1) {
       built.push({
         x: currentIndex + i,
-        date: getDateFromIndex(currentIndex + i, totalIndex, start, end),
+        dateWithPrecision: {
+          date: currentDate,
+          precision,
+        },
         ...getDefaultData(),
       });
+      currentIndex += 1;
+      currentDate = getDateFromIndex(currentIndex, start, precision);
     }
   }
   return built;
@@ -176,18 +207,6 @@ export const buildXYDataObjSpread = (
   );
 };
 
-export const useFormatXAxis = (data: { x: number; date: Date }[], start: Date, end: Date) =>
-  useCallback(
-    (value: number) => {
-      const dataValue = data.find((d) => d.x === value);
-      if (!dataValue) {
-        return '';
-      }
-      return getStringFromDateAndInterval(dataValue.date, start, end);
-    },
-    [data, end, start],
-  );
-
 const months = [
   'January',
   'February',
@@ -203,18 +222,68 @@ const months = [
   'December',
 ];
 
+export const formatDateWithPrecisionToSimpleString = ({ date, precision }: DateWithPrecision) => {
+  if (precision === Precision.hour) {
+    return `${pad(date.getHours())}:00`;
+  }
+  if (precision === Precision.day) {
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}`;
+  }
+  if (precision === Precision.week) {
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}`;
+  }
+  if (precision === Precision.month) {
+    return `${months[date.getMonth()]}`;
+  }
+  if (precision === Precision.year) {
+    return pad(date.getFullYear());
+  }
+  return 'no precision found';
+};
+
+export const formatDateWithPrecisionToString = ({ date, precision }: DateWithPrecision) => {
+  if (precision === Precision.hour) {
+    return `${pad(date.getHours())}:00 ${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(
+      date.getFullYear(),
+    )}`;
+  }
+  if (precision === Precision.day) {
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())}`;
+  }
+  if (precision === Precision.week) {
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())}`;
+  }
+  if (precision === Precision.month) {
+    return `${months[date.getMonth()]} ${pad(date.getFullYear())}`;
+  }
+  if (precision === Precision.year) {
+    return pad(date.getFullYear());
+  }
+  return 'no precision found';
+};
+
+export const useFormatXAxis = (data: DefaultGraphItem[]) =>
+  useCallback(
+    (value: number) => {
+      const dataValue = data.find((d) => d.x === value);
+      if (!dataValue) {
+        return '';
+      }
+      return formatDateWithPrecisionToSimpleString(dataValue.dateWithPrecision);
+    },
+    [data],
+  );
+
 export const formatYAxisDate = (value: number) => {
   const year = Math.floor(value);
   const month = Math.floor((value - year) * 12);
   return `${months[month]} ${year}`;
 };
 
-export const formatDateToString = (date: Date) => {
-  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())}`;
-};
-
-export const formatXAxisDateTooltip = <D extends { date: Date }>(label: string, payload: D) =>
-  formatDateToString(payload.date);
+export const formatXAxisDateTooltip = <D extends { dateWithPrecision: DateWithPrecision }>(
+  label: string,
+  payload: D,
+) => formatDateWithPrecisionToString(payload.dateWithPrecision);
 
 export const msToMinutes = (ms: number) => Math.floor(ms / 1000 / 60);
 export const msToMinutesAndSeconds = (ms: number) =>

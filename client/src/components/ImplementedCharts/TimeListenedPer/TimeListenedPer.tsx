@@ -27,7 +27,7 @@ export default function TimeListenedPer({ className, interval }: TimeListenedPer
     interval.end,
   );
 
-  const formatX = useFormatXAxis(data, interval.start, interval.end);
+  const formatX = useFormatXAxis(data);
   const formatY = useCallback((value: number) => {
     return `${msToMinutes(value)}m`;
   }, []);

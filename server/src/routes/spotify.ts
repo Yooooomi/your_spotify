@@ -92,19 +92,29 @@ router.get('/listened_to', validating(interval, 'query'), logged, async (req, re
   const { user } = req as LoggedRequest;
   const { start, end } = req.query as TypedPayload<typeof interval>;
 
-  const result = await getSongsPer(user, start, end);
-  if (result.length > 0) {
-    return res.status(200).send({ count: result[0].count });
+  try {
+    const result = await getSongsPer(user, start, end);
+    if (result.length > 0) {
+      return res.status(200).send({ count: result[0].count });
+    }
+    return res.status(200).send({ count: 0 });
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
   }
-  return res.status(200).send({ count: 0 });
 });
 
 router.get('/most_listened', validating(intervalPerSchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
   const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await getMostListenedSongs(user, start, end, timeSplit);
-  return res.status(200).send(result);
+  try {
+    const result = await getMostListenedSongs(user, start, end, timeSplit);
+    return res.status(200).send(result);
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
 });
 
 router.get(
@@ -115,8 +125,13 @@ router.get(
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-    const result = await getMostListenedArtist(user, start, end, timeSplit);
-    return res.status(200).send(result);
+    try {
+      const result = await getMostListenedArtist(user, start, end, timeSplit);
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
   },
 );
 
@@ -124,16 +139,26 @@ router.get('/songs_per', validating(intervalPerSchema, 'query'), logged, async (
   const { user } = req as LoggedRequest;
   const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await getSongsPer(user, start, end, timeSplit);
-  return res.status(200).send(result);
+  try {
+    const result = await getSongsPer(user, start, end, timeSplit);
+    return res.status(200).send(result);
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
 });
 
 router.get('/time_per', validating(intervalPerSchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
   const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await getTimePer(user, start, end, timeSplit);
-  return res.status(200).send(result);
+  try {
+    const result = await getTimePer(user, start, end, timeSplit);
+    return res.status(200).send(result);
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
 });
 
 router.get(
@@ -144,8 +169,13 @@ router.get(
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-    const result = await albumDateRatio(user, start, end, timeSplit);
-    return res.status(200).send(result);
+    try {
+      const result = await albumDateRatio(user, start, end, timeSplit);
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
   },
 );
 
@@ -153,16 +183,26 @@ router.get('/feat_ratio', validating(intervalPerSchema, 'query'), logged, async 
   const { user } = req as LoggedRequest;
   const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await featRatio(user, start, end, timeSplit);
-  return res.status(200).send(result);
+  try {
+    const result = await featRatio(user, start, end, timeSplit);
+    return res.status(200).send(result);
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
 });
 
 router.get('/popularity_per', validating(intervalPerSchema, 'query'), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
   const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-  const result = await popularityPer(user, start, end, timeSplit);
-  return res.status(200).send(result);
+  try {
+    const result = await popularityPer(user, start, end, timeSplit);
+    return res.status(200).send(result);
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
 });
 
 router.get(
@@ -173,8 +213,13 @@ router.get(
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-    const result = await differentArtistsPer(user, start, end, timeSplit);
-    return res.status(200).send(result);
+    try {
+      const result = await differentArtistsPer(user, start, end, timeSplit);
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
   },
 );
 
@@ -182,8 +227,13 @@ router.get('/time_per_hour_of_day', validating(interval, 'query'), logged, async
   const { user } = req as LoggedRequest;
   const { start, end } = req.query as TypedPayload<typeof interval>;
 
-  const result = await getDayRepartition(user, start, end);
-  return res.status(200).send(result);
+  try {
+    const result = await getDayRepartition(user, start, end);
+    return res.status(200).send(result);
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
 });
 
 router.get(
@@ -194,8 +244,13 @@ router.get(
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
 
-    const result = await getBestArtistsPer(user, start, end, timeSplit);
-    return res.status(200).send(result);
+    try {
+      const result = await getBestArtistsPer(user, start, end, timeSplit);
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
   },
 );
 
@@ -217,8 +272,13 @@ router.get(
     const { user } = req as LoggedRequest;
     const { start, end, nb, offset } = req.query as TypedPayload<typeof intervalPerSchemaNbOffset>;
 
-    const result = await getBestSongsNbOffseted(user, start, end, nb, offset);
-    return res.status(200).send(result);
+    try {
+      const result = await getBestSongsNbOffseted(user, start, end, nb, offset);
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
   },
 );
 
@@ -230,8 +290,13 @@ router.get(
     const { user } = req as LoggedRequest;
     const { start, end, nb, offset } = req.query as TypedPayload<typeof intervalPerSchemaNbOffset>;
 
-    const result = await getBestArtistsNbOffseted(user, start, end, nb, offset);
-    return res.status(200).send(result);
+    try {
+      const result = await getBestArtistsNbOffseted(user, start, end, nb, offset);
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
   },
 );
 
@@ -243,7 +308,12 @@ router.get(
     const { user } = req as LoggedRequest;
     const { start, end, nb, offset } = req.query as TypedPayload<typeof intervalPerSchemaNbOffset>;
 
-    const result = await getBestAlbumsNbOffseted(user, start, end, nb, offset);
-    return res.status(200).send(result);
+    try {
+      const result = await getBestAlbumsNbOffseted(user, start, end, nb, offset);
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
   },
 );

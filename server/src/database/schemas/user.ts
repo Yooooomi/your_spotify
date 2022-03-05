@@ -16,6 +16,7 @@ export interface User {
     nbElements: number;
     metricUsed: 'number' | 'duration';
   };
+  lastImport: string | null;
 }
 
 export const UserSchema = new Schema<User>(
@@ -43,6 +44,7 @@ export const UserSchema = new Schema<User>(
         default: 'number',
       },
     },
+    lastImport: { type: String, default: null },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );

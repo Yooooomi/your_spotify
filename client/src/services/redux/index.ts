@@ -4,6 +4,7 @@ import userReducer from './modules/user/reducer';
 import settingsReducer from './modules/settings/reducer';
 import messageReducer from './modules/message/reducer';
 import adminReducer from './modules/admin/reducer';
+import importReducer from './modules/import/reducer';
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     settings: settingsReducer,
     message: messageReducer,
     admin: adminReducer,
+    import: importReducer,
   },
 });
 

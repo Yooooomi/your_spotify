@@ -29,3 +29,5 @@ export enum Timesplit {
   month = 'month',
   year = 'year',
 }
+
+export type Unpack<T> = T extends (infer U)[] ? U : T;

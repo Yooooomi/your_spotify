@@ -16,6 +16,13 @@ export function endOfDay(date: Date) {
   return d;
 }
 
+export function nextDay(date: Date) {
+  const d = cloneDate(date);
+  d.setDate(d.getDate() + 1);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 export function getAppropriateTimesplitFromRange(start: Date, end: Date) {
   const diff = end.getTime() - start.getTime();
   const days = diff / (1000 * 60 * 60 * 24);

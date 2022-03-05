@@ -1,0 +1,13 @@
+.popper {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--hardshadow);
+  border-radius: 6px;
+  z-index: 1;
+  background-color: white;
+}
+
+.destructive {
+  color: red !important;
+}

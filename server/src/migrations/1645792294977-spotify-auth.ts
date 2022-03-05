@@ -25,6 +25,7 @@ export const up = async () => {
         await storeInUser('_id', us._id, { spotifyId: us.spotifyId });
       } catch (e) {
         logger.error(
+          e,
           `Error on user ${us.username} while migrating, please try again later, if the problem perists, please open an issue. YourSpotify won't launch`,
         );
         process.exit(1);

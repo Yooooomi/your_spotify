@@ -58,6 +58,7 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
             <div className={s.ranks}>
               {stats.rank.results.map((rank, k, a) => (
                 <div
+                  key={rank.id}
                   className={clsx({
                     [s.rank]: true,
                     [s.before]:

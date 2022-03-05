@@ -22,7 +22,7 @@ export default function SongsListenedPer({ className, interval }: SongsListenedP
     interval.end,
   );
 
-  const formatX = useFormatXAxis(data, interval.start, interval.end);
+  const formatX = useFormatXAxis(data);
   const tooltipValueFormatter = useCallback((value: number) => `${value} songs`, []);
 
   if (!result) {

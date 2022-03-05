@@ -1,0 +1,25 @@
+.status {
+  display: flex;
+  align-items: center;
+}
+
+.importhistory > h3 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.importertype {
+  color: grey;
+  font-style: italic;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.right > span {
+  margin-right: 8px;
+}

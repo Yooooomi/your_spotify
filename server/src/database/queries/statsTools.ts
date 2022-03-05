@@ -88,3 +88,27 @@ export const getTrackSumType = (user: User) => {
   }
   return 1;
 };
+
+export const lightTrackLookupPipeline = {
+  let: { id: '$id' },
+  pipeline: [
+    { $match: { $expr: { $eq: ['$id', '$$id'] } } },
+    { $project: { _id: 1, id: 1, name: 1, artists: 1, album: 1, images: 1, duration_ms: 1 } },
+  ],
+};
+
+export const lightAlbumLookupPipeline = {
+  let: { id: '$track.album' },
+  pipeline: [
+    { $match: { $expr: { $eq: ['$id', '$$id'] } } },
+    { $project: { _id: 1, id: 1, name: 1, artists: 1, images: 1 } },
+  ],
+};
+
+export const lightArtistLookupPipeline = {
+  let: { id: { $first: '$track.artists' } },
+  pipeline: [
+    { $match: { $expr: { $eq: ['$id', '$$id'] } } },
+    { $project: { _id: 1, id: 1, name: 1, images: 1, genres: 1 } },
+  ],
+};

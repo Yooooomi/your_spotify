@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import { AdminAccount } from './redux/modules/admin/reducer';
+import { ImporterState } from './redux/modules/import/types';
 import { User } from './redux/modules/user/types';
 import {
   Album,
@@ -42,10 +43,6 @@ const put = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: 
 
 const delet = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
   axios.delete(url, params);
-
-export type GetImport =
-  | { running: false }
-  | { running: true; progress: [number, number] | undefined };
 
 export type ArtistStatsResponse = {
   artist: Artist;
@@ -291,17 +288,32 @@ export const api = {
       nb,
       offset,
     }),
-  getImport: () => get<GetImport>('/import'),
-  doImport: (files: File[]) => {
+  getImports: () => get<ImporterState[]>('/imports'),
+  doImportPrivacy: (files: File[]) => {
     const formData = new FormData();
-    formData.append('importerName', 'privacy');
     files.forEach((file) => {
       formData.append('imports', file);
     });
-    return axios.post('/import', formData, {
+    return axios.post('/import/privacy', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
   },
+  doImportFullPrivacy: (files: File[]) => {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append('imports', file);
+    });
+    return axios.post('/import/full-privacy', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  retryImport: (existingStateId: string) =>
+    post('/import/retry', {
+      existingStateId,
+    }),
+  cleanupImport: (id: string) => delet(`/import/clean/${id}`),
 };

@@ -9,15 +9,31 @@ function getKey(track: string, artist: string) {
   return `${track}-${artist}`;
 }
 
+export function getFromCacheString(userId: string, str: string) {
+  if (!(userId in cache)) {
+    cache[userId] = {};
+  }
+  return cache[userId][str];
+}
+
 export function getFromCache(
   userId: string,
   track: string,
   artist: string,
 ): SpotifyTrack | undefined {
+  const key = getKey(track, artist);
+  return getFromCacheString(userId, key);
+}
+
+export function setToCacheString(userId: string, str: string, trackObject: SpotifyTrack) {
   if (!(userId in cache)) {
     cache[userId] = {};
   }
-  return cache[userId][getKey(track, artist)];
+  const keys = Object.keys(cache[userId]);
+  if (keys.length > maxCacheSize) {
+    delete cache[userId][keys[0]];
+  }
+  cache[userId][str] = trackObject;
 }
 
 export function setToCache(
@@ -26,14 +42,8 @@ export function setToCache(
   artist: string,
   trackObject: SpotifyTrack,
 ) {
-  if (!(userId in cache)) {
-    cache[userId] = {};
-  }
-  const keys = Object.keys(cache[userId]);
-  if (keys.length > maxCacheSize) {
-    delete cache[userId][keys[0]];
-  }
-  cache[userId][getKey(track, artist)] = trackObject;
+  const key = getKey(track, artist);
+  setToCacheString(userId, key, trackObject);
 }
 
 export function clearCache(userId: string) {

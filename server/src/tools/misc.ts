@@ -1,3 +1,5 @@
+import { logger } from './logger';
+
 export const wait = (ms: number) => new Promise((s) => setTimeout(s, ms));
 
 const defaultDiacriticsRemovalMap = [
@@ -240,3 +242,23 @@ export function beforeParenthesis(str: string) {
   }
   return str;
 }
+
+export const retryPromise = async <T>(
+  fn: () => Promise<T>,
+  max: number,
+  time: number,
+): Promise<T> => {
+  for (let i = 0; i < max; i += 1) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const res = await fn();
+      return res;
+    } catch (e) {
+      logger.error(`Retrying crashed promise, ${i + 1}/${max}`, e);
+      // eslint-disable-next-line no-await-in-loop
+      await wait(time);
+    }
+  }
+  // Cannot happen
+  return null as any;
+};

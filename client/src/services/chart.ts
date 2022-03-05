@@ -1,7 +1,10 @@
 import { useCallback } from 'react';
 import { Payload, NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import { DateWithPrecision } from './stats';
 
-export const useRawTooltipLabelFormatter = <D extends { x: number; y: number; date: Date }>(
+export const useRawTooltipLabelFormatter = <
+  D extends { x: number; y: number; dateWithPrecision: DateWithPrecision },
+>(
   tooltipLabelFormatter?: (value: string, payload: D) => string,
   forEveryEntry = true,
 ) => {
@@ -27,7 +30,9 @@ export const useRawTooltipLabelFormatter = <D extends { x: number; y: number; da
   return fn;
 };
 
-export const useRawTooltipValueFormatter = <D extends { x: number; y: number; date: Date }>(
+export const useRawTooltipValueFormatter = <
+  D extends { x: number; y: number; dateWithPrecision: DateWithPrecision },
+>(
   tooltipValueFormatter?: (value: number, payload: D) => string,
 ) => {
   const fn = useCallback(

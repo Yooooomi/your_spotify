@@ -5,6 +5,9 @@ import {
   getGroupByDateProjection,
   getGroupingByTimeSplit,
   getTrackSumType,
+  lightAlbumLookupPipeline,
+  lightArtistLookupPipeline,
+  lightTrackLookupPipeline,
   sortByTimeSplit,
 } from './statsTools';
 
@@ -541,9 +544,8 @@ export const getBestSongsNbOffseted = (
     { $project: { ...getGroupByDateProjection(), id: 1 } },
     {
       $lookup: {
+        ...lightTrackLookupPipeline,
         from: 'tracks',
-        localField: 'id',
-        foreignField: 'id',
         as: 'track',
       },
     },
@@ -553,20 +555,12 @@ export const getBestSongsNbOffseted = (
     {
       $group: {
         _id: null,
-        tracks: { $push: '$$ROOT' },
+        track: { $push: '$track' },
         total_duration_ms: { $sum: '$track.duration_ms' },
         total_count: { $sum: 1 },
       },
     },
-    { $unwind: '$tracks' },
-    {
-      $addFields: {
-        'tracks.total_duration_ms': '$total_duration_ms',
-        'tracks.total_count': '$total_count',
-      },
-    },
-    { $replaceRoot: { newRoot: '$tracks' } },
-
+    { $unwind: '$track' },
     {
       $group: {
         _id: '$track.id',
@@ -580,25 +574,23 @@ export const getBestSongsNbOffseted = (
     { $sort: { count: -1, 'track.name': 1 } },
     { $skip: offset },
     { $limit: nb },
-    { $addFields: { 'track.mainArtist': { $first: '$track.artists' } } },
+    { $addFields: { 'track.artist': { $first: '$track.artists' } } },
     {
       $lookup: {
-        from: 'artists',
-        localField: 'track.mainArtist',
-        foreignField: 'id',
-        as: 'artist',
-      },
-    },
-    { $unwind: '$artist' },
-    {
-      $lookup: {
+        ...lightAlbumLookupPipeline,
         from: 'albums',
-        localField: 'track.album',
-        foreignField: 'id',
         as: 'album',
       },
     },
     { $unwind: '$album' },
+    {
+      $lookup: {
+        ...lightArtistLookupPipeline,
+        from: 'artists',
+        as: 'artist',
+      },
+    },
+    { $unwind: '$artist' },
   ]);
 
 export const getBestArtistsNbOffseted = (
@@ -613,9 +605,8 @@ export const getBestArtistsNbOffseted = (
     { $project: { ...getGroupByDateProjection(), id: 1 } },
     {
       $lookup: {
+        ...lightTrackLookupPipeline,
         from: 'tracks',
-        localField: 'id',
-        foreignField: 'id',
         as: 'track',
       },
     },
@@ -625,32 +616,17 @@ export const getBestArtistsNbOffseted = (
     {
       $group: {
         _id: null,
-        tracks: { $push: '$$ROOT' },
+        track: { $push: '$track' },
         total_duration_ms: { $sum: '$track.duration_ms' },
         total_count: { $sum: 1 },
       },
     },
+    { $unwind: '$track' },
+    { $addFields: { 'track.artist': { $first: '$track.artists' } } },
     {
       $group: {
-        _id: null,
-        tracks: { $first: '$tracks' },
-        total_duration_ms: { $first: '$total_duration_ms' },
-        total_count: { $first: '$total_count' },
-        differents: { $sum: 1 },
-      },
-    },
-    { $unwind: '$tracks' },
-    {
-      $addFields: {
-        'tracks.total_duration_ms': '$total_duration_ms',
-        'tracks.total_count': '$total_count',
-      },
-    },
-    { $replaceRoot: { newRoot: '$tracks' } },
-
-    {
-      $group: {
-        _id: { $first: '$track.artists' },
+        _id: '$track.artist',
+        track: { $last: '$track' },
         total_count: { $last: '$total_count' },
         total_duration_ms: { $last: '$total_duration_ms' },
         duration_ms: { $sum: '$track.duration_ms' },
@@ -658,25 +634,22 @@ export const getBestArtistsNbOffseted = (
         differents: { $addToSet: '$track.id' },
       },
     },
-    { $unwind: '$differents' },
-    {
-      $group: {
-        _id: '$_id',
-        total_count: { $first: '$total_count' },
-        total_duration_ms: { $first: '$total_duration_ms' },
-        duration_ms: { $first: '$duration_ms' },
-        count: { $first: '$count' },
-        differents: { $sum: 1 },
-      },
-    },
+    { $addFields: { differents: { $size: '$differents' } } },
     { $sort: { count: -1, _id: 1 } },
     { $skip: offset },
     { $limit: nb },
     {
       $lookup: {
+        ...lightAlbumLookupPipeline,
+        from: 'albums',
+        as: 'album',
+      },
+    },
+    { $unwind: '$album' },
+    {
+      $lookup: {
+        ...lightArtistLookupPipeline,
         from: 'artists',
-        localField: '_id',
-        foreignField: 'id',
         as: 'artist',
       },
     },
@@ -695,9 +668,8 @@ export const getBestAlbumsNbOffseted = (
     { $project: { ...getGroupByDateProjection(), id: 1 } },
     {
       $lookup: {
+        ...lightTrackLookupPipeline,
         from: 'tracks',
-        localField: 'id',
-        foreignField: 'id',
         as: 'track',
       },
     },
@@ -707,49 +679,42 @@ export const getBestAlbumsNbOffseted = (
     {
       $group: {
         _id: null,
-        tracks: { $push: '$$ROOT' },
+        track: { $push: '$track' },
         total_duration_ms: { $sum: '$track.duration_ms' },
         total_count: { $sum: 1 },
       },
     },
-    { $unwind: '$tracks' },
-    {
-      $addFields: {
-        'tracks.total_duration_ms': '$total_duration_ms',
-        'tracks.total_count': '$total_count',
-      },
-    },
-    { $replaceRoot: { newRoot: '$tracks' } },
-
+    { $unwind: '$track' },
+    { $addFields: { 'track.artist': { $first: '$track.artists' } } },
     {
       $group: {
         _id: '$track.album',
-        count: { $sum: 1 },
+        track: { $last: '$track' },
         total_count: { $last: '$total_count' },
         total_duration_ms: { $last: '$total_duration_ms' },
         duration_ms: { $sum: '$track.duration_ms' },
-        artist: { $last: { $first: '$track.artists' } },
+        count: { $sum: 1 },
+        differents: { $addToSet: '$track.id' },
       },
     },
+    { $addFields: { differents: { $size: '$differents' } } },
     { $sort: { count: -1, _id: 1 } },
     { $skip: offset },
     { $limit: nb },
     {
       $lookup: {
-        from: 'artists',
-        localField: 'artist',
-        foreignField: 'id',
-        as: 'artist',
-      },
-    },
-    { $unwind: '$artist' },
-    {
-      $lookup: {
+        ...lightAlbumLookupPipeline,
         from: 'albums',
-        localField: '_id',
-        foreignField: 'id',
         as: 'album',
       },
     },
     { $unwind: '$album' },
+    {
+      $lookup: {
+        ...lightArtistLookupPipeline,
+        from: 'artists',
+        as: 'artist',
+      },
+    },
+    { $unwind: '$artist' },
   ]);

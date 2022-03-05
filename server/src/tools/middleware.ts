@@ -11,6 +11,7 @@ import {
   OptionalLoggedRequest,
   SpotifyRequest,
 } from './types';
+import { getUserImporterState } from '../database/queries/importer';
 
 type Location = 'body' | 'params' | 'query';
 
@@ -119,4 +120,13 @@ export const withGlobalPreferences = async (req: Request, res: Response, next: N
   } catch (e) {
     return res.status(500).end();
   }
+};
+
+export const notAlreadyImporting = async (req: Request, res: Response, next: NextFunction) => {
+  const { user } = req as LoggedRequest;
+  const imports = await getUserImporterState(user._id.toString());
+  if (imports.some((imp) => imp.status === 'progress')) {
+    return res.status(400).send({ code: 'ALREADY_IMPORTING' });
+  }
+  return next();
 };

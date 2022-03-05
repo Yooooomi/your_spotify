@@ -31,6 +31,7 @@ h6 {
 
 :root {
   --shadow: 5px 6px 40px -5px rgba(0, 0, 0, 0.05);
+  --hardshadow: 5px 6px 40px -5px rgba(0, 0, 0, 0.2);
   --text-grey: rgb(90, 90, 90);
   --page-padding: 32px;
 }

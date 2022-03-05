@@ -9,6 +9,7 @@ COPY scripts/ scripts/
 COPY package.json /app/package.json
 COPY yarn.lock /app/yarn.lock
 COPY tsconfig.json /app/tsconfig.json
+RUN sed -i 's@"extends": "../tsconfig.json",@@g' /app/tsconfig.json 
 
 ARG NODE_ENV
 ENV NODE_ENV ${NODE_ENV:-production}

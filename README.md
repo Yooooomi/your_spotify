@@ -11,11 +11,30 @@
 Your Spotify is a self-hosted application that tracks what you listen and offers you a dashboard to explore statistics about it!
 It's composed of a web server which polls the Spotify API every now and then and a web application on which you can explore your statistics.
 
+# Table of contents
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Using docker](#using-docker-compose)
+  - [Installing locally](#installing-locally-not-recommended)
+  - [Environment](#environment)
+  - [CORS](#cors)
+- [Creating the Spotify application](#creating-the-spotify-application)
+- [Importing past history](#importing-past-history)
+  - [Supported import methods](#supported-import-methods)
+    - [Privacy data](#privacy-data)
+    - [Full privacy data](#full-privacy-data)
+  - [Troubleshoot](#troubleshoot)
+- [FAQ](#faq)
+- [External guides](#external-guides)
+- [Contributing](#contributing)
+- [Sponsoring](#sponsoring)
+
 # Prerequisites
 
-1. You have to own a Spotify application ID that you can create through their [dashboard](https://developer.spotify.com/dashboard/applications)
-2. You need to provide the **Server** environment the **public** AND **secret** key of the application (cf. [Installation](#installation))
-3. You need to provide an **authorized** redirect URI to the `docker-compose` file
+1. You have to own a Spotify application ID that you can create through their [dashboard](https://developer.spotify.com/dashboard/applications).
+2. You need to provide the **Server** environment the **public** AND **secret** key of the application (cf. [Installation](#installation)).
+3. You need to provide an **authorized** redirect URI to the `docker-compose` file.
 
 > A tutorial is available at the end of this readme.
 
@@ -61,8 +80,6 @@ services:
 
 > Some ARM-based devices might have trouble with Mongo >= 5. I suggest you use the image **mongo:4.4**.
 
-> You can find logs in `logs.log` in `/app` in the docker in case you need to check the logs or have log driver to `none` in your compose. One thing you can do is volume the file so you can access it locally.
-
 ## Installing locally (not recommended)
 
 You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/blob/master/LOCAL_INSTALL.md). Note that you will still have to do the steps below.
@@ -86,47 +103,63 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 
 You can edit the CORS for the server:
 
-- `all` will allow every source
-- `origin1,origin2` will allow `origin1` and `origin2`
+- `all` will allow every source.
+- `origin1,origin2` will allow `origin1` and `origin2`.
 
 # Creating the Spotify Application
 
 For **Your spotify** to work you need to provide a Spotify application **public** AND **secret** to the server environment.
 To do so, you need to create a **Spotify application** [here](https://developer.spotify.com/dashboard/applications).
 
-1. Click on **Create a client ID**
-2. Fill out all the informations
+1. Click on **Create a client ID**.
+2. Fill out all the informations.
 3. Copy the **public** and the **secret** key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
-   respectively
-4. Add an authorized redirect URI corresponding to your **server** location on the internet adding the suffix **/oauth/spotify/callback**,
+   respectively.
+4. Add an authorized redirect URI corresponding to your **server** location on the internet adding the suffix **/oauth/spotify/callback**.
    1. use the `EDIT SETTINGS` button on the top right corner of the page.
-   2. add your URI under the `Redirect URIs` section
+   2. add your URI under the `Redirect URIs` section.
    - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
+   3. Do not forget to hit the save button at the bottom of the popup.
 
 # Importing past history
 
-By default, Your Spotify will only retrieve data for the past 24 hours once registered. This is a technical limitation. However, you can:
-
-- Request your **privacy data** at Spotify to have access to your history for the past year [here](https://www.spotify.com/us/account/privacy/).
-- Optional: once received (after a week), you can ask for extended data that will get you your whole history since the creation of the account. You have to write an email at **privacy@spotify.com** saying you want your data since the account creation.
-- Go to the **settings** of your account and import your `StreamingHistoryX.json` files.
-- Now you can follow the progress of the import with the progress bar.
-
-> It is safer to do this at the account creation. Though YourSpotify detects duplicates, some may still be inserted. However, song search is pretty accurate since it filters on artist then search for the song name.
-
-> If the server reboots, the import will be terminated. You can safely start another import with the same data as it will skip already existing items.
+By default, Your Spotify will only retrieve data for the past 24 hours once registered. This is a technical limitation. However, you can import previous data by two ways.
 
 The import process uses cache to limit requests to the Spotify API. By default, the cache size is unlimited, but you can limit is with the `MAX_IMPORT_CACHE_SIZE` env variable in the **server**.
+
+## Supported import methods
+
+### Privacy data
+
+- Request your **privacy data** at Spotify to have access to your history for the past year [here](https://www.spotify.com/us/account/privacy/).
+- Head to the **Settings** page and choose the **privacy** method.
+- Input your files starting with `StreamingHistoryX.json`.
+- Start your import.
+
+### Full privacy data
+
+> Full privacy data can be obtained by emailing **privacy@spotify.com** and requesting your data since the creation of the account.
+
+- Request your data by email.
+- Head to the **Settings** page and choose the **full-privacy** method.
+- Input your files starting with `endsongX.json`.
+- Start your import.
+
+## Troubleshoot
+
+An import can fail:
+- If the server reboots.
+- If a request fails 10 times in a row.
+
+A failed import can be retried in the **Settings** page. Be sure to clean your failed imports if you do not want to retry it as it will remove the files used for it.
+
+It is safer to import data at account creation. Though YourSpotify detects duplicates, some may still be inserted. However, song search is pretty accurate since it filters on artist then search for the song name.
 
 # FAQ
 
 > How can I block new registrations?
 
 From a logged account, go to the **Settings** page and hit the **Disable new registrations** button.
-
-> I lost the password of an account.
-
-If you have or create another account, you can change the password based on an account id you can find in the settings. If the registrations are blocked you cannot recover your password without editing the database yourself.
 
 > Songs don't seem to synchronize anymore.
 

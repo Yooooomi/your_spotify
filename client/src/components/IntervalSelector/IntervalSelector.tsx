@@ -9,10 +9,15 @@ import {
   Select,
   useMediaQuery,
 } from '@mui/material';
-import { startOfDay } from 'date-fns';
 import React, { useState, useCallback, useMemo } from 'react';
 import { DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
-import { cloneDate, endOfDay, getAppropriateTimesplitFromRange } from '../../services/date';
+import {
+  cloneDate,
+  startOfDay,
+  getAppropriateTimesplitFromRange,
+  endOfDay,
+} from '../../services/date';
+import { fresh } from '../../services/stats';
 import { Interval, Timesplit } from '../../services/types';
 import Dialog from '../Dialog';
 import s from './index.module.css';
@@ -24,12 +29,15 @@ interface IntervalSelectorProps {
 
 const lastDay = new Date();
 lastDay.setDate(lastDay.getDate() - 1);
-const lastWeek = new Date();
+const lastWeek = fresh(new Date(), true);
 lastWeek.setDate(lastWeek.getDate() - 7);
-const lastMonth = new Date();
+lastWeek.setHours(0);
+const lastMonth = fresh(new Date(), true);
 lastMonth.setMonth(lastMonth.getMonth() - 1);
-const lastYear = new Date();
+lastMonth.setHours(0);
+const lastYear = fresh(new Date(), true);
 lastYear.setFullYear(lastYear.getFullYear() - 1);
+lastYear.setDate(1);
 const now = new Date();
 
 export interface IntervalDetail {

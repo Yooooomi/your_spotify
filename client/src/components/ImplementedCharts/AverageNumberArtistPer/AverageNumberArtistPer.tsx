@@ -25,7 +25,7 @@ export default function AverageNumberArtistPer({
     interval.end,
   );
 
-  const formatX = useFormatXAxis(data, interval.start, interval.end);
+  const formatX = useFormatXAxis(data);
   const tooltipValueFormatter = useCallback((value: number) => `${value} artists`, []);
 
   if (!result) {

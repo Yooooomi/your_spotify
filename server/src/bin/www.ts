@@ -10,6 +10,8 @@ import app from '../app';
 import { logger } from '../tools/logger';
 import { connect } from '../database';
 import { getWithDefault } from '../tools/env';
+import { fixRunningImportsAtStart } from '../database/queries/importer';
+import { repairDatabase } from '../tools/repair';
 
 /**
  * Get port from environment and store in Express.
@@ -64,9 +66,12 @@ function onListening() {
  * Listen on provided port, on all network interfaces.
  */
 
-connect().then(() => {
+connect().then(async () => {
   server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);
-  dbLoop();
+  console.log('haha');
+  await repairDatabase().catch(logger.error);
+  dbLoop().catch(logger.error);
+  fixRunningImportsAtStart().catch(logger.error);
 });
