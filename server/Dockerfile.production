@@ -6,15 +6,15 @@ ENV MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
 
 RUN apk add python3 gcc g++ make cmake
 
-COPY package.json /package.json
-COPY yarn.lock /app/yarn.lock
-COPY tsconfig.json /app/tsconfig.json
+COPY package.json package.json
+COPY yarn.lock yarn.lock
+COPY tsconfig.json tsconfig.json
 RUN sed -i 's@"extends": "../tsconfig.json",@@g' /app/tsconfig.json 
 
 RUN yarn --dev --frozen-lockfile
 
-COPY src/ /app/src/
-COPY scripts/ /app/scripts/
+COPY src/ src/
+COPY scripts/ scripts/
 
 RUN yarn build
 
