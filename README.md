@@ -159,7 +159,7 @@ It is safer to import data at account creation. Though YourSpotify detects dupli
 
 > How can I block new registrations?
 
-From a logged account, go to the **Settings** page and hit the **Disable new registrations** button.
+From an admin account, go to the **Settings** page and hit the **Disable new registrations** button.
 
 > Songs don't seem to synchronize anymore.
 
