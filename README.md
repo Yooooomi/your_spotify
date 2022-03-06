@@ -118,7 +118,7 @@ To do so, you need to create a **Spotify application** [here](https://developer.
 4. Add an authorized redirect URI corresponding to your **server** location on the internet adding the suffix **/oauth/spotify/callback**.
    1. use the `EDIT SETTINGS` button on the top right corner of the page.
    2. add your URI under the `Redirect URIs` section.
-   - i.e: `http://localhost:3000/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
+   - i.e: `http://localhost:8080/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
    3. Do not forget to hit the save button at the bottom of the popup.
 
 # Importing past history
