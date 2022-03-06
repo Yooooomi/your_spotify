@@ -70,7 +70,6 @@ connect().then(async () => {
   server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);
-  console.log('haha');
   await repairDatabase().catch(logger.error);
   dbLoop().catch(logger.error);
   fixRunningImportsAtStart().catch(logger.error);
