@@ -1,5 +1,6 @@
-import clsx from 'clsx';
 import React from 'react';
+import clsx from 'clsx';
+import { useSelector } from 'react-redux';
 import { Skeleton } from '@mui/material';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
@@ -9,10 +10,12 @@ import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';
 import s from './index.module.css';
 import InlineArtist from '../../InlineArtist';
+import { selectInterval } from '../../../services/redux/modules/user/selector';
 
 interface BestArtistProps extends ImplementedCardProps {}
 
-export default function BestArtist({ className, interval }: BestArtistProps) {
+export default function BestArtist({ className }: BestArtistProps) {
+  const interval = useSelector(selectInterval);
   const result = useAPI(api.getBestArtists, interval.start, interval.end, 1, 0);
 
   if (!result) {

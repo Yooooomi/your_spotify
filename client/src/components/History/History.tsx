@@ -1,18 +1,17 @@
-import { Checkbox } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
+import { Checkbox } from '@mui/material';
+import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { api } from '../../services/api';
-import { Interval, TrackInfoWithTrack, UnboxPromise } from '../../services/types';
+import { TrackInfoWithTrack, UnboxPromise } from '../../services/types';
 import Loader from '../Loader';
 import TitleCard from '../TitleCard';
 import Track from './Track';
 import s from './index.module.css';
+import { selectInterval } from '../../services/redux/modules/user/selector';
 
-interface HistoryProps {
-  interval: Interval;
-}
-
-export default function History({ interval }: HistoryProps) {
+export default function History() {
+  const interval = useSelector(selectInterval);
   const [items, setItems] = useState<TrackInfoWithTrack[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [followInterval, setFollowInterval] = useState(true);

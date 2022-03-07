@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
 import {
@@ -12,10 +13,12 @@ import Line from '../../charts/Line';
 import ChartCard from '../../ChartCard';
 import LoadingImplementedChart from '../LoadingImplementedChart';
 import { ImplementedChartProps } from '../types';
+import { selectInterval } from '../../../services/redux/modules/user/selector';
 
 interface TimeListenedPerProps extends ImplementedChartProps {}
 
-export default function TimeListenedPer({ className, interval }: TimeListenedPerProps) {
+export default function TimeListenedPer({ className }: TimeListenedPerProps) {
+  const interval = useSelector(selectInterval);
   const result = useAPI(api.timePer, interval.start, interval.end, interval.timesplit);
 
   const data = buildXYData(

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Skeleton } from '@mui/material';
 import clsx from 'clsx';
 import { api } from '../../../services/api';
@@ -8,10 +9,12 @@ import { getImage } from '../../../services/tools';
 import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';
 import s from './index.module.css';
+import { selectInterval } from '../../../services/redux/modules/user/selector';
 
 interface BestSongProps extends ImplementedCardProps {}
 
-export default function BestSong({ className, interval }: BestSongProps) {
+export default function BestSong({ className }: BestSongProps) {
+  const interval = useSelector(selectInterval);
   const result = useAPI(api.getBestSongs, interval.start, interval.end, 1, 0);
 
   if (!result) {

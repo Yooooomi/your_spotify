@@ -1,4 +1,5 @@
 import React, { PureComponent, useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { api } from '../../../services/api';
@@ -9,6 +10,7 @@ import { Artist } from '../../../services/types';
 import ChartCard from '../../ChartCard';
 import { getImage } from '../../../services/tools';
 import LoadingImplementedChart from '../LoadingImplementedChart';
+import { selectInterval } from '../../../services/redux/modules/user/selector';
 
 interface BestArtistsBarProps extends ImplementedChartProps {}
 
@@ -54,7 +56,8 @@ class ImageAxisTick extends PureComponent<{
   }
 }
 
-export default function BestArtistsBar({ className, interval }: BestArtistsBarProps) {
+export default function BestArtistsBar({ className }: BestArtistsBarProps) {
+  const interval = useSelector(selectInterval);
   const result = useAPI(api.getBestArtists, interval.start, interval.end, 10, 0);
 
   const data = useMemo(

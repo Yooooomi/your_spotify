@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
+import { selectInterval } from '../../../services/redux/modules/user/selector';
 import { buildXYData, formatXAxisDateTooltip, useFormatXAxis } from '../../../services/stats';
 import { DateId } from '../../../services/types';
 import ChartCard from '../../ChartCard';
@@ -12,8 +14,8 @@ interface DifferentArtistsListenedPerProps extends ImplementedChartProps {}
 
 export default function DifferentArtistsListenedPer({
   className,
-  interval,
 }: DifferentArtistsListenedPerProps) {
+  const interval = useSelector(selectInterval);
   const result = useAPI(api.differentArtistsPer, interval.start, interval.end, interval.timesplit);
 
   const data = buildXYData(

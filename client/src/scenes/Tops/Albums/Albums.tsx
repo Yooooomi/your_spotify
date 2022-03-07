@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Header from '../../../components/Header';
-import { IntervalDetail, intervals } from '../../../components/IntervalSelector/IntervalSelector';
 import TitleCard from '../../../components/TitleCard';
 import { api } from '../../../services/api';
 import { UnboxPromise } from '../../../services/types';
 import s from './index.module.css';
 import Album from './Album';
 import Loader from '../../../components/Loader';
+import { selectIntervalDetail } from '../../../services/redux/modules/user/selector';
 
 export default function Albums() {
-  const [interval, setInterval] = useState(intervals[0]);
+  const { name, interval } = useSelector(selectIntervalDetail);
   const [items, setItems] = useState<UnboxPromise<ReturnType<typeof api['getBestAlbums']>>['data']>(
     [],
   );
@@ -19,12 +20,7 @@ export default function Albums() {
   const fetch = useCallback(async () => {
     if (!hasMore) return;
     try {
-      const result = await api.getBestAlbums(
-        interval.interval.start,
-        interval.interval.end,
-        10,
-        items.length,
-      );
+      const result = await api.getBestAlbums(interval.start, interval.end, 10, items.length);
       setItems([...items, ...result.data]);
       setHasMore(result.data.length === 10);
     } catch (e) {
@@ -40,25 +36,19 @@ export default function Albums() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interval, items.length]);
 
-  const changeInterval = useCallback((newInterval: IntervalDetail) => {
-    setInterval(newInterval);
+  useEffect(() => {
     setItems([]);
     setHasMore(true);
-  }, []);
+  }, [interval]);
 
   return (
     <div>
-      <Header
-        title="Top albums"
-        subtitle="Here are the albums you listened to the most"
-        interval={interval}
-        onChange={changeInterval}
-      />
+      <Header title="Top albums" subtitle="Here are the albums you listened to the most" />
       <div className={s.content}>
         <TitleCard title="Top albums">
           <Album line />
           <InfiniteScroll
-            key={interval.name}
+            key={name}
             next={fetch}
             hasMore={hasMore}
             dataLength={items.length}

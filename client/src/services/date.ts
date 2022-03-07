@@ -1,3 +1,5 @@
+import { IntervalDetail } from '../components/IntervalSelector/IntervalSelector';
+import { ReduxIntervalDetail } from './redux/modules/user/reducer';
 import { Timesplit } from './types';
 
 export function cloneDate(date: Date) {
@@ -36,4 +38,30 @@ export function getAppropriateTimesplitFromRange(start: Date, end: Date) {
     return Timesplit.month;
   }
   return Timesplit.year;
+}
+
+export function intervalDetailToRedux(intervalDetail: IntervalDetail): ReduxIntervalDetail {
+  return {
+    name: intervalDetail.name,
+    unit: intervalDetail.unit,
+    index: intervalDetail.index,
+    interval: {
+      start: intervalDetail.interval.start.getTime(),
+      end: intervalDetail.interval.end.getTime(),
+      timesplit: intervalDetail.interval.timesplit,
+    },
+  };
+}
+
+export function fromReduxIntervalDetail(intervalDetail: ReduxIntervalDetail): IntervalDetail {
+  return {
+    name: intervalDetail.name,
+    unit: intervalDetail.unit,
+    index: intervalDetail.index,
+    interval: {
+      start: new Date(intervalDetail.interval.start),
+      end: new Date(intervalDetail.interval.end),
+      timesplit: intervalDetail.interval.timesplit,
+    },
+  };
 }

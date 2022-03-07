@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { Skeleton } from '@mui/material';
 import { api } from '../../../services/api';
@@ -8,10 +9,12 @@ import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';
 import s from '../index.module.css';
 import { getLastPeriod, getPercentMore, msToMinutes } from '../../../services/stats';
+import { selectIntervalDetail } from '../../../services/redux/modules/user/selector';
 
 interface TimeListenedProps extends ImplementedCardProps {}
 
-export default function TimeListened({ interval, unit, className }: TimeListenedProps) {
+export default function TimeListened({ className }: TimeListenedProps) {
+  const { interval, unit } = useSelector(selectIntervalDetail);
   const result = useAPI(api.timePer, interval.start, interval.end, Timesplit.all);
   const lastPeriod = useMemo(() => getLastPeriod(interval.start, interval.end), [interval]);
   const resultOld = useAPI(api.timePer, lastPeriod.start, lastPeriod.end, Timesplit.all);

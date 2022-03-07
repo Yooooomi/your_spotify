@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { Skeleton } from '@mui/material';
 import { api } from '../../../services/api';
@@ -8,10 +9,12 @@ import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';
 import s from '../index.module.css';
 import { getLastPeriod, getPercentMore } from '../../../services/stats';
+import { selectIntervalDetail } from '../../../services/redux/modules/user/selector';
 
 interface ArtistsListenedProps extends ImplementedCardProps {}
 
-export default function ArtistsListened({ interval, unit, className }: ArtistsListenedProps) {
+export default function ArtistsListened({ className }: ArtistsListenedProps) {
+  const { interval, unit } = useSelector(selectIntervalDetail);
   const result = useAPI(api.differentArtistsPer, interval.start, interval.end, Timesplit.all);
   const lastPeriod = useMemo(() => getLastPeriod(interval.start, interval.end), [interval]);
   const resultOld = useAPI(

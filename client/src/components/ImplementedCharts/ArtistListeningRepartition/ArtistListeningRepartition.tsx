@@ -1,9 +1,11 @@
 import React, { useMemo, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Tooltip, Area } from 'recharts';
 import { api } from '../../../services/api';
 import { useRawTooltipLabelFormatter } from '../../../services/chart';
 import { getColor } from '../../../services/colors';
 import { useAPI } from '../../../services/hooks';
+import { selectInterval } from '../../../services/redux/modules/user/selector';
 import {
   buildXYDataObjSpread,
   formatXAxisDateTooltip,
@@ -20,10 +22,8 @@ const formatYAxis = (value: any) => {
   return `${Math.floor(value * 100)}%`;
 };
 
-export default function ArtistListeningRepartition({
-  interval,
-  className,
-}: ArtistListeningRepartitionProps) {
+export default function ArtistListeningRepartition({ className }: ArtistListeningRepartitionProps) {
+  const interval = useSelector(selectInterval);
   const results = useAPI(api.mostListenedArtist, interval.start, interval.end, interval.timesplit);
 
   const resultsWithCount = useMemo(

@@ -48,6 +48,7 @@ export default function Settings() {
       <Header
         title="Settings"
         subtitle="Here are the settings for Your Spotify, anyone with an account can access this page"
+        hideInterval
       />
       <div className={s.content}>
         <Grid container spacing={2}>

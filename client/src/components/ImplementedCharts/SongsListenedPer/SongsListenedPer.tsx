@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
+import { selectInterval } from '../../../services/redux/modules/user/selector';
 import { buildXYData, formatXAxisDateTooltip, useFormatXAxis } from '../../../services/stats';
 import { DateId } from '../../../services/types';
 import ChartCard from '../../ChartCard';
@@ -10,7 +12,8 @@ import { ImplementedChartProps } from '../types';
 
 interface SongsListenedPerProps extends ImplementedChartProps {}
 
-export default function SongsListenedPer({ className, interval }: SongsListenedPerProps) {
+export default function SongsListenedPer({ className }: SongsListenedPerProps) {
+  const interval = useSelector(selectInterval);
   const result = useAPI(api.songsPer, interval.start, interval.end, interval.timesplit);
 
   const data = buildXYData(

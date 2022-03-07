@@ -1,10 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
 import Bar from '../../charts/Bar';
 import { ImplementedChartProps } from '../types';
 import ChartCard from '../../ChartCard';
 import LoadingImplementedChart from '../LoadingImplementedChart';
+import { selectInterval } from '../../../services/redux/modules/user/selector';
 
 interface ListeningRepartitionProps extends ImplementedChartProps {}
 
@@ -20,7 +22,8 @@ const formatXTooltip = (label: string) => {
   return `${label}h`;
 };
 
-export default function ListeningRepartition({ className, interval }: ListeningRepartitionProps) {
+export default function ListeningRepartition({ className }: ListeningRepartitionProps) {
+  const interval = useSelector(selectInterval);
   const result = useAPI(api.timePerHourOfDay, interval.start, interval.end);
 
   const total = useMemo(() => result?.reduce((acc, curr) => acc + curr.count, 0) ?? 0, [result]);

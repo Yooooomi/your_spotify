@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useSelector } from 'react-redux';
 import Header from '../../../components/Header';
-import { IntervalDetail, intervals } from '../../../components/IntervalSelector/IntervalSelector';
 import Loader from '../../../components/Loader';
 import TitleCard from '../../../components/TitleCard';
 import { api } from '../../../services/api';
+import { selectIntervalDetail } from '../../../services/redux/modules/user/selector';
 import { UnboxPromise } from '../../../services/types';
 import s from './index.module.css';
 import Track from './Track';
 
 export default function Songs() {
-  const [interval, setInterval] = useState(intervals[0]);
+  const { name, interval } = useSelector(selectIntervalDetail);
   const [items, setItems] = useState<UnboxPromise<ReturnType<typeof api['getBestSongs']>>['data']>(
     [],
   );
@@ -19,12 +20,7 @@ export default function Songs() {
   const fetch = useCallback(async () => {
     if (!hasMore) return;
     try {
-      const result = await api.getBestSongs(
-        interval.interval.start,
-        interval.interval.end,
-        10,
-        items.length,
-      );
+      const result = await api.getBestSongs(interval.start, interval.end, 10, items.length);
       setItems([...items, ...result.data]);
       setHasMore(result.data.length === 10);
     } catch (e) {
@@ -40,24 +36,19 @@ export default function Songs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interval]);
 
-  const changeInterval = useCallback((newInterval: IntervalDetail) => {
-    setInterval(newInterval);
+  useEffect(() => {
     setItems([]);
     setHasMore(true);
-  }, []);
+  }, [interval]);
 
   return (
     <div>
-      <Header
-        title="Top songs"
-        subtitle="Here are the songs you listened to the most"
-        interval={interval}
-        onChange={changeInterval}
-      />
+      <Header title="Top songs" subtitle="Here are the songs you listened to the most" />
       <div className={s.content}>
         <TitleCard title="Top songs">
           <Track line playable />
           <InfiniteScroll
+            key={name}
             next={fetch}
             hasMore={hasMore}
             dataLength={items.length}
