@@ -34,8 +34,8 @@ const fullPrivacyFileSchema = z.array(
     reason_end: z.string(),
     shuffle: z.boolean(),
     skipped: z.nullable(z.boolean()),
-    offline: z.boolean(),
-    offline_timestamp: z.number(),
+    offline: z.nullable(z.boolean()),
+    offline_timestamp: z.nullable(z.number()),
     incognito_mode: z.nullable(z.boolean()),
   }),
 );
