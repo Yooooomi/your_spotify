@@ -1,14 +1,8 @@
-import { AsyncThunk, AsyncThunkPayloadCreator, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../..';
 import { api } from '../../../api';
+import { myAsyncThunk } from '../../tools';
 import { alertMessage } from '../message/reducer';
-import { User } from './types';
-
-const myAsyncThunk = <P, R>(
-  name: string,
-  payloadCreator: AsyncThunkPayloadCreator<R, P, { state: RootState }>,
-): AsyncThunk<R, P, { state: RootState }> =>
-  createAsyncThunk<R, P, { state: RootState }>(name, payloadCreator);
+import { selectIsPublic } from './selector';
+import { DarkModeType, User } from './types';
 
 export const checkLogged = myAsyncThunk<void, User | null>('@user/checklogged', async () => {
   try {
@@ -37,6 +31,47 @@ export const changeUsername = myAsyncThunk<string, void>(
         alertMessage({
           level: 'error',
           message: `Could not rename to ${newName}`,
+        }),
+      );
+      throw e;
+    }
+  },
+);
+
+export const generateNewPublicToken = myAsyncThunk<void, string>(
+  '@user/generate-public-token',
+  async (_, tapi) => {
+    try {
+      const { data: token } = await api.generatePublicToken();
+      return token;
+    } catch (e) {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: 'error',
+          message: `Could not generate a new public token`,
+        }),
+      );
+      throw e;
+    }
+  },
+);
+
+export const setDarkMode = myAsyncThunk<DarkModeType, void>(
+  '@user/set-dark-mode',
+  async (payload, tapi) => {
+    const isPublic = selectIsPublic(tapi.getState());
+
+    try {
+      if (!isPublic) {
+        await api.setSetting('darkMode', payload);
+      }
+    } catch (e) {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: 'error',
+          message: `Could not sync the dark mode to your profile`,
         }),
       );
       throw e;

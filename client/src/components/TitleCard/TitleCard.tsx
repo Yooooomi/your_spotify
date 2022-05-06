@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import s from './index.module.css';
+import Text from '../Text';
 
 interface TitleCardProps {
   className?: string;
@@ -15,7 +16,7 @@ export default function TitleCard({ className, title, children, fade, right }: T
     <div className={clsx(s.root, className)}>
       <div className={s.container}>
         <div className={s.title}>
-          <h3>{title}</h3>
+          <Text element="h3">{title}</Text>
           <div>{right}</div>
         </div>
         <div className={clsx(s.content, { fade })}>{children}</div>

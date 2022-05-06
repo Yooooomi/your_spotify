@@ -1,24 +1,31 @@
-
 .root {
   padding: 16px;
   box-shadow: var(--shadow) !important;
+  background-color: var(--background) !important;
 }
 
-.root > h3 {
+.root > div > h3 {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.root > h3::before {
-  content: "";
+.root > div > h3::before {
+  content: '';
   position: relative;
   display: inline-block;
   width: 16px;
   height: 32px;
-  background-color: black;
+  background-color: var(--text-on-light);
   margin-right: 16px;
   border-radius: 6px;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .content {

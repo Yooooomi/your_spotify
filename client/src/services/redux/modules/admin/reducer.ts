@@ -5,6 +5,7 @@ export interface AdminAccount {
   id: string;
   username: string;
   admin: boolean;
+  firstListenedAt: string;
 }
 
 interface SettingsReducer {

@@ -2,6 +2,8 @@ import React, { useCallback, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Link, useLocation } from 'react-router-dom';
 import { Paper, Popper } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Home,
   HomeOutlined,
@@ -16,11 +18,16 @@ import {
   Settings,
   SettingsOutlined,
   ExitToApp,
+  Share,
+  ShareOutlined,
 } from '@mui/icons-material';
 import s from './index.module.css';
-import { useConditionalAPI } from '../../../services/hooks';
+import { useConditionalAPI, useShareLink } from '../../../services/hooks';
 import { api } from '../../../services/api';
 import { getImage } from '../../../services/tools';
+import Text from '../../Text';
+import { alertMessage } from '../../../services/redux/modules/message/reducer';
+import { selectUser } from '../../../services/redux/modules/user/selector';
 
 interface SiderProps {
   className?: string;
@@ -63,8 +70,25 @@ const links = [
     ],
   },
   {
+    label: 'With people',
+    items: [
+      {
+        label: 'Affinity',
+        link: '/collaborative/affinity',
+        icon: <MusicNoteOutlined />,
+        iconOn: <MusicNote />,
+      },
+    ],
+  },
+  {
     label: 'Settings',
     items: [
+      {
+        label: 'Share this page',
+        link: '/share',
+        icon: <ShareOutlined />,
+        iconOn: <Share />,
+      },
       {
         label: 'Settings',
         link: '/settings',
@@ -82,6 +106,8 @@ const links = [
 ];
 
 export default function Sider({ className }: SiderProps) {
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
   const location = useLocation();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [search, setSearch] = useState('');
@@ -91,10 +117,32 @@ export default function Sider({ className }: SiderProps) {
     setSearch('');
   }, []);
 
+  const copyCurrentPage = useCallback(() => {
+    if (!user?.publicToken) {
+      dispatch(
+        alertMessage({
+          level: 'error',
+          message: 'No public token generated, go to the settings page to generate one',
+        }),
+      );
+      return;
+    }
+    dispatch(
+      alertMessage({
+        level: 'info',
+        message: 'Copied current page to clipboard with public token',
+      }),
+    );
+  }, [dispatch, user?.publicToken]);
+
+  const toCopy = useShareLink();
+
   return (
     <div className={clsx(s.root, className)}>
       <Link to="/" className={s.title}>
-        <h1>Your Spotify</h1>
+        <Text onDark element="h1">
+          Your Spotify
+        </Text>
       </Link>
       <input
         className={s.input}
@@ -109,12 +157,12 @@ export default function Sider({ className }: SiderProps) {
         placement="bottom"
         className={s.popper}>
         <Paper className={s.results} style={{ width: inputRef.current?.clientWidth }}>
-          {search.length < 3 && <strong>At least 3 characters</strong>}
-          {results?.length === 0 && <strong>No results found</strong>}
+          {search.length < 3 && <Text element="strong">At least 3 characters</Text>}
+          {results?.length === 0 && <Text element="strong">No results found</Text>}
           {results?.map((res) => (
             <Link to={`/artist/${res.id}`} className={s.result} key={res.id} onClick={reset}>
               <img className={s.resultimage} src={getImage(res)} alt="Artist" />
-              <strong>{res.name}</strong>
+              <Text element="strong">{res.name}</Text>
             </Link>
           ))}
         </Paper>
@@ -122,13 +170,30 @@ export default function Sider({ className }: SiderProps) {
       <nav>
         {links.map((category) => (
           <div className={s.category} key={category.label}>
-            <div className={s.categoryname}>{category.label}</div>
-            {category.items.map((link) => (
-              <Link to={link.link} className={s.link} key={link.label}>
-                <span>{location.pathname === link.link ? link.iconOn : link.icon}</span>
-                <span>{link.label}</span>
-              </Link>
-            ))}
+            <Text element="div" onDark className={s.categoryname}>
+              {category.label}
+            </Text>
+            {toCopy &&
+              category.items.map((link) => {
+                if (link.link === '/share') {
+                  return (
+                    <CopyToClipboard key={link.label} onCopy={copyCurrentPage} text={toCopy}>
+                      <div className={s.link} key={link.label}>
+                        <Text onDark>
+                          {location.pathname === link.link ? link.iconOn : link.icon}
+                        </Text>
+                        <Text onDark>{link.label}</Text>
+                      </div>
+                    </CopyToClipboard>
+                  );
+                }
+                return (
+                  <Link to={link.link} className={s.link} key={link.label}>
+                    <Text onDark>{location.pathname === link.link ? link.iconOn : link.icon}</Text>
+                    <Text onDark>{link.label}</Text>
+                  </Link>
+                );
+              })}
           </div>
         ))}
       </nav>

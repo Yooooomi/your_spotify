@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import Axios from 'axios';
 import { AdminAccount } from './redux/modules/admin/reducer';
 import { ImporterState } from './redux/modules/import/types';
@@ -13,6 +14,7 @@ import {
   TrackInfo,
   TrackInfoWithTrack,
   SpotifyMe,
+  CollaborativeMode,
 } from './types';
 
 const axios = Axios.create({
@@ -32,17 +34,40 @@ const axios = Axios.create({
 //     setTimeout(() => axios.post(url, params).then(res).catch(rej), 1000);
 //   });
 
+// const get = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+//   axios.get(`${url}${api.publicToken ? `?token=${api.publicToken}` : ''}`, { params });
+
+// const post = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+//   axios.post(`${url}${api.publicToken ? `?token=${api.publicToken}` : ''}`, params);
+
+// const put = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+//   axios.put(`${url}${api.publicToken ? `?token=${api.publicToken}` : ''}`, params);
+
+// const delet = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+//   axios.delete(`${url}${api.publicToken ? `?token=${api.publicToken}` : ''}`, params);
+
 const get = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
-  axios.get(url, { params });
+  axios.get(url, { params: { ...params, token: api.publicToken } });
 
 const post = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
-  axios.post(url, params);
+  axios.post(url, params, {
+    params: {
+      token: api.publicToken,
+    },
+  });
 
 const put = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
-  axios.put(url, params);
+  axios.put(url, params, {
+    params: { token: api.publicToken },
+  });
 
 const delet = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
-  axios.delete(url, params);
+  axios.delete(url, {
+    params: {
+      ...params,
+      token: api.publicToken,
+    },
+  });
 
 export type ArtistStatsResponse = {
   artist: Artist;
@@ -107,6 +132,8 @@ export type ArtistStatsResponse = {
 };
 
 export const api = {
+  publicToken: null as string | null,
+
   spotify: () => get('/oauth/spotify'),
   logout: () => axios.post('/logout'),
   me: () => get<{ status: true; user: User } | { status: false }>('/me'),
@@ -316,4 +343,45 @@ export const api = {
       existingStateId,
     }),
   cleanupImport: (id: string) => delet(`/import/clean/${id}`),
+  collaborativeBestSongs: (ids: string[], start: Date, end: Date, mode: CollaborativeMode) =>
+    get<({ track: Track; album: Album; artist: Artist } & Record<string, number>)[]>(
+      '/spotify/collaborative/top/songs',
+      {
+        otherIds: ids,
+        start,
+        end,
+        mode,
+      },
+    ),
+  collaborativeBestAlbums: (ids: string[], start: Date, end: Date, mode: CollaborativeMode) =>
+    get<({ album: Album; artist: Artist } & Record<string, number>)[]>(
+      '/spotify/collaborative/top/albums',
+      {
+        otherIds: ids,
+        start,
+        end,
+        mode,
+      },
+    ),
+  collaborativeBestArtists: (ids: string[], start: Date, end: Date, mode: CollaborativeMode) =>
+    get<({ artist: Artist } & Record<string, number>)[]>('/spotify/collaborative/top/artists', {
+      otherIds: ids,
+      start,
+      end,
+      mode,
+    }),
+  generatePublicToken: () => post<string>('/generate-public-token'),
+  getBestSongsOfHour: (start: Date, end: Date) =>
+    get<
+      { _id: number; total: number; tracks: { count: number; track: Track; artist: Artist }[] }[]
+    >('/spotify/top/hour-repartition/songs', { start, end }),
+  getBestAlbumsOfHour: (start: Date, end: Date) =>
+    get<
+      { _id: number; total: number; albums: { count: number; album: Album; artist: Artist }[] }[]
+    >('/spotify/top/hour-repartition/albums', { start, end }),
+  getBestArtistsOfHour: (start: Date, end: Date) =>
+    get<{ _id: number; total: number; artists: { count: number; artist: Artist }[] }[]>(
+      '/spotify/top/hour-repartition/artists',
+      { start, end },
+    ),
 };

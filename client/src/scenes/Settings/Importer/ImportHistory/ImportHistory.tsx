@@ -9,6 +9,7 @@ import { cleanupImport, startImportPrivacy } from '../../../../services/redux/mo
 import ThreePoints from '../../../../components/ThreePoints';
 import { compact } from '../../../../services/tools';
 import { ImporterStateStatus } from '../../../../services/redux/modules/import/types';
+import Text from '../../../../components/Text';
 
 const statusToString: Record<ImporterStateStatus, string> = {
   'failure-removed': 'Failed and cleaned',
@@ -41,21 +42,21 @@ export default function ImportHistory() {
 
   return (
     <div className={s.importhistory}>
-      <h3>Import history</h3>
+      <Text element="h3">Import history</Text>
       {imports.map((st) => (
         <SettingLine
           key={st._id}
           left={
-            <span>
+            <Text>
               Import of {dateToListenedAt(new Date(st.createdAt))}
-              <span className={s.importertype}>from {st.type}</span>
-            </span>
+              <Text className={s.importertype}>from {st.type}</Text>
+            </Text>
           }
           right={
             <div className={s.right}>
-              <span>
+              <Text>
                 {statusToString[st.status]} ({st.current}/{st.total})
-              </span>
+              </Text>
               <ThreePoints
                 items={compact([
                   st.status === 'failure'

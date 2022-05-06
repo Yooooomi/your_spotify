@@ -36,7 +36,7 @@
 
 .actual {
   font-weight: bold;
-  color: black;
+  color: var(--text-on-light);
 }
 
 .after {

@@ -24,8 +24,8 @@ export default function Line<
           connectNulls
           type="monotone"
           dataKey="y"
-          fill="#000000"
-          stroke="#000000"
+          fill="var(--primary)"
+          stroke="var(--primary)"
           strokeWidth={2}
           dot={false}
         />
@@ -39,6 +39,8 @@ export default function Line<
         <YAxis domain={['dataMin', 'dataMax']} tickFormatter={yFormat} />
         <Tooltip
           wrapperStyle={{ zIndex: 10 }}
+          contentStyle={{ backgroundColor: 'var(--background)' }}
+          labelStyle={{ color: 'var(--text-on-light)' }}
           labelFormatter={internTooltipLabelFormatter}
           formatter={internTooltipValueFormatter}
         />

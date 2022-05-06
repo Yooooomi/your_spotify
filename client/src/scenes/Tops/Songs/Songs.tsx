@@ -5,13 +5,13 @@ import Header from '../../../components/Header';
 import Loader from '../../../components/Loader';
 import TitleCard from '../../../components/TitleCard';
 import { api } from '../../../services/api';
-import { selectIntervalDetail } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import { UnboxPromise } from '../../../services/types';
 import s from './index.module.css';
 import Track from './Track';
 
 export default function Songs() {
-  const { name, interval } = useSelector(selectIntervalDetail);
+  const { name, interval } = useSelector(selectRawIntervalDetail);
   const [items, setItems] = useState<UnboxPromise<ReturnType<typeof api['getBestSongs']>>['data']>(
     [],
   );
@@ -34,7 +34,7 @@ export default function Songs() {
     }
     // initial fetch
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interval]);
+  }, [interval, items.length]);
 
   useEffect(() => {
     setItems([]);

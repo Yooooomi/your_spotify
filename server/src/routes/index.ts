@@ -1,12 +1,20 @@
 import { Router } from 'express';
 import { Types } from 'mongoose';
 import { z } from 'zod';
-import { admin, logged, optionalLogged, validating } from '../tools/middleware';
+import { v4 } from 'uuid';
+import {
+  admin,
+  isLoggedOrGuest,
+  logged,
+  optionalLoggedOrGuest,
+  validating,
+} from '../tools/middleware';
 import {
   changeSetting,
   getAllUsers,
   getUserFromField,
   setUserAdmin,
+  setUserPublicToken,
   storeInUser,
 } from '../database';
 import { logger } from '../tools/logger';
@@ -31,6 +39,7 @@ const settingsSchema = z.object({
   preferredStatsPeriod: z.enum(['day', 'week', 'month', 'year']).optional(),
   nbElements: z.preprocess(toNumber, z.number().min(5).max(50).default(10).optional()),
   metricUsed: z.enum(['number', 'duration']).optional(),
+  darkMode: z.enum(['follow', 'dark', 'light']).optional(),
 });
 
 router.post('/settings', validating(settingsSchema), logged, async (req, res) => {
@@ -45,7 +54,7 @@ router.post('/settings', validating(settingsSchema), logged, async (req, res) =>
   }
 });
 
-router.get('/me', optionalLogged, async (req, res) => {
+router.get('/me', optionalLoggedOrGuest, async (req, res) => {
   const { user } = req as OptionalLoggedRequest;
   if (user) {
     return res.status(200).send({ status: true, user });
@@ -53,7 +62,20 @@ router.get('/me', optionalLogged, async (req, res) => {
   return res.status(200).send({ status: false });
 });
 
-router.get('/accounts', logged, admin, async (req, res) => {
+router.post('/generate-public-token', logged, async (req, res) => {
+  const { user } = req as LoggedRequest;
+
+  try {
+    const token = v4();
+    await setUserPublicToken(user._id.toString(), token);
+    return res.status(200).send(token);
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
+});
+
+router.get('/accounts', isLoggedOrGuest, async (req, res) => {
   try {
     const users = await getAllUsers();
     return res.status(200).send(
@@ -61,6 +83,7 @@ router.get('/accounts', logged, admin, async (req, res) => {
         id: user._id.toString(),
         username: user.username,
         admin: user.admin,
+        firstListenedAt: user.firstListenedAt,
       })),
     );
   } catch (e) {

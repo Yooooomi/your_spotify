@@ -8,10 +8,10 @@ import { UnboxPromise } from '../../../services/types';
 import s from './index.module.css';
 import Album from './Album';
 import Loader from '../../../components/Loader';
-import { selectIntervalDetail } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 
 export default function Albums() {
-  const { name, interval } = useSelector(selectIntervalDetail);
+  const { name, interval } = useSelector(selectRawIntervalDetail);
   const [items, setItems] = useState<UnboxPromise<ReturnType<typeof api['getBestAlbums']>>['data']>(
     [],
   );

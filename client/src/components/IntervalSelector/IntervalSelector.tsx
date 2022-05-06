@@ -1,5 +1,6 @@
 import { Settings } from '@mui/icons-material';
 import {
+  SelectProps,
   Button,
   FormControlLabel,
   IconButton,
@@ -17,65 +18,31 @@ import {
   getAppropriateTimesplitFromRange,
   endOfDay,
 } from '../../services/date';
-import { fresh } from '../../services/stats';
-import { Interval, Timesplit } from '../../services/types';
+import {
+  allIntervals,
+  getAllIndexFromIntervalDetail,
+  IntervalDetail,
+  lastWeek,
+  now,
+} from '../../services/intervals';
 import Dialog from '../Dialog';
+import Text from '../Text';
 import s from './index.module.css';
 
 interface IntervalSelectorProps {
   value: IntervalDetail;
   onChange: (newDetails: IntervalDetail) => void;
+  selectType?: SelectProps['variant'];
+  forceTiny?: boolean;
 }
 
-const lastDay = new Date();
-lastDay.setDate(lastDay.getDate() - 1);
-const lastWeek = fresh(new Date(), true);
-lastWeek.setDate(lastWeek.getDate() - 7);
-lastWeek.setHours(0);
-const lastMonth = fresh(new Date(), true);
-lastMonth.setMonth(lastMonth.getMonth() - 1);
-lastMonth.setHours(0);
-const lastYear = fresh(new Date(), true);
-lastYear.setFullYear(lastYear.getFullYear() - 1);
-lastYear.setDate(1);
-const now = new Date();
-
-export interface IntervalDetail {
-  name: string;
-  unit: string;
-  interval: Interval;
-  index?: number;
-}
-
-export const intervals: IntervalDetail[] = [
-  {
-    index: 0,
-    name: 'Last day',
-    unit: 'day',
-    interval: { timesplit: Timesplit.hour, start: lastDay, end: now },
-  },
-  {
-    index: 1,
-    name: 'Last week',
-    unit: 'week',
-    interval: { timesplit: Timesplit.day, start: lastWeek, end: now },
-  },
-  {
-    index: 2,
-    name: 'Last month',
-    unit: 'month',
-    interval: { timesplit: Timesplit.day, start: lastMonth, end: now },
-  },
-  {
-    index: 3,
-    name: 'Last year',
-    unit: 'year',
-    interval: { timesplit: Timesplit.month, start: lastYear, end: now },
-  },
-];
-
-export default function IntervalSelector({ value, onChange }: IntervalSelectorProps) {
-  const upmd = !useMediaQuery('(max-width: 1250px)');
+export default function IntervalSelector({
+  value,
+  onChange,
+  selectType,
+  forceTiny,
+}: IntervalSelectorProps) {
+  const upmd = !useMediaQuery('(max-width: 1250px)') && !forceTiny;
   const [open, setOpen] = useState(false);
   const [customIntervalDate, setCustomIntervalDate] = useState<Range>({
     key: 'range',
@@ -84,16 +51,14 @@ export default function IntervalSelector({ value, onChange }: IntervalSelectorPr
     color: '#000000',
   });
 
-  const existingInterval = useMemo(() => {
-    return value.index ?? -1;
-  }, [value]);
+  const existingInterval = useMemo(() => getAllIndexFromIntervalDetail(value), [value]);
 
   const internOnChange = useCallback(
     (index: number) => {
       if (index === -1) {
         setOpen(true);
       } else {
-        onChange(intervals[index]);
+        onChange(allIntervals[index]);
       }
     },
     [onChange],
@@ -103,8 +68,11 @@ export default function IntervalSelector({ value, onChange }: IntervalSelectorPr
 
   if (!upmd) {
     content = (
-      <Select value={existingInterval} onChange={(ev) => internOnChange(ev.target.value as number)}>
-        {intervals.map((inter, index) => (
+      <Select
+        variant={selectType}
+        value={existingInterval}
+        onChange={(ev) => internOnChange(ev.target.value as number)}>
+        {allIntervals.map((inter, index) => (
           <MenuItem key={inter.name} value={index}>
             {inter.name}
           </MenuItem>
@@ -122,12 +90,12 @@ export default function IntervalSelector({ value, onChange }: IntervalSelectorPr
           value={existingInterval}
           onChange={(ev) => internOnChange(ev.target.value as unknown as number)}
           name="interval radio group">
-          {intervals.map((inter, index) => (
+          {allIntervals.map((inter, index) => (
             <FormControlLabel
               key={inter.name}
               value={index}
               control={<Radio />}
-              label={inter.name}
+              label={<Text>{inter.name}</Text>}
             />
           ))}
         </RadioGroup>
@@ -152,6 +120,8 @@ export default function IntervalSelector({ value, onChange }: IntervalSelectorPr
       return;
     }
     onChange({
+      type: 'custom',
+      name: 'custom',
       interval: {
         start: startOfDay(customIntervalDate.startDate),
         end: endOfDay(customIntervalDate.endDate),
@@ -160,8 +130,6 @@ export default function IntervalSelector({ value, onChange }: IntervalSelectorPr
           customIntervalDate.endDate,
         ),
       },
-      name: 'custom',
-      unit: 'period',
     });
     setOpen(false);
   }, [customIntervalDate, onChange]);

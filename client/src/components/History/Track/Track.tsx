@@ -1,12 +1,11 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import { IconButton } from '@mui/material';
-import { PlayArrow } from '@mui/icons-material';
 import { dateToListenedAt, msToMinutesAndSeconds } from '../../../services/stats';
 import { Album, Artist, Track as TrackType } from '../../../services/types';
 import s from './index.module.css';
-import { api } from '../../../services/api';
 import InlineArtist from '../../InlineArtist';
+import PlayButton from '../../PlayButton';
+import Text from '../../Text';
 
 interface TrackProps {
   line?: false;
@@ -23,25 +22,15 @@ interface HeaderTrackProps {
 }
 
 export default function Track(props: TrackProps | HeaderTrackProps) {
-  const trackId = props.line ? null : props.track.id;
-  const play = useCallback(async () => {
-    if (!trackId) return;
-    try {
-      await api.play(trackId);
-    } catch (e) {
-      console.error(e);
-    }
-  }, [trackId]);
-
   if (props.line) {
     return (
       <div className={s.root}>
         <div className={clsx(s.name, s.header)}>
-          <span className={s.trackname}>Track name / Artist</span>
+          <Text className={s.trackname}>Track name / Artist</Text>
         </div>
-        <span className={clsx(s.albumname, s.header)}>Album name</span>
-        <span className={clsx(s.duration, s.header)}>Duration</span>
-        <span className={clsx(s.playedat, s.header)}>Listened at</span>
+        <Text className={clsx(s.albumname, s.header)}>Album name</Text>
+        <Text className={clsx(s.duration, s.header)}>Duration</Text>
+        <Text className={clsx(s.playedat, s.header)}>Listened at</Text>
       </div>
     );
   }
@@ -50,25 +39,21 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
 
   return (
     <div className={s.root}>
-      {playable && (
-        <IconButton className={s.play} size="small" onClick={play}>
-          <PlayArrow />
-        </IconButton>
-      )}
+      {playable && <PlayButton className={s.play} id={track.id} />}
       <div className={s.name}>
-        <span className={s.trackname}>{track.name}</span>
-        <span className={s.artistname}>
+        <Text className={s.trackname}>{track.name}</Text>
+        <Text className={s.artistname}>
           {artists.map((art, k, a) => (
             <React.Fragment key={art.id}>
               <InlineArtist artist={art} />
               {k !== a.length - 1 && ', '}
             </React.Fragment>
           ))}
-        </span>
+        </Text>
       </div>
-      <span className={s.albumname}>{album.name}</span>
-      <span className={s.duration}>{msToMinutesAndSeconds(track.duration_ms)}</span>
-      {listenedAt && <span className={s.playedat}>{dateToListenedAt(listenedAt)}</span>}
+      <Text className={s.albumname}>{album.name}</Text>
+      <Text className={s.duration}>{msToMinutesAndSeconds(track.duration_ms)}</Text>
+      {listenedAt && <Text className={s.playedat}>{dateToListenedAt(listenedAt)}</Text>}
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import { Schema, Types } from 'mongoose';
 
+export type DarkModeType = 'follow' | 'dark' | 'light';
+
 export interface User {
   _id: Types.ObjectId;
   username: string;
@@ -15,8 +17,11 @@ export interface User {
     preferredStatsPeriod: string;
     nbElements: number;
     metricUsed: 'number' | 'duration';
+    darkMode: DarkModeType;
   };
   lastImport: string | null;
+  publicToken: string | null;
+  firstListenedAt: Date;
 }
 
 export const UserSchema = new Schema<User>(
@@ -43,8 +48,11 @@ export const UserSchema = new Schema<User>(
         enum: ['number', 'duration'],
         default: 'number',
       },
+      darkMode: { type: String, enum: ['follow', 'dark', 'light'], default: 'follow' },
     },
     lastImport: { type: String, default: null },
+    publicToken: { type: String, default: null, index: true },
+    firstListenedAt: { type: Date },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );

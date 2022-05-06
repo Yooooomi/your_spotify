@@ -3,6 +3,11 @@
   flex-direction: row;
 }
 
+.publictoken {
+  height: 20px;
+  text-align: center;
+}
+
 .sider {
   position: fixed;
   width: 250px;
@@ -12,6 +17,7 @@
 .content {
   width: 100%;
   position: relative;
+  background-color: var(--content-background);
 }
 
 .contentdrawer {

@@ -1,0 +1,49 @@
+.loading {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  margin-top: 32px !important;
+  width: 60%;
+  margin: auto;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.track {
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+  align-items: center;
+}
+
+.ranking {
+  width: 32px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.trackimage {
+  height: 48px;
+  width: 48px;
+  margin-right: 8px;
+}
+
+.trackname {
+  flex-grow: 1;
+}
+
+.artist {
+  color: grey;
+}
+
+.enjoyed {
+  flex-shrink: 0;
+}

@@ -50,7 +50,7 @@ const getDateFromIndex = (index: number, start: Date, precision: Precision) => {
   // return date;
 };
 
-const pad = (value: number) => value.toString().padStart(2, '0');
+export const pad = (value: number) => value.toString().padStart(2, '0');
 
 const getPrecisionFromDateId = (dateId: DateId) => {
   if ('hour' in dateId) {
@@ -207,7 +207,7 @@ export const buildXYDataObjSpread = (
   );
 };
 
-const months = [
+export const months = [
   'January',
   'February',
   'March',

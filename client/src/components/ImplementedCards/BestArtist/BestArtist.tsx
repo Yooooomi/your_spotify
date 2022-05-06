@@ -10,12 +10,13 @@ import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';
 import s from './index.module.css';
 import InlineArtist from '../../InlineArtist';
-import { selectInterval } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
+import Text from '../../Text';
 
 interface BestArtistProps extends ImplementedCardProps {}
 
 export default function BestArtist({ className }: BestArtistProps) {
-  const interval = useSelector(selectInterval);
+  const { interval } = useSelector(selectRawIntervalDetail);
   const result = useAPI(api.getBestArtists, interval.start, interval.end, 1, 0);
 
   if (!result) {
@@ -28,12 +29,12 @@ export default function BestArtist({ className }: BestArtistProps) {
           <div className={s.stats}>
             <Skeleton width="40%" />
             <div className={s.statnumbers}>
-              <span className={s.stat}>
+              <Text className={s.stat}>
                 <Skeleton width="60%" />
-              </span>
-              <span className={s.stat}>
+              </Text>
+              <Text className={s.stat}>
                 <Skeleton width="50%" />
-              </span>
+              </Text>
             </div>
           </div>
         </div>
@@ -50,20 +51,20 @@ export default function BestArtist({ className }: BestArtistProps) {
           <img className={s.image} src={getImage(res?.artist)} alt="Your best artist" />
         </div>
         <div className={s.stats}>
-          <strong>
+          <Text element="strong">
             {res && <InlineArtist artist={res.artist} />}
-            {!res && <span>No data</span>}
-          </strong>
+            {!res && <Text>No data</Text>}
+          </Text>
           <div className={s.statnumbers}>
-            <span className={s.stat}>
-              <strong>{res?.count ?? 0}</strong> songs listened
-            </span>
-            <span className={s.stat}>
-              <strong>{msToMinutes(res?.duration_ms ?? 0)}</strong> minutes listened
-            </span>
-            <span className={s.stat}>
-              <strong>{res?.differents ?? 0}</strong> different songs
-            </span>
+            <Text className={s.stat}>
+              <Text element="strong">{res?.count ?? 0}</Text> songs listened
+            </Text>
+            <Text className={s.stat}>
+              <Text element="strong">{msToMinutes(res?.duration_ms ?? 0)}</Text> minutes listened
+            </Text>
+            <Text className={s.stat}>
+              <Text element="strong">{res?.differents ?? 0}</Text> different songs
+            </Text>
           </div>
         </div>
       </div>

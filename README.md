@@ -8,7 +8,7 @@
 
 # Your Spotify
 
-Your Spotify is a self-hosted application that tracks what you listen and offers you a dashboard to explore statistics about it!
+**YourSpotify** is a self-hosted application that tracks what you listen and offers you a dashboard to explore statistics about it!
 It's composed of a web server which polls the Spotify API every now and then and a web application on which you can explore your statistics.
 
 # Table of contents
@@ -58,7 +58,7 @@ services:
     depends_on:
       - mongo
     environment:
-      - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
+      - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard (see below)
       - CLIENT_ENDPOINT=http://localhost:3000
       - SPOTIFY_PUBLIC=__your_spotify_client_id__
       - SPOTIFY_SECRET=__your_spotify_secret__
@@ -108,7 +108,7 @@ You can edit the CORS for the server:
 
 # Creating the Spotify Application
 
-For **Your spotify** to work you need to provide a Spotify application **public** AND **secret** to the server environment.
+For **YourSpotify** to work you need to provide a Spotify application **public** AND **secret** to the server environment.
 To do so, you need to create a **Spotify application** [here](https://developer.spotify.com/dashboard/applications).
 
 1. Click on **Create a client ID**.
@@ -123,7 +123,7 @@ To do so, you need to create a **Spotify application** [here](https://developer.
 
 # Importing past history
 
-By default, Your Spotify will only retrieve data for the past 24 hours once registered. This is a technical limitation. However, you can import previous data by two ways.
+By default, **YourSpotify** will only retrieve data for the past 24 hours once registered. This is a technical limitation. However, you can import previous data by two ways.
 
 The import process uses cache to limit requests to the Spotify API. By default, the cache size is unlimited, but you can limit is with the `MAX_IMPORT_CACHE_SIZE` env variable in the **server**.
 
@@ -153,7 +153,7 @@ An import can fail:
 
 A failed import can be retried in the **Settings** page. Be sure to clean your failed imports if you do not want to retry it as it will remove the files used for it.
 
-It is safer to import data at account creation. Though YourSpotify detects duplicates, some may still be inserted. However, song search is pretty accurate since it filters on artist then search for the song name.
+It is safer to import data at account creation. Though **YourSpotify** detects duplicates, some may still be inserted. However, song search is pretty accurate since it filters on artist then search for the song name.
 
 # FAQ
 
@@ -179,4 +179,4 @@ If you have any issue or any idea that could make the project better, feel free 
 
 # Sponsoring
 
-I work on this project on my spare time and try to fix issues as soon as I can. If you feel generous and like this project and my investment are worth a few cents, you can consider sponsoring it with the button on the right, many thanks.
+I work on this project on my spare time and try to fix issues as soon as I can. If you feel generous and think this project and my investment are worth a few cents, you can consider sponsoring it with the button on the right, many thanks.

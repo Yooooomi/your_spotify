@@ -1,5 +1,4 @@
-import { IntervalDetail } from '../components/IntervalSelector/IntervalSelector';
-import { ReduxIntervalDetail } from './redux/modules/user/reducer';
+import { pad } from './stats';
 import { Timesplit } from './types';
 
 export function cloneDate(date: Date) {
@@ -40,28 +39,20 @@ export function getAppropriateTimesplitFromRange(start: Date, end: Date) {
   return Timesplit.year;
 }
 
-export function intervalDetailToRedux(intervalDetail: IntervalDetail): ReduxIntervalDetail {
-  return {
-    name: intervalDetail.name,
-    unit: intervalDetail.unit,
-    index: intervalDetail.index,
-    interval: {
-      start: intervalDetail.interval.start.getTime(),
-      end: intervalDetail.interval.end.getTime(),
-      timesplit: intervalDetail.interval.timesplit,
-    },
-  };
+export function dateToDaysMonthsYear(date: Date) {
+  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
 }
 
-export function fromReduxIntervalDetail(intervalDetail: ReduxIntervalDetail): IntervalDetail {
-  return {
-    name: intervalDetail.name,
-    unit: intervalDetail.unit,
-    index: intervalDetail.index,
-    interval: {
-      start: new Date(intervalDetail.interval.start),
-      end: new Date(intervalDetail.interval.end),
-      timesplit: intervalDetail.interval.timesplit,
-    },
-  };
+export function dateToMonthsYear(date: Date) {
+  return `${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
+}
+
+export function intervalToDisplay(start: Date, end: Date) {
+  const diff = end.getTime() - start.getTime();
+  const days = diff / (1000 * 60 * 60 * 24);
+
+  if (days < 60) {
+    return `${dateToDaysMonthsYear(start)} to ${dateToDaysMonthsYear(end)}`;
+  }
+  return `${dateToMonthsYear(start)} to ${dateToMonthsYear(end)}`;
 }

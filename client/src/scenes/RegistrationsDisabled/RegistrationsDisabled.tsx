@@ -1,14 +1,15 @@
 import React from 'react';
+import Text from '../../components/Text';
 import s from './index.module.css';
 
 export default function RegistrationsDisabled() {
   return (
     <div className={s.root}>
-      <h1>Registrations are disabled</h1>
-      <span className={s.explain}>
+      <Text element="h1">Registrations are disabled</Text>
+      <Text className={s.explain}>
         Cannot register any new account for the moment. Any admin account on this installation can
         enable the registrations back.
-      </span>
+      </Text>
     </div>
   );
 }

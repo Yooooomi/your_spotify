@@ -1,4 +1,5 @@
 import React from 'react';
+import Text from '../../../components/Text';
 import s from './index.module.css';
 
 interface SettingLineProps {
@@ -9,8 +10,8 @@ interface SettingLineProps {
 export default function SettingLine({ left, right }: SettingLineProps) {
   return (
     <div className={s.root}>
-      <strong>{left}</strong>
-      <span>{right}</span>
+      <Text element="strong">{left}</Text>
+      <Text>{right}</Text>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { CircularProgress } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import Text from '../../components/Text';
 import { api } from '../../services/api';
 import { logout } from '../../services/redux/modules/user/reducer';
 
@@ -24,7 +25,7 @@ export default function Logout() {
 
   return (
     <div>
-      <h3>You are being logged out</h3>
+      <Text element="h3">You are being logged out</Text>
       <CircularProgress />
     </div>
   );

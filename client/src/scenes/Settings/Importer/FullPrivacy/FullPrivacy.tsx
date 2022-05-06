@@ -3,6 +3,7 @@ import { Button, CircularProgress } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { startImportFullPrivacy } from '../../../../services/redux/modules/import/thunk';
 import s from './index.module.css';
+import Text from '../../../../components/Text';
 
 export default function FullPrivacy() {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ export default function FullPrivacy() {
 
   return (
     <div>
-      <span className={s.import}>
+      <Text className={s.import}>
         Here you can import previous data from Spotify privacy data. This is the data you requested
         by mail specifically asking for extended data. It usually takes a few weeks for them to get
         back to you. Once received, upload here your files beginning with <code>endsong</code>.
@@ -38,7 +39,7 @@ export default function FullPrivacy() {
         <a target="_blank" href="https://www.spotify.com/fr/account/privacy/" rel="noreferrer">
           here
         </a>
-      </span>
+      </Text>
       <label htmlFor="contained-button-file">
         <input
           accept=".json"
@@ -53,12 +54,12 @@ export default function FullPrivacy() {
       {files &&
         Array.from(Array(files.length).keys()).map((i) => <div key={i}>{files.item(i)?.name}</div>)}
       {wrongFiles && (
-        <span className={s.alert}>
+        <Text className={s.alert}>
           Some file do not being with <code>endsong</code>, import might not work
-        </span>
+        </Text>
       )}
       {files && !wrongFiles && (
-        <span className={s.noalert}>Everything looks fine for the import to work</span>
+        <Text className={s.noalert}>Everything looks fine for the import to work</Text>
       )}
       {files && (
         <div className={s.importButton}>

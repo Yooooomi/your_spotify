@@ -1,5 +1,6 @@
 .root {
   height: 100vh;
+  overflow-y: scroll;
   background-color: black;
   color: white;
   padding: 16px;
@@ -45,7 +46,7 @@
 }
 
 .result:hover {
-  background: #eaeaea;
+  background: var(--hover);
 }
 
 .resultimage {
@@ -72,6 +73,7 @@
   border-radius: 6px;
   flex-direction: row;
   align-items: center;
+  cursor: pointer;
 }
 
 .link > span {

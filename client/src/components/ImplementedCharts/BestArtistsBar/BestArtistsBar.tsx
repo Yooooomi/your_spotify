@@ -10,7 +10,7 @@ import { Artist } from '../../../services/types';
 import ChartCard from '../../ChartCard';
 import { getImage } from '../../../services/tools';
 import LoadingImplementedChart from '../LoadingImplementedChart';
-import { selectInterval } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 
 interface BestArtistsBarProps extends ImplementedChartProps {}
 
@@ -57,7 +57,7 @@ class ImageAxisTick extends PureComponent<{
 }
 
 export default function BestArtistsBar({ className }: BestArtistsBarProps) {
-  const interval = useSelector(selectInterval);
+  const { interval } = useSelector(selectRawIntervalDetail);
   const result = useAPI(api.getBestArtists, interval.start, interval.end, 10, 0);
 
   const data = useMemo(
@@ -65,7 +65,6 @@ export default function BestArtistsBar({ className }: BestArtistsBarProps) {
       result?.map((r, k) => ({
         x: k,
         y: r.count,
-        artist: r.artist,
       })) ?? [],
     [result],
   );

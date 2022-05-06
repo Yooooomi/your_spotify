@@ -12,6 +12,12 @@ export enum Timesplit {
   month = 'month',
   year = 'year',
 }
+export const isTimesplit = (str: string | null): str is Timesplit => {
+  if (!str) {
+    return false;
+  }
+  return Object.values(Timesplit).includes(str as Timesplit);
+};
 
 export enum Precision {
   hour = 'hour',
@@ -19,12 +25,6 @@ export enum Precision {
   week = 'week',
   month = 'month',
   year = 'year',
-}
-
-export interface Interval {
-  timesplit: Timesplit;
-  start: Date;
-  end: Date;
 }
 
 export interface SpotifyImage {
@@ -124,4 +124,9 @@ export interface SpotifyMe {
   product: string;
   type: string;
   uri: string;
+}
+
+export enum CollaborativeMode {
+  AVERAGE = 'average',
+  MINIMA = 'minima',
 }

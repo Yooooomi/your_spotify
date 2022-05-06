@@ -262,3 +262,20 @@ export const retryPromise = async <T>(
   // Cannot happen
   return null as any;
 };
+
+export const minOfArray = <T>(array: T[], fn: (item: T) => number) => {
+  if (minOfArray.length === 0) {
+    return null;
+  }
+
+  let minIndex = 0;
+  let min = fn(array[0]);
+  for (let i = 1; i < array.length; i += 1) {
+    const value = fn(array[i]);
+    if (value < min) {
+      min = value;
+      minIndex = i;
+    }
+  }
+  return { min, minIndex };
+};

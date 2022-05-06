@@ -543,11 +543,7 @@ export const getBestSongsNbOffseted = (
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     { $project: { ...getGroupByDateProjection(), id: 1 } },
     {
-      $lookup: {
-        ...lightTrackLookupPipeline,
-        from: 'tracks',
-        as: 'track',
-      },
+      $lookup: lightTrackLookupPipeline(),
     },
     { $unwind: '$track' },
 
@@ -576,19 +572,11 @@ export const getBestSongsNbOffseted = (
     { $limit: nb },
     { $addFields: { 'track.artist': { $first: '$track.artists' } } },
     {
-      $lookup: {
-        ...lightAlbumLookupPipeline,
-        from: 'albums',
-        as: 'album',
-      },
+      $lookup: lightAlbumLookupPipeline(),
     },
     { $unwind: '$album' },
     {
-      $lookup: {
-        ...lightArtistLookupPipeline,
-        from: 'artists',
-        as: 'artist',
-      },
+      $lookup: lightArtistLookupPipeline(),
     },
     { $unwind: '$artist' },
   ]);
@@ -604,11 +592,7 @@ export const getBestArtistsNbOffseted = (
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     { $project: { ...getGroupByDateProjection(), id: 1 } },
     {
-      $lookup: {
-        ...lightTrackLookupPipeline,
-        from: 'tracks',
-        as: 'track',
-      },
+      $lookup: lightTrackLookupPipeline(),
     },
     { $unwind: '$track' },
 
@@ -639,19 +623,11 @@ export const getBestArtistsNbOffseted = (
     { $skip: offset },
     { $limit: nb },
     {
-      $lookup: {
-        ...lightAlbumLookupPipeline,
-        from: 'albums',
-        as: 'album',
-      },
+      $lookup: lightAlbumLookupPipeline(),
     },
     { $unwind: '$album' },
     {
-      $lookup: {
-        ...lightArtistLookupPipeline,
-        from: 'artists',
-        as: 'artist',
-      },
+      $lookup: lightArtistLookupPipeline(),
     },
     { $unwind: '$artist' },
   ]);
@@ -667,11 +643,7 @@ export const getBestAlbumsNbOffseted = (
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     { $project: { ...getGroupByDateProjection(), id: 1 } },
     {
-      $lookup: {
-        ...lightTrackLookupPipeline,
-        from: 'tracks',
-        as: 'track',
-      },
+      $lookup: lightTrackLookupPipeline(),
     },
     { $unwind: '$track' },
 
@@ -702,19 +674,130 @@ export const getBestAlbumsNbOffseted = (
     { $skip: offset },
     { $limit: nb },
     {
-      $lookup: {
-        ...lightAlbumLookupPipeline,
-        from: 'albums',
-        as: 'album',
-      },
+      $lookup: lightAlbumLookupPipeline(),
     },
     { $unwind: '$album' },
     {
-      $lookup: {
-        ...lightArtistLookupPipeline,
-        from: 'artists',
-        as: 'artist',
-      },
+      $lookup: lightArtistLookupPipeline(),
     },
     { $unwind: '$artist' },
   ]);
+
+export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
+  return InfosModel.aggregate([
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $addFields: { hour: getGroupByDateProjection().hour } },
+    { $group: { _id: '$hour', songs: { $push: '$id' }, total: { $sum: 1 } } },
+    { $unwind: '$songs' },
+    {
+      $group: {
+        _id: { _id: '$_id', song: '$songs' },
+        count: { $sum: 1 },
+        total: { $first: '$total' },
+      },
+    },
+    { $sort: { count: -1 } },
+    {
+      $group: {
+        _id: '$_id._id',
+        songs: { $push: { song: '$_id.song', count: '$count' } },
+        total: { $first: '$total' },
+      },
+    },
+    { $addFields: { songs: { $slice: ['$songs', 20] } } },
+    { $unwind: '$songs' },
+    { $lookup: lightTrackLookupPipeline('songs.song') },
+    { $unwind: '$track' },
+    { $lookup: lightArtistLookupPipeline('track.artists', true) },
+    { $unwind: '$artist' },
+    {
+      $group: {
+        _id: '$_id',
+        tracks: { $push: { track: '$track', artist: '$artist', count: '$songs.count' } },
+        total: { $first: '$total' },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+};
+
+export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
+  return InfosModel.aggregate([
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $addFields: { hour: getGroupByDateProjection().hour } },
+    { $group: { _id: '$hour', songs: { $push: '$id' }, total: { $sum: 1 } } },
+    { $unwind: '$songs' },
+    { $lookup: lightTrackLookupPipeline('songs') },
+    { $unwind: '$track' },
+    {
+      $group: {
+        _id: { _id: '$_id', album: '$track.album' },
+        count: { $sum: 1 },
+
+        total: { $first: '$total' },
+      },
+    },
+    { $sort: { count: -1 } },
+    {
+      $group: {
+        _id: '$_id._id',
+        albums: { $push: { album: '$_id.album', count: '$count' } },
+
+        total: { $first: '$total' },
+      },
+    },
+    { $addFields: { albums: { $slice: ['$albums', 20] } } },
+    { $unwind: '$albums' },
+    { $lookup: lightAlbumLookupPipeline('albums.album') },
+    { $unwind: '$album' },
+    { $lookup: lightArtistLookupPipeline('album.artists', true) },
+    { $unwind: '$artist' },
+    {
+      $group: {
+        _id: '$_id',
+        albums: { $push: { album: '$album', artist: '$artist', count: '$albums.count' } },
+        total: { $first: '$total' },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+};
+
+export const getBestArtistsOfHour = (user: User, start: Date, end: Date) => {
+  return InfosModel.aggregate([
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $addFields: { hour: getGroupByDateProjection().hour } },
+    { $group: { _id: '$hour', songs: { $push: '$id' }, total: { $sum: 1 } } },
+    { $unwind: '$songs' },
+    { $lookup: lightTrackLookupPipeline('songs') },
+    { $unwind: '$track' },
+    {
+      $group: {
+        _id: { _id: '$_id', artist: { $first: '$track.artists' } },
+        count: { $sum: 1 },
+
+        total: { $first: '$total' },
+      },
+    },
+    { $sort: { count: -1 } },
+    {
+      $group: {
+        _id: '$_id._id',
+        artists: { $push: { artist: '$_id.artist', count: '$count' } },
+        total: { $first: '$total' },
+      },
+    },
+    { $addFields: { artists: { $slice: ['$artists', 20] } } },
+    { $unwind: '$artists' },
+    { $lookup: lightArtistLookupPipeline('artists.artist', false) },
+    { $unwind: '$artist' },
+    {
+      $group: {
+        _id: '$_id',
+        artists: { $push: { artist: '$artist', count: '$artists.count' } },
+        total: { $first: '$total' },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+};

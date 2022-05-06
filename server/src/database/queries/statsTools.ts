@@ -89,26 +89,32 @@ export const getTrackSumType = (user: User) => {
   return 1;
 };
 
-export const lightTrackLookupPipeline = {
-  let: { id: '$id' },
+export const lightTrackLookupPipeline = (idField = 'id') => ({
+  let: { id: `$${idField}` },
   pipeline: [
     { $match: { $expr: { $eq: ['$id', '$$id'] } } },
     { $project: { _id: 1, id: 1, name: 1, artists: 1, album: 1, images: 1, duration_ms: 1 } },
   ],
-};
+  from: 'tracks',
+  as: 'track',
+});
 
-export const lightAlbumLookupPipeline = {
-  let: { id: '$track.album' },
+export const lightAlbumLookupPipeline = (idField = 'track.album') => ({
+  let: { id: `$${idField}` },
   pipeline: [
     { $match: { $expr: { $eq: ['$id', '$$id'] } } },
     { $project: { _id: 1, id: 1, name: 1, artists: 1, images: 1 } },
   ],
-};
+  from: 'albums',
+  as: 'album',
+});
 
-export const lightArtistLookupPipeline = {
-  let: { id: { $first: '$track.artists' } },
+export const lightArtistLookupPipeline = (idField = 'track.artists', isFieldArray = true) => ({
+  let: { id: isFieldArray ? { $first: `$${idField}` } : `$${idField}` },
   pipeline: [
     { $match: { $expr: { $eq: ['$id', '$$id'] } } },
     { $project: { _id: 1, id: 1, name: 1, images: 1, genres: 1 } },
   ],
-};
+  from: 'artists',
+  as: 'artist',
+});

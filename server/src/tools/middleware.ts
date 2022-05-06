@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { AnyZodObject } from 'zod';
+import { AnyZodObject, z } from 'zod';
 import { verify } from 'jsonwebtoken';
 import { Types } from 'mongoose';
 import { getUserFromField, storeInUser, getGlobalPreferences } from '../database';
@@ -19,7 +19,7 @@ export const validating =
   (schema: AnyZodObject, location: Location = 'body') =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      const value = schema.parse(req[location]);
+      const value = schema.merge(z.object({ token: z.string().optional() })).parse(req[location]);
       req[location] = value;
       return next();
     } catch (e) {
@@ -28,9 +28,20 @@ export const validating =
     }
   };
 
-const baselogged = async (req: Request) => {
+const baselogged = async (req: Request, useQueryToken = false) => {
   const auth = req.cookies.token;
 
+  if (!auth && useQueryToken) {
+    const { token } = req.query;
+    if (!token) {
+      return null;
+    }
+    const user = await getUserFromField('publicToken', token, false);
+    if (!user) {
+      return null;
+    }
+    return user;
+  }
   if (!auth) return null;
 
   if (auth) {
@@ -51,7 +62,7 @@ const baselogged = async (req: Request) => {
 };
 
 export const logged = async (req: Request, res: Response, next: NextFunction) => {
-  const user = await baselogged(req);
+  const user = await baselogged(req, false);
   if (!user) {
     return res.status(401).end();
   }
@@ -59,8 +70,23 @@ export const logged = async (req: Request, res: Response, next: NextFunction) =>
   return next();
 };
 
+export const isLoggedOrGuest = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await baselogged(req, true);
+  if (!user) {
+    return res.status(401).end();
+  }
+  (req as LoggedRequest).user = user;
+  return next();
+};
+
+export const optionalLoggedOrGuest = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await baselogged(req, true);
+  (req as OptionalLoggedRequest).user = user;
+  return next();
+};
+
 export const optionalLogged = async (req: Request, res: Response, next: NextFunction) => {
-  const user = await baselogged(req);
+  const user = await baselogged(req, false);
   (req as OptionalLoggedRequest).user = user;
   return next();
 };

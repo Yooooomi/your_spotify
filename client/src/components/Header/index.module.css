@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: space-between;
 
-  background-color: white;
+  background-color: var(--header-background);
   padding: 16px;
 }
 

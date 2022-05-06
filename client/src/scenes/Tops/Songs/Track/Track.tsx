@@ -8,6 +8,7 @@ import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist, Album, Track as TrackType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
 import { getImage } from '../../../../services/tools';
+import Text from '../../../../components/Text';
 
 interface TrackProps {
   line?: false;
@@ -43,12 +44,12 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
     return (
       <div className={s.root}>
         <div className={clsx(s.name, s.header)}>
-          <span className={s.trackname}>Track name / Artist</span>
+          <Text className={s.trackname}>Track name / Artist</Text>
         </div>
-        {upmd && <span className={clsx(s.albumname, s.header)}>Album name</span>}
-        {upmd && <span className={clsx(s.duration, s.header)}>Duration</span>}
-        <span className={clsx(s.sumcount, s.header)}>Count</span>
-        <span className={clsx(s.sumduration, s.header)}>Total duration</span>
+        {upmd && <Text className={clsx(s.albumname, s.header)}>Album name</Text>}
+        {upmd && <Text className={clsx(s.duration, s.header)}>Duration</Text>}
+        <Text className={clsx(s.sumcount, s.header)}>Count</Text>
+        <Text className={clsx(s.sumduration, s.header)}>Total duration</Text>
       </div>
     );
   }
@@ -63,24 +64,24 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
       )}
       <img className={s.albumcover} src={getImage(album)} alt="Album cover" />
       <div className={s.name}>
-        <span className={s.trackname}>{track.name}</span>
-        <span className={s.artistname}>
+        <Text className={s.trackname}>{track.name}</Text>
+        <Text className={s.artistname}>
           {artists.map((art) => (
             <React.Fragment key={art.id}>
               <InlineArtist key={art.id} artist={art} />{' '}
             </React.Fragment>
           ))}
-        </span>
+        </Text>
       </div>
-      {upmd && <span className={s.albumname}>{album.name}</span>}
-      {upmd && <span className={s.duration}>{msToMinutesAndSeconds(track.duration_ms)}</span>}
-      <span className={s.sumcount}>
-        {count} {upmd && <span>({Math.floor((count / totalCount) * 10000) / 100})</span>}
-      </span>
-      <span className={s.sumduration}>
+      {upmd && <Text className={s.albumname}>{album.name}</Text>}
+      {upmd && <Text className={s.duration}>{msToMinutesAndSeconds(track.duration_ms)}</Text>}
+      <Text className={s.sumcount}>
+        {count} {upmd && <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>}
+      </Text>
+      <Text className={s.sumduration}>
         {msToMinutesAndSeconds(duration)}{' '}
-        {upmd && <span>({Math.floor((duration / totalDuration) * 10000) / 100})</span>}
-      </span>
+        {upmd && <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>}
+      </Text>
     </div>
   );
 }

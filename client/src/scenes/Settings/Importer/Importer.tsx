@@ -15,6 +15,7 @@ import s from './index.module.css';
 import Privacy from './Privacy';
 import { ImporterStateTypes } from '../../../services/redux/modules/import/types';
 import FullPrivacy from './FullPrivacy';
+import Text from '../../../components/Text';
 
 const ImportTypeToComponent: Record<ImporterStateTypes, any> = {
   privacy: Privacy,
@@ -52,11 +53,11 @@ export default function Importer() {
       <div>
         {running && (
           <div>
-            <span>Importing...</span>
+            <Text>Importing...</Text>
             <div className={s.progress}>
-              <span>
+              <Text>
                 {running.current} / {running.total}
-              </span>
+              </Text>
             </div>
             <LinearProgress
               style={{ width: '100%' }}

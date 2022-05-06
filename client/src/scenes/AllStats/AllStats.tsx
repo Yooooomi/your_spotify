@@ -7,6 +7,7 @@ import AverageAlbumReleaseDate from '../../components/ImplementedCharts/AverageA
 import AverageNumberArtistPer from '../../components/ImplementedCharts/AverageNumberArtistPer';
 import AverageSongPopularityPer from '../../components/ImplementedCharts/AverageSongPopularityPer';
 import BestArtistsBar from '../../components/ImplementedCharts/BestArtistsBar';
+import BestOfHour from '../../components/ImplementedCharts/BestOfHour';
 import DifferentArtistListenedPer from '../../components/ImplementedCharts/DifferentArtistListenedPer';
 import ListeningRepartition from '../../components/ImplementedCharts/ListeningRepartition';
 import SongsListenedPer from '../../components/ImplementedCharts/SongsListenedPer';
@@ -40,22 +41,25 @@ export default function AllStats() {
             <ArtistListeningRepartition className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
-            <AverageSongPopularityPer className={s.chart} />
-          </Grid>
-          <Grid item xs={12} md={12} lg={6}>
-            <AverageAlbumReleaseDate className={s.chart} />
-          </Grid>
-          <Grid item xs={12} md={12} lg={6}>
-            <DifferentArtistListenedPer className={s.chart} />
-          </Grid>
-          <Grid item xs={12} md={12} lg={6}>
-            <AverageNumberArtistPer className={s.chart} />
+            <BestOfHour className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
             <SongsListenedPer className={s.chart} />
           </Grid>
           <Grid item xs={12} md={12} lg={6}>
             <TimeListenedPer className={s.chart} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={6}>
+            <DifferentArtistListenedPer className={s.chart} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={6}>
+            <AverageAlbumReleaseDate className={s.chart} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={6}>
+            <AverageNumberArtistPer className={s.chart} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={6}>
+            <AverageSongPopularityPer className={s.chart} />
           </Grid>
         </Grid>
       </div>

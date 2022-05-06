@@ -1,11 +1,12 @@
 import { useMediaQuery } from '@mui/material';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { intervalDetailToRedux } from '../../services/date';
+import { IntervalDetail } from '../../services/intervals';
 import { setDataInterval } from '../../services/redux/modules/user/reducer';
 import { selectIntervalDetail } from '../../services/redux/modules/user/selector';
+import { intervalDetailToRedux } from '../../services/redux/modules/user/utils';
 import IntervalSelector from '../IntervalSelector';
-import { IntervalDetail } from '../IntervalSelector/IntervalSelector';
+import Text from '../Text';
 import s from './index.module.css';
 
 interface HeaderProps {
@@ -32,8 +33,8 @@ export default function Header({ left, title, subtitle, hideInterval }: HeaderPr
       <div className={s.left}>
         {left}
         <div className={s.texts}>
-          <h1>{title}</h1>
-          {showSider && <span>{subtitle}</span>}
+          <Text element="h1">{title}</Text>
+          {showSider && <Text>{subtitle}</Text>}
         </div>
       </div>
       {!hideInterval && (

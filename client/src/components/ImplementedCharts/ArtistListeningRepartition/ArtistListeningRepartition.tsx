@@ -5,7 +5,7 @@ import { api } from '../../../services/api';
 import { useRawTooltipLabelFormatter } from '../../../services/chart';
 import { getColor } from '../../../services/colors';
 import { useAPI } from '../../../services/hooks';
-import { selectInterval } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import {
   buildXYDataObjSpread,
   formatXAxisDateTooltip,
@@ -23,7 +23,7 @@ const formatYAxis = (value: any) => {
 };
 
 export default function ArtistListeningRepartition({ className }: ArtistListeningRepartitionProps) {
-  const interval = useSelector(selectInterval);
+  const { interval } = useSelector(selectRawIntervalDetail);
   const results = useAPI(api.mostListenedArtist, interval.start, interval.end, interval.timesplit);
 
   const resultsWithCount = useMemo(
@@ -72,6 +72,9 @@ export default function ArtistListeningRepartition({ className }: ArtistListenin
 
   const tooltipValueFormatter = useCallback(
     (value: number, label: string) => {
+      if (value === 0) {
+        return [<span />];
+      }
       return [`${allArtists[label].name}: ${Math.floor(value * 1000) / 10}%`];
     },
     [allArtists],
@@ -84,19 +87,20 @@ export default function ArtistListeningRepartition({ className }: ArtistListenin
   const formatX = useFormatXAxis(data);
 
   if (!results) {
-    return <LoadingImplementedChart title="Artist listening repartition" className={className} />;
+    return <LoadingImplementedChart title="Artist listening distribution" className={className} />;
   }
 
   return (
-    <ChartCard title="Artist listening repartition" className={className}>
+    <ChartCard title="Artist listening distribution" className={className}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data}>
-          <XAxis dataKey="x" tickFormatter={formatX} />
+          <XAxis dataKey="x" tickFormatter={formatX} style={{ fontWeight: 'bold' }} />
           <YAxis domain={[0, 1]} tickFormatter={formatYAxis} />
           <Tooltip
             formatter={tooltipValueFormatter}
             labelFormatter={tooltipLabelFormatter}
             wrapperStyle={{ zIndex: 1000 }}
+            contentStyle={{ background: 'var(--background)' }}
             itemSorter={tooltipSorter}
           />
           {Object.values(allArtists).map((art, idx) => (

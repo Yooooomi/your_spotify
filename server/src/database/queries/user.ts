@@ -205,3 +205,6 @@ export const getFirstInfo = (userId: string) =>
 
 export const setUserAdmin = (userId: string, admin: boolean) =>
   UserModel.findByIdAndUpdate(userId, { admin });
+
+export const setUserPublicToken = (userId: string, token: string | null) =>
+  UserModel.findByIdAndUpdate(userId, { publicToken: token });

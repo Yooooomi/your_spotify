@@ -6,6 +6,7 @@ import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist as ArtistType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
 import { getImage } from '../../../../services/tools';
+import Text from '../../../../components/Text';
 
 interface ArtistProps {
   line?: false;
@@ -27,10 +28,10 @@ export default function Artist(props: ArtistProps | HeaderArtistProps) {
   if (props.line) {
     return (
       <div className={s.root}>
-        <span className={s.artistname}>Artist name</span>
-        {upmobile && <span className={clsx(s.genres, s.header)}>Genres</span>}
-        <span className={clsx(s.sumcount, s.header)}>Count</span>
-        <span className={clsx(s.sumduration, s.header)}>Total duration</span>
+        <Text className={s.artistname}>Artist name</Text>
+        {upmobile && <Text className={clsx(s.genres, s.header)}>Genres</Text>}
+        <Text className={clsx(s.sumcount, s.header)}>Count</Text>
+        <Text className={clsx(s.sumduration, s.header)}>Total duration</Text>
       </div>
     );
   }
@@ -39,17 +40,17 @@ export default function Artist(props: ArtistProps | HeaderArtistProps) {
   return (
     <div className={s.root}>
       <img className={s.artistcover} src={getImage(artist)} alt="Artist cover" />
-      <span className={s.artistname}>
+      <Text className={s.artistname}>
         <InlineArtist artist={artist} />
-      </span>
-      {upmobile && <span className={s.genres}>{artist.genres.join(', ')}</span>}
-      <span className={s.sumcount}>
-        {count} {upmd && <span>({Math.floor((count / totalCount) * 10000) / 100})</span>}
-      </span>
-      <span className={s.sumduration}>
+      </Text>
+      {upmobile && <Text className={s.genres}>{artist.genres.join(', ')}</Text>}
+      <Text className={s.sumcount}>
+        {count} {upmd && <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>}
+      </Text>
+      <Text className={s.sumduration}>
         {msToMinutesAndSeconds(duration)}{' '}
-        {upmd && <span>({Math.floor((duration / totalDuration) * 10000) / 100})</span>}
-      </span>
+        {upmd && <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>}
+      </Text>
     </div>
   );
 }

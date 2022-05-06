@@ -5,13 +5,13 @@ import Header from '../../../components/Header';
 import Loader from '../../../components/Loader';
 import TitleCard from '../../../components/TitleCard';
 import { api } from '../../../services/api';
-import { selectIntervalDetail } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import { UnboxPromise } from '../../../services/types';
 import Artist from './Artist';
 import s from './index.module.css';
 
 export default function Artists() {
-  const { interval, name } = useSelector(selectIntervalDetail);
+  const { interval, name } = useSelector(selectRawIntervalDetail);
   const [items, setItems] = useState<
     UnboxPromise<ReturnType<typeof api['getBestArtists']>>['data']
   >([]);

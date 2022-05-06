@@ -10,6 +10,7 @@ import { getImage } from '../../services/tools';
 import { Artist } from '../../services/types';
 import s from './index.module.css';
 import DayRepartition from './DayRepartition';
+import Text from '../../components/Text';
 
 interface ArtistStatsProps {
   stats: ArtistStatsResponse;
@@ -50,10 +51,11 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
         left={<img className={s.headerimage} src={getImage(stats.artist)} alt="Artist" />}
         title={stats.artist.name}
         subtitle={stats.artist.genres.join(', ')}
+        hideInterval
       />
       <div className={s.content}>
         <div className={s.header}>
-          <h1>Rank #{stats.rank.index + 1}</h1>
+          <Text element="h1">Rank #{stats.rank.index + 1}</Text>
           <div>
             <div className={s.ranks}>
               {stats.rank.results.map((rank, k, a) => (
@@ -89,7 +91,9 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
             spacing={2}>
             <Grid item xs={12}>
               <TitleCard title="Songs listened">
-                <strong className={s.songslistened}>{stats.total.count}</strong>
+                <Text element="strong" className={s.songslistened}>
+                  {stats.total.count}
+                </Text>
               </TitleCard>
             </Grid>
             <Grid item xs={12}>
@@ -101,10 +105,10 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
                     alt="album cover"
                   />
                   <div className={s.mlstat}>
-                    <strong>{stats.firstLast.last.track.name}</strong>
-                    <span>
+                    <Text element="strong">{stats.firstLast.last.track.name}</Text>
+                    <Text>
                       Last listened on {dateToListenedAt(new Date(stats.firstLast.last.played_at))}
-                    </span>
+                    </Text>
                   </div>
                 </div>
                 <div key={stats.firstLast.first.id} className={s.ml}>
@@ -114,11 +118,11 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
                     alt="album cover"
                   />
                   <div className={s.mlstat}>
-                    <strong>{stats.firstLast.first.track.name}</strong>
-                    <span>
+                    <Text element="strong">{stats.firstLast.first.track.name}</Text>
+                    <Text>
                       First listened on{' '}
                       {dateToListenedAt(new Date(stats.firstLast.first.played_at))}
-                    </span>
+                    </Text>
                   </div>
                 </div>
               </TitleCard>
@@ -126,21 +130,25 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
             <Grid item xs={12}>
               <TitleCard title={`Top two months you listened to ${stats.artist.name}`}>
                 <div className={s.bestperiod}>
-                  <strong>{dateToMonthAndYear(buildFromDateId(stats.bestPeriod[0]._id))}</strong>
-                  <span>
+                  <Text element="strong">
+                    {dateToMonthAndYear(buildFromDateId(stats.bestPeriod[0]._id))}
+                  </Text>
+                  <Text>
                     {stats.bestPeriod[0].count} times (
                     {Math.floor((stats.bestPeriod[0].count / stats.bestPeriod[0].total) * 100)}% of
                     total time)
-                  </span>
+                  </Text>
                 </div>
                 {stats.bestPeriod.length > 1 && (
                   <div className={s.bestperiod}>
-                    <strong>{dateToMonthAndYear(buildFromDateId(stats.bestPeriod[1]._id))}</strong>
-                    <span>
+                    <Text element="strong">
+                      {dateToMonthAndYear(buildFromDateId(stats.bestPeriod[1]._id))}
+                    </Text>
+                    <Text>
                       {stats.bestPeriod[1].count} times (
                       {Math.floor((stats.bestPeriod[1].count / stats.bestPeriod[1].total) * 100)}%
                       of total time)
-                    </span>
+                    </Text>
                   </div>
                 )}
               </TitleCard>
@@ -153,11 +161,13 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
             <TitleCard title="Most listened tracks">
               {stats.mostListened.map((ml, k) => (
                 <div key={ml.track.id} className={s.ml}>
-                  <strong className={s.mlrank}>#{k + 1}</strong>
+                  <Text element="strong" className={s.mlrank}>
+                    #{k + 1}
+                  </Text>
                   <img className={s.cardimg} src={getImage(ml.track.album)} alt="album cover" />
                   <div className={s.mlstat}>
-                    <strong>{ml.track.name}</strong>
-                    <span>{ml.count} times</span>
+                    <Text element="strong">{ml.track.name}</Text>
+                    <Text>{ml.count} times</Text>
                   </div>
                 </div>
               ))}

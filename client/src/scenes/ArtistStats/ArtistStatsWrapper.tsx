@@ -5,6 +5,7 @@ import ArtistStats from './ArtistStats';
 import { api } from '../../services/api';
 import { useAPI } from '../../services/hooks';
 import FullscreenCentered from '../../components/FullscreenCentered';
+import Text from '../../components/Text';
 
 export default function ArtistStatsWrapper() {
   const params = useParams();
@@ -15,7 +16,7 @@ export default function ArtistStatsWrapper() {
       <FullscreenCentered>
         <CircularProgress />
         <div>
-          <h3>Loading your stats</h3>
+          <Text element="h3">Loading your stats</Text>
         </div>
       </FullscreenCentered>
     );
@@ -24,7 +25,9 @@ export default function ArtistStatsWrapper() {
   if ('code' in stats) {
     return (
       <FullscreenCentered>
-        <h3>You never listened to this artist, might be someone else registered</h3>
+        <Text element="h3">
+          You never listened to this artist, might be someone else registered
+        </Text>
       </FullscreenCentered>
     );
   }

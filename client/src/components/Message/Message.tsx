@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { AlertMessage } from '../../services/redux/modules/message/reducer';
 import { selectMessage } from '../../services/redux/modules/message/selector';
 import s from './index.module.css';
+import Text from '../Text';
 
 interface AlertProps {
   message: string;
@@ -22,7 +23,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
           [s.alert]: true,
           [s[level]]: true,
         })}>
-        <span>{message}</span>
+        <Text onDark>{message}</Text>
         <IconButton size="small" onClick={onClose}>
           <Close className={s.icon} fontSize="small" />
         </IconButton>

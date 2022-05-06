@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
-import { selectInterval } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import { buildXYData, formatXAxisDateTooltip, useFormatXAxis } from '../../../services/stats';
 import { DateId } from '../../../services/types';
 import ChartCard from '../../ChartCard';
@@ -13,7 +13,7 @@ import { ImplementedChartProps } from '../types';
 interface AverageNumberArtistPerProps extends ImplementedChartProps {}
 
 export default function AverageNumberArtistPer({ className }: AverageNumberArtistPerProps) {
-  const interval = useSelector(selectInterval);
+  const { interval } = useSelector(selectRawIntervalDetail);
   const result = useAPI(api.featRatio, interval.start, interval.end, interval.timesplit);
 
   const data = buildXYData(

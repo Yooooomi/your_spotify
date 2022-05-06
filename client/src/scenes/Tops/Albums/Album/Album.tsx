@@ -6,6 +6,7 @@ import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist, Album as AlbumType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
 import { getImage } from '../../../../services/tools';
+import Text from '../../../../components/Text';
 
 interface AlbumProps {
   line?: false;
@@ -28,10 +29,10 @@ export default function Album(props: AlbumProps | HeaderAlbumProps) {
     return (
       <div className={s.root}>
         <div className={clsx(s.name, s.header)}>
-          <span className={s.trackname}>Album name / Artist</span>
+          <Text className={s.trackname}>Album name / Artist</Text>
         </div>
-        <span className={clsx(s.sumcount, s.header)}>Count</span>
-        <span className={clsx(s.sumduration, s.header)}>Total duration</span>
+        <Text className={clsx(s.sumcount, s.header)}>Count</Text>
+        <Text className={clsx(s.sumduration, s.header)}>Total duration</Text>
       </div>
     );
   }
@@ -41,23 +42,23 @@ export default function Album(props: AlbumProps | HeaderAlbumProps) {
     <div className={s.root}>
       <img className={s.albumcover} src={getImage(album)} alt="Album cover" />
       <div className={s.name}>
-        <span className={s.albumname}>{album.name}</span>
-        <span className={s.artistname}>
+        <Text className={s.albumname}>{album.name}</Text>
+        <Text className={s.artistname}>
           {artists.map((art, k, a) => (
             <React.Fragment key={art.id}>
               <InlineArtist artist={art} key={art.id} />
               {k !== a.length - 1 && ', '}
             </React.Fragment>
           ))}
-        </span>
+        </Text>
       </div>
-      <span className={s.sumcount}>
-        {count} {upmd && <span>({Math.floor((count / totalCount) * 10000) / 100})</span>}
-      </span>
-      <span className={s.sumduration}>
+      <Text className={s.sumcount}>
+        {count} {upmd && <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>}
+      </Text>
+      <Text className={s.sumduration}>
         {msToMinutesAndSeconds(duration)}{' '}
-        {upmd && <span>({Math.floor((duration / totalDuration) * 10000) / 100})</span>}
-      </span>
+        {upmd && <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>}
+      </Text>
     </div>
   );
 }

@@ -6,12 +6,12 @@ import Bar from '../../charts/Bar';
 import { ImplementedChartProps } from '../types';
 import ChartCard from '../../ChartCard';
 import LoadingImplementedChart from '../LoadingImplementedChart';
-import { selectInterval } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 
 interface ListeningRepartitionProps extends ImplementedChartProps {}
 
 const formatXAxis = (value: any) => {
-  return `${value}h`;
+  return `${value}:00`;
 };
 
 const formatYAxis = (value: any) => {
@@ -19,11 +19,11 @@ const formatYAxis = (value: any) => {
 };
 
 const formatXTooltip = (label: string) => {
-  return `${label}h`;
+  return `${label}:00`;
 };
 
 export default function ListeningRepartition({ className }: ListeningRepartitionProps) {
-  const interval = useSelector(selectInterval);
+  const { interval } = useSelector(selectRawIntervalDetail);
   const result = useAPI(api.timePerHourOfDay, interval.start, interval.end);
 
   const total = useMemo(() => result?.reduce((acc, curr) => acc + curr.count, 0) ?? 0, [result]);
@@ -61,11 +61,13 @@ export default function ListeningRepartition({ className }: ListeningRepartition
   );
 
   if (!result) {
-    return <LoadingImplementedChart className={className} title="Listening repartition over day" />;
+    return (
+      <LoadingImplementedChart className={className} title="Listening distribution over day" />
+    );
   }
 
   return (
-    <ChartCard className={className} title="Listening repartition over day">
+    <ChartCard className={className} title="Listening distribution over day">
       <Bar
         data={data}
         xFormat={formatXAxis}

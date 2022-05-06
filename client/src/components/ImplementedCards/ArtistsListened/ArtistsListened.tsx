@@ -9,12 +9,13 @@ import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';
 import s from '../index.module.css';
 import { getLastPeriod, getPercentMore } from '../../../services/stats';
-import { selectIntervalDetail } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
+import Text from '../../Text';
 
 interface ArtistsListenedProps extends ImplementedCardProps {}
 
 export default function ArtistsListened({ className }: ArtistsListenedProps) {
-  const { interval, unit } = useSelector(selectIntervalDetail);
+  const { interval, unit } = useSelector(selectRawIntervalDetail);
   const result = useAPI(api.differentArtistsPer, interval.start, interval.end, Timesplit.all);
   const lastPeriod = useMemo(() => getLastPeriod(interval.start, interval.end), [interval]);
   const resultOld = useAPI(
@@ -28,12 +29,12 @@ export default function ArtistsListened({ className }: ArtistsListenedProps) {
     return (
       <TitleCard title="Artists listened" className={className} fade>
         <div className={s.root}>
-          <span className={s.number}>
+          <Text className={s.number}>
             <Skeleton width={50} />
-          </span>
-          <span>
+          </Text>
+          <Text>
             <Skeleton width={200} />
-          </span>
+          </Text>
         </div>
       </TitleCard>
     );
@@ -47,17 +48,20 @@ export default function ArtistsListened({ className }: ArtistsListenedProps) {
   return (
     <TitleCard title="Artists listened" className={className} fade>
       <div className={s.root}>
-        <span className={s.number}>{count} different</span>
-        <span>
-          <strong
+        <Text className={s.number}>{count} different</Text>
+        <Text>
+          <Text
+            element="strong"
             className={clsx({
               [s.more]: percentMore >= 0,
               [s.less]: percentMore < 0,
             })}>
             {Math.abs(percentMore)}%
-          </strong>
-          &nbsp;{percentMore < 0 ? 'less' : 'more'} than last {unit}
-        </span>
+          </Text>
+          <Text>
+            &nbsp;{percentMore < 0 ? 'less' : 'more'} than last {unit}
+          </Text>
+        </Text>
       </div>
     </TitleCard>
   );

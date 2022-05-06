@@ -1,5 +1,5 @@
 .root {
-  background-color: white;
+  background-color: var(--background);
   box-shadow: var(--shadow) !important;
   border-radius: 6px;
 }
@@ -22,12 +22,12 @@
 }
 
 .title::before {
-  content: "";
+  content: '';
   position: relative;
   display: inline-block;
   width: 16px;
   height: 32px;
-  background-color: black;
+  background-color: var(--primary);
   margin-right: 16px;
   border-radius: 6px;
 }

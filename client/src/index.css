@@ -4,7 +4,7 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f7f7f7;
+  background-color: var(--content-background);
 }
 
 code {
@@ -12,7 +12,7 @@ code {
   font-size: unset;
   font-size: 0.9em;
   padding: 2px;
-  background-color: rgb(228, 228, 228);
+  background-color: var(--code-background);
   border-radius: 4px;
 }
 
@@ -29,11 +29,44 @@ h6 {
   box-sizing: border-box;
 }
 
-:root {
-  --shadow: 5px 6px 40px -5px rgba(0, 0, 0, 0.05);
-  --hardshadow: 5px 6px 40px -5px rgba(0, 0, 0, 0.2);
+.dark-vars {
+  --shadow: 3px 3px 40px -5px rgba(170, 170, 170, 0.112);
+  --hardshadow: 3px 3px 40px -5px rgba(170, 170, 170, 0.437);
+
+  --primary: white;
+
   --text-grey: rgb(90, 90, 90);
   --page-padding: 32px;
+
+  --hover: rgb(65, 65, 65);
+
+  --background: black;
+  --header-background: rgb(40, 40, 44);
+  --content-background: black;
+
+  --text-on-light: white;
+  --text-on-dark: white;
+  --code-background: rgb(133, 133, 133);
+}
+
+.light-vars {
+  --shadow: 5px 6px 40px -5px rgba(0, 0, 0, 0.05);
+  --hardshadow: 5px 6px 40px -5px rgba(0, 0, 0, 0.2);
+
+  --primary: black;
+
+  --text-grey: rgb(90, 90, 90);
+  --page-padding: 32px;
+
+  --hover: #eaeaea;
+
+  --background: white;
+  --header-background: white;
+  --content-background: #f7f7f7;
+
+  --text-on-light: black;
+  --text-on-dark: white;
+  --code-background: rgb(228, 228, 228);
 }
 
 @media screen and (max-width: 960px) {

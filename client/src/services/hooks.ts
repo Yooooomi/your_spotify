@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { detailIntervalToQuery } from './intervals';
+import { selectIntervalDetail, selectUser } from './redux/modules/user/selector';
 import { UnboxPromise } from './types';
 
 export function useAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
@@ -52,4 +56,38 @@ export function useConditionalAPI<Fn extends (...ags: any[]) => Promise<{ data: 
   }, [...args, condition, call]);
 
   return value;
+}
+
+export function useShareLink() {
+  const user = useSelector(selectUser);
+  const interval = useSelector(selectIntervalDetail);
+
+  if (!user) {
+    return undefined;
+  }
+  const search = new URLSearchParams(window.location.search);
+  Object.entries(detailIntervalToQuery(interval, 'g')).forEach(([key, value]) => {
+    search.set(key, value);
+  });
+  if (user.publicToken) {
+    search.set('token', user.publicToken);
+  }
+  return `${window.location.origin}${window.location.pathname}?${search.toString()}`;
+}
+
+export function useNavigateAndSearch() {
+  const navigate = useNavigate();
+  const [query] = useSearchParams();
+
+  return useCallback(
+    (url: string, params: Record<string, string | undefined>) => {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          query.set(key, value);
+        }
+      });
+      navigate(`${url}?${query.toString()}`);
+    },
+    [navigate, query],
+  );
 }

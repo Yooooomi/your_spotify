@@ -31,11 +31,18 @@ export default function Bar({
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={data}>
-        <XAxis dataKey="x" tickFormatter={xFormat} tick={customXTick} />
+        <XAxis
+          dataKey="x"
+          tickFormatter={xFormat}
+          tick={customXTick}
+          style={{ fontWeight: 'bold' }}
+        />
         <YAxis dataKey="y" tickFormatter={yFormat} width={40} />
-        <RBar dataKey="y" />
+        <RBar dataKey="y" fill="var(--primary)" />
         <Tooltip
           wrapperStyle={{ zIndex: 10 }}
+          contentStyle={{ backgroundColor: 'var(--background)' }}
+          labelStyle={{ color: 'var(--text-on-light)' }}
           labelFormatter={tooltipLabelFormatter}
           formatter={realFormatter}
         />

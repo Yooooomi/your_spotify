@@ -3,16 +3,19 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FullscreenCentered from '../../components/FullscreenCentered';
 import Header from '../../components/Header';
+import Text from '../../components/Text';
 import TitleCard from '../../components/TitleCard';
 import { api } from '../../services/api';
 import { useAPI } from '../../services/hooks';
 import { selectSettings } from '../../services/redux/modules/settings/selector';
 import { changeRegistrations } from '../../services/redux/modules/settings/thunk';
-import { selectUser } from '../../services/redux/modules/user/selector';
+import { selectIsPublic, selectUser } from '../../services/redux/modules/user/selector';
 import { getSpotifyLogUrl } from '../../services/tools';
+import DarkModeSwitch from './DarkModeSwitch';
 import DeleteUser from './DeleteUser';
 import Importer from './Importer';
 import s from './index.module.css';
+import PublicToken from './PublicToken';
 import Rename from './Rename';
 import SetAdmin from './SetAdmin';
 import SettingLine from './SettingLine';
@@ -22,6 +25,7 @@ export default function Settings() {
   const settings = useSelector(selectSettings);
   const sme = useAPI(api.sme);
   const user = useSelector(selectUser);
+  const isPublic = useSelector(selectIsPublic);
 
   const allowRegistration = useCallback(() => {
     if (!settings) {
@@ -34,7 +38,7 @@ export default function Settings() {
     return (
       <FullscreenCentered>
         <CircularProgress />
-        <h3>Your settings are loading</h3>
+        <Text element="h3">Your settings are loading</Text>
       </FullscreenCentered>
     );
   }
@@ -52,17 +56,19 @@ export default function Settings() {
       />
       <div className={s.content}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={12} lg={6}>
-            <TitleCard title="Account infos">
-              <SettingLine left="Account ID" right={user._id} />
-              <SettingLine left="Account name" right={user.username} />
-              <SettingLine
-                left="Allow new registrations"
-                right={settings.allowRegistrations.toString()}
-              />
-            </TitleCard>
-          </Grid>
-          {sme && (
+          {!isPublic && (
+            <Grid item xs={12} md={12} lg={6}>
+              <TitleCard title="Account infos">
+                <SettingLine left="Account ID" right={user._id} />
+                <SettingLine left="Account name" right={user.username} />
+                <SettingLine
+                  left="Allow new registrations"
+                  right={settings.allowRegistrations.toString()}
+                />
+              </TitleCard>
+            </Grid>
+          )}
+          {sme && !isPublic && (
             <Grid item xs={12} md={12} lg={6}>
               <TitleCard title="Linked Spotify account">
                 <SettingLine left="Id" right={sme.id} />
@@ -71,61 +77,79 @@ export default function Settings() {
               </TitleCard>
             </Grid>
           )}
-          {user.admin && (
+          {user.admin && !isPublic && (
             <>
               <Grid item xs={12} md={12} lg={6}>
                 <TitleCard
                   title="Set admin status"
-                  right={<span className={s.onlyadmin}>Only admins can see this</span>}>
+                  right={<Text className={s.onlyadmin}>Only admins can see this</Text>}>
                   <SetAdmin />
                 </TitleCard>
               </Grid>
               <Grid item xs={12} md={12} lg={6}>
                 <TitleCard
                   title="Delete users"
-                  right={<span className={s.onlyadmin}>Only admins can see this</span>}>
+                  right={<Text className={s.onlyadmin}>Only admins can see this</Text>}>
                   <DeleteUser />
                 </TitleCard>
               </Grid>
             </>
           )}
-          <Grid item xs={12} md={12} lg={6}>
-            <TitleCard title="Miscellaneous">
-              {user.admin && (
+          {!isPublic && (
+            <Grid item xs={12} md={12} lg={6}>
+              <TitleCard title="Miscellaneous">
+                {user.admin && (
+                  <SettingLine
+                    left={
+                      <Text>
+                        Allow new registrations&nbsp;
+                        <Text className={s.onlyadmin}>admin</Text>
+                      </Text>
+                    }
+                    right={
+                      <Button onClick={allowRegistration}>
+                        {settings.allowRegistrations ? 'YES' : 'NO'}
+                      </Button>
+                    }
+                  />
+                )}
                 <SettingLine
-                  left={
-                    <span>
-                      Allow new registrations&nbsp;
-                      <span className={s.onlyadmin}>admin</span>
-                    </span>
-                  }
+                  left="Relog to Spotify"
                   right={
-                    <Button onClick={allowRegistration}>
-                      {settings.allowRegistrations ? 'YES' : 'NO'}
+                    <Button>
+                      <a href={getSpotifyLogUrl()}>Relog</a>
                     </Button>
                   }
                 />
-              )}
-              <SettingLine
-                left="Relog to Spotify"
-                right={
-                  <Button>
-                    <a href={getSpotifyLogUrl()}>Relog</a>
-                  </Button>
-                }
-              />
-            </TitleCard>
-          </Grid>
+              </TitleCard>
+            </Grid>
+          )}
+          {!isPublic && (
+            <Grid item xs={12} md={12} lg={6}>
+              <TitleCard title="Import data">
+                <Importer />
+              </TitleCard>
+            </Grid>
+          )}
+          {!isPublic && (
+            <Grid item xs={12} md={12} lg={6}>
+              <TitleCard title="Rename account">
+                <Rename />
+              </TitleCard>
+            </Grid>
+          )}
           <Grid item xs={12} md={12} lg={6}>
-            <TitleCard title="Import data">
-              <Importer />
+            <TitleCard title="Dark mode">
+              <SettingLine left="Dark mode type" right={<DarkModeSwitch />} />
             </TitleCard>
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
-            <TitleCard title="Rename account">
-              <Rename />
-            </TitleCard>
-          </Grid>
+          {!isPublic && (
+            <Grid item xs={12} md={12} lg={6}>
+              <TitleCard title="Public token">
+                <PublicToken />
+              </TitleCard>
+            </Grid>
+          )}
         </Grid>
       </div>
     </div>

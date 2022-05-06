@@ -8,10 +8,11 @@ import Loader from '../Loader';
 import TitleCard from '../TitleCard';
 import Track from './Track';
 import s from './index.module.css';
-import { selectInterval } from '../../services/redux/modules/user/selector';
+import Text from '../Text';
+import { selectRawIntervalDetail } from '../../services/redux/modules/user/selector';
 
 export default function History() {
-  const interval = useSelector(selectInterval);
+  const { interval } = useSelector(selectRawIntervalDetail);
   const [items, setItems] = useState<TrackInfoWithTrack[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [followInterval, setFollowInterval] = useState(true);
@@ -26,7 +27,7 @@ export default function History() {
     }
     setItems([...items, ...result.data]);
     setHasMore(result.data.length === 10);
-  }, [hasMore, items, followInterval, interval]);
+  }, [hasMore, followInterval, items, interval.start, interval.end]);
 
   const reset = useCallback(() => {
     setItems([]);
@@ -60,7 +61,7 @@ export default function History() {
       right={
         <div className={s.followinterval}>
           <Checkbox checked={followInterval} onChange={handleSetFollowInterval} />
-          <span>Follow interval</span>
+          <Text>Follow interval</Text>
         </div>
       }>
       <Track line playable />

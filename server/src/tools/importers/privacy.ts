@@ -1,13 +1,14 @@
 /* eslint-disable no-await-in-loop */
 import { readFile, unlink } from 'fs/promises';
+import mongoose from 'mongoose';
 import { z } from 'zod';
-import { addTrackIdsToUser, getCloseTrackId } from '../../database';
+import { addTrackIdsToUser, getCloseTrackId, storeInUser } from '../../database';
 import { setImporterStateCurrent } from '../../database/queries/importer';
 import { RecentlyPlayedTrack, SpotifyTrack } from '../../database/schemas/track';
 import { User } from '../../database/schemas/user';
 import { saveMusics } from '../../spotify/dbTools';
 import { logger } from '../logger';
-import { beforeParenthesis, removeDiacritics, retryPromise } from '../misc';
+import { beforeParenthesis, minOfArray, removeDiacritics, retryPromise } from '../misc';
 import { squeue } from '../queue';
 import { Unpack } from '../types';
 import { getFromCache, setToCache } from './cache';
@@ -82,6 +83,12 @@ export class PrivacyImporter implements HistoryImporter<ImporterStateTypes.priva
     }
     await setImporterStateCurrent(this.id, this.currentItem + 1);
     await addTrackIdsToUser(this.userId.toString(), finalInfos);
+    const min = minOfArray(finalInfos, (info) => info.played_at.getTime());
+    if (min) {
+      await storeInUser('_id', new mongoose.Types.ObjectId(userId), {
+        firstListenedAt: finalInfos[min.minIndex].played_at,
+      });
+    }
   };
 
   initWithJSONContent = async (content: any[]) => {

@@ -9,12 +9,13 @@ import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';
 import s from '../index.module.css';
 import { getLastPeriod, getPercentMore } from '../../../services/stats';
-import { selectIntervalDetail } from '../../../services/redux/modules/user/selector';
+import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
+import Text from '../../Text';
 
 interface SongsListenedProps extends ImplementedCardProps {}
 
 export default function SongsListened({ className }: SongsListenedProps) {
-  const { interval, unit } = useSelector(selectIntervalDetail);
+  const { interval, unit } = useSelector(selectRawIntervalDetail);
   const result = useAPI(api.songsPer, interval.start, interval.end, Timesplit.all);
   const lastPeriod = useMemo(() => getLastPeriod(interval.start, interval.end), [interval]);
   const resultOld = useAPI(api.songsPer, lastPeriod.start, lastPeriod.end, Timesplit.all);
@@ -23,12 +24,12 @@ export default function SongsListened({ className }: SongsListenedProps) {
     return (
       <TitleCard title="Songs listened" className={className} fade>
         <div className={s.root}>
-          <span className={s.number}>
+          <Text className={s.number}>
             <Skeleton width={50} />
-          </span>
-          <span>
+          </Text>
+          <Text>
             <Skeleton width={200} />
-          </span>
+          </Text>
         </div>
       </TitleCard>
     );
@@ -45,19 +46,22 @@ export default function SongsListened({ className }: SongsListenedProps) {
     <TitleCard title="Songs listened" className={className} fade>
       <div className={s.root}>
         <div className={s.twonumbers}>
-          <span className={s.number}>{count}</span>
-          <span className={s.number}>{different} diff.</span>
+          <Text className={s.number}>{count}</Text>
+          <Text className={s.number}>{different} diff.</Text>
         </div>
-        <span>
-          <strong
+        <Text>
+          <Text
+            element="strong"
             className={clsx({
               [s.more]: percentMore >= 0,
               [s.less]: percentMore < 0,
             })}>
             {Math.abs(percentMore)}%
-          </strong>
-          &nbsp;{percentMore < 0 ? 'less' : 'more'} than last {unit}
-        </span>
+          </Text>
+          <Text element="span">
+            &nbsp;{percentMore < 0 ? 'less' : 'more'} than last {unit}
+          </Text>
+        </Text>
       </div>
     </TitleCard>
   );
