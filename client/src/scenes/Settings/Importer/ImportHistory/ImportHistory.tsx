@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CircularProgress } from '@mui/material';
 import { dateToListenedAt } from '../../../../services/stats';
 import SettingLine from '../../SettingLine';
@@ -10,6 +10,7 @@ import ThreePoints from '../../../../components/ThreePoints';
 import { compact } from '../../../../services/tools';
 import { ImporterStateStatus } from '../../../../services/redux/modules/import/types';
 import Text from '../../../../components/Text';
+import { useAppDispatch } from '../../../../services/redux/tools';
 
 const statusToString: Record<ImporterStateStatus, string> = {
   'failure-removed': 'Failed and cleaned',
@@ -19,7 +20,7 @@ const statusToString: Record<ImporterStateStatus, string> = {
 };
 
 export default function ImportHistory() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const imports = useSelector(selectImportStates);
 
   const cleanImport = useCallback(

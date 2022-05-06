@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import { Button, Input } from '@mui/material';
-import { useDispatch } from 'react-redux';
 import { changeUsername } from '../../../services/redux/modules/user/thunk';
 import s from './index.module.css';
+import { useAppDispatch } from '../../../services/redux/tools';
 
 export default function Rename() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [name, setName] = useState('');
 
   const submit = useCallback(

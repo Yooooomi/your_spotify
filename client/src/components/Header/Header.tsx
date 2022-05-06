@@ -1,10 +1,11 @@
 import { useMediaQuery } from '@mui/material';
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { IntervalDetail } from '../../services/intervals';
 import { setDataInterval } from '../../services/redux/modules/user/reducer';
 import { selectIntervalDetail } from '../../services/redux/modules/user/selector';
 import { intervalDetailToRedux } from '../../services/redux/modules/user/utils';
+import { useAppDispatch } from '../../services/redux/tools';
 import IntervalSelector from '../IntervalSelector';
 import Text from '../Text';
 import s from './index.module.css';
@@ -17,7 +18,7 @@ interface HeaderProps {
 }
 
 export default function Header({ left, title, subtitle, hideInterval }: HeaderProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const intervalDetail = useSelector(selectIntervalDetail);
   const showSider = !useMediaQuery('(max-width: 900px)');
 

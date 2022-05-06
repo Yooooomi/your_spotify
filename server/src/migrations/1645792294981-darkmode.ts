@@ -1,7 +1,10 @@
 import { changeSetting, getAllUsers, storeInUser } from '../database';
 import { InfosModel } from '../database/Models';
+import { startMigration } from '../tools/migrations';
 
 export const up = async () => {
+  startMigration('add dark mode');
+
   const users = await getAllUsers();
   await Promise.all(
     users.map((user) =>

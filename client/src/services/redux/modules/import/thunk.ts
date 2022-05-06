@@ -1,17 +1,10 @@
-import { AsyncThunk, AsyncThunkPayloadCreator, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../..';
 import { api } from '../../../api';
+import { myAsyncThunk } from '../../tools';
 import { alertMessage } from '../message/reducer';
 import { selectImportStates } from './selector';
 import { ImporterState } from './types';
 
-const myAsyncThunk = <P, R>(
-  name: string,
-  payloadCreator: AsyncThunkPayloadCreator<R, P, { state: RootState }>,
-): AsyncThunk<R, P, { state: RootState }> =>
-  createAsyncThunk<R, P, { state: RootState }>(name, payloadCreator);
-
-export const getImports = myAsyncThunk<boolean | undefined, ImporterState[] | null>(
+export const getImports = myAsyncThunk<ImporterState[] | null, boolean | undefined>(
   '@import/get',
   async (force, tapi) => {
     if (!force && selectImportStates(tapi.getState())) {
@@ -22,7 +15,7 @@ export const getImports = myAsyncThunk<boolean | undefined, ImporterState[] | nu
   },
 );
 
-export const startImportPrivacy = myAsyncThunk<{ files?: FileList; id?: string }, void>(
+export const startImportPrivacy = myAsyncThunk<void, { files?: FileList; id?: string }>(
   '@import/privacy-start',
   async ({ files, id }, tapi) => {
     try {
@@ -65,7 +58,7 @@ export const startImportPrivacy = myAsyncThunk<{ files?: FileList; id?: string }
   },
 );
 
-export const startImportFullPrivacy = myAsyncThunk<{ files?: FileList; id?: string }, void>(
+export const startImportFullPrivacy = myAsyncThunk<void, { files?: FileList; id?: string }>(
   '@import/full-privacy-start',
   async ({ files, id }, tapi) => {
     try {
@@ -108,7 +101,7 @@ export const startImportFullPrivacy = myAsyncThunk<{ files?: FileList; id?: stri
   },
 );
 
-export const cleanupImport = myAsyncThunk<string, void>('@import/cleanup', async (id, tapi) => {
+export const cleanupImport = myAsyncThunk<void, string>('@import/cleanup', async (id, tapi) => {
   try {
     await api.cleanupImport(id);
     tapi.dispatch(

@@ -1,18 +1,12 @@
 /* eslint-disable class-methods-use-this */
 // @ts-ignore
-import migrate from 'migrate';
+import { load, CallbackError, MigrationSet } from 'migrate';
 import path from 'path';
 import { connect } from './database';
 import { MigrationModel } from './database/Models';
 import { logger } from './tools/logger';
 
 type Callback = (err: any, data: any) => void;
-type Set = {
-  lastRun: Date;
-  migrations: any[];
-  up: (arg: any) => void;
-};
-
 export class MongoDbStore {
   load = async (fn: Callback) => {
     await connect();
@@ -26,8 +20,8 @@ export class MongoDbStore {
     return fn(null, data);
   };
 
-  save = async (set: Set, fn: Callback) => {
-    const result = await MigrationModel.updateOne(
+  save = async (set: MigrationSet, fn: CallbackError) => {
+    await MigrationModel.updateOne(
       {},
       {
         $set: {
@@ -39,16 +33,16 @@ export class MongoDbStore {
       },
       { upsert: true },
     );
-    return fn(null, result);
+    return fn(null);
   };
 }
 
-migrate.load(
+load(
   {
     migrationsDirectory: path.join(__dirname, 'migrations'),
     stateStore: new MongoDbStore(),
   },
-  (err: any, set: Set) => {
+  (err: any, set: MigrationSet) => {
     logger.info('Starting migrations');
     if (err) {
       logger.error(`Error ${err}`);

@@ -1,16 +1,9 @@
-import { AsyncThunk, AsyncThunkPayloadCreator, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../..';
 import { api } from '../../../api';
 import { GlobalPreferences } from '../../../types';
+import { myAsyncThunk } from '../../tools';
 import { alertMessage } from '../message/reducer';
 
-const myAsyncThunk = <P, R>(
-  name: string,
-  payloadCreator: AsyncThunkPayloadCreator<R, P, { state: RootState }>,
-): AsyncThunk<R, P, { state: RootState }> =>
-  createAsyncThunk<R, P, { state: RootState }>(name, payloadCreator);
-
-export const getSettings = myAsyncThunk<void, GlobalPreferences | null>(
+export const getSettings = myAsyncThunk<GlobalPreferences | null, void>(
   '@settings/get',
   async (_, tapi) => {
     try {
@@ -29,7 +22,7 @@ export const getSettings = myAsyncThunk<void, GlobalPreferences | null>(
   },
 );
 
-export const changeRegistrations = myAsyncThunk<boolean, GlobalPreferences | null>(
+export const changeRegistrations = myAsyncThunk<GlobalPreferences | null, boolean>(
   '@settings/change-registrations',
   async (newStatus, tapi) => {
     try {

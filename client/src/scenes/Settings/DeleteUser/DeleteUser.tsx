@@ -1,15 +1,16 @@
 import { Button } from '@mui/material';
 import React, { useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Dialog from '../../../components/Dialog';
 import LoadingButton from '../../../components/LoadingButton';
 import { selectAccounts } from '../../../services/redux/modules/admin/selector';
 import { deleteUser } from '../../../services/redux/modules/admin/thunk';
+import { useAppDispatch } from '../../../services/redux/tools';
 import SettingLine from '../SettingLine';
 import s from './index.module.css';
 
 export default function DeleteUser() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const accounts = useSelector(selectAccounts);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);

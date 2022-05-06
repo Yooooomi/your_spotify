@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Link, useLocation } from 'react-router-dom';
 import { Paper, Popper } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Home,
@@ -28,6 +28,7 @@ import { getImage } from '../../../services/tools';
 import Text from '../../Text';
 import { alertMessage } from '../../../services/redux/modules/message/reducer';
 import { selectUser } from '../../../services/redux/modules/user/selector';
+import { useAppDispatch } from '../../../services/redux/tools';
 
 interface SiderProps {
   className?: string;
@@ -106,7 +107,7 @@ const links = [
 ];
 
 export default function Sider({ className }: SiderProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const user = useSelector(selectUser);
   const location = useLocation();
   const inputRef = useRef<HTMLInputElement | null>(null);

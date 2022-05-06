@@ -1,6 +1,6 @@
 import { Button, CircularProgress, Grid } from '@mui/material';
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import FullscreenCentered from '../../components/FullscreenCentered';
 import Header from '../../components/Header';
 import Text from '../../components/Text';
@@ -10,6 +10,7 @@ import { useAPI } from '../../services/hooks';
 import { selectSettings } from '../../services/redux/modules/settings/selector';
 import { changeRegistrations } from '../../services/redux/modules/settings/thunk';
 import { selectIsPublic, selectUser } from '../../services/redux/modules/user/selector';
+import { useAppDispatch } from '../../services/redux/tools';
 import { getSpotifyLogUrl } from '../../services/tools';
 import DarkModeSwitch from './DarkModeSwitch';
 import DeleteUser from './DeleteUser';
@@ -21,7 +22,7 @@ import SetAdmin from './SetAdmin';
 import SettingLine from './SettingLine';
 
 export default function Settings() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const settings = useSelector(selectSettings);
   const sme = useAPI(api.sme);
   const user = useSelector(selectUser);

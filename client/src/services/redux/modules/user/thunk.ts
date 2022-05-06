@@ -4,7 +4,7 @@ import { alertMessage } from '../message/reducer';
 import { selectIsPublic } from './selector';
 import { DarkModeType, User } from './types';
 
-export const checkLogged = myAsyncThunk<void, User | null>('@user/checklogged', async () => {
+export const checkLogged = myAsyncThunk<User | null, void>('@user/checklogged', async () => {
   try {
     const { data } = await api.me();
     return data.status ? data.user : null;
@@ -14,7 +14,7 @@ export const checkLogged = myAsyncThunk<void, User | null>('@user/checklogged', 
   return null;
 });
 
-export const changeUsername = myAsyncThunk<string, void>(
+export const changeUsername = myAsyncThunk<void, string>(
   '@user/change-username',
   async (newName, tapi) => {
     try {
@@ -38,7 +38,7 @@ export const changeUsername = myAsyncThunk<string, void>(
   },
 );
 
-export const generateNewPublicToken = myAsyncThunk<void, string>(
+export const generateNewPublicToken = myAsyncThunk<string, void>(
   '@user/generate-public-token',
   async (_, tapi) => {
     try {
@@ -57,7 +57,7 @@ export const generateNewPublicToken = myAsyncThunk<void, string>(
   },
 );
 
-export const setDarkMode = myAsyncThunk<DarkModeType, void>(
+export const setDarkMode = myAsyncThunk<void, DarkModeType>(
   '@user/set-dark-mode',
   async (payload, tapi) => {
     const isPublic = selectIsPublic(tapi.getState());

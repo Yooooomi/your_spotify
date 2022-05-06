@@ -7,7 +7,7 @@ import {
   MenuItem,
   Select,
 } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getImports } from '../../../services/redux/modules/import/thunk';
 import { selectImportStates } from '../../../services/redux/modules/import/selector';
 import ImportHistory from './ImportHistory';
@@ -16,6 +16,7 @@ import Privacy from './Privacy';
 import { ImporterStateTypes } from '../../../services/redux/modules/import/types';
 import FullPrivacy from './FullPrivacy';
 import Text from '../../../components/Text';
+import { useAppDispatch } from '../../../services/redux/tools';
 
 const ImportTypeToComponent: Record<ImporterStateTypes, any> = {
   privacy: Privacy,
@@ -23,7 +24,7 @@ const ImportTypeToComponent: Record<ImporterStateTypes, any> = {
 };
 
 export default function Importer() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const imports = useSelector(selectImportStates);
   const [importType, setImportType] = useState<ImporterStateTypes>(ImporterStateTypes.privacy);
 

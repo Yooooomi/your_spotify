@@ -36,12 +36,15 @@ export default function Message() {
   const message = useSelector(selectMessage);
   const [open, setOpen] = useState(false);
 
-  const onClose = useCallback((_, reason: SnackbarCloseReason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  }, []);
+  const onClose = useCallback(
+    (_: Event | React.SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setOpen(false);
+    },
+    [],
+  );
 
   useEffect(() => {
     setOpen(true);

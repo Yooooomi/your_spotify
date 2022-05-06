@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { queryToIntervalDetail } from '../../services/intervals';
 import { getAccounts } from '../../services/redux/modules/admin/thunk';
@@ -8,11 +8,12 @@ import { setDataInterval, setPublicToken } from '../../services/redux/modules/us
 import { selectPublicToken, selectUser } from '../../services/redux/modules/user/selector';
 import { checkLogged } from '../../services/redux/modules/user/thunk';
 import { intervalDetailToRedux } from '../../services/redux/modules/user/utils';
+import { useAppDispatch } from '../../services/redux/tools';
 
 const GLOBAL_PREFIX = 'g';
 
 export default function Wrapper() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const user = useSelector(selectUser);
   const publicToken = useSelector(selectPublicToken);
   const [query, setQuery] = useSearchParams();

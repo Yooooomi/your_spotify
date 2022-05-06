@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Button } from '@mui/material';
 import SettingLine from '../SettingLine';
 import { setAdmin } from '../../../services/redux/modules/admin/thunk';
 import { selectAccounts } from '../../../services/redux/modules/admin/selector';
+import { useAppDispatch } from '../../../services/redux/tools';
 
 export default function SetAdmin() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const accounts = useSelector(selectAccounts);
 
   const doAdmin = useCallback(

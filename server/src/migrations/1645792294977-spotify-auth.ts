@@ -2,10 +2,12 @@ import { getAllUsers, getFirstInfo, storeInUser } from '../database';
 import { UserModel } from '../database/Models';
 import { User } from '../database/schemas/user';
 import { logger } from '../tools/logger';
+import { startMigration } from '../tools/migrations';
 import { squeue } from '../tools/queue';
 import { deleteUser } from '../tools/user';
 
 export const up = async () => {
+  startMigration('switch to spotify login');
   let allUsers = await getAllUsers();
 
   // Delete users with no spotify access token

@@ -1,16 +1,9 @@
-import { AsyncThunk, AsyncThunkPayloadCreator, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../..';
 import { api } from '../../../api';
+import { myAsyncThunk } from '../../tools';
 import { alertMessage } from '../message/reducer';
 import { AdminAccount } from './reducer';
 
-const myAsyncThunk = <P, R>(
-  name: string,
-  payloadCreator: AsyncThunkPayloadCreator<R, P, { state: RootState }>,
-): AsyncThunk<R, P, { state: RootState }> =>
-  createAsyncThunk<R, P, { state: RootState }>(name, payloadCreator);
-
-export const getAccounts = myAsyncThunk<void, AdminAccount[]>(
+export const getAccounts = myAsyncThunk<AdminAccount[], void>(
   '@admin/getAccounts',
   async (_, tapi) => {
     try {
@@ -29,7 +22,7 @@ export const getAccounts = myAsyncThunk<void, AdminAccount[]>(
   },
 );
 
-export const setAdmin = myAsyncThunk<{ id: string; status: boolean }, void>(
+export const setAdmin = myAsyncThunk<void, { id: string; status: boolean }>(
   '@admin/setAdmin',
   async ({ id, status }, tapi) => {
     try {
@@ -47,7 +40,7 @@ export const setAdmin = myAsyncThunk<{ id: string; status: boolean }, void>(
   },
 );
 
-export const deleteUser = myAsyncThunk<{ id: string }, void>(
+export const deleteUser = myAsyncThunk<void, { id: string }>(
   '@admin/deleteUser',
   async ({ id }, tapi) => {
     try {

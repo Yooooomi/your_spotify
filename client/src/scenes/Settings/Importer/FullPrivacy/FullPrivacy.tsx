@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Button, CircularProgress } from '@mui/material';
-import { useDispatch } from 'react-redux';
 import { startImportFullPrivacy } from '../../../../services/redux/modules/import/thunk';
 import s from './index.module.css';
 import Text from '../../../../components/Text';
+import { useAppDispatch } from '../../../../services/redux/tools';
 
 export default function FullPrivacy() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [files, setFiles] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
 

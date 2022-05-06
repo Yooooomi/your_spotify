@@ -1,16 +1,17 @@
 import { Button } from '@mui/material';
 import { useCallback } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Text from '../../../components/Text';
 import { alertMessage } from '../../../services/redux/modules/message/reducer';
 import { selectUser } from '../../../services/redux/modules/user/selector';
 import { generateNewPublicToken } from '../../../services/redux/modules/user/thunk';
+import { useAppDispatch } from '../../../services/redux/tools';
 import SettingLine from '../SettingLine';
 import s from './index.module.css';
 
 export default function PublicToken() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const user = useSelector(selectUser);
   const location = window.location.origin;
 
