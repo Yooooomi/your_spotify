@@ -83,6 +83,7 @@ const cleanDateFromPrecision = (date: Date, precision: Precision) => {
     return d;
   }
   if (precision === Precision.month) {
+    d.setDate(1);
     return d;
   }
   if (precision === Precision.week) {
