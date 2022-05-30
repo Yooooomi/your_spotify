@@ -13,6 +13,7 @@ export const repairDatabase = async () => {
   const user = await getAdminUser();
   if (!user) {
     logger.warn('No user is admin, cannot auto fix database');
+    longWriteDbLock.unlock();
     return;
   }
   const allTracks = await getTracksWithoutAlbum();

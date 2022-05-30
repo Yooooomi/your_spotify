@@ -5,7 +5,7 @@ import { queryToIntervalDetail } from '../../services/intervals';
 import { getAccounts } from '../../services/redux/modules/admin/thunk';
 import { getSettings } from '../../services/redux/modules/settings/thunk';
 import { setDataInterval, setPublicToken } from '../../services/redux/modules/user/reducer';
-import { selectPublicToken } from '../../services/redux/modules/user/selector';
+import { selectPublicToken, selectUser } from '../../services/redux/modules/user/selector';
 import { checkLogged } from '../../services/redux/modules/user/thunk';
 import { intervalDetailToRedux } from '../../services/redux/modules/user/utils';
 import { useAppDispatch } from '../../services/redux/tools';
@@ -14,6 +14,7 @@ const GLOBAL_PREFIX = 'g';
 
 export default function Wrapper() {
   const dispatch = useAppDispatch();
+  const user = useSelector(selectUser);
   const publicToken = useSelector(selectPublicToken);
   const [query, setQuery] = useSearchParams();
 
@@ -39,12 +40,20 @@ export default function Wrapper() {
       await dispatch(setPublicToken(urlToken));
       await dispatch(checkLogged());
       await dispatch(getSettings());
-      await dispatch(getAccounts());
     }
     if (!publicToken) {
-      init();
+      init().catch(console.error);
     }
   }, [dispatch, publicToken, urlToken]);
+
+  useEffect(() => {
+    async function init() {
+      await dispatch(getAccounts());
+    }
+    if (user) {
+      init().catch(console.error);
+    }
+  }, [dispatch, user]);
 
   return null;
 }

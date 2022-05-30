@@ -1,10 +1,17 @@
 /* eslint-disable no-await-in-loop */
-import { storeInUser, addTrackIdsToUser, getUsersNb, getUsers, getCloseTrackId } from '../database';
+import {
+  storeInUser,
+  addTrackIdsToUser,
+  getUsersNb,
+  getUsers,
+  getCloseTrackId,
+  storeFirstListenedAtIfLess,
+} from '../database';
 import { RecentlyPlayedTrack } from '../database/schemas/track';
 import { User } from '../database/schemas/user';
 import { longWriteDbLock } from '../tools/lock';
 import { logger } from '../tools/logger';
-import { retryPromise, wait } from '../tools/misc';
+import { minOfArray, retryPromise, wait } from '../tools/misc';
 import { squeue } from '../tools/queue';
 import { saveMusics } from './dbTools';
 
@@ -55,9 +62,14 @@ const loop = async (user: User) => {
             });
           }
         }
+        const min = minOfArray(infos, (item) => item.played_at.getTime());
         await addTrackIdsToUser(user._id.toString(), infos);
+        if (min) {
+          await storeFirstListenedAtIfLess(user._id.toString(), infos[min.minIndex].played_at);
+        }
       } catch (e) {
-        logger.info(e.response.data);
+        logger.info(e);
+        logger.info(e?.response?.data);
       }
     } else {
       logger.info('User has no new music');
@@ -73,6 +85,8 @@ const reflect = (p: Promise<any>) =>
     (e: any) => ({ failed: true, error: e }),
   );
 
+const WAIT_SECONDS = 120;
+
 export const dbLoop = async () => {
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -82,7 +96,7 @@ export const dbLoop = async () => {
 
     if (nbUsers === 0) {
       // To prevent loop going crazy if there are no registered users
-      await wait(120 * 1000);
+      await wait(WAIT_SECONDS * 1000);
       continue;
     }
 
@@ -96,7 +110,7 @@ export const dbLoop = async () => {
 
       results.filter((e) => e.failed).forEach((e) => logger.error(e.error));
 
-      await wait(120 * 1000);
+      await wait(WAIT_SECONDS * 1000);
     }
   }
 };

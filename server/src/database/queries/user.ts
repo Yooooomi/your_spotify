@@ -46,6 +46,16 @@ export const createUser = (username: string, spotifyId: string, admin: boolean) 
 export const storeInUser = <F extends keyof User>(field: F, value: User[F], infos: Partial<User>) =>
   UserModel.findOneAndUpdate({ [field]: value }, infos, { new: true });
 
+export const storeFirstListenedAtIfLess = async (userId: string, playedAt: Date) => {
+  const id = new Types.ObjectId(userId);
+  const user = await getUserFromField('_id', id);
+  if (user && (!user.firstListenedAt || playedAt.getTime() < user.firstListenedAt.getTime())) {
+    await storeInUser('_id', id, {
+      firstListenedAt: playedAt,
+    });
+  }
+};
+
 export const changeSetting = <F extends keyof User>(
   field: F,
   value: User[F],

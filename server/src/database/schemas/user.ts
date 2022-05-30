@@ -21,7 +21,7 @@ export interface User {
   };
   lastImport: string | null;
   publicToken: string | null;
-  firstListenedAt: Date;
+  firstListenedAt?: Date;
 }
 
 export const UserSchema = new Schema<User>(

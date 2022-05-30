@@ -7,7 +7,7 @@
     "start:watch": "nodemon lib/bin/www",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"yarn build:watch\" \"yarn start:watch\"",
+    "dev": "nodemon src/bin/www.ts",
     "migrate": "node ./lib/migrations.js",
     "lint": "eslint ."
   },
@@ -46,6 +46,7 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.5.1",
+    "ts-node": "^10.8.0",
     "typescript": "4.6.4"
   }
 }
