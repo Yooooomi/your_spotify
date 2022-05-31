@@ -210,8 +210,10 @@ export const deleteAllOrphanTracks = async () => {
   return { tracksToDelete, albumsToDelete, artistsToDelete };
 };
 
-export const getFirstInfo = (userId: string) =>
-  InfosModel.find({ owner: userId }).sort({ played_at: 'asc' }).limit(1);
+export const getFirstInfo = async (userId: string) => {
+  const infos = await InfosModel.find({ owner: userId }).sort({ played_at: 'asc' }).limit(1);
+  return infos[0];
+};
 
 export const setUserAdmin = (userId: string, admin: boolean) =>
   UserModel.findByIdAndUpdate(userId, { admin });

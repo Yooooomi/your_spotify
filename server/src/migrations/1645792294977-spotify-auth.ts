@@ -64,7 +64,7 @@ export const up = async () => {
     let min = new Date(3000, 1, 1).getTime();
     let chosen = 0;
     for (let i = 0; i < firsts.length; i += 1) {
-      const first = firsts[i][0];
+      const first = firsts[i];
       if (first) {
         const ms = first.played_at.getTime();
         if (ms < min) {
