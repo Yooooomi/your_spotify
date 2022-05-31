@@ -78,3 +78,34 @@ export const setDarkMode = myAsyncThunk<void, DarkModeType>(
     }
   },
 );
+
+export const playTrack = myAsyncThunk<void, string>('@user/play-track', async (payload, tapi) => {
+  try {
+    await api.play(payload);
+  } catch (e: any) {
+    const reason = e?.response?.data?.reason;
+    if (reason === 'NO_ACTIVE_DEVICE') {
+      tapi.dispatch(
+        alertMessage({
+          level: 'info',
+          message: 'Could not play the song, no active player detected',
+        }),
+      );
+    } else if (reason === 'PREMIUM_REQUIRED') {
+      tapi.dispatch(
+        alertMessage({
+          level: 'error',
+          message: 'You cannot play song from the platform without a premium account',
+        }),
+      );
+    } else {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: 'error',
+          message: 'Could not play song',
+        }),
+      );
+    }
+  }
+});
