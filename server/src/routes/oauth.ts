@@ -44,8 +44,8 @@ router.get('/spotify/me', logged, withHttpClient, async (req, res) => {
   const { client } = req as SpotifyRequest;
 
   try {
-    const { data } = await client.get('/me');
-    return res.status(200).send(data);
+    const me = await client.me();
+    return res.status(200).send(me);
   } catch (e) {
     logger.error(e);
     return res.status(500).send({ code: 'SPOTIFY_ERROR' });

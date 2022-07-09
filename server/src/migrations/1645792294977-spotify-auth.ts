@@ -3,7 +3,7 @@ import { UserModel } from '../database/Models';
 import { User } from '../database/schemas/user';
 import { logger } from '../tools/logger';
 import { startMigration } from '../tools/migrations';
-import { squeue } from '../tools/queue';
+import { SpotifyAPI } from '../tools/spotifyApi';
 import { deleteUser } from '../tools/user';
 
 export const up = async () => {
@@ -21,9 +21,10 @@ export const up = async () => {
   // If an account is incorrect, just exit the migration
   await Promise.all(
     allUsers.map(async (us) => {
+      const spotifyApi = new SpotifyAPI(us._id.toString());
       try {
-        const res = await squeue.queue((client) => client.get('/me'), us._id.toString());
-        us.spotifyId = res.data.id;
+        const res = await spotifyApi.me();
+        us.spotifyId = res.id;
         await storeInUser('_id', us._id, { spotifyId: us.spotifyId });
       } catch (e) {
         logger.error(

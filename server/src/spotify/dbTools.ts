@@ -4,7 +4,7 @@ import { SpotifyArtist, Artist } from '../database/schemas/artist';
 import { SpotifyTrack, Track } from '../database/schemas/track';
 import { logger } from '../tools/logger';
 import { retryPromise } from '../tools/misc';
-import { squeue } from '../tools/queue';
+import { SpotifyAPI } from '../tools/spotifyApi';
 
 const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist>(
   userId: string,
@@ -21,15 +21,13 @@ const getIdsHandlingMax = async <T extends SpotifyTrack | SpotifyAlbum | Spotify
   }
   const datas = [];
 
+  const spotifyApi = new SpotifyAPI(userId);
+
   // Voluntarily waiting in loop to prevent requests limit
   for (let i = 0; i < idsArray.length; i += 1) {
     const builtUrl = `${url}?ids=${idsArray[i].join(',')}`;
     // eslint-disable-next-line no-await-in-loop
-    const { data } = await retryPromise(
-      () => squeue.queue((client) => client.get(builtUrl), userId),
-      10,
-      30,
-    );
+    const { data } = await retryPromise(() => spotifyApi.raw(builtUrl), 10, 30);
     datas.push(...data[arrayPath]);
   }
   return datas as T[];

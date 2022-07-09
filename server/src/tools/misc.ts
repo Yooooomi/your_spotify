@@ -256,7 +256,7 @@ export const retryPromise = async <T>(
     } catch (e) {
       logger.error(`Retrying crashed promise, ${i + 1}/${max}`, e);
       // eslint-disable-next-line no-await-in-loop
-      await wait(time);
+      await wait(time * 1000);
     }
   }
   // Cannot happen
@@ -264,7 +264,7 @@ export const retryPromise = async <T>(
 };
 
 export const minOfArray = <T>(array: T[], fn: (item: T) => number) => {
-  if (minOfArray.length === 0) {
+  if (array.length === 0) {
     return null;
   }
 

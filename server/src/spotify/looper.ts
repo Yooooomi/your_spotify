@@ -12,7 +12,7 @@ import { User } from '../database/schemas/user';
 import { longWriteDbLock } from '../tools/lock';
 import { logger } from '../tools/logger';
 import { minOfArray, retryPromise, wait } from '../tools/misc';
-import { squeue } from '../tools/queue';
+import { SpotifyAPI } from '../tools/spotifyApi';
 import { saveMusics } from './dbTools';
 
 const loop = async (user: User) => {
@@ -24,16 +24,16 @@ const loop = async (user: User) => {
   }
 
   const url = `/me/player/recently-played?after=${user.lastTimestamp - 1000 * 60 * 60 * 2}`;
+  const spotifyApi = new SpotifyAPI(user._id.toString());
 
   try {
     const items: RecentlyPlayedTrack[] = [];
     let nextUrl = url;
 
     do {
-      const userId = user._id.toString();
       const response = await retryPromise(
         // eslint-disable-next-line @typescript-eslint/no-loop-func
-        () => squeue.queue((client) => client.get(nextUrl), userId),
+        () => spotifyApi.raw(nextUrl),
         10,
         30,
       );

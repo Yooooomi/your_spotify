@@ -46,9 +46,7 @@ router.post('/play', validating(playSchema), logged, withHttpClient, async (req,
     const track = await getTrackBySpotifyId(id);
 
     if (!track) return res.status(400).end();
-    await client.put('https://api.spotify.com/v1/me/player/play', {
-      uris: [track.uri],
-    });
+    await client.playTrack(track.uri);
     return res.status(200).end();
   } catch (e) {
     if (e.response) {

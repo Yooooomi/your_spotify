@@ -4,12 +4,12 @@ import { readFile, unlink } from 'fs/promises';
 import { z } from 'zod';
 import { addTrackIdsToUser, getCloseTrackId, storeFirstListenedAtIfLess } from '../../database';
 import { setImporterStateCurrent } from '../../database/queries/importer';
-import { RecentlyPlayedTrack, SpotifyTrack } from '../../database/schemas/track';
+import { RecentlyPlayedTrack } from '../../database/schemas/track';
 import { User } from '../../database/schemas/user';
 import { saveMusics } from '../../spotify/dbTools';
 import { logger } from '../logger';
 import { minOfArray, retryPromise } from '../misc';
-import { squeue } from '../queue';
+import { SpotifyAPI } from '../spotifyApi';
 import { Unpack } from '../types';
 import { getFromCacheString, setToCacheString } from './cache';
 import { FullPrivacyImporterState, HistoryImporter, ImporterStateTypes } from './types';
@@ -51,22 +51,21 @@ export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.f
 
   private currentItem: number;
 
+  private spotifyApi: SpotifyAPI;
+
   constructor(user: User) {
     this.id = '';
     this.userId = user._id.toString();
     this.elements = null;
     this.currentItem = 0;
+    this.spotifyApi = new SpotifyAPI(this.userId);
   }
 
   static idFromSpotifyURI = (uri: string) => uri.split(':')[2];
 
-  static search = async (userId: string, spotifyIds: string[]) => {
-    const res = await retryPromise(
-      () => squeue.queue((client) => client.get(`/tracks?ids=${spotifyIds.join(',')}`), userId),
-      10,
-      30,
-    );
-    return res.data.tracks as SpotifyTrack[];
+  search = async (spotifyIds: string[]) => {
+    const res = await retryPromise(() => this.spotifyApi.getTracksFromIds(spotifyIds), 10, 30);
+    return res;
   };
 
   storeItems = async (userId: string, items: RecentlyPlayedTrack[]) => {
@@ -145,7 +144,7 @@ export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.f
     if (ids.length < 45 && !force) {
       return idsToSearch;
     }
-    const searchedItems = await FullPrivacyImporter.search(this.userId, ids);
+    const searchedItems = await this.search(ids);
     searchedItems.forEach((searchedItem) => {
       const playedAt = idsToSearch[searchedItem.id];
       if (!playedAt) {

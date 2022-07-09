@@ -3,12 +3,12 @@ import { readFile, unlink } from 'fs/promises';
 import { z } from 'zod';
 import { addTrackIdsToUser, getCloseTrackId, storeFirstListenedAtIfLess } from '../../database';
 import { setImporterStateCurrent } from '../../database/queries/importer';
-import { RecentlyPlayedTrack, SpotifyTrack } from '../../database/schemas/track';
+import { RecentlyPlayedTrack } from '../../database/schemas/track';
 import { User } from '../../database/schemas/user';
 import { saveMusics } from '../../spotify/dbTools';
 import { logger } from '../logger';
 import { beforeParenthesis, minOfArray, removeDiacritics, retryPromise } from '../misc';
-import { squeue } from '../queue';
+import { SpotifyAPI } from '../spotifyApi';
 import { Unpack } from '../types';
 import { getFromCache, setToCache } from './cache';
 import { HistoryImporter, ImporterStateTypes, PrivacyImporterState } from './types';
@@ -33,29 +33,19 @@ export class PrivacyImporter implements HistoryImporter<ImporterStateTypes.priva
 
   private currentItem: number;
 
+  private spotifyApi: SpotifyAPI;
+
   constructor(user: User) {
     this.id = '';
     this.userId = user._id.toString();
     this.elements = null;
     this.currentItem = 0;
+    this.spotifyApi = new SpotifyAPI(this.userId);
   }
 
-  static search = async (userId: string, track: string, artist: string) => {
-    const res = await retryPromise(
-      () =>
-        squeue.queue(
-          (client) =>
-            client.get(
-              `/search?q=track:${encodeURIComponent(track)}+artist:${encodeURIComponent(
-                artist,
-              )}&type=track&limit=10`,
-            ),
-          userId,
-        ),
-      10,
-      30,
-    );
-    return res.data.tracks.items[0] as SpotifyTrack;
+  search = async (track: string, artist: string) => {
+    const res = await retryPromise(() => this.spotifyApi.search(track, artist), 10, 30);
+    return res;
   };
 
   storeItems = async (userId: string, items: RecentlyPlayedTrack[]) => {
@@ -145,15 +135,13 @@ export class PrivacyImporter implements HistoryImporter<ImporterStateTypes.priva
       }
       let item = getFromCache(this.userId.toString(), content.trackName, content.artistName);
       if (!item) {
-        item = await PrivacyImporter.search(
-          this.userId,
+        item = await this.search(
           removeDiacritics(content.trackName),
           removeDiacritics(content.artistName),
         );
       }
       if (!item) {
-        item = await PrivacyImporter.search(
-          this.userId,
+        item = await this.search(
           removeDiacritics(beforeParenthesis(content.trackName)),
           removeDiacritics(beforeParenthesis(content.artistName)),
         );

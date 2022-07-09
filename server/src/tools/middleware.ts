@@ -2,9 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { AnyZodObject, z } from 'zod';
 import { verify } from 'jsonwebtoken';
 import { Types } from 'mongoose';
-import { getUserFromField, storeInUser, getGlobalPreferences } from '../database';
+import { getUserFromField, getGlobalPreferences } from '../database';
 import { logger } from './logger';
-import { Spotify } from './oauth/Provider';
 import {
   GlobalPreferencesRequest,
   LoggedRequest,
@@ -12,6 +11,7 @@ import {
   SpotifyRequest,
 } from './types';
 import { getUserImporterState } from '../database/queries/importer';
+import { SpotifyAPI } from './spotifyApi';
 
 type Location = 'body' | 'params' | 'query';
 
@@ -103,33 +103,7 @@ export const admin = (req: Request, res: Response, next: NextFunction) => {
 export const withHttpClient = async (req: Request, res: Response, next: NextFunction) => {
   const { user } = req as LoggedRequest;
 
-  let tokens = {
-    accessToken: user.accessToken,
-    expiresIn: user.expiresIn,
-  };
-
-  if (Date.now() > user.expiresIn - 1000 * 120) {
-    try {
-      if (!user.refreshToken) {
-        return;
-      }
-      const newTokens = await Spotify.refresh(user.refreshToken);
-      await storeInUser('_id', user._id, newTokens);
-      tokens = newTokens;
-    } catch (e) {
-      if (e.response) {
-        logger.error(e.response.data);
-      } else {
-        logger.error(e);
-      }
-      return res.status(400).end();
-    }
-  }
-  if (!tokens.accessToken) {
-    logger.error(`There was an error with account ${user.username}`);
-    return next();
-  }
-  const client = Spotify.getHttpClient(tokens.accessToken);
+  const client = new SpotifyAPI(user._id.toString());
   (req as SpotifyRequest & LoggedRequest).client = client;
   return next();
 };
