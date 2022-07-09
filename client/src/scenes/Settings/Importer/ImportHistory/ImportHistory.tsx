@@ -5,7 +5,10 @@ import { dateToListenedAt } from '../../../../services/stats';
 import SettingLine from '../../SettingLine';
 import { selectImportStates } from '../../../../services/redux/modules/import/selector';
 import s from './index.module.css';
-import { cleanupImport, startImportPrivacy } from '../../../../services/redux/modules/import/thunk';
+import {
+  cleanupImport,
+  startImportPrivacy,
+} from '../../../../services/redux/modules/import/thunk';
 import ThreePoints from '../../../../components/ThreePoints';
 import { compact } from '../../../../services/tools';
 import { ImporterStateStatus } from '../../../../services/redux/modules/import/types';
@@ -44,13 +47,16 @@ export default function ImportHistory() {
   return (
     <div className={s.importhistory}>
       <Text element="h3">Import history</Text>
-      {imports.map((st) => (
+      {imports.map(st => (
         <SettingLine
           key={st._id}
           left={
             <Text>
               Import of {dateToListenedAt(new Date(st.createdAt))}
-              <Text className={s.importertype}>from {st.type}</Text>
+              <Text className={s.importertype}>
+                from
+                {st.type}
+              </Text>
             </Text>
           }
           right={

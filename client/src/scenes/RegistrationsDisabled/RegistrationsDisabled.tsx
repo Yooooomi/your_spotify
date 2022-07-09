@@ -7,8 +7,8 @@ export default function RegistrationsDisabled() {
     <div className={s.root}>
       <Text element="h1">Registrations are disabled</Text>
       <Text className={s.explain}>
-        Cannot register any new account for the moment. Any admin account on this installation can
-        enable the registrations back.
+        Cannot register any new account for the moment. Any admin account on
+        this installation can enable the registrations back.
       </Text>
     </div>
   );

@@ -9,7 +9,10 @@ import { api } from '../../services/api';
 import { useAPI } from '../../services/hooks';
 import { selectSettings } from '../../services/redux/modules/settings/selector';
 import { changeRegistrations } from '../../services/redux/modules/settings/thunk';
-import { selectIsPublic, selectUser } from '../../services/redux/modules/user/selector';
+import {
+  selectIsPublic,
+  selectUser,
+} from '../../services/redux/modules/user/selector';
 import { useAppDispatch } from '../../services/redux/tools';
 import { getSpotifyLogUrl } from '../../services/tools';
 import DarkModeSwitch from './DarkModeSwitch';
@@ -83,14 +86,22 @@ export default function Settings() {
               <Grid item xs={12} md={12} lg={6}>
                 <TitleCard
                   title="Set admin status"
-                  right={<Text className={s.onlyadmin}>Only admins can see this</Text>}>
+                  right={
+                    <Text className={s.onlyadmin}>
+                      Only admins can see this
+                    </Text>
+                  }>
                   <SetAdmin />
                 </TitleCard>
               </Grid>
               <Grid item xs={12} md={12} lg={6}>
                 <TitleCard
                   title="Delete users"
-                  right={<Text className={s.onlyadmin}>Only admins can see this</Text>}>
+                  right={
+                    <Text className={s.onlyadmin}>
+                      Only admins can see this
+                    </Text>
+                  }>
                   <DeleteUser />
                 </TitleCard>
               </Grid>

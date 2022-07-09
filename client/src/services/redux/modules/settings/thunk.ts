@@ -14,7 +14,7 @@ export const getSettings = myAsyncThunk<GlobalPreferences | null, void>(
       tapi.dispatch(
         alertMessage({
           level: 'error',
-          message: `Could not retrieve global preferences`,
+          message: 'Could not retrieve global preferences',
         }),
       );
     }
@@ -22,29 +22,29 @@ export const getSettings = myAsyncThunk<GlobalPreferences | null, void>(
   },
 );
 
-export const changeRegistrations = myAsyncThunk<GlobalPreferences | null, boolean>(
-  '@settings/change-registrations',
-  async (newStatus, tapi) => {
-    try {
-      const result = await api.setGlobalPreferences({
-        allowRegistrations: newStatus,
-      });
-      tapi.dispatch(
-        alertMessage({
-          level: 'success',
-          message: `Updated registration status to ${newStatus}`,
-        }),
-      );
-      return result.data;
-    } catch (e) {
-      console.error(e);
-      tapi.dispatch(
-        alertMessage({
-          level: 'error',
-          message: `Could not update registration status to ${newStatus}`,
-        }),
-      );
-      throw e;
-    }
-  },
-);
+export const changeRegistrations = myAsyncThunk<
+  GlobalPreferences | null,
+  boolean
+>('@settings/change-registrations', async (newStatus, tapi) => {
+  try {
+    const result = await api.setGlobalPreferences({
+      allowRegistrations: newStatus,
+    });
+    tapi.dispatch(
+      alertMessage({
+        level: 'success',
+        message: `Updated registration status to ${newStatus}`,
+      }),
+    );
+    return result.data;
+  } catch (e) {
+    console.error(e);
+    tapi.dispatch(
+      alertMessage({
+        level: 'error',
+        message: `Could not update registration status to ${newStatus}`,
+      }),
+    );
+    throw e;
+  }
+});

@@ -1,5 +1,12 @@
 import React, { useMemo } from 'react';
-import { BarChart, XAxis, Bar as RBar, Tooltip, YAxis, ResponsiveContainer } from 'recharts';
+import {
+  BarChart,
+  XAxis,
+  Bar as RBar,
+  Tooltip,
+  YAxis,
+  ResponsiveContainer,
+} from 'recharts';
 
 interface BarProps {
   data: {
@@ -9,7 +16,9 @@ interface BarProps {
   customXTick?: React.ComponentProps<typeof XAxis>['tick'];
   xFormat?: React.ComponentProps<typeof XAxis>['tickFormatter'];
   yFormat?: React.ComponentProps<typeof YAxis>['tickFormatter'];
-  tooltipLabelFormatter?: React.ComponentProps<typeof Tooltip>['labelFormatter'];
+  tooltipLabelFormatter?: React.ComponentProps<
+    typeof Tooltip
+  >['labelFormatter'];
   tooltipValueFormatter?: React.ComponentProps<typeof Tooltip>['formatter'];
 }
 

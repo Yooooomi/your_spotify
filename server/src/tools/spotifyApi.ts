@@ -82,9 +82,9 @@ export class SpotifyAPI {
       const res = await squeue.queue(async () => {
         await this.checkToken();
         return this.client.get(
-          `/search?q=track:${encodeURIComponent(track)}+artist:${encodeURIComponent(
-            artist,
-          )}&type=track&limit=10`,
+          `/search?q=track:${encodeURIComponent(
+            track,
+          )}+artist:${encodeURIComponent(artist)}&type=track&limit=10`,
         );
       });
       return res.data.tracks.items[0] as SpotifyTrack;

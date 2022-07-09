@@ -32,7 +32,7 @@ class Lock {
   };
 
   lock = () =>
-    new Promise<void>((res) => {
+    new Promise<void>(res => {
       this.lockQueue.push({ res });
       this.check();
     });

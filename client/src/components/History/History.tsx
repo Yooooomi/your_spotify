@@ -21,7 +21,12 @@ export default function History() {
     if (!hasMore) return;
     let result: UnboxPromise<ReturnType<typeof api.getTracks>>;
     if (followInterval) {
-      result = await api.getTracks(10, items.length, interval.start, interval.end);
+      result = await api.getTracks(
+        10,
+        items.length,
+        interval.start,
+        interval.end,
+      );
     } else {
       result = await api.getTracks(10, items.length);
     }
@@ -60,13 +65,20 @@ export default function History() {
       title="Your history"
       right={
         <div className={s.followinterval}>
-          <Checkbox checked={followInterval} onChange={handleSetFollowInterval} />
+          <Checkbox
+            checked={followInterval}
+            onChange={handleSetFollowInterval}
+          />
           <Text>Follow interval</Text>
         </div>
       }>
       <Track line playable />
-      <InfiniteScroll dataLength={items.length} next={fetch} hasMore={hasMore} loader={<Loader />}>
-        {items.map((item) => (
+      <InfiniteScroll
+        dataLength={items.length}
+        next={fetch}
+        hasMore={hasMore}
+        loader={<Loader />}>
+        {items.map(item => (
           <Track
             playable
             key={item.played_at}

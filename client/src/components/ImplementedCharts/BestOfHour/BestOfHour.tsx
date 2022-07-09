@@ -27,17 +27,19 @@ const elementToCall = {
 } as const;
 
 function getElementName(
-  result: UnboxPromise<ReturnType<typeof elementToCall[Element]>>['data'][number],
+  result: UnboxPromise<
+    ReturnType<typeof elementToCall[Element]>
+  >['data'][number],
   id: string,
 ) {
   if ('tracks' in result) {
-    return result.tracks.find((t) => t.track.id === id)?.track.name;
+    return result.tracks.find(t => t.track.id === id)?.track.name;
   }
   if ('albums' in result) {
-    return result.albums.find((t) => t.album.id === id)?.album.name;
+    return result.albums.find(t => t.album.id === id)?.album.name;
   }
   if ('artists' in result) {
-    return result.artists.find((t) => t.artist.id === id)?.artist.name;
+    return result.artists.find(t => t.artist.id === id)?.artist.name;
   }
   return '';
 }
@@ -46,7 +48,7 @@ function getElementData(
   result: UnboxPromise<ReturnType<typeof elementToCall[Element]>>['data'],
   index: number,
 ) {
-  const foundIndex = result.findIndex((r) => r._id === index);
+  const foundIndex = result.findIndex(r => r._id === index);
   if (foundIndex === -1) {
     return { x: index };
   }
@@ -100,19 +102,19 @@ export default function BestOfHour({ className }: BestOfHourProps) {
     if (!result) {
       return [];
     }
-    return Array.from(Array(24).keys()).map((index) => getElementData(result, index));
+    return Array.from(Array(24).keys()).map(index =>
+      getElementData(result, index),
+    );
   }, [result]);
 
   const labelFormatter = useCallback(
-    (label: string) => {
-      return `20 most listened ${element} at ${label}:00`;
-    },
+    (label: string) => `20 most listened ${element} at ${label}:00`,
     [element],
   );
 
   const valueFormatter = useCallback(
     (value: number, elementId: string, { payload }: any) => {
-      const foundIndex = result?.findIndex((r) => r._id === payload.x);
+      const foundIndex = result?.findIndex(r => r._id === payload.x);
       if (result && foundIndex !== undefined && foundIndex !== -1) {
         const found = result[foundIndex];
         return [`${value}% of ${getElementName(found, elementId)}`];
@@ -124,7 +126,10 @@ export default function BestOfHour({ className }: BestOfHourProps) {
 
   if (!result) {
     return (
-      <LoadingImplementedChart title={`Best ${element} for hour of day`} className={className} />
+      <LoadingImplementedChart
+        title={`Best ${element} for hour of day`}
+        className={className}
+      />
     );
   }
 
@@ -134,9 +139,9 @@ export default function BestOfHour({ className }: BestOfHourProps) {
       right={
         <Select
           value={element}
-          onChange={(ev) => setElement(ev.target.value as Element)}
+          onChange={ev => setElement(ev.target.value as Element)}
           variant="standard">
-          {Object.values(Element).map((elem) => (
+          {Object.values(Element).map(elem => (
             <MenuItem key={elem} value={elem}>
               {elem}
             </MenuItem>

@@ -23,7 +23,7 @@ export default function SetAdmin() {
 
   return (
     <div>
-      {accounts.map((user) => (
+      {accounts.map(user => (
         <SettingLine
           key={user.id}
           left={user.username}

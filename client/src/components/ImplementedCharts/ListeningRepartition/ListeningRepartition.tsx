@@ -10,27 +10,26 @@ import { selectRawIntervalDetail } from '../../../services/redux/modules/user/se
 
 interface ListeningRepartitionProps extends ImplementedChartProps {}
 
-const formatXAxis = (value: any) => {
-  return `${value}:00`;
-};
+const formatXAxis = (value: any) => `${value}:00`;
 
-const formatYAxis = (value: any) => {
-  return `${value}%`;
-};
+const formatYAxis = (value: any) => `${value}%`;
 
-const formatXTooltip = (label: string) => {
-  return `${label}:00`;
-};
+const formatXTooltip = (label: string) => `${label}:00`;
 
-export default function ListeningRepartition({ className }: ListeningRepartitionProps) {
+export default function ListeningRepartition({
+  className,
+}: ListeningRepartitionProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
   const result = useAPI(api.timePerHourOfDay, interval.start, interval.end);
 
-  const total = useMemo(() => result?.reduce((acc, curr) => acc + curr.count, 0) ?? 0, [result]);
+  const total = useMemo(
+    () => result?.reduce((acc, curr) => acc + curr.count, 0) ?? 0,
+    [result],
+  );
   const data = useMemo(
     () =>
-      Array.from(Array(24).keys()).map((i) => {
-        const dataValue = result?.find((r) => r._id === i);
+      Array.from(Array(24).keys()).map(i => {
+        const dataValue = result?.find(r => r._id === i);
         if (!dataValue) {
           return {
             x: i,
@@ -48,21 +47,22 @@ export default function ListeningRepartition({ className }: ListeningRepartition
   );
 
   const formatYTooltip = useCallback(
-    (a: any, b: any, c: any) => {
-      return (
-        <div>
-          {`${a}% of your daily listening`}
-          <br />
-          {`${c.payload.count} out of ${total} songs`}
-        </div>
-      );
-    },
+    (a: any, b: any, c: any) => (
+      <div>
+        {`${a}% of your daily listening`}
+        <br />
+        {`${c.payload.count} out of ${total} songs`}
+      </div>
+    ),
     [total],
   );
 
   if (!result) {
     return (
-      <LoadingImplementedChart className={className} title="Listening distribution over day" />
+      <LoadingImplementedChart
+        className={className}
+        title="Listening distribution over day"
+      />
     );
   }
 

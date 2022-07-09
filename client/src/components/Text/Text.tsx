@@ -9,7 +9,12 @@ interface TextProps {
   onDark?: boolean;
 }
 
-export default function Text({ className, children, element, onDark }: TextProps) {
+export default function Text({
+  className,
+  children,
+  element,
+  onDark,
+}: TextProps) {
   return React.createElement(
     element ?? 'span',
     {

@@ -3,4 +3,7 @@ import { RootState } from '../..';
 
 const selectAdminState = (state: RootState) => state.admin;
 
-export const selectAccounts = createSelector(selectAdminState, (state) => state.accounts);
+export const selectAccounts = createSelector(
+  selectAdminState,
+  state => state.accounts,
+);

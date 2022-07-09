@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
-import { Payload, NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import {
+  Payload,
+  NameType,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent';
 import { DateWithPrecision } from './stats';
 import Text from '../components/Text';
 
@@ -10,19 +14,24 @@ export const useRawTooltipLabelFormatter = <
   forEveryEntry = true,
 ) => {
   const fn = useCallback(
-    <T extends NameType, V extends ValueType>(label: string, payload?: Payload<V, T>[]) => {
+    <T extends NameType, V extends ValueType>(
+      label: string,
+      payload?: Payload<V, T>[],
+    ) => {
       if (!payload) {
         return null;
       }
       if (tooltipLabelFormatter) {
         if (forEveryEntry) {
-          return payload?.map((p) => tooltipLabelFormatter(label, p.payload));
+          return payload?.map(p => tooltipLabelFormatter(label, p.payload));
         }
         const p = payload[0];
         if (!p) {
           return <Text element="span">{label}</Text>;
         }
-        return <Text element="span">{tooltipLabelFormatter(label, p.payload)}</Text>;
+        return (
+          <Text element="span">{tooltipLabelFormatter(label, p.payload)}</Text>
+        );
       }
       return <Text element="span">{label}</Text>;
     },

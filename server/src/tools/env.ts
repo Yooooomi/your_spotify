@@ -26,7 +26,9 @@ export function getWithDefault<E extends EnvVariable>(
   return env[variable] ?? defaultValue;
 }
 
-export function get<E extends EnvVariable>(variable: E): z.infer<typeof validators[E]> {
+export function get<E extends EnvVariable>(
+  variable: E,
+): z.infer<typeof validators[E]> {
   return env[variable];
 }
 
@@ -38,7 +40,7 @@ Object.entries(validators).forEach(([key, value]) => {
   } catch (e) {
     logger.error(`${key} env variable is missing`);
     if (e instanceof z.ZodError) {
-      e.issues.forEach((issue) => {
+      e.issues.forEach(issue => {
         logger.error(`-> ${issue.message}`);
       });
     }

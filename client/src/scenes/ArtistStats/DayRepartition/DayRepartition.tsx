@@ -9,13 +9,22 @@ interface DayRepartitionProps {
   className?: string;
 }
 
-export default function DayRepartition({ stats, className }: DayRepartitionProps) {
-  const total = useMemo(() => stats.reduce((acc, curr) => acc + curr.count, 0), [stats]);
-  const totalDuration = useMemo(() => stats.reduce((acc, curr) => acc + curr.duration, 0), [stats]);
+export default function DayRepartition({
+  stats,
+  className,
+}: DayRepartitionProps) {
+  const total = useMemo(
+    () => stats.reduce((acc, curr) => acc + curr.count, 0),
+    [stats],
+  );
+  const totalDuration = useMemo(
+    () => stats.reduce((acc, curr) => acc + curr.duration, 0),
+    [stats],
+  );
   const data = useMemo(
     () =>
-      Array.from(Array(24).keys()).map((idx) => {
-        const stat = stats.find((st) => st._id === idx);
+      Array.from(Array(24).keys()).map(idx => {
+        const stat = stats.find(st => st._id === idx);
 
         return {
           x: idx,
@@ -35,7 +44,9 @@ export default function DayRepartition({ stats, className }: DayRepartitionProps
         <br />
         {`${b.payload.count} out of ${total} songs`}
         <br />
-        {`${msToMinutes(b.payload.duration ?? 0)} out of ${msToMinutes(totalDuration)} minutes`}
+        {`${msToMinutes(b.payload.duration ?? 0)} out of ${msToMinutes(
+          totalDuration,
+        )} minutes`}
         <br />
       </div>
     ),

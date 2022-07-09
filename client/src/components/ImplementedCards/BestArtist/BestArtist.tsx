@@ -24,7 +24,11 @@ export default function BestArtist({ className }: BestArtistProps) {
       <TitleCard title="Best artist" className={clsx(s.root, className)}>
         <div className={s.container}>
           <div className={s.imgcontainer}>
-            <Skeleton className={clsx(s.image, s.skeleton)} variant="rectangular" height="100%" />
+            <Skeleton
+              className={clsx(s.image, s.skeleton)}
+              variant="rectangular"
+              height="100%"
+            />
           </div>
           <div className={s.stats}>
             <Skeleton width="40%" />
@@ -48,7 +52,11 @@ export default function BestArtist({ className }: BestArtistProps) {
     <TitleCard title="Best artist" className={clsx(s.root, className)} fade>
       <div className={s.container}>
         <div className={s.imgcontainer}>
-          <img className={s.image} src={getImage(res?.artist)} alt="Your best artist" />
+          <img
+            className={s.image}
+            src={getImage(res?.artist)}
+            alt="Your best artist"
+          />
         </div>
         <div className={s.stats}>
           <Text element="strong">
@@ -60,10 +68,12 @@ export default function BestArtist({ className }: BestArtistProps) {
               <Text element="strong">{res?.count ?? 0}</Text> songs listened
             </Text>
             <Text className={s.stat}>
-              <Text element="strong">{msToMinutes(res?.duration_ms ?? 0)}</Text> minutes listened
+              <Text element="strong">{msToMinutes(res?.duration_ms ?? 0)}</Text>{' '}
+              minutes listened
             </Text>
             <Text className={s.stat}>
-              <Text element="strong">{res?.differents ?? 0}</Text> different songs
+              <Text element="strong">{res?.differents ?? 0}</Text> different
+              songs
             </Text>
           </div>
         </div>

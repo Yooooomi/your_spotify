@@ -11,8 +11,10 @@ export const createImporterState = <T extends ImporterStateTypes>(
   state: Omit<ImporterStateFromType<T>, '_id' | 'user'>,
 ) => ImporterStateModel.create({ user: userId, ...state });
 
-export const setImporterStateStatus = (id: string, status: ImporterStateStatus) =>
-  ImporterStateModel.findByIdAndUpdate(id, { status });
+export const setImporterStateStatus = (
+  id: string,
+  status: ImporterStateStatus,
+) => ImporterStateModel.findByIdAndUpdate(id, { status });
 
 export const getImporterState = <T extends ImporterStateTypes>(id: string) =>
   ImporterStateModel.findById<ImporterStateFromType<T>>(id);

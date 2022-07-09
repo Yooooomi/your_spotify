@@ -1,4 +1,8 @@
-export type ImporterStateStatus = 'progress' | 'success' | 'failure' | 'failure-removed';
+export type ImporterStateStatus =
+  | 'progress'
+  | 'success'
+  | 'failure'
+  | 'failure-removed';
 
 export enum ImporterStateTypes {
   privacy = 'privacy',

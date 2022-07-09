@@ -51,7 +51,10 @@ export default function IntervalSelector({
     color: '#000000',
   });
 
-  const existingInterval = useMemo(() => getAllIndexFromIntervalDetail(value), [value]);
+  const existingInterval = useMemo(
+    () => getAllIndexFromIntervalDetail(value),
+    [value],
+  );
 
   const internOnChange = useCallback(
     (index: number) => {
@@ -71,7 +74,7 @@ export default function IntervalSelector({
       <Select
         variant={selectType}
         value={existingInterval}
-        onChange={(ev) => internOnChange(ev.target.value as number)}>
+        onChange={ev => internOnChange(ev.target.value as number)}>
         {allIntervals.map((inter, index) => (
           <MenuItem key={inter.name} value={index}>
             {inter.name}
@@ -88,7 +91,7 @@ export default function IntervalSelector({
         <RadioGroup
           row
           value={existingInterval}
-          onChange={(ev) => internOnChange(ev.target.value as unknown as number)}
+          onChange={ev => internOnChange(ev.target.value as unknown as number)}
           name="interval radio group">
           {allIntervals.map((inter, index) => (
             <FormControlLabel
@@ -100,7 +103,9 @@ export default function IntervalSelector({
           ))}
         </RadioGroup>
         <IconButton size="small" onClick={() => setOpen(true)}>
-          <Settings style={{ color: existingInterval === -1 ? '#000000' : undefined }} />
+          <Settings
+            style={{ color: existingInterval === -1 ? '#000000' : undefined }}
+          />
         </IconButton>
       </div>
     );
@@ -137,10 +142,16 @@ export default function IntervalSelector({
   return (
     <>
       {content}
-      <Dialog title="Custom date range" open={open} onClose={() => setOpen(false)}>
+      <Dialog
+        title="Custom date range"
+        open={open}
+        onClose={() => setOpen(false)}>
         <div className={s.dialogcontent}>
           <div>
-            <DateRangePicker ranges={[customIntervalDate]} onChange={onCustomChange} />
+            <DateRangePicker
+              ranges={[customIntervalDate]}
+              onChange={onCustomChange}
+            />
           </div>
           <Button variant="contained" onClick={setCustom} disabled={!goodRange}>
             Apply

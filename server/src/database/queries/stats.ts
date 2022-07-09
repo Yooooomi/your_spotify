@@ -166,7 +166,12 @@ export const getSongsPer = async (
   return res;
 };
 
-export const getTimePer = async (user: User, start: Date, end: Date, timeSplit = Timesplit.day) => {
+export const getTimePer = async (
+  user: User,
+  start: Date,
+  end: Date,
+  timeSplit = Timesplit.day,
+) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
@@ -253,7 +258,12 @@ export const albumDateRatio = async (
   return res;
 };
 
-export const featRatio = async (user: User, start: Date, end: Date, timeSplit: Timesplit) => {
+export const featRatio = async (
+  user: User,
+  start: Date,
+  end: Date,
+  timeSplit: Timesplit,
+) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
@@ -713,7 +723,9 @@ export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
     {
       $group: {
         _id: '$_id',
-        tracks: { $push: { track: '$track', artist: '$artist', count: '$songs.count' } },
+        tracks: {
+          $push: { track: '$track', artist: '$artist', count: '$songs.count' },
+        },
         total: { $first: '$total' },
       },
     },
@@ -755,7 +767,9 @@ export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
     {
       $group: {
         _id: '$_id',
-        albums: { $push: { album: '$album', artist: '$artist', count: '$albums.count' } },
+        albums: {
+          $push: { album: '$album', artist: '$artist', count: '$albums.count' },
+        },
         total: { $first: '$total' },
       },
     },

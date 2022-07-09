@@ -1,7 +1,12 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 import { api } from '../../../api';
 import { presetIntervals } from '../../../intervals';
-import { changeUsername, checkLogged, generateNewPublicToken, setDarkMode } from './thunk';
+import {
+  changeUsername,
+  checkLogged,
+  generateNewPublicToken,
+  setDarkMode,
+} from './thunk';
 import { ReduxIntervalDetail, User } from './types';
 import { intervalDetailToRedux } from './utils';
 
@@ -20,11 +25,14 @@ const initialState: UserReducer = {
 };
 
 export const logout = createAction('@user/logout');
-export const setDataInterval = createAction<ReduxIntervalDetail>('@user/set-interval');
-export const setPublicToken = createAction<string | null>('@user/set-public-token');
+export const setDataInterval =
+  createAction<ReduxIntervalDetail>('@user/set-interval');
+export const setPublicToken = createAction<string | null>(
+  '@user/set-public-token',
+);
 
-export default createReducer(initialState, (builder) => {
-  builder.addCase(logout, (state) => {
+export default createReducer(initialState, builder => {
+  builder.addCase(logout, state => {
     state.user = null;
     state.publicToken = null;
     api.publicToken = null;

@@ -1,4 +1,8 @@
-import { AsyncThunkPayloadCreator, AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  AsyncThunkPayloadCreator,
+  AsyncThunk,
+  createAsyncThunk,
+} from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import store, { RootState } from '.';
 

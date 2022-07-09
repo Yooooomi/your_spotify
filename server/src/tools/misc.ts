@@ -1,6 +1,9 @@
 import { logger } from './logger';
 
-export const wait = (ms: number) => new Promise((s) => setTimeout(s, ms));
+export const wait = (ms: number) =>
+  new Promise(s => {
+    setTimeout(s, ms);
+  });
 
 const defaultDiacriticsRemovalMap = [
   {
@@ -14,10 +17,14 @@ const defaultDiacriticsRemovalMap = [
   { base: 'AU', letters: '\uA736' },
   { base: 'AV', letters: '\uA738\uA73A' },
   { base: 'AY', letters: '\uA73C' },
-  { base: 'B', letters: '\u0042\u24B7\uFF22\u1E02\u1E04\u1E06\u0243\u0182\u0181' },
+  {
+    base: 'B',
+    letters: '\u0042\u24B7\uFF22\u1E02\u1E04\u1E06\u0243\u0182\u0181',
+  },
   {
     base: 'C',
-    letters: '\u0043\u24B8\uFF23\u0106\u0108\u010A\u010C\u00C7\u1E08\u0187\u023B\uA73E',
+    letters:
+      '\u0043\u24B8\uFF23\u0106\u0108\u010A\u010C\u00C7\u1E08\u0187\u023B\uA73E',
   },
   {
     base: 'D',
@@ -39,7 +46,8 @@ const defaultDiacriticsRemovalMap = [
   },
   {
     base: 'H',
-    letters: '\u0048\u24BD\uFF28\u0124\u1E22\u1E26\u021E\u1E24\u1E28\u1E2A\u0126\u2C67\u2C75\uA78D',
+    letters:
+      '\u0048\u24BD\uFF28\u0124\u1E22\u1E26\u021E\u1E24\u1E28\u1E2A\u0126\u2C67\u2C75\uA78D',
   },
   {
     base: 'I',
@@ -49,7 +57,8 @@ const defaultDiacriticsRemovalMap = [
   { base: 'J', letters: '\u004A\u24BF\uFF2A\u0134\u0248' },
   {
     base: 'K',
-    letters: '\u004B\u24C0\uFF2B\u1E30\u01E8\u1E32\u0136\u1E34\u0198\u2C69\uA740\uA742\uA744\uA7A2',
+    letters:
+      '\u004B\u24C0\uFF2B\u1E30\u01E8\u1E32\u0136\u1E34\u0198\u2C69\uA740\uA742\uA744\uA7A2',
   },
   {
     base: 'L',
@@ -76,7 +85,10 @@ const defaultDiacriticsRemovalMap = [
   { base: 'OU', letters: '\u0222' },
   { base: 'OE', letters: '\u008C\u0152' },
   { base: 'oe', letters: '\u009C\u0153' },
-  { base: 'P', letters: '\u0050\u24C5\uFF30\u1E54\u1E56\u01A4\u2C63\uA750\uA752\uA754' },
+  {
+    base: 'P',
+    letters: '\u0050\u24C5\uFF30\u1E54\u1E56\u01A4\u2C63\uA750\uA752\uA754',
+  },
   { base: 'Q', letters: '\u0051\u24C6\uFF31\uA756\uA758\u024A' },
   {
     base: 'R',
@@ -101,7 +113,10 @@ const defaultDiacriticsRemovalMap = [
   },
   { base: 'V', letters: '\u0056\u24CB\uFF36\u1E7C\u1E7E\u01B2\uA75E\u0245' },
   { base: 'VY', letters: '\uA760' },
-  { base: 'W', letters: '\u0057\u24CC\uFF37\u1E80\u1E82\u0174\u1E86\u1E84\u1E88\u2C72' },
+  {
+    base: 'W',
+    letters: '\u0057\u24CC\uFF37\u1E80\u1E82\u0174\u1E86\u1E84\u1E88\u2C72',
+  },
   { base: 'X', letters: '\u0058\u24CD\uFF38\u1E8A\u1E8C' },
   {
     base: 'Y',
@@ -110,7 +125,8 @@ const defaultDiacriticsRemovalMap = [
   },
   {
     base: 'Z',
-    letters: '\u005A\u24CF\uFF3A\u0179\u1E90\u017B\u017D\u1E92\u1E94\u01B5\u0224\u2C7F\u2C6B\uA762',
+    letters:
+      '\u005A\u24CF\uFF3A\u0179\u1E90\u017B\u017D\u1E92\u1E94\u01B5\u0224\u2C7F\u2C6B\uA762',
   },
   {
     base: 'a',
@@ -123,14 +139,19 @@ const defaultDiacriticsRemovalMap = [
   { base: 'au', letters: '\uA737' },
   { base: 'av', letters: '\uA739\uA73B' },
   { base: 'ay', letters: '\uA73D' },
-  { base: 'b', letters: '\u0062\u24D1\uFF42\u1E03\u1E05\u1E07\u0180\u0183\u0253' },
+  {
+    base: 'b',
+    letters: '\u0062\u24D1\uFF42\u1E03\u1E05\u1E07\u0180\u0183\u0253',
+  },
   {
     base: 'c',
-    letters: '\u0063\u24D2\uFF43\u0107\u0109\u010B\u010D\u00E7\u1E09\u0188\u023C\uA73F\u2184',
+    letters:
+      '\u0063\u24D2\uFF43\u0107\u0109\u010B\u010D\u00E7\u1E09\u0188\u023C\uA73F\u2184',
   },
   {
     base: 'd',
-    letters: '\u0064\u24D3\uFF44\u1E0B\u010F\u1E0D\u1E11\u1E13\u1E0F\u0111\u018C\u0256\u0257\uA77A',
+    letters:
+      '\u0064\u24D3\uFF44\u1E0B\u010F\u1E0D\u1E11\u1E13\u1E0F\u0111\u018C\u0256\u0257\uA77A',
   },
   { base: 'dz', letters: '\u01F3\u01C6' },
   {
@@ -158,7 +179,8 @@ const defaultDiacriticsRemovalMap = [
   { base: 'j', letters: '\u006A\u24D9\uFF4A\u0135\u01F0\u0249' },
   {
     base: 'k',
-    letters: '\u006B\u24DA\uFF4B\u1E31\u01E9\u1E33\u0137\u1E35\u0199\u2C6A\uA741\uA743\uA745\uA7A3',
+    letters:
+      '\u006B\u24DA\uFF4B\u1E31\u01E9\u1E33\u0137\u1E35\u0199\u2C6A\uA741\uA743\uA745\uA7A3',
   },
   {
     base: 'l',
@@ -181,7 +203,10 @@ const defaultDiacriticsRemovalMap = [
   { base: 'oi', letters: '\u01A3' },
   { base: 'ou', letters: '\u0223' },
   { base: 'oo', letters: '\uA74F' },
-  { base: 'p', letters: '\u0070\u24DF\uFF50\u1E55\u1E57\u01A5\u1D7D\uA751\uA753\uA755' },
+  {
+    base: 'p',
+    letters: '\u0070\u24DF\uFF50\u1E55\u1E57\u01A5\u1D7D\uA751\uA753\uA755',
+  },
   { base: 'q', letters: '\u0071\u24E0\uFF51\u024B\uA757\uA759' },
   {
     base: 'r',
@@ -206,7 +231,11 @@ const defaultDiacriticsRemovalMap = [
   },
   { base: 'v', letters: '\u0076\u24E5\uFF56\u1E7D\u1E7F\u028B\uA75F\u028C' },
   { base: 'vy', letters: '\uA761' },
-  { base: 'w', letters: '\u0077\u24E6\uFF57\u1E81\u1E83\u0175\u1E87\u1E85\u1E98\u1E89\u2C73' },
+  {
+    base: 'w',
+    letters:
+      '\u0077\u24E6\uFF57\u1E81\u1E83\u0175\u1E87\u1E85\u1E98\u1E89\u2C73',
+  },
   { base: 'x', letters: '\u0078\u24E7\uFF58\u1E8B\u1E8D' },
   {
     base: 'y',
@@ -215,7 +244,8 @@ const defaultDiacriticsRemovalMap = [
   },
   {
     base: 'z',
-    letters: '\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763',
+    letters:
+      '\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763',
   },
 ];
 

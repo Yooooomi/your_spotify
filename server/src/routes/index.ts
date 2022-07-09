@@ -18,7 +18,11 @@ import {
   storeInUser,
 } from '../database';
 import { logger } from '../tools/logger';
-import { LoggedRequest, OptionalLoggedRequest, TypedPayload } from '../tools/types';
+import {
+  LoggedRequest,
+  OptionalLoggedRequest,
+  TypedPayload,
+} from '../tools/types';
 import { toBoolean, toNumber } from '../tools/zod';
 import { deleteUser } from '../tools/user';
 
@@ -37,22 +41,34 @@ router.post('/logout', async (req, res) => {
 const settingsSchema = z.object({
   historyLine: z.string().transform(toBoolean).optional(),
   preferredStatsPeriod: z.enum(['day', 'week', 'month', 'year']).optional(),
-  nbElements: z.preprocess(toNumber, z.number().min(5).max(50).default(10).optional()),
+  nbElements: z.preprocess(
+    toNumber,
+    z.number().min(5).max(50).default(10).optional(),
+  ),
   metricUsed: z.enum(['number', 'duration']).optional(),
   darkMode: z.enum(['follow', 'dark', 'light']).optional(),
 });
 
-router.post('/settings', validating(settingsSchema), logged, async (req, res) => {
-  const { user } = req as LoggedRequest;
+router.post(
+  '/settings',
+  validating(settingsSchema),
+  logged,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
 
-  try {
-    await changeSetting('_id', user._id, req.body as TypedPayload<typeof settingsSchema>);
-    return res.status(200).end();
-  } catch (e) {
-    logger.error(e);
-    return res.status(500).end();
-  }
-});
+    try {
+      await changeSetting(
+        '_id',
+        user._id,
+        req.body as TypedPayload<typeof settingsSchema>,
+      );
+      return res.status(200).end();
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
 
 router.get('/me', optionalLoggedOrGuest, async (req, res) => {
   const { user } = req as OptionalLoggedRequest;
@@ -79,7 +95,7 @@ router.get('/accounts', isLoggedOrGuest, async (req, res) => {
   try {
     const users = await getAllUsers();
     return res.status(200).send(
-      users.map((user) => ({
+      users.map(user => ({
         id: user._id.toString(),
         username: user.username,
         admin: user.admin,

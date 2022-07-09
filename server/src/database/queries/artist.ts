@@ -3,7 +3,8 @@ import { ArtistModel, InfosModel } from '../Models';
 import { User } from '../schemas/user';
 import { getGroupByDateProjection, getGroupingByTimeSplit } from './statsTools';
 
-export const getArtists = (artistIds: string[]) => ArtistModel.find({ id: { $in: artistIds } });
+export const getArtists = (artistIds: string[]) =>
+  ArtistModel.find({ id: { $in: artistIds } });
 
 export const searchArtist = (str: string) =>
   ArtistModel.find({ name: { $regex: new RegExp(str, 'i') } });
@@ -17,7 +18,10 @@ export const getArtistInfos = (artistId: string) => [
         {
           $match: {
             $expr: {
-              $and: [{ $eq: ['$id', '$$targetId'] }, { $eq: [{ $first: '$artists' }, artistId] }],
+              $and: [
+                { $eq: ['$id', '$$targetId'] },
+                { $eq: [{ $first: '$artists' }, artistId] },
+              ],
             },
           },
         },
@@ -43,7 +47,7 @@ export const getFirstAndLastListened = async (user: User, artistId: string) => {
       },
     },
     ...['first', 'last']
-      .map((e) => [
+      .map(e => [
         {
           $lookup: {
             from: 'tracks',
@@ -68,7 +72,10 @@ export const getFirstAndLastListened = async (user: User, artistId: string) => {
   return res[0];
 };
 
-export const getMostListenedSongOfArtist = async (user: User, artistId: string) => {
+export const getMostListenedSongOfArtist = async (
+  user: User,
+  artistId: string,
+) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id } },
     ...getArtistInfos(artistId),
@@ -120,7 +127,10 @@ export const bestPeriodOfArtist = async (user: User, artistId: string) => {
   return res;
 };
 
-export const getTotalListeningOfArtist = async (user: User, artistId: string) => {
+export const getTotalListeningOfArtist = async (
+  user: User,
+  artistId: string,
+) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id } },
     ...getArtistInfos(artistId),
@@ -132,7 +142,13 @@ export const getTotalListeningOfArtist = async (user: User, artistId: string) =>
       },
     },
     { $unwind: '$differents' },
-    { $group: { _id: '$_id', count: { $first: '$count' }, differents: { $sum: 1 } } },
+    {
+      $group: {
+        _id: '$_id',
+        count: { $first: '$count' },
+        differents: { $sum: 1 },
+      },
+    },
   ]);
   return res[0];
 };
@@ -200,7 +216,11 @@ export const getDayRepartitionOfArtist = (user: User, artistId: string) =>
     },
     { $unwind: '$track' },
     {
-      $group: { _id: '$hour', count: { $sum: 1 }, duration: { $sum: '$track.duration_ms' } },
+      $group: {
+        _id: '$hour',
+        count: { $sum: 1 },
+        duration: { $sum: '$track.duration_ms' },
+      },
     },
     { $sort: { _id: 1 } },
   ]);

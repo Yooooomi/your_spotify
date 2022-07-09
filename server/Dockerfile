@@ -10,6 +10,8 @@ RUN npm install -g nodemon
 COPY package.json package.json
 COPY yarn.lock yarn.lock
 COPY tsconfig.json tsconfig.json
+COPY .prettierrc .prettierrc
+COPY .eslintrc.js .eslintrc.js
 RUN sed -i 's@"extends": "../tsconfig.json",@@g' tsconfig.json 
 
 RUN yarn --frozen-lockfile

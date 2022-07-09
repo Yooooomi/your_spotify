@@ -17,12 +17,19 @@ import { ImplementedChartProps } from '../types';
 
 interface AverageAlbumReleaseDateProps extends ImplementedChartProps {}
 
-export default function AverageAlbumReleaseDate({ className }: AverageAlbumReleaseDateProps) {
+export default function AverageAlbumReleaseDate({
+  className,
+}: AverageAlbumReleaseDateProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
-  const result = useAPI(api.albumDateRatio, interval.start, interval.end, interval.timesplit);
+  const result = useAPI(
+    api.albumDateRatio,
+    interval.start,
+    interval.end,
+    interval.timesplit,
+  );
 
   const data = buildXYData(
-    result?.map((r) => ({
+    result?.map(r => ({
       _id: r._id as DateId,
       value: Math.floor(r.totalYear * 100) / 100,
     })) ?? [],
@@ -34,7 +41,12 @@ export default function AverageAlbumReleaseDate({ className }: AverageAlbumRelea
   const formatX = useFormatXAxis(data);
 
   if (!result) {
-    return <LoadingImplementedChart title="Average album release date" className={className} />;
+    return (
+      <LoadingImplementedChart
+        title="Average album release date"
+        className={className}
+      />
+    );
   }
 
   if (result.length > 0 && result[0]._id == null) {

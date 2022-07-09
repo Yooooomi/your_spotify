@@ -1,10 +1,20 @@
 import { Types } from 'mongoose';
 import { NoResult } from '../../tools/errors/Database';
-import { AlbumModel, ArtistModel, InfosModel, TrackModel, UserModel } from '../Models';
+import {
+  AlbumModel,
+  ArtistModel,
+  InfosModel,
+  TrackModel,
+  UserModel,
+} from '../Models';
 import { Infos } from '../schemas/info';
 import { User } from '../schemas/user';
 
-export const getSongsNbInterval = async (id: string, start: Date, end: Date) => {
+export const getSongsNbInterval = async (
+  id: string,
+  start: Date,
+  end: Date,
+) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: id, played_at: { $gt: start, $lt: end } } },
     { $group: { _id: null, count: { $sum: 1 } } },
@@ -25,7 +35,11 @@ export const getUserFromField = async <F extends keyof User>(
   return user;
 };
 
-export const createUser = (username: string, spotifyId: string, admin: boolean) =>
+export const createUser = (
+  username: string,
+  spotifyId: string,
+  admin: boolean,
+) =>
   UserModel.create({
     username,
     admin,
@@ -43,13 +57,23 @@ export const createUser = (username: string, spotifyId: string, admin: boolean) 
     },
   });
 
-export const storeInUser = <F extends keyof User>(field: F, value: User[F], infos: Partial<User>) =>
-  UserModel.findOneAndUpdate({ [field]: value }, infos, { new: true });
+export const storeInUser = <F extends keyof User>(
+  field: F,
+  value: User[F],
+  infos: Partial<User>,
+) => UserModel.findOneAndUpdate({ [field]: value }, infos, { new: true });
 
-export const storeFirstListenedAtIfLess = async (userId: string, playedAt: Date) => {
+export const storeFirstListenedAtIfLess = async (
+  userId: string,
+  playedAt: Date,
+) => {
   const id = new Types.ObjectId(userId);
   const user = await getUserFromField('_id', id);
-  if (user && (!user.firstListenedAt || playedAt.getTime() < user.firstListenedAt.getTime())) {
+  if (
+    user &&
+    (!user.firstListenedAt ||
+      playedAt.getTime() < user.firstListenedAt.getTime())
+  ) {
     await storeInUser('_id', id, {
       firstListenedAt: playedAt,
     });
@@ -62,20 +86,27 @@ export const changeSetting = <F extends keyof User>(
   infos: Partial<User['settings']>,
 ) => {
   const obj: Record<string, any> = {};
-  Object.keys(infos).forEach((key) => {
+  Object.keys(infos).forEach(key => {
     obj[`settings.${key}`] = infos[key as keyof typeof infos];
   });
-  return UserModel.findOneAndUpdate({ [field]: value }, { $set: obj }, { new: true });
+  return UserModel.findOneAndUpdate(
+    { [field]: value },
+    { $set: obj },
+    { new: true },
+  );
 };
 
-export const addTrackIdsToUser = async (id: string, infos: Omit<Infos, 'owner'>[]) => {
-  const realInfos = infos.map((info) => ({
+export const addTrackIdsToUser = async (
+  id: string,
+  infos: Omit<Infos, 'owner'>[],
+) => {
+  const realInfos = infos.map(info => ({
     ...info,
     owner: new Types.ObjectId(id),
   }));
   const infosSaved = await InfosModel.create(realInfos);
   return UserModel.findByIdAndUpdate(id, {
-    $push: { tracks: { $each: infosSaved.map((e) => e._id) } },
+    $push: { tracks: { $each: infosSaved.map(e => e._id) } },
   });
 };
 
@@ -105,7 +136,9 @@ export const getSongs = async (
   const fullUser = await UserModel.findById(userId).populate({
     path: 'tracks',
     model: 'Infos',
-    match: inter ? { played_at: { $gt: inter.start, $lt: inter.end } } : undefined,
+    match: inter
+      ? { played_at: { $gt: inter.start, $lt: inter.end } }
+      : undefined,
     options: { skip: offset, limit: number, sort: { played_at: -1 } },
     populate: {
       path: 'track',
@@ -139,15 +172,19 @@ export const getSongsInterval = async (id: string, start: Date, end: Date) => {
 };
 
 export const getUsersNb = () => UserModel.find().countDocuments();
-export const getUsers = (nb: number, offset: number, condition: Partial<User>) =>
-  UserModel.find(condition).limit(nb).skip(offset);
+export const getUsers = (
+  nb: number,
+  offset: number,
+  condition: Partial<User>,
+) => UserModel.find(condition).limit(nb).skip(offset);
 
 export const getNumberOfUsers = () => UserModel.find().count();
 export const getAllUsers = () => UserModel.find({}, '-tracks');
 
 export const deleteAllInfosFromUserId = (userId: string) =>
   InfosModel.deleteMany({ owner: userId });
-export const deleteUser = (userId: string) => UserModel.findByIdAndDelete(userId);
+export const deleteUser = (userId: string) =>
+  UserModel.findByIdAndDelete(userId);
 
 export const deleteAllOrphanTracks = async () => {
   const tracks = await TrackModel.aggregate([
@@ -162,7 +199,7 @@ export const deleteAllOrphanTracks = async () => {
     { $match: { $expr: { $eq: [{ $size: '$infos' }, 0] } } },
   ]);
 
-  const tracksToDelete = tracks.map((tr) => tr._id);
+  const tracksToDelete = tracks.map(tr => tr._id);
   await TrackModel.deleteMany({ _id: { $in: tracksToDelete } });
 
   const albums = await AlbumModel.aggregate([
@@ -177,7 +214,7 @@ export const deleteAllOrphanTracks = async () => {
     { $match: { $expr: { $eq: [{ $size: '$tracks' }, 0] } } },
   ]);
 
-  const albumsToDelete = albums.map((alb) => alb._id);
+  const albumsToDelete = albums.map(alb => alb._id);
   await AlbumModel.deleteMany({ _id: { $in: albumsToDelete } });
 
   const artists = await ArtistModel.aggregate([
@@ -199,19 +236,26 @@ export const deleteAllOrphanTracks = async () => {
     },
     {
       $match: {
-        $expr: { $and: [{ $eq: [{ $size: '$albums' }, 0] }, { $eq: [{ $size: '$tracks' }, 0] }] },
+        $expr: {
+          $and: [
+            { $eq: [{ $size: '$albums' }, 0] },
+            { $eq: [{ $size: '$tracks' }, 0] },
+          ],
+        },
       },
     },
   ]);
 
-  const artistsToDelete = artists.map((art) => art._id);
+  const artistsToDelete = artists.map(art => art._id);
   await ArtistModel.deleteMany({ _id: { $in: artistsToDelete } });
 
   return { tracksToDelete, albumsToDelete, artistsToDelete };
 };
 
 export const getFirstInfo = async (userId: string) => {
-  const infos = await InfosModel.find({ owner: userId }).sort({ played_at: 'asc' }).limit(1);
+  const infos = await InfosModel.find({ owner: userId })
+    .sort({ played_at: 'asc' })
+    .limit(1);
   return infos[0];
 };
 

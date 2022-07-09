@@ -19,7 +19,9 @@ export const validating =
   (schema: AnyZodObject, location: Location = 'body') =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      const value = schema.merge(z.object({ token: z.string().optional() })).parse(req[location]);
+      const value = schema
+        .merge(z.object({ token: z.string().optional() }))
+        .parse(req[location]);
       req[location] = value;
       return next();
     } catch (e) {
@@ -48,7 +50,11 @@ const baselogged = async (req: Request, useQueryToken = false) => {
     try {
       const userId = verify(auth, 'MyPrivateKey') as { userId: string };
 
-      const user = await getUserFromField('_id', new Types.ObjectId(userId.userId), false);
+      const user = await getUserFromField(
+        '_id',
+        new Types.ObjectId(userId.userId),
+        false,
+      );
 
       if (!user) {
         return null;
@@ -61,7 +67,11 @@ const baselogged = async (req: Request, useQueryToken = false) => {
   return null;
 };
 
-export const logged = async (req: Request, res: Response, next: NextFunction) => {
+export const logged = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const user = await baselogged(req, false);
   if (!user) {
     return res.status(401).end();
@@ -70,7 +80,11 @@ export const logged = async (req: Request, res: Response, next: NextFunction) =>
   return next();
 };
 
-export const isLoggedOrGuest = async (req: Request, res: Response, next: NextFunction) => {
+export const isLoggedOrGuest = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const user = await baselogged(req, true);
   if (!user) {
     return res.status(401).end();
@@ -79,13 +93,21 @@ export const isLoggedOrGuest = async (req: Request, res: Response, next: NextFun
   return next();
 };
 
-export const optionalLoggedOrGuest = async (req: Request, res: Response, next: NextFunction) => {
+export const optionalLoggedOrGuest = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const user = await baselogged(req, true);
   (req as OptionalLoggedRequest).user = user;
   return next();
 };
 
-export const optionalLogged = async (req: Request, res: Response, next: NextFunction) => {
+export const optionalLogged = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const user = await baselogged(req, false);
   (req as OptionalLoggedRequest).user = user;
   return next();
@@ -100,7 +122,11 @@ export const admin = (req: Request, res: Response, next: NextFunction) => {
   return next();
 };
 
-export const withHttpClient = async (req: Request, res: Response, next: NextFunction) => {
+export const withHttpClient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { user } = req as LoggedRequest;
 
   const client = new SpotifyAPI(user._id.toString());
@@ -108,11 +134,17 @@ export const withHttpClient = async (req: Request, res: Response, next: NextFunc
   return next();
 };
 
-export const withGlobalPreferences = async (req: Request, res: Response, next: NextFunction) => {
+export const withGlobalPreferences = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const pref = await getGlobalPreferences();
     if (!pref) {
-      logger.error('No global preferences, this is critical, try restarting the app');
+      logger.error(
+        'No global preferences, this is critical, try restarting the app',
+      );
       return;
     }
     (req as GlobalPreferencesRequest).globalPreferences = pref;
@@ -122,10 +154,14 @@ export const withGlobalPreferences = async (req: Request, res: Response, next: N
   }
 };
 
-export const notAlreadyImporting = async (req: Request, res: Response, next: NextFunction) => {
+export const notAlreadyImporting = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { user } = req as LoggedRequest;
   const imports = await getUserImporterState(user._id.toString());
-  if (imports.some((imp) => imp.status === 'progress')) {
+  if (imports.some(imp => imp.status === 'progress')) {
     return res.status(400).send({ code: 'ALREADY_IMPORTING' });
   }
   return next();

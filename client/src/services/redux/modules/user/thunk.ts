@@ -4,15 +4,18 @@ import { alertMessage } from '../message/reducer';
 import { selectIsPublic } from './selector';
 import { DarkModeType, User } from './types';
 
-export const checkLogged = myAsyncThunk<User | null, void>('@user/checklogged', async () => {
-  try {
-    const { data } = await api.me();
-    return data.status ? data.user : null;
-  } catch (e) {
-    console.error(e);
-  }
-  return null;
-});
+export const checkLogged = myAsyncThunk<User | null, void>(
+  '@user/checklogged',
+  async () => {
+    try {
+      const { data } = await api.me();
+      return data.status ? data.user : null;
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
+  },
+);
 
 export const changeUsername = myAsyncThunk<void, string>(
   '@user/change-username',
@@ -49,7 +52,7 @@ export const generateNewPublicToken = myAsyncThunk<string, void>(
       tapi.dispatch(
         alertMessage({
           level: 'error',
-          message: `Could not generate a new public token`,
+          message: 'Could not generate a new public token',
         }),
       );
       throw e;
@@ -71,7 +74,7 @@ export const setDarkMode = myAsyncThunk<void, DarkModeType>(
       tapi.dispatch(
         alertMessage({
           level: 'error',
-          message: `Could not sync the dark mode to your profile`,
+          message: 'Could not sync the dark mode to your profile',
         }),
       );
       throw e;
@@ -79,33 +82,37 @@ export const setDarkMode = myAsyncThunk<void, DarkModeType>(
   },
 );
 
-export const playTrack = myAsyncThunk<void, string>('@user/play-track', async (payload, tapi) => {
-  try {
-    await api.play(payload);
-  } catch (e: any) {
-    const reason = e?.response?.data?.reason;
-    if (reason === 'NO_ACTIVE_DEVICE') {
-      tapi.dispatch(
-        alertMessage({
-          level: 'info',
-          message: 'Could not play the song, no active player detected',
-        }),
-      );
-    } else if (reason === 'PREMIUM_REQUIRED') {
-      tapi.dispatch(
-        alertMessage({
-          level: 'error',
-          message: 'You cannot play song from the platform without a premium account',
-        }),
-      );
-    } else {
-      console.error(e);
-      tapi.dispatch(
-        alertMessage({
-          level: 'error',
-          message: 'Could not play song',
-        }),
-      );
+export const playTrack = myAsyncThunk<void, string>(
+  '@user/play-track',
+  async (payload, tapi) => {
+    try {
+      await api.play(payload);
+    } catch (e: any) {
+      const reason = e?.response?.data?.reason;
+      if (reason === 'NO_ACTIVE_DEVICE') {
+        tapi.dispatch(
+          alertMessage({
+            level: 'info',
+            message: 'Could not play the song, no active player detected',
+          }),
+        );
+      } else if (reason === 'PREMIUM_REQUIRED') {
+        tapi.dispatch(
+          alertMessage({
+            level: 'error',
+            message:
+              'You cannot play song from the platform without a premium account',
+          }),
+        );
+      } else {
+        console.error(e);
+        tapi.dispatch(
+          alertMessage({
+            level: 'error',
+            message: 'Could not play song',
+          }),
+        );
+      }
     }
-  }
-});
+  },
+);

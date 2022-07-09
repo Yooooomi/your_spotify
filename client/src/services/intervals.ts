@@ -47,7 +47,10 @@ export interface UserBasedIntervalDetails {
   interval: (user: { firstListenedAt: string } | null) => Interval;
 }
 
-export type IntervalDetail = PresetIntervalDetail | CustomIntervalDetail | UserBasedIntervalDetails;
+export type IntervalDetail =
+  | PresetIntervalDetail
+  | CustomIntervalDetail
+  | UserBasedIntervalDetails;
 
 export type RawIntervalDetail = {
   type: IntervalDetail['type'];
@@ -87,8 +90,10 @@ export const userBasedIntervals: UserBasedIntervalDetails[] = [
   {
     type: 'userbased',
     name: 'All',
-    interval: (user) => {
-      const start = getFirstListenedAt(user ? new Date(user.firstListenedAt) : new Date(2010));
+    interval: user => {
+      const start = getFirstListenedAt(
+        user ? new Date(user.firstListenedAt) : new Date(2010),
+      );
       return {
         timesplit: getAppropriateTimesplitFromRange(start, now),
         start,
@@ -100,20 +105,26 @@ export const userBasedIntervals: UserBasedIntervalDetails[] = [
 
 export const allIntervals = [...presetIntervals, ...userBasedIntervals];
 
-export function getPresetIndexFromIntervalDetail(details: PresetIntervalDetail) {
-  return presetIntervals.findIndex((v) => v.name === details.name);
+export function getPresetIndexFromIntervalDetail(
+  details: PresetIntervalDetail,
+) {
+  return presetIntervals.findIndex(v => v.name === details.name);
 }
 
-export function getUserBasedIndexFromIntervalDetail(details: UserBasedIntervalDetails) {
-  return userBasedIntervals.findIndex((v) => v.name === details.name);
+export function getUserBasedIndexFromIntervalDetail(
+  details: UserBasedIntervalDetails,
+) {
+  return userBasedIntervals.findIndex(v => v.name === details.name);
 }
 
 export function getAllIndexFromIntervalDetail(details: IntervalDetail) {
-  return allIntervals.findIndex((v) => v.type === details.type && v.name === details.name);
+  return allIntervals.findIndex(
+    v => v.type === details.type && v.name === details.name,
+  );
 }
 
 export function optimisticGetIntervalDetailFromName(name: string) {
-  return allIntervals.find((inter) => inter.name === name);
+  return allIntervals.find(inter => inter.name === name);
 }
 
 export function getRawIntervalDetail(
@@ -121,7 +132,12 @@ export function getRawIntervalDetail(
   user: { firstListenedAt: string } | null,
 ): RawIntervalDetail {
   if (detail.type === 'preset') {
-    return { name: detail.name, type: 'preset', interval: detail.interval, unit: detail.unit };
+    return {
+      name: detail.name,
+      type: 'preset',
+      interval: detail.interval,
+      unit: detail.unit,
+    };
   }
   if (detail.type === 'userbased') {
     return {
@@ -131,10 +147,18 @@ export function getRawIntervalDetail(
       unit: 'period',
     };
   }
-  return { name: detail.name, type: 'custom', interval: detail.interval, unit: 'period' };
+  return {
+    name: detail.name,
+    type: 'custom',
+    interval: detail.interval,
+    unit: 'period',
+  };
 }
 
-export function detailIntervalToQuery(interval: IntervalDetail, prefix: string) {
+export function detailIntervalToQuery(
+  interval: IntervalDetail,
+  prefix: string,
+) {
   if (interval.type === 'custom') {
     return {
       [`${prefix}type`]: 'custom',
@@ -185,17 +209,28 @@ export function useQueryToRawIntervalDetail(prefix: string) {
   );
 }
 
-export function useOldestListenedAtFromUsers(userIds: string[], prefix: string): RawIntervalDetail {
+export function useOldestListenedAtFromUsers(
+  userIds: string[],
+  prefix: string,
+): RawIntervalDetail {
   const user = useSelector(selectUser);
   const users = useSelector(selectAccounts);
   const [query] = useSearchParams();
 
-  const detail = useMemo(() => queryToIntervalDetail(query, prefix), [prefix, query]);
+  const detail = useMemo(
+    () => queryToIntervalDetail(query, prefix),
+    [prefix, query],
+  );
 
-  const filtered = users.filter((us) => [user?._id, ...userIds].includes(us.id));
-  const mins = getMinOfArray(filtered, (item) => new Date(item.firstListenedAt).getTime());
+  const filtered = users.filter(us => [user?._id, ...userIds].includes(us.id));
+  const mins = getMinOfArray(filtered, item =>
+    new Date(item.firstListenedAt).getTime(),
+  );
   const account = filtered[mins?.minIndex ?? 0];
-  const accountInterval = useMemo(() => getRawIntervalDetail(detail, account), [account, detail]);
+  const accountInterval = useMemo(
+    () => getRawIntervalDetail(detail, account),
+    [account, detail],
+  );
 
   if (!account && detail.type === 'userbased') {
     return getRawIntervalDetail(presetIntervals[0], null);

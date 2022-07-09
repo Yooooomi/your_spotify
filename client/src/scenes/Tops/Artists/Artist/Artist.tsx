@@ -39,17 +39,26 @@ export default function Artist(props: ArtistProps | HeaderArtistProps) {
   const { artist, duration, totalDuration, count, totalCount } = props;
   return (
     <div className={s.root}>
-      <img className={s.artistcover} src={getImage(artist)} alt="Artist cover" />
+      <img
+        className={s.artistcover}
+        src={getImage(artist)}
+        alt="Artist cover"
+      />
       <Text className={s.artistname}>
         <InlineArtist artist={artist} />
       </Text>
       {upmobile && <Text className={s.genres}>{artist.genres.join(', ')}</Text>}
       <Text className={s.sumcount}>
-        {count} {upmd && <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>}
+        {count}{' '}
+        {upmd && (
+          <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>
+        )}
       </Text>
       <Text className={s.sumduration}>
         {msToMinutesAndSeconds(duration)}{' '}
-        {upmd && <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>}
+        {upmd && (
+          <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>
+        )}
       </Text>
     </div>
   );

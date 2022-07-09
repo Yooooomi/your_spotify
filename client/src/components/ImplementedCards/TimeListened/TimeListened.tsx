@@ -8,7 +8,11 @@ import { Timesplit } from '../../../services/types';
 import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';
 import s from '../index.module.css';
-import { getLastPeriod, getPercentMore, msToMinutes } from '../../../services/stats';
+import {
+  getLastPeriod,
+  getPercentMore,
+  msToMinutes,
+} from '../../../services/stats';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import Text from '../../Text';
 
@@ -16,9 +20,22 @@ interface TimeListenedProps extends ImplementedCardProps {}
 
 export default function TimeListened({ className }: TimeListenedProps) {
   const { interval, unit } = useSelector(selectRawIntervalDetail);
-  const result = useAPI(api.timePer, interval.start, interval.end, Timesplit.all);
-  const lastPeriod = useMemo(() => getLastPeriod(interval.start, interval.end), [interval]);
-  const resultOld = useAPI(api.timePer, lastPeriod.start, lastPeriod.end, Timesplit.all);
+  const result = useAPI(
+    api.timePer,
+    interval.start,
+    interval.end,
+    Timesplit.all,
+  );
+  const lastPeriod = useMemo(
+    () => getLastPeriod(interval.start, interval.end),
+    [interval],
+  );
+  const resultOld = useAPI(
+    api.timePer,
+    lastPeriod.start,
+    lastPeriod.end,
+    Timesplit.all,
+  );
 
   if (!result || !resultOld) {
     return (
@@ -56,7 +73,8 @@ export default function TimeListened({ className }: TimeListenedProps) {
             {Math.abs(percentMore)}%
           </Text>
           <Text element="span">
-            &nbsp;{percentMore < 0 ? 'less' : 'more'} than last {unit}
+            &nbsp;
+            {percentMore < 0 ? 'less' : 'more'} than last {unit}
           </Text>
         </Text>
       </div>

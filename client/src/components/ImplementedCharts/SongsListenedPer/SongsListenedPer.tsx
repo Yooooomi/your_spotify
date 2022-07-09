@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { api } from '../../../services/api';
 import { useAPI } from '../../../services/hooks';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
-import { buildXYData, formatXAxisDateTooltip, useFormatXAxis } from '../../../services/stats';
+import {
+  buildXYData,
+  formatXAxisDateTooltip,
+  useFormatXAxis,
+} from '../../../services/stats';
 import { DateId } from '../../../services/types';
 import ChartCard from '../../ChartCard';
 import Line from '../../charts/Line';
@@ -14,10 +18,15 @@ interface SongsListenedPerProps extends ImplementedChartProps {}
 
 export default function SongsListenedPer({ className }: SongsListenedPerProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
-  const result = useAPI(api.songsPer, interval.start, interval.end, interval.timesplit);
+  const result = useAPI(
+    api.songsPer,
+    interval.start,
+    interval.end,
+    interval.timesplit,
+  );
 
   const data = buildXYData(
-    result?.map((r) => ({
+    result?.map(r => ({
       _id: r._id as DateId,
       value: r.count,
     })) ?? [],
@@ -26,10 +35,15 @@ export default function SongsListenedPer({ className }: SongsListenedPerProps) {
   );
 
   const formatX = useFormatXAxis(data);
-  const tooltipValueFormatter = useCallback((value: number) => `${value} songs`, []);
+  const tooltipValueFormatter = useCallback(
+    (value: number) => `${value} songs`,
+    [],
+  );
 
   if (!result) {
-    return <LoadingImplementedChart title="Songs listened" className={className} />;
+    return (
+      <LoadingImplementedChart title="Songs listened" className={className} />
+    );
   }
 
   if (result.length > 0 && result[0]._id == null) {

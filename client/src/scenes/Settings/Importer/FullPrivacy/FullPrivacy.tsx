@@ -24,19 +24,24 @@ export default function FullPrivacy() {
       return false;
     }
     return Array.from(Array(files.length).keys()).some(
-      (i) => !files.item(i)?.name.startsWith('endsong'),
+      i => !files.item(i)?.name.startsWith('endsong'),
     );
   }, [files]);
 
   return (
     <div>
       <Text className={s.import}>
-        Here you can import previous data from Spotify privacy data. This is the data you requested
-        by mail specifically asking for extended data. It usually takes a few weeks for them to get
-        back to you. Once received, upload here your files beginning with <code>endsong</code>.
+        Here you can import previous data from Spotify privacy data. This is the
+        data you requested by mail specifically asking for extended data. It
+        usually takes a few weeks for them to get back to you. Once received,
+        upload here your files beginning with <code>endsong</code>
+        .
         <br />
         Read more{' '}
-        <a target="_blank" href="https://www.spotify.com/fr/account/privacy/" rel="noreferrer">
+        <a
+          target="_blank"
+          href="https://www.spotify.com/fr/account/privacy/"
+          rel="noreferrer">
           here
         </a>
       </Text>
@@ -47,19 +52,24 @@ export default function FullPrivacy() {
           multiple
           type="file"
           style={{ display: 'none' }}
-          onChange={(ev) => setFiles(ev.target.files)}
+          onChange={ev => setFiles(ev.target.files)}
         />
         <Button component="span">Select your endsongX.json files</Button>
       </label>
       {files &&
-        Array.from(Array(files.length).keys()).map((i) => <div key={i}>{files.item(i)?.name}</div>)}
+        Array.from(Array(files.length).keys()).map(i => (
+          <div key={i}>{files.item(i)?.name}</div>
+        ))}
       {wrongFiles && (
         <Text className={s.alert}>
-          Some file do not being with <code>endsong</code>, import might not work
+          Some file do not being with <code>endsong</code>, import might not
+          work
         </Text>
       )}
       {files && !wrongFiles && (
-        <Text className={s.noalert}>Everything looks fine for the import to work</Text>
+        <Text className={s.noalert}>
+          Everything looks fine for the import to work
+        </Text>
       )}
       {files && (
         <div className={s.importButton}>

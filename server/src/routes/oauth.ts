@@ -1,9 +1,18 @@
 import { Router } from 'express';
 import { sign } from 'jsonwebtoken';
-import { createUser, getNumberOfUsers, getUserFromField, storeInUser } from '../database';
+import {
+  createUser,
+  getNumberOfUsers,
+  getUserFromField,
+  storeInUser,
+} from '../database';
 import { get } from '../tools/env';
 import { logger } from '../tools/logger';
-import { logged, withGlobalPreferences, withHttpClient } from '../tools/middleware';
+import {
+  logged,
+  withGlobalPreferences,
+  withHttpClient,
+} from '../tools/middleware';
 import { Spotify } from '../tools/oauth/Provider';
 import { GlobalPreferencesRequest, SpotifyRequest } from '../tools/types';
 
@@ -27,7 +36,11 @@ router.get('/spotify/callback', withGlobalPreferences, async (req, res) => {
         return res.redirect(`${get('CLIENT_ENDPOINT')}/registrations-disabled`);
       }
       const nbUsers = await getNumberOfUsers();
-      user = await createUser(spotifyMe.display_name, spotifyMe.id, nbUsers === 0);
+      user = await createUser(
+        spotifyMe.display_name,
+        spotifyMe.id,
+        nbUsers === 0,
+      );
     }
     await storeInUser('_id', user._id, infos);
     const token = sign({ userId: user._id.toString() }, 'MyPrivateKey', {

@@ -1,6 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
-import { dateToListenedAt, msToMinutesAndSeconds } from '../../../services/stats';
+import {
+  dateToListenedAt,
+  msToMinutesAndSeconds,
+} from '../../../services/stats';
 import { Album, Artist, Track as TrackType } from '../../../services/types';
 import s from './index.module.css';
 import InlineArtist from '../../InlineArtist';
@@ -52,8 +55,12 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         </Text>
       </div>
       <Text className={s.albumname}>{album.name}</Text>
-      <Text className={s.duration}>{msToMinutesAndSeconds(track.duration_ms)}</Text>
-      {listenedAt && <Text className={s.playedat}>{dateToListenedAt(listenedAt)}</Text>}
+      <Text className={s.duration}>
+        {msToMinutesAndSeconds(track.duration_ms)}
+      </Text>
+      {listenedAt && (
+        <Text className={s.playedat}>{dateToListenedAt(listenedAt)}</Text>
+      )}
     </div>
   );
 }

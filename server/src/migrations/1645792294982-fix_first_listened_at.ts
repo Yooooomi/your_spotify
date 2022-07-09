@@ -1,4 +1,8 @@
-import { getAllUsers, getFirstInfo, storeFirstListenedAtIfLess } from '../database';
+import {
+  getAllUsers,
+  getFirstInfo,
+  storeFirstListenedAtIfLess,
+} from '../database';
 import { startMigration } from '../tools/migrations';
 
 export const up = async () => {
@@ -7,10 +11,13 @@ export const up = async () => {
   const users = await getAllUsers();
 
   await Promise.all(
-    users.map(async (user) => {
+    users.map(async user => {
       const firstInfo = await getFirstInfo(user._id.toString());
       if (firstInfo) {
-        await storeFirstListenedAtIfLess(user._id.toString(), firstInfo.played_at);
+        await storeFirstListenedAtIfLess(
+          user._id.toString(),
+          firstInfo.played_at,
+        );
       }
     }),
   );

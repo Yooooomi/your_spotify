@@ -21,7 +21,7 @@ export default function DarkModeSwitch() {
     <Select
       variant="standard"
       value={dark}
-      onChange={(ev) => changeDarkMode(ev.target.value as DarkModeType)}>
+      onChange={ev => changeDarkMode(ev.target.value as DarkModeType)}>
       <MenuItem value="follow">Follow system theme</MenuItem>
       <MenuItem value="dark">Use dark theme</MenuItem>
       <MenuItem value="light">Use light theme</MenuItem>

@@ -2,7 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { detailIntervalToQuery } from './intervals';
-import { selectIntervalDetail, selectUser } from './redux/modules/user/selector';
+import {
+  selectIntervalDetail,
+  selectUser,
+} from './redux/modules/user/selector';
 import { UnboxPromise } from './types';
 
 export function useAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
@@ -11,7 +14,9 @@ export function useAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
 ): null | UnboxPromise<ReturnType<Fn>>['data'] {
   // Allows for instant nullify of request in case of deps change
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [value, setValue] = useState<UnboxPromise<ReturnType<Fn>>['data'] | null>(null);
+  const [value, setValue] = useState<
+    UnboxPromise<ReturnType<Fn>>['data'] | null
+  >(null);
   const ref = useRef<UnboxPromise<ReturnType<Fn>>['data'] | null>(null);
 
   useMemo(() => {
@@ -35,12 +40,17 @@ export function useAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
   return ref.current;
 }
 
-export function useConditionalAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
+export function useConditionalAPI<
+  Fn extends (...ags: any[]) => Promise<{ data: D }>,
+  D,
+>(
   condition: boolean,
   call: Fn,
   ...args: Parameters<Fn>
 ): null | UnboxPromise<ReturnType<Fn>>['data'] {
-  const [value, setValue] = useState<UnboxPromise<ReturnType<Fn>>['data'] | null>(null);
+  const [value, setValue] = useState<
+    UnboxPromise<ReturnType<Fn>>['data'] | null
+  >(null);
 
   useEffect(() => {
     async function fetch() {
@@ -66,13 +76,17 @@ export function useShareLink() {
     return undefined;
   }
   const search = new URLSearchParams(window.location.search);
-  Object.entries(detailIntervalToQuery(interval, 'g')).forEach(([key, value]) => {
-    search.set(key, value);
-  });
+  Object.entries(detailIntervalToQuery(interval, 'g')).forEach(
+    ([key, value]) => {
+      search.set(key, value);
+    },
+  );
   if (user.publicToken) {
     search.set('token', user.publicToken);
   }
-  return `${window.location.origin}${window.location.pathname}?${search.toString()}`;
+  return `${window.location.origin}${
+    window.location.pathname
+  }?${search.toString()}`;
 }
 
 export function useNavigateAndSearch() {

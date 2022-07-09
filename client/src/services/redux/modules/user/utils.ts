@@ -7,7 +7,9 @@ import {
 } from '../../../intervals';
 import { ReduxIntervalDetail } from './types';
 
-export function intervalDetailToRedux(intervalDetail: IntervalDetail): ReduxIntervalDetail {
+export function intervalDetailToRedux(
+  intervalDetail: IntervalDetail,
+): ReduxIntervalDetail {
   switch (intervalDetail.type) {
     case 'preset': {
       return {
@@ -36,7 +38,9 @@ export function intervalDetailToRedux(intervalDetail: IntervalDetail): ReduxInte
   }
 }
 
-export function fromReduxIntervalDetail(intervalDetail: ReduxIntervalDetail): IntervalDetail {
+export function fromReduxIntervalDetail(
+  intervalDetail: ReduxIntervalDetail,
+): IntervalDetail {
   switch (intervalDetail.type) {
     case 'preset': {
       return presetIntervals[intervalDetail.index];

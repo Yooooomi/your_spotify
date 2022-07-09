@@ -3,4 +3,7 @@ import { RootState } from '../..';
 
 const selectSettingsState = (state: RootState) => state.settings;
 
-export const selectSettings = createSelector(selectSettingsState, (state) => state.settings);
+export const selectSettings = createSelector(
+  selectSettingsState,
+  state => state.settings,
+);

@@ -8,7 +8,12 @@ interface BackgroundCardProps {
   background: string;
 }
 
-export default function BackgroundCard({ background, top, middle, bottom }: BackgroundCardProps) {
+export default function BackgroundCard({
+  background,
+  top,
+  middle,
+  bottom,
+}: BackgroundCardProps) {
   return (
     <div className={s.root} style={{ backgroundImage: `url('${background}')` }}>
       <div>{top}</div>

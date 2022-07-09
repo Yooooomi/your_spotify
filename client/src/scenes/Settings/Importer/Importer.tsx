@@ -26,7 +26,9 @@ const ImportTypeToComponent: Record<ImporterStateTypes, any> = {
 export default function Importer() {
   const dispatch = useAppDispatch();
   const imports = useSelector(selectImportStates);
-  const [importType, setImportType] = useState<ImporterStateTypes>(ImporterStateTypes.privacy);
+  const [importType, setImportType] = useState<ImporterStateTypes>(
+    ImporterStateTypes.privacy,
+  );
 
   const fetch = useCallback(
     async (force = false) => {
@@ -39,7 +41,10 @@ export default function Importer() {
     fetch();
   }, [fetch]);
 
-  const running = useMemo(() => imports?.find((st) => st.status === 'progress'), [imports]);
+  const running = useMemo(
+    () => imports?.find(st => st.status === 'progress'),
+    [imports],
+  );
   const Component = useMemo(
     () => (importType ? ImportTypeToComponent[importType] : null),
     [importType],
@@ -57,7 +62,7 @@ export default function Importer() {
             <Text>Importing...</Text>
             <div className={s.progress}>
               <Text>
-                {running.current} / {running.total}
+                {running.current} /{running.total}
               </Text>
             </div>
             <LinearProgress
@@ -76,8 +81,10 @@ export default function Importer() {
               labelId="import-type-select"
               value={importType}
               label="Import type"
-              onChange={(ev) => setImportType(ev.target.value as ImporterStateTypes)}>
-              {Object.values(ImporterStateTypes).map((typ) => (
+              onChange={ev =>
+                setImportType(ev.target.value as ImporterStateTypes)
+              }>
+              {Object.values(ImporterStateTypes).map(typ => (
                 <MenuItem value={typ} key={typ}>
                   {typ}
                 </MenuItem>

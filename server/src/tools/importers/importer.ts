@@ -9,7 +9,11 @@ import { logger } from '../logger';
 import { clearCache } from './cache';
 import { FullPrivacyImporter } from './full_privacy';
 import { PrivacyImporter } from './privacy';
-import { HistoryImporter, ImporterStateFromType, ImporterStateTypes } from './types';
+import {
+  HistoryImporter,
+  ImporterStateFromType,
+  ImporterStateTypes,
+} from './types';
 
 const importers: {
   [typ in ImporterStateTypes]: (user: User) => HistoryImporter<typ>;

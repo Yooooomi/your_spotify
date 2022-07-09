@@ -4,8 +4,15 @@ import multer from 'multer';
 import { logger } from '../tools/logger';
 import { logged, notAlreadyImporting, validating } from '../tools/middleware';
 import { LoggedRequest, TypedPayload } from '../tools/types';
-import { canUserImport, cleanupImport, runImporter } from '../tools/importers/importer';
-import { getImporterState, getUserImporterState } from '../database/queries/importer';
+import {
+  canUserImport,
+  cleanupImport,
+  runImporter,
+} from '../tools/importers/importer';
+import {
+  getImporterState,
+  getUserImporterState,
+} from '../database/queries/importer';
 import { ImporterState, ImporterStateTypes } from '../tools/importers/types';
 
 const router = Router();
@@ -40,8 +47,8 @@ router.post(
         null,
         ImporterStateTypes.privacy,
         user,
-        (files as Express.Multer.File[]).map((f) => f.path),
-        (success) => {
+        (files as Express.Multer.File[]).map(f => f.path),
+        success => {
           if (success) {
             return res.status(200).send({ code: 'IMPORT_STARTED' });
           }
@@ -76,8 +83,8 @@ router.post(
         null,
         ImporterStateTypes.fullPrivacy,
         user,
-        (files as Express.Multer.File[]).map((f) => f.path),
-        (success) => {
+        (files as Express.Multer.File[]).map(f => f.path),
+        success => {
           if (success) {
             return res.status(200).send({ code: 'IMPORT_STARTED' });
           }
@@ -104,7 +111,9 @@ router.post(
     const { user } = req as LoggedRequest;
     const { existingStateId } = req.body as TypedPayload<typeof retrySchema>;
 
-    const importState = await getImporterState<ImporterState['type']>(existingStateId);
+    const importState = await getImporterState<ImporterState['type']>(
+      existingStateId,
+    );
     if (!importState || importState.user.toString() !== user._id.toString()) {
       return res.status(404).end();
     }
@@ -119,7 +128,7 @@ router.post(
         importState.type,
         user,
         importState.metadata,
-        (success) => {
+        success => {
           if (success) {
             return res.status(200).send({ code: 'IMPORT_STARTED' });
           }
@@ -170,5 +179,6 @@ router.get('/imports', logged, async (req, res) => {
     return res.status(200).send(state);
   } catch (e) {
     logger.error(e);
+    return res.status(500).end();
   }
 });

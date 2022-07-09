@@ -4,8 +4,14 @@ import { useSearchParams } from 'react-router-dom';
 import { queryToIntervalDetail } from '../../services/intervals';
 import { getAccounts } from '../../services/redux/modules/admin/thunk';
 import { getSettings } from '../../services/redux/modules/settings/thunk';
-import { setDataInterval, setPublicToken } from '../../services/redux/modules/user/reducer';
-import { selectPublicToken, selectUser } from '../../services/redux/modules/user/selector';
+import {
+  setDataInterval,
+  setPublicToken,
+} from '../../services/redux/modules/user/reducer';
+import {
+  selectPublicToken,
+  selectUser,
+} from '../../services/redux/modules/user/selector';
 import { checkLogged } from '../../services/redux/modules/user/thunk';
 import { intervalDetailToRedux } from '../../services/redux/modules/user/utils';
 import { useAppDispatch } from '../../services/redux/tools';
@@ -21,7 +27,11 @@ export default function Wrapper() {
   const urlToken = useMemo(() => query.get('token'), [query]);
 
   useEffect(() => {
-    dispatch(setDataInterval(intervalDetailToRedux(queryToIntervalDetail(query, GLOBAL_PREFIX))));
+    dispatch(
+      setDataInterval(
+        intervalDetailToRedux(queryToIntervalDetail(query, GLOBAL_PREFIX)),
+      ),
+    );
     const fieldsToDelete = [
       'token',
       `${GLOBAL_PREFIX}type`,
@@ -29,7 +39,7 @@ export default function Wrapper() {
       `${GLOBAL_PREFIX}end`,
       `${GLOBAL_PREFIX}name`,
     ];
-    fieldsToDelete.forEach((field) => query.delete(field));
+    fieldsToDelete.forEach(field => query.delete(field));
     setQuery(query);
     // Only set the interval on the first render
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -12,15 +12,20 @@ import { selectRawIntervalDetail } from '../../../services/redux/modules/user/se
 
 export default function Albums() {
   const { name, interval } = useSelector(selectRawIntervalDetail);
-  const [items, setItems] = useState<UnboxPromise<ReturnType<typeof api['getBestAlbums']>>['data']>(
-    [],
-  );
+  const [items, setItems] = useState<
+    UnboxPromise<ReturnType<typeof api['getBestAlbums']>>['data']
+  >([]);
   const [hasMore, setHasMore] = useState(true);
 
   const fetch = useCallback(async () => {
     if (!hasMore) return;
     try {
-      const result = await api.getBestAlbums(interval.start, interval.end, 10, items.length);
+      const result = await api.getBestAlbums(
+        interval.start,
+        interval.end,
+        10,
+        items.length,
+      );
       setItems([...items, ...result.data]);
       setHasMore(result.data.length === 10);
     } catch (e) {
@@ -43,7 +48,10 @@ export default function Albums() {
 
   return (
     <div>
-      <Header title="Top albums" subtitle="Here are the albums you listened to the most" />
+      <Header
+        title="Top albums"
+        subtitle="Here are the albums you listened to the most"
+      />
       <div className={s.content}>
         <TitleCard title="Top albums">
           <Album line />
@@ -53,7 +61,7 @@ export default function Albums() {
             hasMore={hasMore}
             dataLength={items.length}
             loader={<Loader />}>
-            {items.map((item) => (
+            {items.map(item => (
               <Album
                 key={item.album.id}
                 artists={[item.artist]}

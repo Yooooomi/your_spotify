@@ -22,7 +22,7 @@ export default function Rename() {
         placeholder="New name..."
         fullWidth
         value={name}
-        onChange={(ev) => setName(ev.target.value)}
+        onChange={ev => setName(ev.target.value)}
       />
       <Button type="submit" variant="contained">
         Change

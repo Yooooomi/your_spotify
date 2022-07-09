@@ -1,5 +1,12 @@
 import React, { useMemo } from 'react';
-import { BarChart, XAxis, Bar as RBar, Tooltip, YAxis, ResponsiveContainer } from 'recharts';
+import {
+  BarChart,
+  XAxis,
+  Bar as RBar,
+  Tooltip,
+  YAxis,
+  ResponsiveContainer,
+} from 'recharts';
 import { getColor } from '../../../services/colors';
 
 export interface StackedBarProps {
@@ -9,7 +16,9 @@ export interface StackedBarProps {
   customXTick?: React.ComponentProps<typeof XAxis>['tick'];
   xFormat?: React.ComponentProps<typeof XAxis>['tickFormatter'];
   yFormat?: React.ComponentProps<typeof YAxis>['tickFormatter'];
-  tooltipLabelFormatter?: React.ComponentProps<typeof Tooltip>['labelFormatter'];
+  tooltipLabelFormatter?: React.ComponentProps<
+    typeof Tooltip
+  >['labelFormatter'];
   tooltipValueFormatter?: React.ComponentProps<typeof Tooltip>['formatter'];
   tooltipItemSorter?: React.ComponentProps<typeof Tooltip>['itemSorter'];
 }
@@ -34,8 +43,8 @@ export default function Bar({
     () =>
       data.reduce<Set<string>>((acc, curr) => {
         Object.keys(curr)
-          .filter((key) => key !== 'x')
-          .forEach((key) => acc.add(key));
+          .filter(key => key !== 'x')
+          .forEach(key => acc.add(key));
         return acc;
       }, new Set()),
     [data],

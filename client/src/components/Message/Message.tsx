@@ -15,21 +15,19 @@ interface AlertProps {
 }
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
-  ({ message, level, onClose }: AlertProps, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={clsx({
-          [s.alert]: true,
-          [s[level]]: true,
-        })}>
-        <Text onDark>{message}</Text>
-        <IconButton size="small" onClick={onClose}>
-          <Close className={s.icon} fontSize="small" />
-        </IconButton>
-      </div>
-    );
-  },
+  ({ message, level, onClose }: AlertProps, ref) => (
+    <div
+      ref={ref}
+      className={clsx({
+        [s.alert]: true,
+        [s[level]]: true,
+      })}>
+      <Text onDark>{message}</Text>
+      <IconButton size="small" onClick={onClose}>
+        <Close className={s.icon} fontSize="small" />
+      </IconButton>
+    </div>
+  ),
 );
 
 export default function Message() {
@@ -37,7 +35,10 @@ export default function Message() {
   const [open, setOpen] = useState(false);
 
   const onClose = useCallback(
-    (_: Event | React.SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
+    (
+      _: Event | React.SyntheticEvent<any, Event>,
+      reason: SnackbarCloseReason,
+    ) => {
       if (reason === 'clickaway') {
         return;
       }
@@ -60,7 +61,11 @@ export default function Message() {
       autoHideDuration={2000}
       onClose={onClose}
       anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
-      <Alert onClose={() => setOpen(false)} level={message.level} message={message.message} />
+      <Alert
+        onClose={() => setOpen(false)}
+        level={message.level}
+        message={message.message}
+      />
     </Snackbar>
   );
 }

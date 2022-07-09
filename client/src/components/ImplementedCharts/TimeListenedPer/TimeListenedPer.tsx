@@ -19,10 +19,15 @@ interface TimeListenedPerProps extends ImplementedChartProps {}
 
 export default function TimeListenedPer({ className }: TimeListenedPerProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
-  const result = useAPI(api.timePer, interval.start, interval.end, interval.timesplit);
+  const result = useAPI(
+    api.timePer,
+    interval.start,
+    interval.end,
+    interval.timesplit,
+  );
 
   const data = buildXYData(
-    result?.map((r) => ({
+    result?.map(r => ({
       _id: r._id as DateId,
       value: r.count,
     })) ?? [],
@@ -31,15 +36,16 @@ export default function TimeListenedPer({ className }: TimeListenedPerProps) {
   );
 
   const formatX = useFormatXAxis(data);
-  const formatY = useCallback((value: number) => {
-    return `${msToMinutes(value)}m`;
-  }, []);
-  const formatYTooltip = useCallback((value: number) => {
-    return `${msToMinutes(value)} minutes listened`;
-  }, []);
+  const formatY = useCallback((value: number) => `${msToMinutes(value)}m`, []);
+  const formatYTooltip = useCallback(
+    (value: number) => `${msToMinutes(value)} minutes listened`,
+    [],
+  );
 
   if (!result) {
-    return <LoadingImplementedChart title="Time listened" className={className} />;
+    return (
+      <LoadingImplementedChart title="Time listened" className={className} />
+    );
   }
 
   if (result.length > 0 && result[0]._id == null) {

@@ -6,10 +6,16 @@ export interface HistoryImporter<T extends ImporterState['type']> {
     requiredData: ImporterStateFromType<T>['metadata'],
   ) => Promise<{ total: number } | null>;
   run: (id: string) => Promise<boolean>;
-  cleanup: (requiredData: ImporterStateFromType<T>['metadata']) => Promise<void>;
+  cleanup: (
+    requiredData: ImporterStateFromType<T>['metadata'],
+  ) => Promise<void>;
 }
 
-export type ImporterStateStatus = 'progress' | 'success' | 'failure' | 'failure-removed';
+export type ImporterStateStatus =
+  | 'progress'
+  | 'success'
+  | 'failure'
+  | 'failure-removed';
 
 export interface BaseImporterState {
   _id: Types.ObjectId;

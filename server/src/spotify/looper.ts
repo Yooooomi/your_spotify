@@ -19,11 +19,15 @@ const loop = async (user: User) => {
   logger.info(`Refreshing songs for ${user.username}`);
 
   if (!user.accessToken) {
-    logger.error(`User ${user.username} has not access token, please relog to Spotify`);
+    logger.error(
+      `User ${user.username} has not access token, please relog to Spotify`,
+    );
     return;
   }
 
-  const url = `/me/player/recently-played?after=${user.lastTimestamp - 1000 * 60 * 60 * 2}`;
+  const url = `/me/player/recently-played?after=${
+    user.lastTimestamp - 1000 * 60 * 60 * 2
+  }`;
   const spotifyApi = new SpotifyAPI(user._id.toString());
 
   try {
@@ -47,14 +51,19 @@ const loop = async (user: User) => {
     });
 
     if (items.length > 0) {
-      const tracks = items.map((e) => e.track);
+      const tracks = items.map(e => e.track);
       try {
         await saveMusics(user._id.toString(), tracks);
         const infos: { played_at: Date; id: string }[] = [];
         for (let i = 0; i < items.length; i += 1) {
           const item = items[i];
           const date = new Date(item.played_at);
-          const duplicate = await getCloseTrackId(user._id.toString(), item.track.id, date, 30);
+          const duplicate = await getCloseTrackId(
+            user._id.toString(),
+            item.track.id,
+            date,
+            30,
+          );
           if (duplicate.length === 0) {
             infos.push({
               played_at: new Date(item.played_at),
@@ -62,10 +71,13 @@ const loop = async (user: User) => {
             });
           }
         }
-        const min = minOfArray(infos, (item) => item.played_at.getTime());
+        const min = minOfArray(infos, item => item.played_at.getTime());
         await addTrackIdsToUser(user._id.toString(), infos);
         if (min) {
-          await storeFirstListenedAtIfLess(user._id.toString(), infos[min.minIndex].played_at);
+          await storeFirstListenedAtIfLess(
+            user._id.toString(),
+            infos[min.minIndex].played_at,
+          );
         }
       } catch (e) {
         logger.info(e);
@@ -104,11 +116,11 @@ export const dbLoop = async () => {
       const users = await getUsers(batchSize, i * batchSize, {});
 
       await longWriteDbLock.lock();
-      const promises = users.map((us) => reflect(loop(us)));
+      const promises = users.map(us => reflect(loop(us)));
       const results = await Promise.all(promises);
       longWriteDbLock.unlock();
 
-      results.filter((e) => e.failed).forEach((e) => logger.error(e.error));
+      results.filter(e => e.failed).forEach(e => logger.error(e.error));
 
       await wait(WAIT_SECONDS * 1000);
     }

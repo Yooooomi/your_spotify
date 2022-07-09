@@ -14,9 +14,7 @@ import { selectRawIntervalDetail } from '../../../services/redux/modules/user/se
 
 interface BestArtistsBarProps extends ImplementedChartProps {}
 
-const formatXTooltip = (label: string) => {
-  return `Rank ${label + 1}`;
-};
+const formatXTooltip = (label: string) => `Rank ${label + 1}`;
 
 const svgImgSize = 32;
 class ImageAxisTick extends PureComponent<{
@@ -41,7 +39,11 @@ class ImageAxisTick extends PureComponent<{
         <Tooltip title={artist.name}>
           <g transform={`translate(${x - svgImgSize / 2},${y})`}>
             <clipPath id="yoyo">
-              <circle r={svgImgSize / 2} cx={svgImgSize / 2} cy={svgImgSize / 2} />
+              <circle
+                r={svgImgSize / 2}
+                cx={svgImgSize / 2}
+                cy={svgImgSize / 2}
+              />
             </clipPath>
             <image
               width={svgImgSize}
@@ -58,7 +60,13 @@ class ImageAxisTick extends PureComponent<{
 
 export default function BestArtistsBar({ className }: BestArtistsBarProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
-  const result = useAPI(api.getBestArtists, interval.start, interval.end, 10, 0);
+  const result = useAPI(
+    api.getBestArtists,
+    interval.start,
+    interval.end,
+    10,
+    0,
+  );
 
   const data = useMemo(
     () =>
@@ -81,7 +89,9 @@ export default function BestArtistsBar({ className }: BestArtistsBarProps) {
   );
 
   if (!result) {
-    return <LoadingImplementedChart title="Best artists" className={className} />;
+    return (
+      <LoadingImplementedChart title="Best artists" className={className} />
+    );
   }
 
   return (
@@ -91,7 +101,7 @@ export default function BestArtistsBar({ className }: BestArtistsBarProps) {
         tooltipLabelFormatter={formatXTooltip}
         tooltipValueFormatter={formatYTooltip}
         // @ts-ignore
-        customXTick={<ImageAxisTick artists={result.map((r) => r.artist)} />}
+        customXTick={<ImageAxisTick artists={result.map(r => r.artist)} />}
       />
     </ChartCard>
   );

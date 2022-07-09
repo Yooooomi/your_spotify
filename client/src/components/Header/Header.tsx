@@ -17,7 +17,12 @@ interface HeaderProps {
   hideInterval?: boolean;
 }
 
-export default function Header({ left, title, subtitle, hideInterval }: HeaderProps) {
+export default function Header({
+  left,
+  title,
+  subtitle,
+  hideInterval,
+}: HeaderProps) {
   const dispatch = useAppDispatch();
   const intervalDetail = useSelector(selectIntervalDetail);
   const showSider = !useMediaQuery('(max-width: 900px)');

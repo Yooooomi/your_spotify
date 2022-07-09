@@ -2,7 +2,11 @@
 /* eslint-disable no-await-in-loop */
 import { readFile, unlink } from 'fs/promises';
 import { z } from 'zod';
-import { addTrackIdsToUser, getCloseTrackId, storeFirstListenedAtIfLess } from '../../database';
+import {
+  addTrackIdsToUser,
+  getCloseTrackId,
+  storeFirstListenedAtIfLess,
+} from '../../database';
 import { setImporterStateCurrent } from '../../database/queries/importer';
 import { RecentlyPlayedTrack } from '../../database/schemas/track';
 import { User } from '../../database/schemas/user';
@@ -12,7 +16,11 @@ import { minOfArray, retryPromise } from '../misc';
 import { SpotifyAPI } from '../spotifyApi';
 import { Unpack } from '../types';
 import { getFromCacheString, setToCacheString } from './cache';
-import { FullPrivacyImporterState, HistoryImporter, ImporterStateTypes } from './types';
+import {
+  FullPrivacyImporterState,
+  HistoryImporter,
+  ImporterStateTypes,
+} from './types';
 
 const fullPrivacyFileSchema = z.array(
   z.object({
@@ -42,7 +50,9 @@ const fullPrivacyFileSchema = z.array(
 
 export type FullPrivacyItem = Unpack<z.infer<typeof fullPrivacyFileSchema>>;
 
-export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.fullPrivacy> {
+export class FullPrivacyImporter
+  implements HistoryImporter<ImporterStateTypes.fullPrivacy>
+{
   private id: string;
 
   private userId: string;
@@ -64,22 +74,33 @@ export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.f
   static idFromSpotifyURI = (uri: string) => uri.split(':')[2];
 
   search = async (spotifyIds: string[]) => {
-    const res = await retryPromise(() => this.spotifyApi.getTracksFromIds(spotifyIds), 10, 30);
+    const res = await retryPromise(
+      () => this.spotifyApi.getTracksFromIds(spotifyIds),
+      10,
+      30,
+    );
     return res;
   };
 
   storeItems = async (userId: string, items: RecentlyPlayedTrack[]) => {
     await saveMusics(
       userId,
-      items.map((it) => it.track),
+      items.map(it => it.track),
     );
     const finalInfos: { played_at: Date; id: string }[] = [];
     for (let i = 0; i < items.length; i += 1) {
       const item = items[i];
       const date = new Date(item.played_at);
-      const duplicate = await getCloseTrackId(this.userId.toString(), item.track.id, date, 60);
+      const duplicate = await getCloseTrackId(
+        this.userId.toString(),
+        item.track.id,
+        date,
+        60,
+      );
       if (duplicate.length > 0) {
-        logger.info(`${item.track.name} - ${item.track.artists[0].name} was duplicate`);
+        logger.info(
+          `${item.track.name} - ${item.track.artists[0].name} was duplicate`,
+        );
         continue;
       }
       finalInfos.push({
@@ -89,9 +110,12 @@ export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.f
     }
     await setImporterStateCurrent(this.id, this.currentItem + 1);
     await addTrackIdsToUser(this.userId.toString(), finalInfos);
-    const min = minOfArray(finalInfos, (info) => info.played_at.getTime());
+    const min = minOfArray(finalInfos, info => info.played_at.getTime());
     if (min) {
-      await storeFirstListenedAtIfLess(this.userId, finalInfos[min.minIndex].played_at);
+      await storeFirstListenedAtIfLess(
+        this.userId,
+        finalInfos[min.minIndex].played_at,
+      );
     }
   };
 
@@ -107,8 +131,8 @@ export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.f
   };
 
   initWithFiles = async (filePaths: string[]) => {
-    const files = await Promise.all(filePaths.map((f) => readFile(f)));
-    const filesContent = files.map((f) => JSON.parse(f.toString()));
+    const files = await Promise.all(filePaths.map(f => readFile(f)));
+    const filesContent = files.map(f => JSON.parse(f.toString()));
 
     const totalContent = filesContent.reduce<FullPrivacyItem[]>((acc, curr) => {
       acc.push(...curr);
@@ -122,7 +146,10 @@ export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.f
     return true;
   };
 
-  init = async (existingState: FullPrivacyImporterState | null, filePaths: string[]) => {
+  init = async (
+    existingState: FullPrivacyImporterState | null,
+    filePaths: string[],
+  ) => {
     try {
       this.currentItem = existingState?.current ?? 0;
       const success = await this.initWithFiles(filePaths);
@@ -145,17 +172,19 @@ export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.f
       return idsToSearch;
     }
     const searchedItems = await this.search(ids);
-    searchedItems.forEach((searchedItem) => {
+    searchedItems.forEach(searchedItem => {
       const playedAt = idsToSearch[searchedItem.id];
       if (!playedAt) {
         logger.error('Cannot add item', searchedItem.id, 'no played_at found');
         return;
       }
       setToCacheString(this.userId.toString(), searchedItem.id, searchedItem);
-      playedAt.forEach((pa) => {
+      playedAt.forEach(pa => {
         items.push({ track: searchedItem, played_at: pa });
       });
-      logger.info(`Adding ${searchedItem.name} - ${searchedItem.artists[0].name} from data`);
+      logger.info(
+        `Adding ${searchedItem.name} - ${searchedItem.artists[0].name} from data`,
+      );
     });
     idsToSearch = {};
     return idsToSearch;
@@ -185,11 +214,15 @@ export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.f
         logger.info(
           `Track ${content.master_metadata_track_name} - ${
             content.master_metadata_album_artist_name
-          } was passed, only listened for ${Math.floor(content.ms_played / 1000)} seconds`,
+          } was passed, only listened for ${Math.floor(
+            content.ms_played / 1000,
+          )} seconds`,
         );
         continue;
       }
-      const spotifyId = FullPrivacyImporter.idFromSpotifyURI(content.spotify_track_uri);
+      const spotifyId = FullPrivacyImporter.idFromSpotifyURI(
+        content.spotify_track_uri,
+      );
       const item = getFromCacheString(this.userId.toString(), spotifyId);
       if (!item) {
         const arrayOfPlayedAt = idsToSearch[spotifyId] ?? [];
@@ -214,6 +247,6 @@ export class FullPrivacyImporter implements HistoryImporter<ImporterStateTypes.f
 
   // eslint-disable-next-line class-methods-use-this
   cleanup = async (filePaths: string[]) => {
-    await Promise.all(filePaths.map((f) => unlink(f)));
+    await Promise.all(filePaths.map(f => unlink(f)));
   };
 }

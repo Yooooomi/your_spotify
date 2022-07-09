@@ -31,7 +31,10 @@ export const getGroupingByTimeSplit = (timeSplit: Timesplit, prefix = '') => {
   return {};
 };
 
-export const sortByTimeSplit = (timeSplit: Timesplit, prefix = ''): PipelineStage[] => {
+export const sortByTimeSplit = (
+  timeSplit: Timesplit,
+  prefix = '',
+): PipelineStage[] => {
   if (prefix !== '') prefix = `${prefix}.`;
   if (timeSplit === Timesplit.all) return [];
   if (timeSplit === Timesplit.year) {
@@ -70,13 +73,36 @@ export const sortByTimeSplit = (timeSplit: Timesplit, prefix = ''): PipelineStag
 };
 
 export const getGroupByDateProjection = () => ({
-  year: { $year: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') } },
-  month: { $month: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') } },
-  day: {
-    $dayOfMonth: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') },
+  year: {
+    $year: {
+      date: '$played_at',
+      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+    },
   },
-  week: { $week: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') } },
-  hour: { $hour: { date: '$played_at', timezone: getWithDefault('TIMEZONE', 'Europe/Paris') } },
+  month: {
+    $month: {
+      date: '$played_at',
+      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+    },
+  },
+  day: {
+    $dayOfMonth: {
+      date: '$played_at',
+      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+    },
+  },
+  week: {
+    $week: {
+      date: '$played_at',
+      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+    },
+  },
+  hour: {
+    $hour: {
+      date: '$played_at',
+      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+    },
+  },
 });
 
 export const getTrackSumType = (user: User) => {
@@ -93,7 +119,17 @@ export const lightTrackLookupPipeline = (idField = 'id') => ({
   let: { id: `$${idField}` },
   pipeline: [
     { $match: { $expr: { $eq: ['$id', '$$id'] } } },
-    { $project: { _id: 1, id: 1, name: 1, artists: 1, album: 1, images: 1, duration_ms: 1 } },
+    {
+      $project: {
+        _id: 1,
+        id: 1,
+        name: 1,
+        artists: 1,
+        album: 1,
+        images: 1,
+        duration_ms: 1,
+      },
+    },
   ],
   from: 'tracks',
   as: 'track',
@@ -109,7 +145,10 @@ export const lightAlbumLookupPipeline = (idField = 'track.album') => ({
   as: 'album',
 });
 
-export const lightArtistLookupPipeline = (idField = 'track.artists', isFieldArray = true) => ({
+export const lightArtistLookupPipeline = (
+  idField = 'track.artists',
+  isFieldArray = true,
+) => ({
   let: { id: isFieldArray ? { $first: `$${idField}` } : `$${idField}` },
   pipeline: [
     { $match: { $expr: { $eq: ['$id', '$$id'] } } },

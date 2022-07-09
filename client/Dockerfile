@@ -9,6 +9,8 @@ COPY scripts/ scripts/
 COPY package.json package.json
 COPY yarn.lock yarn.lock
 COPY tsconfig.json tsconfig.json
+COPY .prettierrc .prettierrc
+COPY .eslintrc.js .eslintrc.js
 RUN sed -i 's@"extends": "../tsconfig.json",@@g' tsconfig.json 
 
 ARG NODE_ENV

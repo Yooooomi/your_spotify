@@ -15,7 +15,7 @@ const initialState: MessageReducer = {
 
 export const alertMessage = createAction<AlertMessage>('@message/create');
 
-export default createReducer(initialState, (builder) => {
+export default createReducer(initialState, builder => {
   builder.addCase(alertMessage, (state, { payload }) => {
     state.message = payload;
   });

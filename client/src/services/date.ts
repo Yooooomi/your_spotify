@@ -40,7 +40,9 @@ export function getAppropriateTimesplitFromRange(start: Date, end: Date) {
 }
 
 export function dateToDaysMonthsYear(date: Date) {
-  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
+  return `${pad(date.getDate())}/${pad(
+    date.getMonth() + 1,
+  )}/${date.getFullYear()}`;
 }
 
 export function dateToMonthsYear(date: Date) {

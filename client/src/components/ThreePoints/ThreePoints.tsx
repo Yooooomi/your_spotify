@@ -1,6 +1,13 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { MoreHoriz } from '@mui/icons-material';
-import { Button, ClickAwayListener, Fade, IconButton, Popper, Tooltip } from '@mui/material';
+import {
+  Button,
+  ClickAwayListener,
+  Fade,
+  IconButton,
+  Popper,
+  Tooltip,
+} from '@mui/material';
 import clsx from 'clsx';
 import s from './index.module.css';
 
@@ -31,7 +38,10 @@ export default function ThreePoints({ items }: ThreePointsProps) {
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
       <div>
-        <IconButton size="small" ref={buttonRef} onClick={() => setOpen((v) => !v)}>
+        <IconButton
+          size="small"
+          ref={buttonRef}
+          onClick={() => setOpen(v => !v)}>
           <MoreHoriz fontSize="small" />
         </IconButton>
         <Popper
@@ -44,7 +54,8 @@ export default function ThreePoints({ items }: ThreePointsProps) {
             <Fade {...TransitionProps}>
               <div className={s.popper}>
                 {items.map((item, index) => (
-                  <Tooltip title={(item.disabled && item.disabledTooltip) || ''}>
+                  <Tooltip
+                    title={(item.disabled && item.disabledTooltip) || ''}>
                     <Button
                       // eslint-disable-next-line react/no-array-index-key
                       key={index}

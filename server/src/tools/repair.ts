@@ -18,13 +18,13 @@ export const repairDatabase = async () => {
   }
   const allTracks = await getTracksWithoutAlbum();
   if (allTracks.length > 0) {
-    const albumIds = allTracks.map((t) => t.album);
+    const albumIds = allTracks.map(t => t.album);
     logger.info(`Fixing missing albums (${albumIds.join(',')})`);
     await storeAlbums(user._id.toString(), albumIds);
   }
   const allAlbums = await getAlbumsWithoutArtist();
   if (allAlbums.length > 0) {
-    const artistIds = allAlbums.map((t) => t.artists).flat(1);
+    const artistIds = allAlbums.map(t => t.artists).flat(1);
     logger.info(`Fixing missing artists (${artistIds.join(',')})`);
     await storeArtists(user._id.toString(), artistIds);
   }

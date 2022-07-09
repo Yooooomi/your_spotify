@@ -38,7 +38,12 @@ const links = [
   {
     label: 'General',
     items: [
-      { label: 'Home', link: '/', icon: <HomeOutlined />, iconOn: <Home /> },
+      {
+        label: 'Home',
+        link: '/',
+        icon: <HomeOutlined />,
+        iconOn: <Home />,
+      },
       {
         label: 'All stats',
         link: '/all',
@@ -112,7 +117,11 @@ export default function Sider({ className }: SiderProps) {
   const location = useLocation();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [search, setSearch] = useState('');
-  const results = useConditionalAPI(search.length >= 3, api.searchArtists, search);
+  const results = useConditionalAPI(
+    search.length >= 3,
+    api.searchArtists,
+    search,
+  );
 
   const reset = useCallback(() => {
     setSearch('');
@@ -123,7 +132,8 @@ export default function Sider({ className }: SiderProps) {
       dispatch(
         alertMessage({
           level: 'error',
-          message: 'No public token generated, go to the settings page to generate one',
+          message:
+            'No public token generated, go to the settings page to generate one',
         }),
       );
       return;
@@ -149,7 +159,7 @@ export default function Sider({ className }: SiderProps) {
         className={s.input}
         placeholder="Search..."
         value={search}
-        onChange={(ev) => setSearch(ev.target.value)}
+        onChange={ev => setSearch(ev.target.value)}
         ref={inputRef}
       />
       <Popper
@@ -157,11 +167,21 @@ export default function Sider({ className }: SiderProps) {
         anchorEl={inputRef.current}
         placement="bottom"
         className={s.popper}>
-        <Paper className={s.results} style={{ width: inputRef.current?.clientWidth }}>
-          {search.length < 3 && <Text element="strong">At least 3 characters</Text>}
-          {results?.length === 0 && <Text element="strong">No results found</Text>}
-          {results?.map((res) => (
-            <Link to={`/artist/${res.id}`} className={s.result} key={res.id} onClick={reset}>
+        <Paper
+          className={s.results}
+          style={{ width: inputRef.current?.clientWidth }}>
+          {search.length < 3 && (
+            <Text element="strong">At least 3 characters</Text>
+          )}
+          {results?.length === 0 && (
+            <Text element="strong">No results found</Text>
+          )}
+          {results?.map(res => (
+            <Link
+              to={`/artist/${res.id}`}
+              className={s.result}
+              key={res.id}
+              onClick={reset}>
               <img className={s.resultimage} src={getImage(res)} alt="Artist" />
               <Text element="strong">{res.name}</Text>
             </Link>
@@ -169,19 +189,24 @@ export default function Sider({ className }: SiderProps) {
         </Paper>
       </Popper>
       <nav>
-        {links.map((category) => (
+        {links.map(category => (
           <div className={s.category} key={category.label}>
             <Text element="div" onDark className={s.categoryname}>
               {category.label}
             </Text>
             {toCopy &&
-              category.items.map((link) => {
+              category.items.map(link => {
                 if (link.link === '/share') {
                   return (
-                    <CopyToClipboard key={link.label} onCopy={copyCurrentPage} text={toCopy}>
+                    <CopyToClipboard
+                      key={link.label}
+                      onCopy={copyCurrentPage}
+                      text={toCopy}>
                       <div className={s.link} key={link.label}>
                         <Text onDark>
-                          {location.pathname === link.link ? link.iconOn : link.icon}
+                          {location.pathname === link.link
+                            ? link.iconOn
+                            : link.icon}
                         </Text>
                         <Text onDark>{link.label}</Text>
                       </div>
@@ -190,7 +215,11 @@ export default function Sider({ className }: SiderProps) {
                 }
                 return (
                   <Link to={link.link} className={s.link} key={link.label}>
-                    <Text onDark>{location.pathname === link.link ? link.iconOn : link.icon}</Text>
+                    <Text onDark>
+                      {location.pathname === link.link
+                        ? link.iconOn
+                        : link.icon}
+                    </Text>
                     <Text onDark>{link.label}</Text>
                   </Link>
                 );

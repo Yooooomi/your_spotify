@@ -46,22 +46,34 @@ const axios = Axios.create({
 // const delet = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
 //   axios.delete(`${url}${api.publicToken ? `?token=${api.publicToken}` : ''}`, params);
 
-const get = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+const get = <T>(
+  url: string,
+  params: Record<string, any> = {},
+): Promise<{ data: T }> =>
   axios.get(url, { params: { ...params, token: api.publicToken } });
 
-const post = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+const post = <T>(
+  url: string,
+  params: Record<string, any> = {},
+): Promise<{ data: T }> =>
   axios.post(url, params, {
     params: {
       token: api.publicToken,
     },
   });
 
-const put = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+const put = <T>(
+  url: string,
+  params: Record<string, any> = {},
+): Promise<{ data: T }> =>
   axios.put(url, params, {
     params: { token: api.publicToken },
   });
 
-const delet = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
+const delet = <T>(
+  url: string,
+  params: Record<string, any> = {},
+): Promise<{ data: T }> =>
   axios.delete(url, {
     params: {
       ...params,
@@ -160,11 +172,14 @@ export const api = {
       end,
     }),
   mostListened: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ tracks: TrackWithAlbum[]; counts: number[] }[]>('/spotify/most_listened', {
-      start,
-      end,
-      timeSplit,
-    }),
+    get<{ tracks: TrackWithAlbum[]; counts: number[] }[]>(
+      '/spotify/most_listened',
+      {
+        start,
+        end,
+        timeSplit,
+      },
+    ),
   mostListenedArtist: (start: Date, end: Date, timeSplit: Timesplit) =>
     get<{ _id: DateId | undefined; artists: Artist[]; counts: number[] }[]>(
       '/spotify/most_listened_artist',
@@ -180,11 +195,14 @@ export const api = {
       end,
     }),
   songsPer: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ count: number; _id: DateId | null; differents: number }[]>('/spotify/songs_per', {
-      start,
-      end,
-      timeSplit,
-    }),
+    get<{ count: number; _id: DateId | null; differents: number }[]>(
+      '/spotify/songs_per',
+      {
+        start,
+        end,
+        timeSplit,
+      },
+    ),
   timePer: (start: Date, end: Date, timeSplit: Timesplit) =>
     get<{ count: number; _id: DateId | null }[]>('/spotify/time_per', {
       start,
@@ -211,11 +229,14 @@ export const api = {
       timeSplit,
     }),
   albumDateRatio: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ count: number; totalYear: number; _id: DateId | null }[]>('/spotify/album_date_ratio', {
-      start,
-      end,
-      timeSplit,
-    }),
+    get<{ count: number; totalYear: number; _id: DateId | null }[]>(
+      '/spotify/album_date_ratio',
+      {
+        start,
+        end,
+        timeSplit,
+      },
+    ),
   popularityPer: (start: Date, end: Date, timeSplit: Timesplit) =>
     get<{ count: number; totalPopularity: number; _id: DateId | null }[]>(
       '/spotify/popularity_per',
@@ -264,7 +285,9 @@ export const api = {
     }),
   getArtists: (ids: string[]) => get<Artist[]>(`/artist/${ids.join(',')}`),
   getArtistStats: (id: string) =>
-    get<ArtistStatsResponse | { code: 'NEVER_LISTENED' }>(`/artist/${id}/stats`),
+    get<ArtistStatsResponse | { code: 'NEVER_LISTENED' }>(
+      `/artist/${id}/stats`,
+    ),
   searchArtists: (str: string) => get<Artist[]>(`/artist/search/${str}`),
   getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>
     get<
@@ -318,7 +341,7 @@ export const api = {
   getImports: () => get<ImporterState[]>('/imports'),
   doImportPrivacy: (files: File[]) => {
     const formData = new FormData();
-    files.forEach((file) => {
+    files.forEach(file => {
       formData.append('imports', file);
     });
     return axios.post('/import/privacy', formData, {
@@ -329,7 +352,7 @@ export const api = {
   },
   doImportFullPrivacy: (files: File[]) => {
     const formData = new FormData();
-    files.forEach((file) => {
+    files.forEach(file => {
       formData.append('imports', file);
     });
     return axios.post('/import/full-privacy', formData, {
@@ -343,17 +366,29 @@ export const api = {
       existingStateId,
     }),
   cleanupImport: (id: string) => delet(`/import/clean/${id}`),
-  collaborativeBestSongs: (ids: string[], start: Date, end: Date, mode: CollaborativeMode) =>
-    get<({ track: Track; album: Album; artist: Artist } & Record<string, number>)[]>(
-      '/spotify/collaborative/top/songs',
-      {
-        otherIds: ids,
-        start,
-        end,
-        mode,
-      },
-    ),
-  collaborativeBestAlbums: (ids: string[], start: Date, end: Date, mode: CollaborativeMode) =>
+  collaborativeBestSongs: (
+    ids: string[],
+    start: Date,
+    end: Date,
+    mode: CollaborativeMode,
+  ) =>
+    get<
+      ({ track: Track; album: Album; artist: Artist } & Record<
+        string,
+        number
+      >)[]
+    >('/spotify/collaborative/top/songs', {
+      otherIds: ids,
+      start,
+      end,
+      mode,
+    }),
+  collaborativeBestAlbums: (
+    ids: string[],
+    start: Date,
+    end: Date,
+    mode: CollaborativeMode,
+  ) =>
     get<({ album: Album; artist: Artist } & Record<string, number>)[]>(
       '/spotify/collaborative/top/albums',
       {
@@ -363,25 +398,44 @@ export const api = {
         mode,
       },
     ),
-  collaborativeBestArtists: (ids: string[], start: Date, end: Date, mode: CollaborativeMode) =>
-    get<({ artist: Artist } & Record<string, number>)[]>('/spotify/collaborative/top/artists', {
-      otherIds: ids,
-      start,
-      end,
-      mode,
-    }),
+  collaborativeBestArtists: (
+    ids: string[],
+    start: Date,
+    end: Date,
+    mode: CollaborativeMode,
+  ) =>
+    get<({ artist: Artist } & Record<string, number>)[]>(
+      '/spotify/collaborative/top/artists',
+      {
+        otherIds: ids,
+        start,
+        end,
+        mode,
+      },
+    ),
   generatePublicToken: () => post<string>('/generate-public-token'),
   getBestSongsOfHour: (start: Date, end: Date) =>
     get<
-      { _id: number; total: number; tracks: { count: number; track: Track; artist: Artist }[] }[]
+      {
+        _id: number;
+        total: number;
+        tracks: { count: number; track: Track; artist: Artist }[];
+      }[]
     >('/spotify/top/hour-repartition/songs', { start, end }),
   getBestAlbumsOfHour: (start: Date, end: Date) =>
     get<
-      { _id: number; total: number; albums: { count: number; album: Album; artist: Artist }[] }[]
+      {
+        _id: number;
+        total: number;
+        albums: { count: number; album: Album; artist: Artist }[];
+      }[]
     >('/spotify/top/hour-repartition/albums', { start, end }),
   getBestArtistsOfHour: (start: Date, end: Date) =>
-    get<{ _id: number; total: number; artists: { count: number; artist: Artist }[] }[]>(
-      '/spotify/top/hour-repartition/artists',
-      { start, end },
-    ),
+    get<
+      {
+        _id: number;
+        total: number;
+        artists: { count: number; artist: Artist }[];
+      }[]
+    >('/spotify/top/hour-repartition/artists', { start, end }),
 };

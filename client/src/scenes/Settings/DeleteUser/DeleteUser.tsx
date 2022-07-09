@@ -37,15 +37,19 @@ export default function DeleteUser() {
         title="Are you sure you want to delete this user?"
         onClose={() => setOpen(false)}
         open={open}>
-        This will delete every data of this user, including its history. There is no way to retrieve
-        its data afterward.
+        This will delete every data of this user, including its history. There
+        is no way to retrieve its data afterward.
         <div className={s.button}>
-          <LoadingButton loading={loading} onClick={doDelete} color="error" variant="contained">
+          <LoadingButton
+            loading={loading}
+            onClick={doDelete}
+            color="error"
+            variant="contained">
             Delete permanently
           </LoadingButton>
         </div>
       </Dialog>
-      {accounts.map((user) => (
+      {accounts.map(user => (
         <SettingLine
           key={user.id}
           left={user.username}

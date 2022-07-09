@@ -1,9 +1,21 @@
 import React from 'react';
-import { LineChart, Line as RLine, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-import { useRawTooltipLabelFormatter, useRawTooltipValueFormatter } from '../../../services/chart';
+import {
+  LineChart,
+  Line as RLine,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from 'recharts';
+import {
+  useRawTooltipLabelFormatter,
+  useRawTooltipValueFormatter,
+} from '../../../services/chart';
 import { DateWithPrecision } from '../../../services/stats';
 
-interface LineProps<D extends { x: number; y: number; dateWithPrecision: DateWithPrecision }> {
+interface LineProps<
+  D extends { x: number; y: number; dateWithPrecision: DateWithPrecision },
+> {
   data: D[];
   xFormat?: React.ComponentProps<typeof XAxis>['tickFormatter'];
   yFormat?: React.ComponentProps<typeof YAxis>['tickFormatter'];
@@ -13,9 +25,19 @@ interface LineProps<D extends { x: number; y: number; dateWithPrecision: DateWit
 
 export default function Line<
   D extends { x: number; y: number; dateWithPrecision: DateWithPrecision },
->({ data, xFormat, yFormat, tooltipLabelFormatter, tooltipValueFormatter }: LineProps<D>) {
-  const internTooltipLabelFormatter = useRawTooltipLabelFormatter(tooltipLabelFormatter);
-  const internTooltipValueFormatter = useRawTooltipValueFormatter(tooltipValueFormatter);
+>({
+  data,
+  xFormat,
+  yFormat,
+  tooltipLabelFormatter,
+  tooltipValueFormatter,
+}: LineProps<D>) {
+  const internTooltipLabelFormatter = useRawTooltipLabelFormatter(
+    tooltipLabelFormatter,
+  );
+  const internTooltipValueFormatter = useRawTooltipValueFormatter(
+    tooltipValueFormatter,
+  );
 
   return (
     <ResponsiveContainer width="100%" height="100%">

@@ -11,7 +11,12 @@ interface ChartCardProps {
   children: React.ReactNode;
 }
 
-export default function ChartCard({ className, title, right, children }: ChartCardProps) {
+export default function ChartCard({
+  className,
+  title,
+  right,
+  children,
+}: ChartCardProps) {
   return (
     <Paper className={clsx(s.root, className)}>
       <div className={s.title}>

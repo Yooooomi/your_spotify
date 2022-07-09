@@ -53,11 +53,16 @@ export default function Album(props: AlbumProps | HeaderAlbumProps) {
         </Text>
       </div>
       <Text className={s.sumcount}>
-        {count} {upmd && <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>}
+        {count}{' '}
+        {upmd && (
+          <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>
+        )}
       </Text>
       <Text className={s.sumduration}>
         {msToMinutesAndSeconds(duration)}{' '}
-        {upmd && <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>}
+        {upmd && (
+          <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>
+        )}
       </Text>
     </div>
   );

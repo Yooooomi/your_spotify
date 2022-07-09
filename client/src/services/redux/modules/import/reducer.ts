@@ -10,7 +10,7 @@ const initialState: ImportReducer = {
   imports: null,
 };
 
-export default createReducer(initialState, (builder) => {
+export default createReducer(initialState, builder => {
   builder.addCase(getImports.fulfilled, (state, { payload }) => {
     if (payload) {
       state.imports = payload;

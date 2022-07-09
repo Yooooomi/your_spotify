@@ -46,7 +46,9 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         <div className={clsx(s.name, s.header)}>
           <Text className={s.trackname}>Track name / Artist</Text>
         </div>
-        {upmd && <Text className={clsx(s.albumname, s.header)}>Album name</Text>}
+        {upmd && (
+          <Text className={clsx(s.albumname, s.header)}>Album name</Text>
+        )}
         {upmd && <Text className={clsx(s.duration, s.header)}>Duration</Text>}
         <Text className={clsx(s.sumcount, s.header)}>Count</Text>
         <Text className={clsx(s.sumduration, s.header)}>Total duration</Text>
@@ -54,7 +56,16 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
     );
   }
 
-  const { track, album, artists, playable, duration, totalDuration, count, totalCount } = props;
+  const {
+    track,
+    album,
+    artists,
+    playable,
+    duration,
+    totalDuration,
+    count,
+    totalCount,
+  } = props;
   return (
     <div className={s.root}>
       {playable && (
@@ -66,7 +77,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
       <div className={s.name}>
         <Text className={s.trackname}>{track.name}</Text>
         <Text className={s.artistname}>
-          {artists.map((art) => (
+          {artists.map(art => (
             <React.Fragment key={art.id}>
               <InlineArtist key={art.id} artist={art} />{' '}
             </React.Fragment>
@@ -74,13 +85,22 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         </Text>
       </div>
       {upmd && <Text className={s.albumname}>{album.name}</Text>}
-      {upmd && <Text className={s.duration}>{msToMinutesAndSeconds(track.duration_ms)}</Text>}
+      {upmd && (
+        <Text className={s.duration}>
+          {msToMinutesAndSeconds(track.duration_ms)}
+        </Text>
+      )}
       <Text className={s.sumcount}>
-        {count} {upmd && <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>}
+        {count}{' '}
+        {upmd && (
+          <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>
+        )}
       </Text>
       <Text className={s.sumduration}>
         {msToMinutesAndSeconds(duration)}{' '}
-        {upmd && <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>}
+        {upmd && (
+          <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>
+        )}
       </Text>
     </div>
   );

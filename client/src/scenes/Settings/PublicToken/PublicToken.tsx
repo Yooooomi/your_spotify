@@ -37,10 +37,11 @@ export default function PublicToken() {
   return (
     <div>
       <Text element="div" className={s.disclaimer}>
-        The generated url will allow anyone with it to view your stats indefinitely. The user
-        won&apos;t be able to execute any action that modifies your account. Regenerating it will
-        cause the older link to be deprecated instantly. You can also share the page you&apos;re
-        currently viewing using the <code>Share this page</code> button on the side.
+        The generated url will allow anyone with it to view your stats
+        indefinitely. The user won&apos;t be able to execute any action that
+        modifies your account. Regenerating it will cause the older link to be
+        deprecated instantly. You can also share the page you&apos;re currently
+        viewing using the <code>Share this page</code> button on the side.
       </Text>
       <SettingLine
         left="Your public token"
@@ -56,7 +57,10 @@ export default function PublicToken() {
           )
         }
       />
-      <SettingLine left="Regenerate" right={<Button onClick={generate}>Generate</Button>} />
+      <SettingLine
+        left="Regenerate"
+        right={<Button onClick={generate}>Generate</Button>}
+      />
     </div>
   );
 }

@@ -16,8 +16,16 @@ interface ArtistsListenedProps extends ImplementedCardProps {}
 
 export default function ArtistsListened({ className }: ArtistsListenedProps) {
   const { interval, unit } = useSelector(selectRawIntervalDetail);
-  const result = useAPI(api.differentArtistsPer, interval.start, interval.end, Timesplit.all);
-  const lastPeriod = useMemo(() => getLastPeriod(interval.start, interval.end), [interval]);
+  const result = useAPI(
+    api.differentArtistsPer,
+    interval.start,
+    interval.end,
+    Timesplit.all,
+  );
+  const lastPeriod = useMemo(
+    () => getLastPeriod(interval.start, interval.end),
+    [interval],
+  );
   const resultOld = useAPI(
     api.differentArtistsPer,
     lastPeriod.start,
@@ -59,7 +67,8 @@ export default function ArtistsListened({ className }: ArtistsListenedProps) {
             {Math.abs(percentMore)}%
           </Text>
           <Text>
-            &nbsp;{percentMore < 0 ? 'less' : 'more'} than last {unit}
+            &nbsp;
+            {percentMore < 0 ? 'less' : 'more'} than last {unit}
           </Text>
         </Text>
       </div>

@@ -48,7 +48,11 @@ export const UserSchema = new Schema<User>(
         enum: ['number', 'duration'],
         default: 'number',
       },
-      darkMode: { type: String, enum: ['follow', 'dark', 'light'], default: 'follow' },
+      darkMode: {
+        type: String,
+        enum: ['follow', 'dark', 'light'],
+        default: 'follow',
+      },
     },
     lastImport: { type: String, default: null },
     publicToken: { type: String, default: null, index: true },

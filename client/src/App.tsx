@@ -35,7 +35,9 @@ function App() {
 
   useEffect(() => {
     const vars =
-      dark === 'dark' || (dark === 'follow' && prefersDarkMode) ? 'dark-vars' : 'light-vars';
+      dark === 'dark' || (dark === 'follow' && prefersDarkMode)
+        ? 'dark-vars'
+        : 'light-vars';
     document.body.setAttribute('class', vars);
   }, [dark, prefersDarkMode]);
 
@@ -65,7 +67,10 @@ function App() {
               />
               <Route path="logout" element={<Logout />} />
               <Route path="login" element={<Login />} />
-              <Route path="/registrations-disabled" element={<RegistrationsDisabled />} />
+              <Route
+                path="/registrations-disabled"
+                element={<RegistrationsDisabled />}
+              />
               <Route
                 path="/top/songs"
                 element={

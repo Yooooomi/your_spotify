@@ -27,8 +27,18 @@ import {
   getCollaborativeBestSongs,
 } from '../database/queries/collaborative';
 import { logger } from '../tools/logger';
-import { isLoggedOrGuest, logged, validating, withHttpClient } from '../tools/middleware';
-import { SpotifyRequest, LoggedRequest, Timesplit, TypedPayload } from '../tools/types';
+import {
+  isLoggedOrGuest,
+  logged,
+  validating,
+  withHttpClient,
+} from '../tools/middleware';
+import {
+  SpotifyRequest,
+  LoggedRequest,
+  Timesplit,
+  TypedPayload,
+} from '../tools/types';
 import { toDate, toNumber } from '../tools/zod';
 
 const router = Router();
@@ -38,25 +48,31 @@ const playSchema = z.object({
   id: z.string(),
 });
 
-router.post('/play', validating(playSchema), logged, withHttpClient, async (req, res) => {
-  const { client } = req as SpotifyRequest;
-  const { id } = req.body as TypedPayload<typeof playSchema>;
+router.post(
+  '/play',
+  validating(playSchema),
+  logged,
+  withHttpClient,
+  async (req, res) => {
+    const { client } = req as SpotifyRequest;
+    const { id } = req.body as TypedPayload<typeof playSchema>;
 
-  try {
-    const track = await getTrackBySpotifyId(id);
+    try {
+      const track = await getTrackBySpotifyId(id);
 
-    if (!track) return res.status(400).end();
-    await client.playTrack(track.uri);
-    return res.status(200).end();
-  } catch (e) {
-    if (e.response) {
-      logger.error(e.response.data);
-      return res.status(400).send(e.response.data.error);
+      if (!track) return res.status(400).end();
+      await client.playTrack(track.uri);
+      return res.status(200).end();
+    } catch (e) {
+      if (e.response) {
+        logger.error(e.response.data);
+        return res.status(400).send(e.response.data.error);
+      }
+      logger.error(e);
+      return res.status(500).end();
     }
-    logger.error(e);
-    return res.status(500).end();
-  }
-});
+  },
+);
 
 const gethistorySchema = z.object({
   number: z.preprocess(toNumber, z.number().max(20)),
@@ -71,7 +87,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { number, offset, start, end } = req.query as TypedPayload<typeof gethistorySchema>;
+    const { number, offset, start, end } = req.query as TypedPayload<
+      typeof gethistorySchema
+    >;
 
     const tracks = await getSongs(
       user._id.toString(),
@@ -100,21 +118,26 @@ const intervalPerSchema = z.object({
   timeSplit: z.nativeEnum(Timesplit).default(Timesplit.day),
 });
 
-router.get('/listened_to', validating(interval, 'query'), isLoggedOrGuest, async (req, res) => {
-  const { user } = req as LoggedRequest;
-  const { start, end } = req.query as TypedPayload<typeof interval>;
+router.get(
+  '/listened_to',
+  validating(interval, 'query'),
+  isLoggedOrGuest,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end } = req.query as TypedPayload<typeof interval>;
 
-  try {
-    const result = await getSongsPer(user, start, end);
-    if (result.length > 0) {
-      return res.status(200).send({ count: result[0].count });
+    try {
+      const result = await getSongsPer(user, start, end);
+      if (result.length > 0) {
+        return res.status(200).send({ count: result[0].count });
+      }
+      return res.status(200).send({ count: 0 });
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
     }
-    return res.status(200).send({ count: 0 });
-  } catch (e) {
-    logger.error(e);
-    return res.status(500).end();
-  }
-});
+  },
+);
 
 router.get(
   '/most_listened',
@@ -122,7 +145,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
+    const { start, end, timeSplit } = req.query as TypedPayload<
+      typeof intervalPerSchema
+    >;
 
     try {
       const result = await getMostListenedSongs(user, start, end, timeSplit);
@@ -140,7 +165,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
+    const { start, end, timeSplit } = req.query as TypedPayload<
+      typeof intervalPerSchema
+    >;
 
     try {
       const result = await getMostListenedArtist(user, start, end, timeSplit);
@@ -158,7 +185,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
+    const { start, end, timeSplit } = req.query as TypedPayload<
+      typeof intervalPerSchema
+    >;
 
     try {
       const result = await getSongsPer(user, start, end, timeSplit);
@@ -176,7 +205,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
+    const { start, end, timeSplit } = req.query as TypedPayload<
+      typeof intervalPerSchema
+    >;
 
     try {
       const result = await getTimePer(user, start, end, timeSplit);
@@ -194,7 +225,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
+    const { start, end, timeSplit } = req.query as TypedPayload<
+      typeof intervalPerSchema
+    >;
 
     try {
       const result = await albumDateRatio(user, start, end, timeSplit);
@@ -212,7 +245,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
+    const { start, end, timeSplit } = req.query as TypedPayload<
+      typeof intervalPerSchema
+    >;
 
     try {
       const result = await featRatio(user, start, end, timeSplit);
@@ -230,7 +265,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
+    const { start, end, timeSplit } = req.query as TypedPayload<
+      typeof intervalPerSchema
+    >;
 
     try {
       const result = await popularityPer(user, start, end, timeSplit);
@@ -248,7 +285,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
+    const { start, end, timeSplit } = req.query as TypedPayload<
+      typeof intervalPerSchema
+    >;
 
     try {
       const result = await differentArtistsPer(user, start, end, timeSplit);
@@ -284,7 +323,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, timeSplit } = req.query as TypedPayload<typeof intervalPerSchema>;
+    const { start, end, timeSplit } = req.query as TypedPayload<
+      typeof intervalPerSchema
+    >;
 
     try {
       const result = await getBestArtistsPer(user, start, end, timeSplit);
@@ -312,7 +353,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, nb, offset } = req.query as TypedPayload<typeof intervalPerSchemaNbOffset>;
+    const { start, end, nb, offset } = req.query as TypedPayload<
+      typeof intervalPerSchemaNbOffset
+    >;
 
     try {
       const result = await getBestSongsNbOffseted(user, start, end, nb, offset);
@@ -330,10 +373,18 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, nb, offset } = req.query as TypedPayload<typeof intervalPerSchemaNbOffset>;
+    const { start, end, nb, offset } = req.query as TypedPayload<
+      typeof intervalPerSchemaNbOffset
+    >;
 
     try {
-      const result = await getBestArtistsNbOffseted(user, start, end, nb, offset);
+      const result = await getBestArtistsNbOffseted(
+        user,
+        start,
+        end,
+        nb,
+        offset,
+      );
       return res.status(200).send(result);
     } catch (e) {
       logger.error(e);
@@ -348,10 +399,18 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, nb, offset } = req.query as TypedPayload<typeof intervalPerSchemaNbOffset>;
+    const { start, end, nb, offset } = req.query as TypedPayload<
+      typeof intervalPerSchemaNbOffset
+    >;
 
     try {
-      const result = await getBestAlbumsNbOffseted(user, start, end, nb, offset);
+      const result = await getBestAlbumsNbOffseted(
+        user,
+        start,
+        end,
+        nb,
+        offset,
+      );
       return res.status(200).send(result);
     } catch (e) {
       logger.error(e);
@@ -373,11 +432,13 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, otherIds, mode } = req.query as TypedPayload<typeof collaborativeSchema>;
+    const { start, end, otherIds, mode } = req.query as TypedPayload<
+      typeof collaborativeSchema
+    >;
 
     try {
       const result = await getCollaborativeBestSongs(
-        [user._id.toString(), ...otherIds.filter((e) => e.length > 0)],
+        [user._id.toString(), ...otherIds.filter(e => e.length > 0)],
         start,
         end,
         mode,
@@ -396,7 +457,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, otherIds, mode } = req.query as TypedPayload<typeof collaborativeSchema>;
+    const { start, end, otherIds, mode } = req.query as TypedPayload<
+      typeof collaborativeSchema
+    >;
 
     try {
       const result = await getCollaborativeBestAlbums(
@@ -419,7 +482,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, otherIds, mode } = req.query as TypedPayload<typeof collaborativeSchema>;
+    const { start, end, otherIds, mode } = req.query as TypedPayload<
+      typeof collaborativeSchema
+    >;
 
     try {
       const result = await getCollaborativeBestArtists(
@@ -442,7 +507,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end } = req.query as TypedPayload<typeof collaborativeSchema>;
+    const { start, end } = req.query as TypedPayload<
+      typeof collaborativeSchema
+    >;
 
     try {
       const result = await getBestSongsOfHour(user, start, end);
@@ -460,7 +527,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end } = req.query as TypedPayload<typeof collaborativeSchema>;
+    const { start, end } = req.query as TypedPayload<
+      typeof collaborativeSchema
+    >;
 
     try {
       const result = await getBestAlbumsOfHour(user, start, end);
@@ -478,7 +547,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end } = req.query as TypedPayload<typeof collaborativeSchema>;
+    const { start, end } = req.query as TypedPayload<
+      typeof collaborativeSchema
+    >;
 
     try {
       const result = await getBestArtistsOfHour(user, start, end);

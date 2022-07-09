@@ -23,7 +23,9 @@ export default function Affinity() {
   const [ids, setIds] = useState<Set<string>>(new Set());
   const [mode, setMode] = useState(CollaborativeMode.MINIMA);
   const [statType, setStatType] = useState('songs');
-  const [dataInterval, setDataInterval] = useState<IntervalDetail>(presetIntervals[1]);
+  const [dataInterval, setDataInterval] = useState<IntervalDetail>(
+    presetIntervals[1],
+  );
   const accounts = useSelector(selectAccounts);
 
   const add = useCallback(
@@ -55,27 +57,30 @@ export default function Affinity() {
             title={
               <div>
                 <p>
-                  The affinity represents the probability the user like the same songs. The affinity
-                  feature comes with two <strong>modes</strong>:
+                  The affinity represents the probability the user like the same
+                  songs. The affinity feature comes with two{' '}
+                  <strong>modes</strong>:
                 </p>
                 <ul>
                   <li>
-                    <strong>Average</strong>: bases the ranking on the average of the proportion
-                    each people listening to a specific element. If A listens to a song 50% of his
-                    time, B 25% and C 0%, the average will be 25%, thus ranking higher than A 12%, B
-                    12% and C 12%.
+                    <strong>Average</strong>: bases the ranking on the average
+                    of the proportion each people listening to a specific
+                    element. If A listens to a song 50% of his time, B 25% and C
+                    0%, the average will be 25%, thus ranking higher than A 12%,
+                    B 12% and C 12%.
                   </li>
                   <li>
-                    <strong>Minima</strong>: bases the ranking on the minimal proportion of each
-                    people listening to a specific element. If A listens to a song 50% of his time,
-                    B 25% and C 0%, the minima will be 0%, thus ranking lower than A 100% B 5% and C
+                    <strong>Minima</strong>: bases the ranking on the minimal
+                    proportion of each people listening to a specific element.
+                    If A listens to a song 50% of his time, B 25% and C 0%, the
+                    minima will be 0%, thus ranking lower than A 100% B 5% and C
                     1%.
                   </li>
                 </ul>
                 <p>
-                  Average can mean that the top songs will satisfy a lot some people while minima
-                  means that the top songs will be known by everyone but not enjoyed as much for
-                  everyone.
+                  Average can mean that the top songs will satisfy a lot some
+                  people while minima means that the top songs will be known by
+                  everyone but not enjoyed as much for everyone.
                 </p>
               </div>
             }>
@@ -86,7 +91,7 @@ export default function Affinity() {
           <Text element="h2" className={s.section}>
             Users
           </Text>
-          {accounts.map((account) => (
+          {accounts.map(account => (
             <button
               type="button"
               key={account.id}
@@ -110,7 +115,7 @@ export default function Affinity() {
           <Select
             variant="standard"
             value={mode}
-            onChange={(ev) => setMode(ev.target.value as CollaborativeMode)}>
+            onChange={ev => setMode(ev.target.value as CollaborativeMode)}>
             <MenuItem value={CollaborativeMode.MINIMA}>Minima</MenuItem>
             <MenuItem value={CollaborativeMode.AVERAGE}>Average</MenuItem>
           </Select>
@@ -122,7 +127,7 @@ export default function Affinity() {
           <Select
             variant="standard"
             value={statType}
-            onChange={(ev) => setStatType(ev.target.value)}>
+            onChange={ev => setStatType(ev.target.value)}>
             <MenuItem value="songs">Songs</MenuItem>
             <MenuItem value="albums">Albums</MenuItem>
             <MenuItem value="artists">Artists</MenuItem>

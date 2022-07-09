@@ -12,15 +12,20 @@ import Track from './Track';
 
 export default function Songs() {
   const { name, interval } = useSelector(selectRawIntervalDetail);
-  const [items, setItems] = useState<UnboxPromise<ReturnType<typeof api['getBestSongs']>>['data']>(
-    [],
-  );
+  const [items, setItems] = useState<
+    UnboxPromise<ReturnType<typeof api['getBestSongs']>>['data']
+  >([]);
   const [hasMore, setHasMore] = useState(true);
 
   const fetch = useCallback(async () => {
     if (!hasMore) return;
     try {
-      const result = await api.getBestSongs(interval.start, interval.end, 10, items.length);
+      const result = await api.getBestSongs(
+        interval.start,
+        interval.end,
+        10,
+        items.length,
+      );
       setItems([...items, ...result.data]);
       setHasMore(result.data.length === 10);
     } catch (e) {
@@ -43,7 +48,10 @@ export default function Songs() {
 
   return (
     <div>
-      <Header title="Top songs" subtitle="Here are the songs you listened to the most" />
+      <Header
+        title="Top songs"
+        subtitle="Here are the songs you listened to the most"
+      />
       <div className={s.content}>
         <TitleCard title="Top songs">
           <Track line playable />
@@ -53,7 +61,7 @@ export default function Songs() {
             hasMore={hasMore}
             dataLength={items.length}
             loader={<Loader />}>
-            {items.map((item) => (
+            {items.map(item => (
               <Track
                 playable
                 key={item.track.id}

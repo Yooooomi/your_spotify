@@ -1,6 +1,13 @@
 import React, { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { ResponsiveContainer, AreaChart, XAxis, YAxis, Tooltip, Area } from 'recharts';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Area,
+} from 'recharts';
 import { api } from '../../../services/api';
 import { useRawTooltipLabelFormatter } from '../../../services/chart';
 import { getColor } from '../../../services/colors';
@@ -18,30 +25,38 @@ import { ImplementedChartProps } from '../types';
 
 interface ArtistListeningRepartitionProps extends ImplementedChartProps {}
 
-const formatYAxis = (value: any) => {
-  return `${Math.floor(value * 100)}%`;
-};
+const formatYAxis = (value: any) => `${Math.floor(value * 100)}%`;
 
-export default function ArtistListeningRepartition({ className }: ArtistListeningRepartitionProps) {
+export default function ArtistListeningRepartition({
+  className,
+}: ArtistListeningRepartitionProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
-  const results = useAPI(api.mostListenedArtist, interval.start, interval.end, interval.timesplit);
+  const results = useAPI(
+    api.mostListenedArtist,
+    interval.start,
+    interval.end,
+    interval.timesplit,
+  );
 
   const resultsWithCount = useMemo(
     () =>
-      results?.map((res) => ({
+      results?.map(res => ({
         _id: res._id,
-        artists: res.artists.reduce<Record<string, number>>((acc, curr, idx) => {
-          acc[curr.id] = res.counts[idx];
-          return acc;
-        }, {}),
+        artists: res.artists.reduce<Record<string, number>>(
+          (acc, curr, idx) => {
+            acc[curr.id] = res.counts[idx];
+            return acc;
+          },
+          {},
+        ),
       })),
     [results],
   );
 
   const allArtists = useMemo(() => {
     const all: Record<string, Artist> = {};
-    results?.forEach((res) => {
-      res.artists.forEach((art) => {
+    results?.forEach(res => {
+      res.artists.forEach(art => {
         if (!(art.id in all)) {
           all[art.id] = art;
         }
@@ -59,16 +74,28 @@ export default function ArtistListeningRepartition({ className }: ArtistListenin
         x: idx,
         _id: curr._id as DateId,
       };
-      const total = Object.values(curr.artists).reduce((acc, count) => acc + count, 0);
-      Object.values(allArtists).forEach((art) => {
+      const total = Object.values(curr.artists).reduce(
+        (acc, count) => acc + count,
+        0,
+      );
+      Object.values(allArtists).forEach(art => {
         obj[art.id] = (curr.artists[art.id] ?? 0) / total;
       });
       return obj;
     }, []);
-    return buildXYDataObjSpread(d, Object.keys(allArtists), interval.start, interval.end, false);
+    return buildXYDataObjSpread(
+      d,
+      Object.keys(allArtists),
+      interval.start,
+      interval.end,
+      false,
+    );
   }, [allArtists, interval, resultsWithCount]);
 
-  const tooltipLabelFormatter = useRawTooltipLabelFormatter(formatXAxisDateTooltip, false);
+  const tooltipLabelFormatter = useRawTooltipLabelFormatter(
+    formatXAxisDateTooltip,
+    false,
+  );
 
   const tooltipValueFormatter = useCallback(
     (value: number, label: string) => {
@@ -80,21 +107,28 @@ export default function ArtistListeningRepartition({ className }: ArtistListenin
     [allArtists],
   );
 
-  const tooltipSorter = useCallback((a: any) => {
-    return -a.payload[a.dataKey];
-  }, []);
+  const tooltipSorter = useCallback((a: any) => -a.payload[a.dataKey], []);
 
   const formatX = useFormatXAxis(data);
 
   if (!results) {
-    return <LoadingImplementedChart title="Artist listening distribution" className={className} />;
+    return (
+      <LoadingImplementedChart
+        title="Artist listening distribution"
+        className={className}
+      />
+    );
   }
 
   return (
     <ChartCard title="Artist listening distribution" className={className}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data}>
-          <XAxis dataKey="x" tickFormatter={formatX} style={{ fontWeight: 'bold' }} />
+          <XAxis
+            dataKey="x"
+            tickFormatter={formatX}
+            style={{ fontWeight: 'bold' }}
+          />
           <YAxis domain={[0, 1]} tickFormatter={formatYAxis} />
           <Tooltip
             formatter={tooltipValueFormatter}

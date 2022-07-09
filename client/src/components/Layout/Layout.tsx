@@ -18,7 +18,7 @@ export default function Layout({ children }: LayoutProps) {
   const publicToken = useSelector(selectPublicToken);
 
   const drawer = useCallback(() => {
-    setOpen((old) => !old);
+    setOpen(old => !old);
   }, []);
 
   return (

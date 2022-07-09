@@ -183,7 +183,7 @@ export const buildXYData = (
     start,
     end,
     Boolean(doNotFillData),
-    (idx) => ({ y: data[idx].value }),
+    idx => ({ y: data[idx].value }),
     () => ({ y: 0 }),
   );
 
@@ -203,7 +203,7 @@ export const buildXYDataObjSpread = (
     start,
     end,
     Boolean(doNotFillData),
-    (idx) => data[idx],
+    idx => data[idx],
     () => zeros,
   );
 };
@@ -223,7 +223,10 @@ export const months = [
   'December',
 ];
 
-export const formatDateWithPrecisionToSimpleString = ({ date, precision }: DateWithPrecision) => {
+export const formatDateWithPrecisionToSimpleString = ({
+  date,
+  precision,
+}: DateWithPrecision) => {
   if (precision === Precision.hour) {
     return `${pad(date.getHours())}:00`;
   }
@@ -242,17 +245,24 @@ export const formatDateWithPrecisionToSimpleString = ({ date, precision }: DateW
   return 'no precision found';
 };
 
-export const formatDateWithPrecisionToString = ({ date, precision }: DateWithPrecision) => {
+export const formatDateWithPrecisionToString = ({
+  date,
+  precision,
+}: DateWithPrecision) => {
   if (precision === Precision.hour) {
-    return `${pad(date.getHours())}:00 ${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(
+    return `${pad(date.getHours())}:00 ${pad(date.getDate())}/${pad(
+      date.getMonth() + 1,
+    )}/${pad(date.getFullYear())}`;
+  }
+  if (precision === Precision.day) {
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(
       date.getFullYear(),
     )}`;
   }
-  if (precision === Precision.day) {
-    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())}`;
-  }
   if (precision === Precision.week) {
-    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())}`;
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(
+      date.getFullYear(),
+    )}`;
   }
   if (precision === Precision.month) {
     return `${months[date.getMonth()]} ${pad(date.getFullYear())}`;
@@ -266,7 +276,7 @@ export const formatDateWithPrecisionToString = ({ date, precision }: DateWithPre
 export const useFormatXAxis = (data: DefaultGraphItem[]) =>
   useCallback(
     (value: number) => {
-      const dataValue = data.find((d) => d.x === value);
+      const dataValue = data.find(d => d.x === value);
       if (!dataValue) {
         return '';
       }
@@ -281,14 +291,18 @@ export const formatYAxisDate = (value: number) => {
   return `${months[month]} ${year}`;
 };
 
-export const formatXAxisDateTooltip = <D extends { dateWithPrecision: DateWithPrecision }>(
+export const formatXAxisDateTooltip = <
+  D extends { dateWithPrecision: DateWithPrecision },
+>(
   label: string,
   payload: D,
 ) => formatDateWithPrecisionToString(payload.dateWithPrecision);
 
 export const msToMinutes = (ms: number) => Math.floor(ms / 1000 / 60);
 export const msToMinutesAndSeconds = (ms: number) =>
-  `${msToMinutes(ms)}:${pad(Math.floor((ms - msToMinutes(ms) * 1000 * 60) / 1000))}`;
+  `${msToMinutes(ms)}:${pad(
+    Math.floor((ms - msToMinutes(ms) * 1000 * 60) / 1000),
+  )}`;
 
 export const dateToListenedAt = (date: Date) => {
   const now = new Date();
@@ -297,9 +311,9 @@ export const dateToListenedAt = (date: Date) => {
   if (diff < day) {
     return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
-  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(date.getFullYear())} at ${pad(
-    date.getHours(),
-  )}:${pad(date.getMinutes())}`;
+  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${pad(
+    date.getFullYear(),
+  )} at ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
 export const getLastPeriod = (start: Date, end: Date) => {
@@ -323,6 +337,5 @@ export const getPercentMore = (old: number, now: number) => {
   return -(1 - Math.floor(old / now));
 };
 
-export const dateToMonthAndYear = (date: Date) => {
-  return `${months[date.getMonth()]} ${date.getFullYear()}`;
-};
+export const dateToMonthAndYear = (date: Date) =>
+  `${months[date.getMonth()]} ${date.getFullYear()}`;

@@ -22,7 +22,9 @@ router.post(
   logged,
   admin,
   async (req, res) => {
-    const modifications = req.body as TypedPayload<typeof updateGlobalPreferencesSchema>;
+    const modifications = req.body as TypedPayload<
+      typeof updateGlobalPreferencesSchema
+    >;
 
     const newPrefs = await updateGlobalPreferences(modifications);
     return res.status(200).send(newPrefs);

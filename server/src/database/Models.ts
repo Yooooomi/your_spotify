@@ -14,5 +14,8 @@ export const ArtistModel = model('Artist', ArtistSchema);
 export const AlbumModel = model('Album', AlbumSchema);
 export const TrackModel = model('Track', TrackSchema);
 export const MigrationModel = model('Migration', MigrationSchema);
-export const GlobalPreferencesModel = model('GlobalPreference', GlobalPreferencesSchema);
+export const GlobalPreferencesModel = model(
+  'GlobalPreference',
+  GlobalPreferencesSchema,
+);
 export const ImporterStateModel = model('ImporterState', ImporterStateSchema);
