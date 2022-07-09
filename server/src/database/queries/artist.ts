@@ -188,7 +188,7 @@ export const getRankOfArtist = async (user: User, artistId: string) => {
 export const getDayRepartitionOfArtist = (user: User, artistId: string) =>
   InfosModel.aggregate([
     { $match: { owner: user._id } },
-    { $addFields: { ...getGroupByDateProjection() } },
+    { $addFields: getGroupByDateProjection() },
     ...getArtistInfos(artistId),
     {
       $lookup: {
