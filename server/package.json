@@ -21,7 +21,7 @@
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "migrate": "^1.7.0",
-    "mongoose": "6.3.2",
+    "mongoose": "6.4.6",
     "morgan": "^1.10.0",
     "multer": "^1.4.4",
     "uuid": "^8.3.2",
