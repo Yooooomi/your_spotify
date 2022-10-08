@@ -23,6 +23,7 @@ import {
   fetchPlaylists,
 } from '../../services/redux/modules/playlist/thunk';
 import { useAppDispatch } from '../../services/redux/tools';
+import { getAtLeastImage } from '../../services/tools';
 import Dialog from '../Dialog';
 import LoadingButton from '../LoadingButton';
 import TabPanel from '../TabPanel';
@@ -118,6 +119,7 @@ export default function PlaylistDialog() {
           <FormControl fullWidth>
             <InputLabel id="playlist">Select a playlist</InputLabel>
             <Select
+              classes={{ select: s.playlistItem }}
               labelId="playlist"
               label="Select a playlist"
               className={s.playlistSelect}
@@ -125,6 +127,11 @@ export default function PlaylistDialog() {
               onChange={ev => setSelectedPlaylist(ev.target.value)}>
               {playlists?.map(playlist => (
                 <MenuItem key={playlist.id} value={playlist.id}>
+                  <img
+                    alt="playlist cover"
+                    className={s.playlistCover}
+                    src={getAtLeastImage(playlist.images, 50)}
+                  />
                   {playlist.name}
                 </MenuItem>
               ))}

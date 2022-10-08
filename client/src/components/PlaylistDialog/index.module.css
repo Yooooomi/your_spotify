@@ -14,3 +14,16 @@
   margin-top: 16px;
   text-align: right;
 }
+
+.playlistItem {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+.playlistCover {
+  height: 32px;
+  width: 32px;
+  border-radius: var(--radius);
+  margin-right: 8px;
+}

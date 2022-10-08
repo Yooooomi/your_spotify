@@ -5,7 +5,7 @@ import s from './index.module.css';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist, Album as AlbumType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
-import { getImage } from '../../../../services/tools';
+import { getAtLeastImage } from '../../../../services/tools';
 import Text from '../../../../components/Text';
 
 interface AlbumProps {
@@ -40,7 +40,11 @@ export default function Album(props: AlbumProps | HeaderAlbumProps) {
   const { album, artists, duration, totalDuration, count, totalCount } = props;
   return (
     <div className={s.root}>
-      <img className={s.albumcover} src={getImage(album)} alt="Album cover" />
+      <img
+        className={s.albumcover}
+        src={getAtLeastImage(album.images, 48)}
+        alt="Album cover"
+      />
       <div className={s.name}>
         <Text className={s.albumname}>{album.name}</Text>
         <Text className={s.artistname}>

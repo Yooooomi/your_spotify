@@ -5,7 +5,6 @@ import s from './index.module.css';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist, Album, Track as TrackType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
-import { getImage } from '../../../../services/tools';
 import Text from '../../../../components/Text';
 import PlayButton from '../../../../components/PlayButton';
 import TrackOptions from '../../../../components/TrackOptions';
@@ -62,7 +61,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
       {playable && (
         <PlayButton
           id={track.id}
-          cover={getImage(album)}
+          covers={album.images}
           className={s.albumcover}
         />
       )}

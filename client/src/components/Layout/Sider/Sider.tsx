@@ -24,7 +24,7 @@ import {
 import s from './index.module.css';
 import { useConditionalAPI, useShareLink } from '../../../services/hooks';
 import { api } from '../../../services/apis/api';
-import { getImage } from '../../../services/tools';
+import { getAtLeastImage } from '../../../services/tools';
 import Text from '../../Text';
 import { alertMessage } from '../../../services/redux/modules/message/reducer';
 import { selectUser } from '../../../services/redux/modules/user/selector';
@@ -182,7 +182,11 @@ export default function Sider({ className }: SiderProps) {
               className={s.result}
               key={res.id}
               onClick={reset}>
-              <img className={s.resultimage} src={getImage(res)} alt="Artist" />
+              <img
+                className={s.resultimage}
+                src={getAtLeastImage(res.images, 48)}
+                alt="Artist"
+              />
               <Text element="strong">{res.name}</Text>
             </Link>
           ))}

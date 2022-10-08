@@ -12,7 +12,7 @@ import { useOldestListenedAtFromUsers } from '../../../../services/intervals';
 import { AdminAccount } from '../../../../services/redux/modules/admin/reducer';
 import { selectAccounts } from '../../../../services/redux/modules/admin/selector';
 import { selectUser } from '../../../../services/redux/modules/user/selector';
-import { getImage } from '../../../../services/tools';
+import { getAtLeastImage } from '../../../../services/tools';
 import { CollaborativeMode } from '../../../../services/types';
 import { AFFINITY_PREFIX } from '../types';
 import s from './index.module.css';
@@ -85,7 +85,7 @@ export default function Albums() {
               </Text>
               <img
                 alt="cover"
-                src={getImage(res.album)}
+                src={getAtLeastImage(res.album.images, 48)}
                 className={s.albumimage}
               />
               <div className={s.albumname}>

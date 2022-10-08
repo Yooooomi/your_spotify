@@ -10,7 +10,7 @@ import {
   dateToListenedAt,
   dateToMonthAndYear,
 } from '../../services/stats';
-import { getImage } from '../../services/tools';
+import { getAtLeastImage } from '../../services/tools';
 import { Artist } from '../../services/types';
 import s from './index.module.css';
 import DayRepartition from './DayRepartition';
@@ -58,7 +58,7 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
         left={
           <img
             className={s.headerimage}
-            src={getImage(stats.artist)}
+            src={getAtLeastImage(stats.artist.images, 60)}
             alt="Artist"
           />
         }
@@ -124,7 +124,10 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
                 <div key={stats.firstLast.last.id} className={s.ml}>
                   <img
                     className={s.cardimg}
-                    src={getImage(stats.firstLast.last.track.album)}
+                    src={getAtLeastImage(
+                      stats.firstLast.last.track.album.images,
+                      48,
+                    )}
                     alt="album cover"
                   />
                   <div className={s.mlstat}>
@@ -142,7 +145,10 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
                 <div key={stats.firstLast.first.id} className={s.ml}>
                   <img
                     className={s.cardimg}
-                    src={getImage(stats.firstLast.first.track.album)}
+                    src={getAtLeastImage(
+                      stats.firstLast.first.track.album.images,
+                      48,
+                    )}
                     alt="album cover"
                   />
                   <div className={s.mlstat}>
@@ -213,7 +219,7 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
                   </Text>
                   <img
                     className={s.cardimg}
-                    src={getImage(ml.track.album)}
+                    src={getAtLeastImage(ml.track.album.images, 48)}
                     alt="album cover"
                   />
                   <div className={s.mlstat}>

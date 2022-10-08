@@ -17,7 +17,7 @@ import { AdminAccount } from '../../../../services/redux/modules/admin/reducer';
 import { selectAccounts } from '../../../../services/redux/modules/admin/selector';
 import { PlaylistContext } from '../../../../services/redux/modules/playlist/types';
 import { selectUser } from '../../../../services/redux/modules/user/selector';
-import { compact, getImage } from '../../../../services/tools';
+import { compact } from '../../../../services/tools';
 import { CollaborativeMode } from '../../../../services/types';
 import { AFFINITY_PREFIX } from '../types';
 import s from './index.module.css';
@@ -108,7 +108,7 @@ export default function Songs() {
               </Text>
               <PlayButton
                 id={res.track.id}
-                cover={getImage(res.album)}
+                covers={res.album.images}
                 className={s.trackimage}
               />
               <div className={s.trackname}>

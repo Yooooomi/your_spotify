@@ -9,7 +9,6 @@ import s from './index.module.css';
 import InlineArtist from '../../InlineArtist';
 import PlayButton from '../../PlayButton';
 import Text from '../../Text';
-import { getImage } from '../../../services/tools';
 import TrackOptions from '../../TrackOptions';
 
 interface TrackProps {
@@ -46,7 +45,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
   return (
     <div className={s.root}>
       {playable && (
-        <PlayButton className={s.play} id={track.id} cover={getImage(album)} />
+        <PlayButton className={s.play} id={track.id} covers={album.images} />
       )}
       <div className={s.name}>
         <Text className={s.trackname}>{track.name}</Text>

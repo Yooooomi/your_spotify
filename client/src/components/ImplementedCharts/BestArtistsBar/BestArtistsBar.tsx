@@ -14,7 +14,7 @@ import Bar from '../../charts/Bar';
 import { ImplementedChartProps } from '../types';
 import { Artist } from '../../../services/types';
 import ChartCard from '../../ChartCard';
-import { getImage } from '../../../services/tools';
+import { getAtLeastImage } from '../../../services/tools';
 import LoadingImplementedChart from '../LoadingImplementedChart';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import Tooltip from '../../Tooltip';
@@ -56,7 +56,7 @@ class ImageAxisTick extends PureComponent<{
             <image
               width={svgImgSize}
               height={svgImgSize}
-              href={getImage(artist)}
+              href={getAtLeastImage(artist.images, svgImgSize)}
               clipPath="url(#yoyo)"
             />
           </g>

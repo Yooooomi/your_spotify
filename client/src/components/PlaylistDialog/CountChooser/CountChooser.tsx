@@ -28,6 +28,8 @@ export default function CountChooser({ value, setValue }: CountChooserProps) {
         }
         if (typeof newValue === 'string') {
           setValue(+newValue.slice(0, 10));
+        } else if (typeof newValue === 'number') {
+          setValue(newValue);
         }
       }
     },
@@ -35,21 +37,23 @@ export default function CountChooser({ value, setValue }: CountChooserProps) {
   );
 
   return (
-    <FormControl fullWidth className={s.numberSelect}>
-      <InputLabel id="number">Number of items</InputLabel>
-      <Select
-        labelId="number"
-        label="Number of items"
-        displayEmpty
-        value={inputType === 'default' ? value : 'custom'}
-        onChange={ev => internSetValue(ev.target.value, true)}>
-        {DEFAULT_CHOICES.map(choice => (
-          <MenuItem key={choice} value={choice}>
-            {choice}
-          </MenuItem>
-        ))}
-        <MenuItem value="custom">Custom</MenuItem>
-      </Select>
+    <>
+      <FormControl fullWidth className={s.numberSelect}>
+        <InputLabel id="number">Number of items</InputLabel>
+        <Select
+          labelId="number"
+          label="Number of items"
+          displayEmpty
+          value={inputType === 'default' ? value : 'custom'}
+          onChange={ev => internSetValue(ev.target.value, true)}>
+          {DEFAULT_CHOICES.map(choice => (
+            <MenuItem key={choice} value={choice}>
+              {choice}
+            </MenuItem>
+          ))}
+          <MenuItem value="custom">Custom</MenuItem>
+        </Select>
+      </FormControl>
       {inputType === 'custom' && (
         <Input
           className={s.input}
@@ -60,6 +64,6 @@ export default function CountChooser({ value, setValue }: CountChooserProps) {
           onChange={ev => internSetValue(ev.target.value)}
         />
       )}
-    </FormControl>
+    </>
   );
 }

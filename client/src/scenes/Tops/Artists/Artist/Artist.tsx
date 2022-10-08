@@ -5,7 +5,7 @@ import s from './index.module.css';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist as ArtistType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
-import { getImage } from '../../../../services/tools';
+import { getAtLeastImage } from '../../../../services/tools';
 import Text from '../../../../components/Text';
 
 interface ArtistProps {
@@ -41,7 +41,7 @@ export default function Artist(props: ArtistProps | HeaderArtistProps) {
     <div className={s.root}>
       <img
         className={s.artistcover}
-        src={getImage(artist)}
+        src={getAtLeastImage(artist.images, 48)}
         alt="Artist cover"
       />
       <Text className={s.artistname}>
