@@ -58,3 +58,7 @@ export function intervalToDisplay(start: Date, end: Date) {
   }
   return `${dateToMonthsYear(start)} to ${dateToMonthsYear(end)}`;
 }
+
+export function intervalToKey(start: Date, end: Date) {
+  return `${start.getTime()}-${end.getTime()}`;
+}

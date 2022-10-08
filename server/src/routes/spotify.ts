@@ -26,6 +26,7 @@ import {
   getCollaborativeBestArtists,
   getCollaborativeBestSongs,
 } from '../database/queries/collaborative';
+import { dateToDaysMonthsYear, intervalToDisplay } from '../tools/date';
 import { logger } from '../tools/logger';
 import {
   isLoggedOrGuest,
@@ -442,6 +443,7 @@ router.get(
         start,
         end,
         mode,
+        50,
       );
       return res.status(200).send(result);
     } catch (e) {
@@ -554,6 +556,129 @@ router.get(
     try {
       const result = await getBestArtistsOfHour(user, start, end);
       return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.get('/playlists', logged, withHttpClient, async (req, res) => {
+  const { client, user } = req as LoggedRequest & SpotifyRequest;
+
+  try {
+    const playlists = await client.playlists();
+    return res
+      .status(200)
+      .send(playlists.filter(playlist => playlist.owner.id === user.spotifyId));
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
+});
+
+const createPlaylistBase = z.object({
+  playlistId: z.string().optional(),
+  name: z.string().optional(),
+});
+
+const createPlaylistFromTop = z.object({
+  type: z.literal('top'),
+  interval: z.object({
+    start: z.preprocess(toDate, z.date()),
+    end: z.preprocess(
+      toDate,
+      z.date().default(() => new Date()),
+    ),
+  }),
+  nb: z.number(),
+});
+
+const createPlaylistFromAffinity = z.object({
+  type: z.literal('affinity'),
+  interval: z.object({
+    start: z.preprocess(toDate, z.date()),
+    end: z.preprocess(
+      toDate,
+      z.date().default(() => new Date()),
+    ),
+  }),
+  nb: z.number(),
+  userIds: z.array(z.string()),
+  mode: z.nativeEnum(CollaborativeMode),
+});
+
+const createPlaylistFromSingle = z.object({
+  type: z.literal('single'),
+  songId: z.string(),
+});
+
+const createPlaylist = z.discriminatedUnion('type', [
+  createPlaylistBase.merge(createPlaylistFromTop),
+  createPlaylistBase.merge(createPlaylistFromSingle),
+  createPlaylistBase.merge(createPlaylistFromAffinity),
+]);
+
+router.post(
+  '/playlist/create',
+  validating(createPlaylist),
+  logged,
+  withHttpClient,
+  async (req, res) => {
+    const { client, user } = req as LoggedRequest & SpotifyRequest;
+    const body = req.body as TypedPayload<typeof createPlaylist>;
+
+    if (!body.playlistId && !body.name) {
+      return res.status(400).end();
+    }
+
+    try {
+      let playlistName = body.name;
+      let spotifyIds: string[];
+      if (body.type === 'top') {
+        const { interval: intervalData, nb } = body;
+        const items = await getBestSongsNbOffseted(
+          user,
+          intervalData.start,
+          intervalData.end,
+          nb,
+          0,
+        );
+        spotifyIds = items.map(item => item.track.id);
+        if (!playlistName) {
+          playlistName = `Top songs • ${intervalToDisplay(
+            intervalData.start,
+            intervalData.end,
+          )}`;
+        }
+      } else if (body.type === 'affinity') {
+        if (!playlistName) {
+          playlistName = `Your Spotify Playlist • ${dateToDaysMonthsYear(
+            new Date(),
+          )}`;
+        }
+        const affinity = await getCollaborativeBestSongs(
+          body.userIds,
+          body.interval.start,
+          body.interval.end,
+          body.mode,
+          body.nb,
+        );
+        spotifyIds = affinity.map(item => item.track.id);
+      } else {
+        if (!playlistName) {
+          playlistName = `Your Spotify Playlist • ${dateToDaysMonthsYear(
+            new Date(),
+          )}`;
+        }
+        spotifyIds = [body.songId];
+      }
+      if (body.playlistId) {
+        await client.addToPlaylist(body.playlistId, spotifyIds);
+      } else {
+        await client.createPlaylist(playlistName, spotifyIds);
+      }
+      return res.status(204).end();
     } catch (e) {
       logger.error(e);
       return res.status(500).end();

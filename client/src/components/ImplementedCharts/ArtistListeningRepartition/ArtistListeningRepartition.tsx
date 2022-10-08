@@ -5,11 +5,10 @@ import {
   AreaChart,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as ReTooltip,
   Area,
 } from 'recharts';
-import { api } from '../../../services/api';
-import { useRawTooltipLabelFormatter } from '../../../services/chart';
+import { api } from '../../../services/apis/api';
 import { getColor } from '../../../services/colors';
 import { useAPI } from '../../../services/hooks';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
@@ -20,12 +19,19 @@ import {
 } from '../../../services/stats';
 import { Artist, DateId } from '../../../services/types';
 import ChartCard from '../../ChartCard';
+import Tooltip from '../../Tooltip';
+import { ValueFormatter } from '../../Tooltip/Tooltip';
 import LoadingImplementedChart from '../LoadingImplementedChart';
 import { ImplementedChartProps } from '../types';
 
 interface ArtistListeningRepartitionProps extends ImplementedChartProps {}
 
 const formatYAxis = (value: any) => `${Math.floor(value * 100)}%`;
+
+type DataItem = { [otherkeys: string]: number } & {
+  x: number;
+  _id: DateId;
+};
 
 export default function ArtistListeningRepartition({
   className,
@@ -70,10 +76,10 @@ export default function ArtistListeningRepartition({
       return [];
     }
     const d = resultsWithCount.map((curr, idx) => {
-      const obj: { x: number; _id: DateId } & any = {
+      const obj: DataItem = {
         x: idx,
         _id: curr._id as DateId,
-      };
+      } as DataItem;
       const total = Object.values(curr.artists).reduce(
         (acc, count) => acc + count,
         0,
@@ -92,18 +98,12 @@ export default function ArtistListeningRepartition({
     );
   }, [allArtists, interval, resultsWithCount]);
 
-  const tooltipLabelFormatter = useRawTooltipLabelFormatter(
-    formatXAxisDateTooltip,
-    false,
-  );
-
-  const tooltipValueFormatter = useCallback(
-    (value: number, label: string) => {
-      if (value === 0) {
-        return [<span />];
-      }
-      return [`${allArtists[label].name}: ${Math.floor(value * 1000) / 10}%`];
-    },
+  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
+    (_, value, root) => (
+      <span style={{ color: root.color }}>
+        {allArtists[root.dataKey].name}: {Math.floor(value * 1000) / 10}%
+      </span>
+    ),
     [allArtists],
   );
 
@@ -130,9 +130,14 @@ export default function ArtistListeningRepartition({
             style={{ fontWeight: 'bold' }}
           />
           <YAxis domain={[0, 1]} tickFormatter={formatYAxis} />
-          <Tooltip
-            formatter={tooltipValueFormatter}
-            labelFormatter={tooltipLabelFormatter}
+          <ReTooltip
+            content={
+              <Tooltip
+                title={formatXAxisDateTooltip}
+                value={tooltipValue}
+                dontShowNullValues
+              />
+            }
             wrapperStyle={{ zIndex: 1000 }}
             contentStyle={{ background: 'var(--background)' }}
             itemSorter={tooltipSorter}

@@ -9,6 +9,8 @@ import s from './index.module.css';
 import InlineArtist from '../../InlineArtist';
 import PlayButton from '../../PlayButton';
 import Text from '../../Text';
+import { getImage } from '../../../services/tools';
+import TrackOptions from '../../TrackOptions';
 
 interface TrackProps {
   line?: false;
@@ -34,6 +36,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         <Text className={clsx(s.albumname, s.header)}>Album name</Text>
         <Text className={clsx(s.duration, s.header)}>Duration</Text>
         <Text className={clsx(s.playedat, s.header)}>Listened at</Text>
+        <div className={clsx(s.trackoptions, s.header)} />
       </div>
     );
   }
@@ -42,7 +45,9 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
 
   return (
     <div className={s.root}>
-      {playable && <PlayButton className={s.play} id={track.id} />}
+      {playable && (
+        <PlayButton className={s.play} id={track.id} cover={getImage(album)} />
+      )}
       <div className={s.name}>
         <Text className={s.trackname}>{track.name}</Text>
         <Text className={s.artistname}>
@@ -61,6 +66,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
       {listenedAt && (
         <Text className={s.playedat}>{dateToListenedAt(listenedAt)}</Text>
       )}
+      <TrackOptions track={track} />
     </div>
   );
 }

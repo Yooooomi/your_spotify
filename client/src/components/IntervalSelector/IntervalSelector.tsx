@@ -11,9 +11,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import React, { useState, useCallback, useMemo } from 'react';
-import { DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
 import {
-  cloneDate,
   startOfDay,
   getAppropriateTimesplitFromRange,
   endOfDay,
@@ -22,12 +20,12 @@ import {
   allIntervals,
   getAllIndexFromIntervalDetail,
   IntervalDetail,
-  lastWeek,
-  now,
 } from '../../services/intervals';
 import Dialog from '../Dialog';
 import Text from '../Text';
 import s from './index.module.css';
+import RangePicker from './RangePicker';
+import { Range } from './RangePicker/RangePicker';
 
 interface IntervalSelectorProps {
   value: IntervalDetail;
@@ -44,12 +42,10 @@ export default function IntervalSelector({
 }: IntervalSelectorProps) {
   const upmd = !useMediaQuery('(max-width: 1250px)') && !forceTiny;
   const [open, setOpen] = useState(false);
-  const [customIntervalDate, setCustomIntervalDate] = useState<Range>({
-    key: 'range',
-    startDate: cloneDate(lastWeek),
-    endDate: cloneDate(now),
-    color: '#000000',
-  });
+  const [customIntervalDate, setCustomIntervalDate] = useState<Range>([
+    undefined,
+    undefined,
+  ]);
 
   const existingInterval = useMemo(
     () => getAllIndexFromIntervalDetail(value),
@@ -111,29 +107,23 @@ export default function IntervalSelector({
     );
   }
 
-  const onCustomChange = useCallback((a: RangeKeyDict) => {
-    setCustomIntervalDate(a.range);
-  }, []);
-
   const goodRange = useMemo(
-    () => Boolean(customIntervalDate.startDate && customIntervalDate.endDate),
-    [customIntervalDate.endDate, customIntervalDate.startDate],
+    () => Boolean(customIntervalDate[0] && customIntervalDate[1]),
+    [customIntervalDate],
   );
 
   const setCustom = useCallback(() => {
-    if (!customIntervalDate.startDate || !customIntervalDate.endDate) {
+    const [start, end] = customIntervalDate;
+    if (!start || !end) {
       return;
     }
     onChange({
       type: 'custom',
       name: 'custom',
       interval: {
-        start: startOfDay(customIntervalDate.startDate),
-        end: endOfDay(customIntervalDate.endDate),
-        timesplit: getAppropriateTimesplitFromRange(
-          customIntervalDate.startDate,
-          customIntervalDate.endDate,
-        ),
+        start: startOfDay(start),
+        end: endOfDay(end),
+        timesplit: getAppropriateTimesplitFromRange(start, end),
       },
     });
     setOpen(false);
@@ -148,9 +138,9 @@ export default function IntervalSelector({
         onClose={() => setOpen(false)}>
         <div className={s.dialogcontent}>
           <div>
-            <DateRangePicker
-              ranges={[customIntervalDate]}
-              onChange={onCustomChange}
+            <RangePicker
+              value={customIntervalDate}
+              onChange={setCustomIntervalDate}
             />
           </div>
           <Button variant="contained" onClick={setCustom} disabled={!goodRange}>

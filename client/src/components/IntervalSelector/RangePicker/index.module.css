@@ -1,0 +1,41 @@
+.panel {
+  display: flex;
+  align-items: flex-start;
+}
+
+.calendarRoot {
+  margin-top: -16px !important;
+  border-left: 1px solid var(--divider);
+}
+
+.day {
+  width: 40px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0px;
+}
+
+.lonelyHovered {
+  background-color: rgba(211, 211, 211, 0.346);
+  border-radius: 40px;
+}
+
+.hovering {
+  background-color: rgba(211, 211, 211, 0.246);
+}
+
+.between {
+  background-color: rgba(211, 211, 211, 0.346);
+}
+
+.start {
+  border-top-left-radius: 40px;
+  border-bottom-left-radius: 40px;
+}
+
+.end {
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 40px;
+}

@@ -7,6 +7,7 @@ import {
   YAxis,
   ResponsiveContainer,
 } from 'recharts';
+import { ContentType } from 'recharts/types/component/Tooltip';
 import { getColor } from '../../../services/colors';
 
 export interface StackedBarProps {
@@ -16,29 +17,16 @@ export interface StackedBarProps {
   customXTick?: React.ComponentProps<typeof XAxis>['tick'];
   xFormat?: React.ComponentProps<typeof XAxis>['tickFormatter'];
   yFormat?: React.ComponentProps<typeof YAxis>['tickFormatter'];
-  tooltipLabelFormatter?: React.ComponentProps<
-    typeof Tooltip
-  >['labelFormatter'];
-  tooltipValueFormatter?: React.ComponentProps<typeof Tooltip>['formatter'];
-  tooltipItemSorter?: React.ComponentProps<typeof Tooltip>['itemSorter'];
+  customTooltip?: ContentType<any, any>;
 }
 
 export default function Bar({
   data,
   xFormat,
   yFormat,
-  tooltipLabelFormatter,
-  tooltipValueFormatter,
-  tooltipItemSorter,
   customXTick,
+  customTooltip,
 }: StackedBarProps) {
-  const realFormatter = useMemo(() => {
-    if (tooltipValueFormatter) {
-      return (...args: any[]) => [tooltipValueFormatter(...args), null];
-    }
-    return undefined;
-  }, [tooltipValueFormatter]);
-
   const allKeys = useMemo(
     () =>
       data.reduce<Set<string>>((acc, curr) => {
@@ -67,9 +55,7 @@ export default function Bar({
           wrapperStyle={{ zIndex: 10 }}
           contentStyle={{ backgroundColor: 'var(--background)' }}
           labelStyle={{ color: 'var(--text-on-light)' }}
-          labelFormatter={tooltipLabelFormatter}
-          formatter={realFormatter}
-          itemSorter={tooltipItemSorter}
+          content={customTooltip}
         />
       </BarChart>
     </ResponsiveContainer>

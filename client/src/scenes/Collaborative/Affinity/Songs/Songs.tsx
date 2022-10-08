@@ -2,18 +2,22 @@ import { CircularProgress } from '@mui/material';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams, useSearchParams } from 'react-router-dom';
+import AddToPlaylist from '../../../../components/AddToPlaylist';
 import Header from '../../../../components/Header';
 import InlineArtist from '../../../../components/InlineArtist';
 import PlayButton from '../../../../components/PlayButton';
+import { DEFAULT_PLAYLIST_NB } from '../../../../components/PlaylistDialog/PlaylistDialog';
 import Text from '../../../../components/Text';
-import { api } from '../../../../services/api';
+import TrackOptions from '../../../../components/TrackOptions';
+import { api } from '../../../../services/apis/api';
 import { intervalToDisplay } from '../../../../services/date';
 import { useAPI } from '../../../../services/hooks';
 import { useOldestListenedAtFromUsers } from '../../../../services/intervals';
 import { AdminAccount } from '../../../../services/redux/modules/admin/reducer';
 import { selectAccounts } from '../../../../services/redux/modules/admin/selector';
+import { PlaylistContext } from '../../../../services/redux/modules/playlist/types';
 import { selectUser } from '../../../../services/redux/modules/user/selector';
-import { getImage } from '../../../../services/tools';
+import { compact, getImage } from '../../../../services/tools';
 import { CollaborativeMode } from '../../../../services/types';
 import { AFFINITY_PREFIX } from '../types';
 import s from './index.module.css';
@@ -39,6 +43,22 @@ export default function Songs() {
     mode as CollaborativeMode,
   );
 
+  const realIds = useMemo(() => compact([user?._id, ...ids]), [ids, user?._id]);
+
+  const context = useMemo<PlaylistContext>(
+    () => ({
+      type: 'affinity',
+      interval: {
+        start: start.getTime(),
+        end: end.getTime(),
+      },
+      nb: DEFAULT_PLAYLIST_NB,
+      userIds: realIds,
+      mode: mode as CollaborativeMode,
+    }),
+    [end, mode, realIds, start],
+  );
+
   if (!result || !user) {
     return (
       <div className={s.loading}>
@@ -55,7 +75,6 @@ export default function Songs() {
     },
     {},
   );
-  const realIds = [user._id, ...ids];
 
   return (
     <div className={s.root}>
@@ -67,6 +86,9 @@ export default function Songs() {
         hideInterval
       />
       <div className={s.content}>
+        <div className={s.addtoplaylist}>
+          <AddToPlaylist context={context} />
+        </div>
         {result?.map((res, index) => {
           const listened = realIds.map(id => res[id]);
 
@@ -84,10 +106,9 @@ export default function Songs() {
               <Text element="strong" className={s.ranking}>
                 #{index + 1}
               </Text>
-              <PlayButton id={res.track.id} />
-              <img
-                alt="cover"
-                src={getImage(res.album)}
+              <PlayButton
+                id={res.track.id}
+                cover={getImage(res.album)}
                 className={s.trackimage}
               />
               <div className={s.trackname}>
@@ -104,6 +125,7 @@ export default function Songs() {
                   </Text>
                 </Text>
               </div>
+              <TrackOptions track={res.track} />
             </div>
           );
         })}

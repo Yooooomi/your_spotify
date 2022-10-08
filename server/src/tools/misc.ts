@@ -309,3 +309,16 @@ export const minOfArray = <T>(array: T[], fn: (item: T) => number) => {
   }
   return { min, minIndex };
 };
+
+export function chunk<T>(array: T[], chunkSize: number) {
+  if (chunkSize <= 0) {
+    logger.warn('Chunk size of 0 given to the chunk util');
+    return [array];
+  }
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    const currentChunk = array.slice(i, i + chunkSize);
+    chunks.push(currentChunk);
+  }
+  return chunks;
+}

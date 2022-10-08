@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { api } from '../../../services/api';
+import { api } from '../../../services/apis/api';
 import { useAPI } from '../../../services/hooks';
 import {
   buildXYData,
@@ -14,6 +14,8 @@ import ChartCard from '../../ChartCard';
 import LoadingImplementedChart from '../LoadingImplementedChart';
 import { ImplementedChartProps } from '../types';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
+import Tooltip from '../../Tooltip';
+import { ValueFormatter } from '../../Tooltip/Tooltip';
 
 interface TimeListenedPerProps extends ImplementedChartProps {}
 
@@ -37,8 +39,8 @@ export default function TimeListenedPer({ className }: TimeListenedPerProps) {
 
   const formatX = useFormatXAxis(data);
   const formatY = useCallback((value: number) => `${msToMinutes(value)}m`, []);
-  const formatYTooltip = useCallback(
-    (value: number) => `${msToMinutes(value)} minutes listened`,
+  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
+    (_, value) => `${msToMinutes(value)} minutes listened`,
     [],
   );
 
@@ -58,8 +60,9 @@ export default function TimeListenedPer({ className }: TimeListenedPerProps) {
         data={data}
         xFormat={formatX}
         yFormat={formatY}
-        tooltipLabelFormatter={formatXAxisDateTooltip}
-        tooltipValueFormatter={formatYTooltip}
+        customTooltip={
+          <Tooltip title={formatXAxisDateTooltip} value={tooltipValue} />
+        }
       />
     </ChartCard>
   );

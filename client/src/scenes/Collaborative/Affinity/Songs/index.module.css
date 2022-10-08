@@ -31,8 +31,6 @@
 }
 
 .trackimage {
-  height: 48px;
-  width: 48px;
   margin-right: 8px;
 }
 
@@ -46,4 +44,8 @@
 
 .enjoyed {
   flex-shrink: 0;
+}
+
+.addtoplaylist {
+  text-align: right;
 }

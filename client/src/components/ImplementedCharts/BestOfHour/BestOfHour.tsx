@@ -1,14 +1,15 @@
 import { MenuItem, Select } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Payload } from 'recharts/types/component/DefaultTooltipContent';
-import { api } from '../../../services/api';
+import { api } from '../../../services/apis/api';
 import { useAPI } from '../../../services/hooks';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import { UnboxPromise } from '../../../services/types';
 import ChartCard from '../../ChartCard';
 import StackedBar from '../../charts/StackedBar';
 import { StackedBarProps } from '../../charts/StackedBar/StackedBar';
+import Tooltip from '../../Tooltip';
+import { TitleFormatter, ValueFormatter } from '../../Tooltip/Tooltip';
 import LoadingImplementedChart from '../LoadingImplementedChart';
 import { ImplementedChartProps } from '../types';
 
@@ -89,10 +90,6 @@ function formatX(value: any) {
   return `${value}:00`;
 }
 
-function itemSorter(item: Payload<number, string>) {
-  return -(item.value ?? 0);
-}
-
 export default function BestOfHour({ className }: BestOfHourProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
   const [element, setElement] = useState<Element>(Element.ARTIST);
@@ -107,19 +104,22 @@ export default function BestOfHour({ className }: BestOfHourProps) {
     );
   }, [result]);
 
-  const labelFormatter = useCallback(
-    (label: string) => `20 most listened ${element} at ${label}:00`,
+  const tooltipTitle = useCallback<TitleFormatter<typeof data>>(
+    ({ x }) => `20 most listened ${element} at ${x}:00`,
     [element],
   );
 
-  const valueFormatter = useCallback(
-    (value: number, elementId: string, { payload }: any) => {
+  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
+    (payload, value, root) => {
       const foundIndex = result?.findIndex(r => r._id === payload.x);
       if (result && foundIndex !== undefined && foundIndex !== -1) {
         const found = result[foundIndex];
-        return [`${value}% of ${getElementName(found, elementId)}`];
+        return (
+          <span style={{ color: root.color }}>
+            {value}% of {getElementName(found, root.dataKey.toString())}
+          </span>
+        );
       }
-      return [];
     },
     [result],
   );
@@ -152,9 +152,7 @@ export default function BestOfHour({ className }: BestOfHourProps) {
       <StackedBar
         data={data}
         xFormat={formatX}
-        tooltipLabelFormatter={labelFormatter}
-        tooltipValueFormatter={valueFormatter}
-        tooltipItemSorter={itemSorter as any}
+        customTooltip={<Tooltip title={tooltipTitle} value={tooltipValue} />}
       />
     </ChartCard>
   );

@@ -1,17 +1,19 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { api } from '../../../services/api';
+import { api } from '../../../services/apis/api';
 import { useAPI } from '../../../services/hooks';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import {
   buildXYData,
   formatXAxisDateTooltip,
   formatYAxisDate,
+  formatYAxisDateTooltip,
   useFormatXAxis,
 } from '../../../services/stats';
 import { DateId } from '../../../services/types';
 import ChartCard from '../../ChartCard';
 import Line from '../../charts/Line';
+import Tooltip from '../../Tooltip';
 import LoadingImplementedChart from '../LoadingImplementedChart';
 import { ImplementedChartProps } from '../types';
 
@@ -59,8 +61,12 @@ export default function AverageAlbumReleaseDate({
         data={data}
         xFormat={formatX}
         yFormat={formatYAxisDate}
-        tooltipLabelFormatter={formatXAxisDateTooltip}
-        tooltipValueFormatter={formatYAxisDate}
+        customTooltip={
+          <Tooltip
+            title={formatXAxisDateTooltip}
+            value={formatYAxisDateTooltip}
+          />
+        }
       />
     </ChartCard>
   );

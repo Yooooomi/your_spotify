@@ -12,7 +12,7 @@ import s from './index.module.css';
 
 interface HeaderProps {
   left?: React.ReactNode;
-  title: string;
+  title: React.ReactNode;
   subtitle: string;
   hideInterval?: boolean;
 }

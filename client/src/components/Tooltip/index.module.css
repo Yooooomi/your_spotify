@@ -1,0 +1,23 @@
+.root {
+  padding: 8px;
+  background-color: var(--content-background);
+  border: solid 1px var(--primary) !important;
+  outline: none !important;
+}
+
+.title {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.content {
+  display: block;
+}
+
+.content > :not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.contentItem {
+  display: block;
+}

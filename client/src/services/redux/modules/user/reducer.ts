@@ -1,5 +1,5 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
-import { api } from '../../../api';
+import { api } from '../../../apis/api';
 import { presetIntervals } from '../../../intervals';
 import {
   changeUsername,
@@ -46,6 +46,9 @@ export default createReducer(initialState, builder => {
   builder.addCase(checkLogged.fulfilled, (state, { payload }) => {
     state.user = payload;
     state.loaded = true;
+    if (state.user) {
+      state.user.isGuest = !!api.publicToken;
+    }
   });
 
   builder.addCase(changeUsername.fulfilled, (state, { meta: { arg } }) => {

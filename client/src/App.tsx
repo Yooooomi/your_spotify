@@ -21,12 +21,11 @@ import CollaborativeAlbums from './scenes/Collaborative/Affinity/Albums';
 import CollaborativeArtists from './scenes/Collaborative/Affinity/Artists';
 
 import './App.css';
-import 'react-date-range/dist/styles.css';
-import 'react-date-range/dist/theme/default.css';
 import RegistrationsDisabled from './scenes/RegistrationsDisabled';
 import Affinity from './scenes/Collaborative/Affinity';
 import { useTheme } from './services/theme';
 import { selectDarkMode } from './services/redux/modules/user/selector';
+import PlaylistDialog from './components/PlaylistDialog';
 
 function App() {
   const dark = useSelector(selectDarkMode);
@@ -47,6 +46,7 @@ function App() {
         <BrowserRouter>
           <Wrapper />
           <Message />
+          <PlaylistDialog />
           <Layout>
             <Routes>
               <Route

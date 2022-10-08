@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Skeleton } from '@mui/material';
 import clsx from 'clsx';
-import { api } from '../../../services/api';
+import { api } from '../../../services/apis/api';
 import { useAPI } from '../../../services/hooks';
 import { msToMinutes } from '../../../services/stats';
 import { getImage } from '../../../services/tools';

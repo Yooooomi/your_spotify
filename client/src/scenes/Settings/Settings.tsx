@@ -5,7 +5,7 @@ import FullscreenCentered from '../../components/FullscreenCentered';
 import Header from '../../components/Header';
 import Text from '../../components/Text';
 import TitleCard from '../../components/TitleCard';
-import { api } from '../../services/api';
+import { api } from '../../services/apis/api';
 import { useAPI } from '../../services/hooks';
 import { selectSettings } from '../../services/redux/modules/settings/selector';
 import { changeRegistrations } from '../../services/redux/modules/settings/thunk';

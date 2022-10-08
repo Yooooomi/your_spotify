@@ -1,50 +1,60 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useSelector } from 'react-redux';
+import AddToPlaylist from '../../../components/AddToPlaylist';
 import Header from '../../../components/Header';
 import Loader from '../../../components/Loader';
+import { DEFAULT_PLAYLIST_NB } from '../../../components/PlaylistDialog/PlaylistDialog';
 import TitleCard from '../../../components/TitleCard';
-import { api } from '../../../services/api';
+import {
+  api,
+  ApiData,
+  DEFAULT_ITEMS_TO_LOAD,
+} from '../../../services/apis/api';
+import { PlaylistContext } from '../../../services/redux/modules/playlist/types';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
-import { UnboxPromise } from '../../../services/types';
 import s from './index.module.css';
 import Track from './Track';
 
 export default function Songs() {
-  const { name, interval } = useSelector(selectRawIntervalDetail);
-  const [items, setItems] = useState<
-    UnboxPromise<ReturnType<typeof api['getBestSongs']>>['data']
-  >([]);
+  const { interval } = useSelector(selectRawIntervalDetail);
+  const [items, setItems] = useState<ApiData<'getBestSongs'>>([]);
   const [hasMore, setHasMore] = useState(true);
+  const ref = useRef<(force?: boolean) => void>();
 
-  const fetch = useCallback(async () => {
-    if (!hasMore) return;
+  ref.current = async (force = false) => {
+    if (!hasMore && !force) return;
     try {
       const result = await api.getBestSongs(
         interval.start,
         interval.end,
-        10,
+        DEFAULT_ITEMS_TO_LOAD,
         items.length,
       );
       setItems([...items, ...result.data]);
-      setHasMore(result.data.length === 10);
+      setHasMore(result.data.length === DEFAULT_ITEMS_TO_LOAD);
     } catch (e) {
       console.error(e);
     }
-  }, [hasMore, interval, items]);
+  };
 
   useEffect(() => {
-    if (items.length === 0) {
-      fetch();
-    }
-    // initial fetch
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interval, items.length]);
-
-  useEffect(() => {
+    setHasMore(false);
     setItems([]);
-    setHasMore(true);
+    setTimeout(() => ref.current?.(true), 0);
   }, [interval]);
+
+  const context = useMemo<PlaylistContext>(
+    () => ({
+      type: 'top',
+      nb: DEFAULT_PLAYLIST_NB,
+      interval: {
+        start: interval.start.getTime(),
+        end: interval.end.getTime(),
+      },
+    }),
+    [interval.end, interval.start],
+  );
 
   return (
     <div>
@@ -53,11 +63,12 @@ export default function Songs() {
         subtitle="Here are the songs you listened to the most"
       />
       <div className={s.content}>
-        <TitleCard title="Top songs">
+        <TitleCard
+          title="Top songs"
+          right={<AddToPlaylist context={context} />}>
           <Track line playable />
           <InfiniteScroll
-            key={name}
-            next={fetch}
+            next={ref.current}
             hasMore={hasMore}
             dataLength={items.length}
             loader={<Loader />}>

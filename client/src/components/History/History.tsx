@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Checkbox } from '@mui/material';
 import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { api } from '../../services/api';
-import { TrackInfoWithTrack, UnboxPromise } from '../../services/types';
+import { api, ApiData, DEFAULT_ITEMS_TO_LOAD } from '../../services/apis/api';
+import { TrackInfoWithTrack } from '../../services/types';
 import Loader from '../Loader';
 import TitleCard from '../TitleCard';
 import Track from './Track';
@@ -16,49 +16,40 @@ export default function History() {
   const [items, setItems] = useState<TrackInfoWithTrack[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [followInterval, setFollowInterval] = useState(true);
+  const ref = useRef<(force?: boolean) => void>();
 
-  const fetch = useCallback(async () => {
-    if (!hasMore) return;
-    let result: UnboxPromise<ReturnType<typeof api.getTracks>>;
+  ref.current = async (force = false) => {
+    if (!hasMore && !force) return;
+    let result: ApiData<'getTracks'>;
     if (followInterval) {
-      result = await api.getTracks(
-        10,
+      ({ data: result } = await api.getTracks(
+        DEFAULT_ITEMS_TO_LOAD,
         items.length,
         interval.start,
         interval.end,
-      );
+      ));
     } else {
-      result = await api.getTracks(10, items.length);
+      ({ data: result } = await api.getTracks(
+        DEFAULT_ITEMS_TO_LOAD,
+        items.length,
+      ));
     }
-    setItems([...items, ...result.data]);
-    setHasMore(result.data.length === 10);
-  }, [hasMore, followInterval, items, interval.start, interval.end]);
+    setItems([...items, ...result]);
+    setHasMore(result.length === DEFAULT_ITEMS_TO_LOAD);
+  };
 
-  const reset = useCallback(() => {
+  useEffect(() => {
+    setHasMore(false);
     setItems([]);
-    setHasMore(true);
-    fetch();
-  }, [fetch]);
+    setTimeout(() => ref.current?.(true), 0);
+  }, [interval, followInterval]);
 
   const handleSetFollowInterval = useCallback(
     (ev: React.SyntheticEvent, value: boolean) => {
       setFollowInterval(value);
-      reset();
     },
-    [reset],
+    [],
   );
-
-  useEffect(() => {
-    reset();
-    // initial fetch
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interval]);
-
-  useEffect(() => {
-    fetch();
-    // initial fetch
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <TitleCard
@@ -75,7 +66,7 @@ export default function History() {
       <Track line playable />
       <InfiniteScroll
         dataLength={items.length}
-        next={fetch}
+        next={ref.current}
         hasMore={hasMore}
         loader={<Loader />}>
         {items.map(item => (

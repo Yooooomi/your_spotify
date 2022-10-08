@@ -1,0 +1,16 @@
+.root {
+  width: 500px;
+}
+
+.text {
+  margin-bottom: 16px;
+}
+
+.tabs {
+  margin-bottom: 16px;
+}
+
+.button {
+  margin-top: 16px;
+  text-align: right;
+}

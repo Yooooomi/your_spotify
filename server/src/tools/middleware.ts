@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { AnyZodObject, z } from 'zod';
+import { z } from 'zod';
 import { verify } from 'jsonwebtoken';
 import { Types } from 'mongoose';
 import { getUserFromField, getGlobalPreferences } from '../database';
@@ -16,12 +16,19 @@ import { SpotifyAPI } from './spotifyApi';
 type Location = 'body' | 'params' | 'query';
 
 export const validating =
-  (schema: AnyZodObject, location: Location = 'body') =>
+  (
+    schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any, any>,
+    location: Location = 'body',
+  ) =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      const value = schema
-        .merge(z.object({ token: z.string().optional() }))
-        .parse(req[location]);
+      const tokenObject = z.object({ token: z.string().optional() });
+      let value;
+      if ('merge' in schema) {
+        value = schema.merge(tokenObject).parse(req[location]);
+      } else {
+        value = schema.and(tokenObject).parse(req[location]);
+      }
       req[location] = value;
       return next();
     } catch (e) {

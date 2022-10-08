@@ -7,6 +7,14 @@
   border-radius: 6px;
 }
 
+.root > :last-child {
+  opacity: 0;
+}
+
+.root:hover > :last-child {
+  opacity: 1;
+}
+
 .root:hover {
   background: var(--hover);
 }
@@ -15,17 +23,7 @@
   font-weight: bold;
 }
 
-.play {
-  height: 32px;
-  width: 32px;
-  margin-left: -8px !important;
-  margin-right: 8px !important;
-}
-
 .albumcover {
-  height: 48px;
-  width: 48px;
-  border-radius: 6px;
   margin-right: 16px;
 }
 
@@ -69,4 +67,8 @@
 .sumduration {
   flex: 1;
   text-align: right;
+}
+
+.trackoptions {
+  width: var(--track-options);
 }

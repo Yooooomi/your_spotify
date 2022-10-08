@@ -20,6 +20,7 @@ export interface User {
   };
   publicToken: string | null;
   firstListenedAt: string;
+  isGuest: boolean;
 }
 
 export interface ReduxPresetIntervalDetail {

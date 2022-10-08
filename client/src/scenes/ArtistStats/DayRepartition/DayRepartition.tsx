@@ -1,7 +1,12 @@
 import React, { useMemo, useCallback } from 'react';
 import ChartCard from '../../../components/ChartCard';
 import Bar from '../../../components/charts/Bar';
-import { ArtistStatsResponse } from '../../../services/api';
+import Tooltip from '../../../components/Tooltip';
+import {
+  TitleFormatter,
+  ValueFormatter,
+} from '../../../components/Tooltip/Tooltip';
+import { ArtistStatsResponse } from '../../../services/apis/api';
 import { msToMinutes } from '../../../services/stats';
 
 interface DayRepartitionProps {
@@ -36,15 +41,18 @@ export default function DayRepartition({
     [stats, total],
   );
 
-  const tooltipLabelFormatter = useCallback((label: string) => `${label}h`, []);
-  const tooltipValueFormatter = useCallback(
-    (value: number, a: any, b: any) => (
+  const tooltipTitle = useCallback<TitleFormatter<typeof data>>(
+    ({ x }) => `${x}h`,
+    [],
+  );
+  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
+    (payload, value) => (
       <div>
         {`${value}% of your listening`}
         <br />
-        {`${b.payload.count} out of ${total} songs`}
+        {`${payload.count} out of ${total} songs`}
         <br />
-        {`${msToMinutes(b.payload.duration ?? 0)} out of ${msToMinutes(
+        {`${msToMinutes(payload.duration ?? 0)} out of ${msToMinutes(
           totalDuration,
         )} minutes`}
         <br />
@@ -57,8 +65,9 @@ export default function DayRepartition({
     <ChartCard title="Day repartition of your listening" className={className}>
       <Bar
         data={data}
-        tooltipLabelFormatter={tooltipLabelFormatter}
-        tooltipValueFormatter={tooltipValueFormatter}
+        customTooltip={
+          <Tooltip<typeof data> title={tooltipTitle} value={tooltipValue} />
+        }
       />
     </ChartCard>
   );

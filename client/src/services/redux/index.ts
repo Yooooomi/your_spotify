@@ -5,6 +5,7 @@ import settingsReducer from './modules/settings/reducer';
 import messageReducer from './modules/message/reducer';
 import adminReducer from './modules/admin/reducer';
 import importReducer from './modules/import/reducer';
+import playlistReducer from './modules/playlist/reducer';
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     message: messageReducer,
     admin: adminReducer,
     import: importReducer,
+    playlist: playlistReducer,
   },
 });
 

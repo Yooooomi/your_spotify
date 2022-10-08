@@ -1,12 +1,14 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { api } from '../../../services/api';
+import { api } from '../../../services/apis/api';
 import { useAPI } from '../../../services/hooks';
 import Bar from '../../charts/Bar';
 import { ImplementedChartProps } from '../types';
 import ChartCard from '../../ChartCard';
 import LoadingImplementedChart from '../LoadingImplementedChart';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
+import Tooltip from '../../Tooltip';
+import { TitleFormatter, ValueFormatter } from '../../Tooltip/Tooltip';
 
 interface ListeningRepartitionProps extends ImplementedChartProps {}
 
@@ -14,7 +16,7 @@ const formatXAxis = (value: any) => `${value}:00`;
 
 const formatYAxis = (value: any) => `${value}%`;
 
-const formatXTooltip = (label: string) => `${label}:00`;
+const tooltipTitle: TitleFormatter<unknown[]> = ({ x }) => `${x}:00`;
 
 export default function ListeningRepartition({
   className,
@@ -46,12 +48,12 @@ export default function ListeningRepartition({
     [result, total],
   );
 
-  const formatYTooltip = useCallback(
-    (a: any, b: any, c: any) => (
+  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
+    (payload, value) => (
       <div>
-        {`${a}% of your daily listening`}
+        {`${value}% of your daily listening`}
         <br />
-        {`${c.payload.count} out of ${total} songs`}
+        {`${payload.count} out of ${total} songs`}
       </div>
     ),
     [total],
@@ -72,8 +74,7 @@ export default function ListeningRepartition({
         data={data}
         xFormat={formatXAxis}
         yFormat={formatYAxis}
-        tooltipLabelFormatter={formatXTooltip}
-        tooltipValueFormatter={formatYTooltip}
+        customTooltip={<Tooltip title={tooltipTitle} value={tooltipValue} />}
       />
     </ChartCard>
   );

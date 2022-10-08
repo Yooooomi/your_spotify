@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Header from '../../components/Header';
 import InlineArtist from '../../components/InlineArtist';
 import TitleCard from '../../components/TitleCard';
-import { api, ArtistStatsResponse } from '../../services/api';
+import { api, ArtistStatsResponse } from '../../services/apis/api';
 import {
   buildFromDateId,
   dateToListenedAt,

@@ -7,10 +7,7 @@ import {
   YAxis,
   Tooltip,
 } from 'recharts';
-import {
-  useRawTooltipLabelFormatter,
-  useRawTooltipValueFormatter,
-} from '../../../services/chart';
+import { ContentType } from 'recharts/types/component/Tooltip';
 import { DateWithPrecision } from '../../../services/stats';
 
 interface LineProps<
@@ -19,26 +16,12 @@ interface LineProps<
   data: D[];
   xFormat?: React.ComponentProps<typeof XAxis>['tickFormatter'];
   yFormat?: React.ComponentProps<typeof YAxis>['tickFormatter'];
-  tooltipLabelFormatter?: (value: string, payload: D) => string;
-  tooltipValueFormatter?: (value: number, payload: D) => string;
+  customTooltip?: ContentType<any, any>;
 }
 
 export default function Line<
   D extends { x: number; y: number; dateWithPrecision: DateWithPrecision },
->({
-  data,
-  xFormat,
-  yFormat,
-  tooltipLabelFormatter,
-  tooltipValueFormatter,
-}: LineProps<D>) {
-  const internTooltipLabelFormatter = useRawTooltipLabelFormatter(
-    tooltipLabelFormatter,
-  );
-  const internTooltipValueFormatter = useRawTooltipValueFormatter(
-    tooltipValueFormatter,
-  );
-
+>({ data, xFormat, yFormat, customTooltip }: LineProps<D>) {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={data}>
@@ -63,8 +46,7 @@ export default function Line<
           wrapperStyle={{ zIndex: 10 }}
           contentStyle={{ backgroundColor: 'var(--background)' }}
           labelStyle={{ color: 'var(--text-on-light)' }}
-          labelFormatter={internTooltipLabelFormatter}
-          formatter={internTooltipValueFormatter}
+          content={customTooltip}
         />
       </LineChart>
     </ResponsiveContainer>

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { Skeleton } from '@mui/material';
-import { api } from '../../../services/api';
+import { api } from '../../../services/apis/api';
 import { useAPI } from '../../../services/hooks';
 import { Timesplit } from '../../../services/types';
 import TitleCard from '../../TitleCard';

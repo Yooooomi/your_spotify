@@ -2,7 +2,7 @@ import { CircularProgress } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Text from '../../components/Text';
-import { api } from '../../services/api';
+import { api } from '../../services/apis/api';
 import { logout } from '../../services/redux/modules/user/reducer';
 import { useAppDispatch } from '../../services/redux/tools';
 

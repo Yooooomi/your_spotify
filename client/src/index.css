@@ -1,14 +1,16 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--content-background);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
   font-size: unset;
   font-size: 0.9em;
   padding: 2px;
@@ -29,6 +31,11 @@ h6 {
   box-sizing: border-box;
 }
 
+:root {
+  --track-options: 34px;
+  --radius: 6px;
+}
+
 .dark-vars {
   --shadow: 3px 3px 40px -5px rgba(170, 170, 170, 0.112);
   --hardshadow: 3px 3px 40px -5px rgba(170, 170, 170, 0.437);
@@ -47,6 +54,8 @@ h6 {
   --text-on-light: white;
   --text-on-dark: white;
   --code-background: rgb(133, 133, 133);
+
+  --divider: rgb(65, 65, 65);
 }
 
 .light-vars {
@@ -67,6 +76,8 @@ h6 {
   --text-on-light: black;
   --text-on-dark: white;
   --code-background: rgb(228, 228, 228);
+
+  --divider: rgb(232, 232, 232);
 }
 
 @media screen and (max-width: 960px) {
@@ -88,4 +99,14 @@ h6 {
   animation-name: fadein;
   animation-duration: 1000ms;
   animation-iteration-count: 1;
+}
+
+.no-button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-size: unset;
+  color: unset;
+  background: none;
+  background-color: none;
 }

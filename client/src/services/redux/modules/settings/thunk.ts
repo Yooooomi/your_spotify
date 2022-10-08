@@ -1,4 +1,4 @@
-import { api } from '../../../api';
+import { api } from '../../../apis/api';
 import { GlobalPreferences } from '../../../types';
 import { myAsyncThunk } from '../../tools';
 import { alertMessage } from '../message/reducer';

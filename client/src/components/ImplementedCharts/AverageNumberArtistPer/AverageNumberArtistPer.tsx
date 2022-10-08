@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { api } from '../../../services/api';
+import { api } from '../../../services/apis/api';
 import { useAPI } from '../../../services/hooks';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import {
@@ -11,6 +11,8 @@ import {
 import { DateId } from '../../../services/types';
 import ChartCard from '../../ChartCard';
 import Line from '../../charts/Line';
+import Tooltip from '../../Tooltip';
+import { ValueFormatter } from '../../Tooltip/Tooltip';
 import LoadingImplementedChart from '../LoadingImplementedChart';
 import { ImplementedChartProps } from '../types';
 
@@ -37,8 +39,8 @@ export default function AverageNumberArtistPer({
   );
 
   const formatX = useFormatXAxis(data);
-  const tooltipValueFormatter = useCallback(
-    (value: number) => `${value} artists`,
+  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
+    (_, value) => `${value} artists`,
     [],
   );
 
@@ -60,8 +62,9 @@ export default function AverageNumberArtistPer({
       <Line
         data={data}
         xFormat={formatX}
-        tooltipLabelFormatter={formatXAxisDateTooltip}
-        tooltipValueFormatter={tooltipValueFormatter}
+        customTooltip={
+          <Tooltip title={formatXAxisDateTooltip} value={tooltipValue} />
+        }
       />
     </ChartCard>
   );

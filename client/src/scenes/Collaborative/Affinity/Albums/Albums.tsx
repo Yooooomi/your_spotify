@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import Header from '../../../../components/Header';
 import InlineArtist from '../../../../components/InlineArtist';
 import Text from '../../../../components/Text';
-import { api } from '../../../../services/api';
+import { api } from '../../../../services/apis/api';
 import { intervalToDisplay } from '../../../../services/date';
 import { useAPI } from '../../../../services/hooks';
 import { useOldestListenedAtFromUsers } from '../../../../services/intervals';

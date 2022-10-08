@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   BarChart,
   XAxis,
@@ -7,6 +7,7 @@ import {
   YAxis,
   ResponsiveContainer,
 } from 'recharts';
+import { ContentType } from 'recharts/types/component/Tooltip';
 
 interface BarProps {
   data: {
@@ -16,27 +17,16 @@ interface BarProps {
   customXTick?: React.ComponentProps<typeof XAxis>['tick'];
   xFormat?: React.ComponentProps<typeof XAxis>['tickFormatter'];
   yFormat?: React.ComponentProps<typeof YAxis>['tickFormatter'];
-  tooltipLabelFormatter?: React.ComponentProps<
-    typeof Tooltip
-  >['labelFormatter'];
-  tooltipValueFormatter?: React.ComponentProps<typeof Tooltip>['formatter'];
+  customTooltip?: ContentType<any, any>;
 }
 
 export default function Bar({
   data,
   xFormat,
   yFormat,
-  tooltipLabelFormatter,
-  tooltipValueFormatter,
   customXTick,
+  customTooltip,
 }: BarProps) {
-  const realFormatter = useMemo(() => {
-    if (tooltipValueFormatter) {
-      return (...args: any[]) => [tooltipValueFormatter(...args), null];
-    }
-    return undefined;
-  }, [tooltipValueFormatter]);
-
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={data}>
@@ -52,8 +42,7 @@ export default function Bar({
           wrapperStyle={{ zIndex: 10 }}
           contentStyle={{ backgroundColor: 'var(--background)' }}
           labelStyle={{ color: 'var(--text-on-light)' }}
-          labelFormatter={tooltipLabelFormatter}
-          formatter={realFormatter}
+          content={customTooltip}
         />
       </BarChart>
     </ResponsiveContainer>

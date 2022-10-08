@@ -16,6 +16,7 @@ import {
 } from '../../../services/intervals';
 import { useNavigateAndSearch } from '../../../services/hooks';
 import { AFFINITY_PREFIX } from './types';
+import Header from '../../../components/Header';
 
 export default function Affinity() {
   const navigate = useNavigateAndSearch();
@@ -48,105 +49,112 @@ export default function Affinity() {
     });
   }, [navigate, statType, mode, ids, dataInterval]);
 
+  const tooltip = (
+    <Tooltip
+      title={
+        <div>
+          <p>
+            The affinity represents the probability the user like the same
+            songs. The affinity feature comes with two <strong>modes</strong>:
+          </p>
+          <ul>
+            <li>
+              <strong>Average</strong>: bases the ranking on the average of the
+              proportion each people listening to a specific element. If A
+              listens to a song 50% of his time, B 25% and C 0%, the average
+              will be 25%, thus ranking higher than A 12%, B 12% and C 12%.
+            </li>
+            <li>
+              <strong>Minima</strong>: bases the ranking on the minimal
+              proportion of each people listening to a specific element. If A
+              listens to a song 50% of his time, B 25% and C 0%, the minima will
+              be 0%, thus ranking lower than A 100% B 5% and C 1%.
+            </li>
+          </ul>
+          <p>
+            Average can mean that the top songs will satisfy a lot some people
+            while minima means that the top songs will be known by everyone but
+            not enjoyed as much for everyone.
+          </p>
+        </div>
+      }>
+      <HelpOutline className={s.question} />
+    </Tooltip>
+  );
+
   return (
     <div className={s.root}>
-      <div>
-        <Text element="h1" className={s.title}>
-          Affinity{' '}
-          <Tooltip
-            title={
-              <div>
-                <p>
-                  The affinity represents the probability the user like the same
-                  songs. The affinity feature comes with two{' '}
-                  <strong>modes</strong>:
-                </p>
-                <ul>
-                  <li>
-                    <strong>Average</strong>: bases the ranking on the average
-                    of the proportion each people listening to a specific
-                    element. If A listens to a song 50% of his time, B 25% and C
-                    0%, the average will be 25%, thus ranking higher than A 12%,
-                    B 12% and C 12%.
-                  </li>
-                  <li>
-                    <strong>Minima</strong>: bases the ranking on the minimal
-                    proportion of each people listening to a specific element.
-                    If A listens to a song 50% of his time, B 25% and C 0%, the
-                    minima will be 0%, thus ranking lower than A 100% B 5% and C
-                    1%.
-                  </li>
-                </ul>
-                <p>
-                  Average can mean that the top songs will satisfy a lot some
-                  people while minima means that the top songs will be known by
-                  everyone but not enjoyed as much for everyone.
-                </p>
-              </div>
-            }>
-            <HelpOutline className={s.question} />
-          </Tooltip>
-        </Text>
-        <div className={s.accountselection}>
-          <Text element="h2" className={s.section}>
-            Users
-          </Text>
-          {accounts.map(account => (
-            <button
-              type="button"
-              key={account.id}
-              className={s.account}
-              onClick={() => add(account)}>
-              <Text>{account.username}</Text>
-              <Checkbox
-                checked={ids.has(account.id) || account.id === user?._id}
-                disabled={account.id === user?._id}
-                disableRipple
-                disableTouchRipple
-                disableFocusRipple
-              />
-            </button>
-          ))}
+      <Header
+        hideInterval
+        title={<div className={s.title}>Affinity {tooltip}</div>}
+        subtitle="Compute the affinity you have with somebody using YourSpotify"
+      />
+      <div className={s.content}>
+        <div>
+          <div className={s.accountselection}>
+            <Text element="h2" className={s.section}>
+              Users
+            </Text>
+            {accounts.map(account => (
+              <button
+                type="button"
+                key={account.id}
+                className={s.account}
+                onClick={() => add(account)}>
+                <Text>{account.username}</Text>
+                <Checkbox
+                  checked={ids.has(account.id) || account.id === user?._id}
+                  disabled={account.id === user?._id}
+                  disableRipple
+                  disableTouchRipple
+                  disableFocusRipple
+                />
+              </button>
+            ))}
+          </div>
+          <div className={s.modeselection}>
+            <Text element="h2" className={s.section}>
+              Mode
+            </Text>
+            <Select
+              variant="standard"
+              value={mode}
+              onChange={ev => setMode(ev.target.value as CollaborativeMode)}>
+              <MenuItem value={CollaborativeMode.MINIMA}>Minima</MenuItem>
+              <MenuItem value={CollaborativeMode.AVERAGE}>Average</MenuItem>
+            </Select>
+          </div>
+          <div className={s.typeselection}>
+            <Text element="h2" className={s.section}>
+              Type
+            </Text>
+            <Select
+              variant="standard"
+              value={statType}
+              onChange={ev => setStatType(ev.target.value)}>
+              <MenuItem value="songs">Songs</MenuItem>
+              <MenuItem value="albums">Albums</MenuItem>
+              <MenuItem value="artists">Artists</MenuItem>
+            </Select>
+          </div>
+          <div className={s.timeselection}>
+            <Text element="h2" className={s.section}>
+              Interval
+            </Text>
+            <IntervalSelector
+              forceTiny
+              value={dataInterval}
+              onChange={setDataInterval}
+              selectType="standard"
+            />
+          </div>
+          <Button
+            onClick={compute}
+            variant="contained"
+            disabled={ids.size === 0}>
+            Calculate affinity
+          </Button>
         </div>
-        <div className={s.modeselection}>
-          <Text element="h2" className={s.section}>
-            Mode
-          </Text>
-          <Select
-            variant="standard"
-            value={mode}
-            onChange={ev => setMode(ev.target.value as CollaborativeMode)}>
-            <MenuItem value={CollaborativeMode.MINIMA}>Minima</MenuItem>
-            <MenuItem value={CollaborativeMode.AVERAGE}>Average</MenuItem>
-          </Select>
-        </div>
-        <div className={s.typeselection}>
-          <Text element="h2" className={s.section}>
-            Type
-          </Text>
-          <Select
-            variant="standard"
-            value={statType}
-            onChange={ev => setStatType(ev.target.value)}>
-            <MenuItem value="songs">Songs</MenuItem>
-            <MenuItem value="albums">Albums</MenuItem>
-            <MenuItem value="artists">Artists</MenuItem>
-          </Select>
-        </div>
-        <div className={s.timeselection}>
-          <Text element="h2" className={s.section}>
-            Interval
-          </Text>
-          <IntervalSelector
-            forceTiny
-            value={dataInterval}
-            onChange={setDataInterval}
-            selectType="standard"
-          />
-        </div>
-        <Button onClick={compute} variant="contained" disabled={ids.size === 0}>
-          Calculate affinity
-        </Button>
       </div>
     </div>
   );

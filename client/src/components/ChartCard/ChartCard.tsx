@@ -11,19 +11,18 @@ interface ChartCardProps {
   children: React.ReactNode;
 }
 
-export default function ChartCard({
-  className,
-  title,
-  right,
-  children,
-}: ChartCardProps) {
-  return (
-    <Paper className={clsx(s.root, className)}>
-      <div className={s.title}>
-        <Text element="h3">{title}</Text>
-        {right}
-      </div>
-      <div className={s.content}>{children}</div>
-    </Paper>
-  );
-}
+const ChartCard = React.forwardRef<HTMLDivElement, ChartCardProps>(
+  ({ className, title, right, children }, ref) => {
+    return (
+      <Paper ref={ref} className={clsx(s.root, className)}>
+        <div className={s.title}>
+          <Text element="h3">{title}</Text>
+          {right}
+        </div>
+        <div className={s.content}>{children}</div>
+      </Paper>
+    );
+  },
+);
+
+export default ChartCard;

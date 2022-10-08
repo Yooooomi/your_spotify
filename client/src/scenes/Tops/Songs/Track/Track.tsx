@@ -1,14 +1,14 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import { IconButton, useMediaQuery } from '@mui/material';
-import { PlayArrow } from '@mui/icons-material';
+import { useMediaQuery } from '@mui/material';
 import s from './index.module.css';
-import { api } from '../../../../services/api';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist, Album, Track as TrackType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
 import { getImage } from '../../../../services/tools';
 import Text from '../../../../components/Text';
+import PlayButton from '../../../../components/PlayButton';
+import TrackOptions from '../../../../components/TrackOptions';
 
 interface TrackProps {
   line?: false;
@@ -28,16 +28,6 @@ interface HeaderTrackProps {
 }
 
 export default function Track(props: TrackProps | HeaderTrackProps) {
-  const trackId = props.line ? null : props.track.id;
-  const play = useCallback(async () => {
-    if (!trackId) return;
-    try {
-      await api.play(trackId);
-    } catch (e) {
-      console.error(e);
-    }
-  }, [trackId]);
-
   const upmd = useMediaQuery('(min-width: 1150px)');
 
   if (props.line) {
@@ -52,6 +42,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         {upmd && <Text className={clsx(s.duration, s.header)}>Duration</Text>}
         <Text className={clsx(s.sumcount, s.header)}>Count</Text>
         <Text className={clsx(s.sumduration, s.header)}>Total duration</Text>
+        <div className={s.trackoptions} />
       </div>
     );
   }
@@ -69,11 +60,12 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
   return (
     <div className={s.root}>
       {playable && (
-        <IconButton className={s.play} size="small" onClick={play}>
-          <PlayArrow />
-        </IconButton>
+        <PlayButton
+          id={track.id}
+          cover={getImage(album)}
+          className={s.albumcover}
+        />
       )}
-      <img className={s.albumcover} src={getImage(album)} alt="Album cover" />
       <div className={s.name}>
         <Text className={s.trackname}>{track.name}</Text>
         <Text className={s.artistname}>
@@ -102,6 +94,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
           <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>
         )}
       </Text>
+      <TrackOptions track={track} />
     </div>
   );
 }

@@ -23,6 +23,7 @@ export const getCollaborativeBestSongs = (
   start: Date,
   end: Date,
   mode: CollaborativeMode,
+  limit: number,
 ) => {
   const users = _users.map(u => new mongoose.Types.ObjectId(u));
   return InfosModel.aggregate([
@@ -97,7 +98,7 @@ export const getCollaborativeBestSongs = (
           -1,
       },
     },
-    { $limit: 50 },
+    { $limit: limit },
     { $lookup: lightTrackLookupPipeline('_id') },
     { $unwind: '$track' },
     { $lookup: lightAlbumLookupPipeline() },

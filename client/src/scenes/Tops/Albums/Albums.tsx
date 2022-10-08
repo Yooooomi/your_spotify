@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Header from '../../../components/Header';
 import TitleCard from '../../../components/TitleCard';
-import { api } from '../../../services/api';
+import { api, DEFAULT_ITEMS_TO_LOAD } from '../../../services/apis/api';
 import { UnboxPromise } from '../../../services/types';
 import s from './index.module.css';
 import Album from './Album';
@@ -11,39 +11,33 @@ import Loader from '../../../components/Loader';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 
 export default function Albums() {
-  const { name, interval } = useSelector(selectRawIntervalDetail);
+  const { interval } = useSelector(selectRawIntervalDetail);
   const [items, setItems] = useState<
     UnboxPromise<ReturnType<typeof api['getBestAlbums']>>['data']
   >([]);
   const [hasMore, setHasMore] = useState(true);
+  const ref = useRef<(force?: boolean) => void>();
 
-  const fetch = useCallback(async () => {
-    if (!hasMore) return;
+  ref.current = async (force = false) => {
+    if (!hasMore && !force) return;
     try {
       const result = await api.getBestAlbums(
         interval.start,
         interval.end,
-        10,
+        DEFAULT_ITEMS_TO_LOAD,
         items.length,
       );
       setItems([...items, ...result.data]);
-      setHasMore(result.data.length === 10);
+      setHasMore(result.data.length === DEFAULT_ITEMS_TO_LOAD);
     } catch (e) {
       console.error(e);
     }
-  }, [hasMore, interval, items]);
+  };
 
   useEffect(() => {
-    if (items.length === 0) {
-      fetch();
-    }
-    // Initial fetch
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interval, items.length]);
-
-  useEffect(() => {
+    setHasMore(false);
     setItems([]);
-    setHasMore(true);
+    setTimeout(() => ref.current?.(true), 0);
   }, [interval]);
 
   return (
@@ -56,8 +50,7 @@ export default function Albums() {
         <TitleCard title="Top albums">
           <Album line />
           <InfiniteScroll
-            key={name}
-            next={fetch}
+            next={ref.current}
             hasMore={hasMore}
             dataLength={items.length}
             loader={<Loader />}>

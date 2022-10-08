@@ -23,7 +23,7 @@ import {
 } from '@mui/icons-material';
 import s from './index.module.css';
 import { useConditionalAPI, useShareLink } from '../../../services/hooks';
-import { api } from '../../../services/api';
+import { api } from '../../../services/apis/api';
 import { getImage } from '../../../services/tools';
 import Text from '../../Text';
 import { alertMessage } from '../../../services/redux/modules/message/reducer';

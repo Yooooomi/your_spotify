@@ -7,8 +7,8 @@ interface QueueItem<T> {
   onError: (error: Error) => void;
 }
 
-export class PromiseQueue<T> {
-  private q: QueueItem<T>[] = [];
+export class PromiseQueue {
+  private q: QueueItem<any>[] = [];
 
   execQueue = async () => {
     while (this.q.length > 0) {
@@ -27,7 +27,7 @@ export class PromiseQueue<T> {
     }
   };
 
-  queue = (fn: () => Promise<T>) => {
+  queue = <T>(fn: () => Promise<T>) => {
     return new Promise<T>((res, rej) => {
       this.q.push({
         fn,

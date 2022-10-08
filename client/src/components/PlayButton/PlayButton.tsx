@@ -8,10 +8,11 @@ import s from './index.module.css';
 
 interface PlayButtonProps {
   id: string;
+  cover: string;
   className?: string;
 }
 
-export default function PlayButton({ id, className }: PlayButtonProps) {
+export default function PlayButton({ id, cover, className }: PlayButtonProps) {
   const dispatch = useAppDispatch();
 
   const play = useCallback(() => {
@@ -19,8 +20,11 @@ export default function PlayButton({ id, className }: PlayButtonProps) {
   }, [dispatch, id]);
 
   return (
-    <IconButton size="small" onClick={play} className={clsx(s.root, className)}>
-      <PlayArrow />
-    </IconButton>
+    <div className={clsx(s.root, className)}>
+      <img src={cover} alt="cover" className={s.image} />
+      <IconButton onClick={play} className={s.button}>
+        <PlayArrow className={s.icon} fontSize="large" />
+      </IconButton>
+    </div>
   );
 }

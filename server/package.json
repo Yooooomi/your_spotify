@@ -12,41 +12,36 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "axios": "^0.27.2",
-    "bcrypt": "^5.0.1",
+    "axios": "1.1.2",
     "cookie-parser": "^1.4.5",
-    "cors": "^2.8.5",
-    "debug": "^4.3.1",
     "express": "^4.18.1",
-    "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "migrate": "^1.7.0",
-    "mongoose": "6.3.2",
+    "mongoose": "6.6.5",
     "morgan": "^1.10.0",
     "multer": "^1.4.4",
-    "uuid": "^8.3.2",
-    "zod": "^3.17.3"
+    "uuid": "9.0.0",
+    "zod": "3.19.1"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
-    "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.2",
-    "@types/jsonwebtoken": "^8.5.8",
+    "@types/jsonwebtoken": "8.5.9",
     "@types/morgan": "^1.9.3",
     "@types/multer": "^1.4.7",
-    "@types/node": "^18.0.3",
+    "@types/node": "18.8.3",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "5.30.5",
-    "@typescript-eslint/parser": "5.30.5",
-    "concurrently": "7.2.2",
-    "eslint": "^8.19.0",
+    "@typescript-eslint/eslint-plugin": "5.39.0",
+    "@typescript-eslint/parser": "5.39.0",
+    "concurrently": "7.4.0",
+    "eslint": "8.25.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
-    "ts-node": "^10.8.2",
-    "typescript": "^4.7.4"
+    "ts-node": "10.9.1",
+    "typescript": "4.8.4"
   }
 }

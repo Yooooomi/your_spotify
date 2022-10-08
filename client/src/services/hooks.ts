@@ -1,3 +1,4 @@
+import { debounce } from '@mui/material';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -104,4 +105,39 @@ export function useNavigateAndSearch() {
     },
     [navigate, query],
   );
+}
+
+export function useSheetState() {
+  const [open, setOpen] = useState(false);
+
+  const onClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const onOpen = useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  return [open, onOpen, onClose];
+}
+
+export function useIsGuest() {
+  const user = useSelector(selectUser);
+
+  return !!user?.isGuest;
+}
+
+export function useResizeDebounce(
+  cb: (width: number) => void,
+  ref?: React.RefObject<HTMLDivElement>,
+) {
+  useEffect(() => {
+    const cbWithWidth = () => cb(ref?.current?.clientWidth ?? 0);
+    const internCb = debounce(cbWithWidth, 1000);
+    setTimeout(cbWithWidth, 100);
+    window.addEventListener('resize', internCb);
+    return () => {
+      window.removeEventListener('resize', internCb);
+    };
+  }, [cb, ref]);
 }

@@ -20,7 +20,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   ignorePatterns: ['.eslintrc.js'],
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['@typescript-eslint'],
   rules: {
     'max-classes-per-file': 'off',
     'consistent-return': 'off',
@@ -37,5 +37,13 @@ module.exports = {
     'no-unused-vars': 'off',
     'import/prefer-default-export': 'off',
     'no-param-reassign': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      "error",
+      { 
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ]
   },
 };

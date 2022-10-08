@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { TitleFormatter, ValueFormatter } from '../components/Tooltip/Tooltip';
 import { DateId, Precision } from './types';
 
 export const fresh = (d: Date, eraseHour = false) => {
@@ -21,7 +22,11 @@ export const buildFromDateId = (dateId: DateId) => {
   return date;
 };
 
-const getDateFromIndex = (index: number, start: Date, precision: Precision) => {
+export const getDateFromIndex = (
+  index: number,
+  start: Date,
+  precision: Precision,
+) => {
   const date = fresh(start, precision !== Precision.hour);
   if (precision === Precision.year) {
     date.setFullYear(date.getFullYear() + index);
@@ -52,7 +57,7 @@ const getDateFromIndex = (index: number, start: Date, precision: Precision) => {
 
 export const pad = (value: number) => value.toString().padStart(2, '0');
 
-const getPrecisionFromDateId = (dateId: DateId) => {
+export const getPrecisionFromDateId = (dateId: DateId) => {
   if ('hour' in dateId) {
     return Precision.hour;
   }
@@ -100,7 +105,7 @@ const cleanDateFromPrecision = (date: Date, precision: Precision) => {
 };
 
 const buildXYDataWithGetters = <Dict extends Record<string, any>>(
-  data: { _id: DateId; value: number }[],
+  data: { _id: DateId }[],
   start: Date,
   end: Date,
   doNotFillData: boolean,
@@ -132,24 +137,24 @@ const buildXYDataWithGetters = <Dict extends Record<string, any>>(
       }
       if (!doNotFillData) {
         built.push({
+          ...getDefaultData(),
           x: currentIndex,
           dateWithPrecision: {
             date: currentDate,
             precision,
           },
-          ...getDefaultData(),
         });
       }
       currentIndex += 1;
       currentDate = getDateFromIndex(currentIndex, start, precision);
     }
     built.push({
+      ...getData(dataIndex),
       x: currentIndex,
       dateWithPrecision: {
         date: getDateFromIndex(currentIndex, start, precision),
         precision,
       },
-      ...getData(dataIndex),
     });
     currentIndex += 1;
   }
@@ -187,14 +192,14 @@ export const buildXYData = (
     () => ({ y: 0 }),
   );
 
-export const buildXYDataObjSpread = (
-  data: ({ _id: DateId } & any)[],
+export const buildXYDataObjSpread = <D extends { _id: DateId }>(
+  data: D[],
   keys: string[],
   start: Date,
   end: Date,
   doNotFillData = false,
 ) => {
-  const zeros = keys.reduce<Record<string, number>>((acc, curr) => {
+  const zeros = keys.reduce<Record<string, any>>((acc, curr) => {
     acc[curr] = 0;
     return acc;
   }, {});
@@ -285,18 +290,28 @@ export const useFormatXAxis = (data: DefaultGraphItem[]) =>
     [data],
   );
 
+export function simpleTooltipValue(
+  prefix = '',
+  suffix = '',
+): ValueFormatter<any> {
+  return (_, value) =>
+    `${prefix.length > 0 ? `${prefix} ` : ''}${value} ${suffix}`;
+}
+
 export const formatYAxisDate = (value: number) => {
   const year = Math.floor(value);
   const month = Math.floor((value - year) * 12);
   return `${months[month]} ${year}`;
 };
 
-export const formatXAxisDateTooltip = <
-  D extends { dateWithPrecision: DateWithPrecision },
->(
-  label: string,
-  payload: D,
-) => formatDateWithPrecisionToString(payload.dateWithPrecision);
+export const formatYAxisDateTooltip: ValueFormatter<unknown[]> = (_, value) =>
+  formatYAxisDate(value);
+
+export const formatXAxisDateTooltip: TitleFormatter<
+  {
+    dateWithPrecision: DateWithPrecision;
+  }[]
+> = (_, payload) => formatDateWithPrecisionToString(payload.dateWithPrecision);
 
 export const msToMinutes = (ms: number) => Math.floor(ms / 1000 / 60);
 export const msToMinutesAndSeconds = (ms: number) =>

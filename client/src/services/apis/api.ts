@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import Axios from 'axios';
-import { AdminAccount } from './redux/modules/admin/reducer';
-import { ImporterState } from './redux/modules/import/types';
-import { User } from './redux/modules/user/types';
+import { AdminAccount } from '../redux/modules/admin/reducer';
+import { ImporterState } from '../redux/modules/import/types';
+import { Playlist, PlaylistContext } from '../redux/modules/playlist/types';
+import { User } from '../redux/modules/user/types';
 import {
   Album,
   Artist,
@@ -15,7 +16,8 @@ import {
   TrackInfoWithTrack,
   SpotifyMe,
   CollaborativeMode,
-} from './types';
+  UnboxPromise,
+} from '../types';
 
 const axios = Axios.create({
   /* @ts-ignore-next-line */
@@ -438,4 +440,31 @@ export const api = {
         artists: { count: number; artist: Artist }[];
       }[]
     >('/spotify/top/hour-repartition/artists', { start, end }),
+  getPlaylists: () => get<Playlist[]>('/spotify/playlists'),
+  addToPlaylist: (
+    id: string | undefined,
+    name: string | undefined,
+    context: PlaylistContext,
+  ) => post('/spotify/playlist/create', { playlistId: id, name, ...context }),
 };
+
+export const DEFAULT_ITEMS_TO_LOAD = 20;
+
+type ApiSignature = typeof api;
+
+export type RecordAsTuples<F, K extends keyof F = keyof F> = K extends K
+  ? [K, F[K]]
+  : never;
+type Signatures = RecordAsTuples<ApiSignature>;
+type TupleToUnbox<T extends [string, any]> = T extends [
+  string,
+  (...args: any[]) => Promise<{ data: any }>,
+]
+  ? [T[0], UnboxPromise<ReturnType<T[1]>>]
+  : never;
+
+type NamesAndReturns = TupleToUnbox<Signatures>;
+export type ApiData<T extends NamesAndReturns[0]> = Extract<
+  NamesAndReturns,
+  [T, any]
+>[1]['data'];

@@ -1,19 +1,27 @@
 .root {
   margin: auto;
-  text-align: center;
+  height: 100vh;
   display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
   justify-content: center;
   flex-direction: column;
-  height: 100vh;
+}
+
+.content > div {
+  width: 100%;
+  text-align: center;
 }
 
 .title {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: auto;
-  width: min-content;
-  margin-bottom: 32px;
 }
 
 .question {

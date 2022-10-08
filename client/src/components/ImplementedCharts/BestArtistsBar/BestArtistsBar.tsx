@@ -1,9 +1,15 @@
-import React, { PureComponent, useCallback, useMemo } from 'react';
+import React, {
+  PureComponent,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
-import { Tooltip } from '@mui/material';
+import { Tooltip as MuiTooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { api } from '../../../services/api';
-import { useAPI } from '../../../services/hooks';
+import { api, DEFAULT_ITEMS_TO_LOAD } from '../../../services/apis/api';
+import { useAPI, useResizeDebounce } from '../../../services/hooks';
 import Bar from '../../charts/Bar';
 import { ImplementedChartProps } from '../types';
 import { Artist } from '../../../services/types';
@@ -11,10 +17,12 @@ import ChartCard from '../../ChartCard';
 import { getImage } from '../../../services/tools';
 import LoadingImplementedChart from '../LoadingImplementedChart';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
+import Tooltip from '../../Tooltip';
+import { TitleFormatter, ValueFormatter } from '../../Tooltip/Tooltip';
 
 interface BestArtistsBarProps extends ImplementedChartProps {}
 
-const formatXTooltip = (label: string) => `Rank ${label + 1}`;
+const tooltipTitle: TitleFormatter<unknown[]> = ({ x }) => `Rank ${x + 1}`;
 
 const svgImgSize = 32;
 class ImageAxisTick extends PureComponent<{
@@ -36,7 +44,7 @@ class ImageAxisTick extends PureComponent<{
 
     return (
       <Link to={`/artist/${artist.id}`}>
-        <Tooltip title={artist.name}>
+        <MuiTooltip title={artist.name}>
           <g transform={`translate(${x - svgImgSize / 2},${y})`}>
             <clipPath id="yoyo">
               <circle
@@ -52,7 +60,7 @@ class ImageAxisTick extends PureComponent<{
               clipPath="url(#yoyo)"
             />
           </g>
-        </Tooltip>
+        </MuiTooltip>
       </Link>
     );
   }
@@ -60,26 +68,34 @@ class ImageAxisTick extends PureComponent<{
 
 export default function BestArtistsBar({ className }: BestArtistsBarProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
+  const ref = useRef<HTMLDivElement>(null);
+  const [displayNb, setDisplayNb] = useState(10);
   const result = useAPI(
     api.getBestArtists,
     interval.start,
     interval.end,
-    10,
+    DEFAULT_ITEMS_TO_LOAD,
     0,
   );
 
+  const compute = useCallback((width: number) => {
+    setDisplayNb(Math.floor((width || 500) / 50));
+  }, []);
+
+  useResizeDebounce(compute, ref);
+
   const data = useMemo(
     () =>
-      result?.map((r, k) => ({
+      result?.slice(0, displayNb).map((r, k) => ({
         x: k,
         y: r.count,
       })) ?? [],
-    [result],
+    [displayNb, result],
   );
 
-  const formatYTooltip = useCallback(
-    (a: any, b: any, c: any) => {
-      const dataValue = result?.[c.payload.x];
+  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
+    payload => {
+      const dataValue = result?.[payload.x];
       if (!dataValue) {
         return '';
       }
@@ -95,11 +111,10 @@ export default function BestArtistsBar({ className }: BestArtistsBarProps) {
   }
 
   return (
-    <ChartCard title="Best artists" className={className}>
+    <ChartCard ref={ref} title="Best artists" className={className}>
       <Bar
         data={data}
-        tooltipLabelFormatter={formatXTooltip}
-        tooltipValueFormatter={formatYTooltip}
+        customTooltip={<Tooltip title={tooltipTitle} value={tooltipValue} />}
         // @ts-ignore
         customXTick={<ImageAxisTick artists={result.map(r => r.artist)} />}
       />
