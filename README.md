@@ -171,7 +171,7 @@ This means that your web application can't connect to the backend. Check that yo
 
 # External guides
 
-- [BreadNet](https://breadnet.co.uk/installing) installation tutorial
+- [BreadNet](https://breadnet.co.uk/your-spotify-2022/?mtm_campaign=github&mtm_kwd=your_spotify) installation tutorial
 
 # Contributing
 
