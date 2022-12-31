@@ -17,6 +17,7 @@ import {
   SpotifyMe,
   CollaborativeMode,
   UnboxPromise,
+  Genre,
 } from '../types';
 
 const axios = Axios.create({
@@ -319,6 +320,21 @@ export const api = {
         differents: number;
       }[]
     >('/spotify/top/artists', {
+      start,
+      end,
+      nb,
+      offset,
+    }),
+  getBestGenres: (start: Date, end: Date, nb: number, offset: number) =>
+    get<
+      {
+        count: number;
+        duration_ms: number;
+        total_count: number;
+        total_duration_ms: number;
+        genre: Genre;
+      }[]
+    >('/spotify/top/genres', {
       start,
       end,
       nb,

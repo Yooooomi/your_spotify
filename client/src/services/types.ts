@@ -49,6 +49,12 @@ export interface Artist {
   uri: string;
 }
 
+export interface Genre {
+  _id: string;
+  name: string;
+  artists: Artist[];
+}
+
 export interface Album {
   _id: string;
   album_type: string;

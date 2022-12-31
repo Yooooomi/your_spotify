@@ -395,6 +395,70 @@ router.get(
 );
 
 router.get(
+  '/top/genres',
+  validating(intervalPerSchemaNbOffset, 'query'),
+  isLoggedOrGuest,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end, nb, offset } = req.query as TypedPayload<
+      typeof intervalPerSchemaNbOffset
+    >;
+
+    try {
+      const resultArtists = await getBestArtistsNbOffseted(
+        user,
+        start,
+        end,
+        nb,
+        offset,
+      );
+
+      // convert artist list to genres list
+      const genres = new Set();
+      Object.values(resultArtists).forEach(item => {
+        Object.values(item.artist.genres).forEach(genre => {
+          genres.add(genre);
+        });
+      });
+
+      const result: any[] = [];
+      genres.forEach(genreStr => {
+        const genreItem = {
+          genre: {
+            name: genreStr,
+            artists: [] as any[],
+          },
+          total_count: 0,
+          total_duration_ms: 0,
+          count: 0,
+          duration_ms: 0,
+        };
+        Object.values(resultArtists).forEach((item: any) => {
+          if (item.artist.genres.includes(genreStr)) {
+            genreItem.genre.artists.push(item.artist);
+            genreItem.count += item.count / item.artist.genres.length;
+            genreItem.duration_ms +=
+              item.duration_ms / item.artist.genres.length;
+          }
+          if (item.artist.genres.length > 0) {
+            genreItem.total_count +=
+              item.total_count / item.artist.genres.length;
+            genreItem.total_duration_ms +=
+              item.total_duration_ms / item.artist.genres.length;
+          }
+        });
+        result.push(genreItem);
+      });
+
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.get(
   '/top/albums',
   validating(intervalPerSchemaNbOffset, 'query'),
   isLoggedOrGuest,

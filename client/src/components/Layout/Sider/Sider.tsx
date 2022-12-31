@@ -20,6 +20,8 @@ import {
   ExitToApp,
   Share,
   ShareOutlined,
+  CategoryOutlined,
+  Category,
 } from '@mui/icons-material';
 import s from './index.module.css';
 import { useConditionalAPI, useShareLink } from '../../../services/hooks';
@@ -72,6 +74,12 @@ const links = [
         link: '/top/albums',
         icon: <AlbumOutlined />,
         iconOn: <Album />,
+      },
+      {
+        label: 'Top genres',
+        link: '/top/genres',
+        icon: <CategoryOutlined />,
+        iconOn: <Category />,
       },
     ],
   },
