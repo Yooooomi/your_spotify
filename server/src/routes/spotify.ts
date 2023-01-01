@@ -588,6 +588,73 @@ router.get(
 );
 
 router.get(
+  '/top/hour-repartition/genres',
+  validating(interval, 'query'),
+  isLoggedOrGuest,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end } = req.query as TypedPayload<
+      typeof collaborativeSchema
+    >;
+
+    try {
+      const resultBestSongs = await getBestSongsOfHour(user, start, end);
+
+      const resultBestGenres: any[] = [];
+
+      const getOrCreateGenre = (
+        genreName: string,
+        arr: { genre: { id: string; name: string }; count: number }[],
+      ) => {
+        const foundItem = Object.values(arr).find(
+          item => item.genre.name === genreName,
+        );
+        if (foundItem != null) return foundItem;
+        const newItem = {
+          genre: {
+            id: genreName,
+            name: genreName,
+          },
+          count: 0,
+        };
+        arr.push(newItem);
+        return newItem;
+      };
+
+      Object.values(resultBestSongs).forEach(hourSongItem => {
+        const hourGenreItem = {
+          _id: hourSongItem._id,
+          genres: [] as {
+            genre: { id: string; name: string };
+            count: number;
+          }[],
+          total: 0,
+        };
+
+        Object.values(hourSongItem.tracks).forEach((track: any) => {
+          track.artist.genres.forEach((genre: string) => {
+            getOrCreateGenre(genre, hourGenreItem.genres).count +=
+              track.count / track.artist.genres.length;
+          });
+        });
+
+        hourGenreItem.total = hourGenreItem.genres.reduce(
+          (n, a) => n + a.count,
+          0,
+        );
+
+        resultBestGenres.push(hourGenreItem);
+      });
+
+      return res.status(200).send(resultBestGenres);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.get(
   '/top/hour-repartition/albums',
   validating(interval, 'query'),
   isLoggedOrGuest,

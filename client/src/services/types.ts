@@ -51,6 +51,7 @@ export interface Artist {
 
 export interface Genre {
   _id: string;
+  // id: string;
   name: string;
   artists: Artist[];
 }

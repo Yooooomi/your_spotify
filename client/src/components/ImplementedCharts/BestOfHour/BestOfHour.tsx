@@ -19,12 +19,14 @@ enum Element {
   ARTIST = 'artists',
   ALBUM = 'albums',
   TRACK = 'tracks',
+  GENRE = 'genres',
 }
 
 const elementToCall = {
   [Element.ARTIST]: api.getBestArtistsOfHour,
   [Element.ALBUM]: api.getBestAlbumsOfHour,
   [Element.TRACK]: api.getBestSongsOfHour,
+  [Element.GENRE]: api.getBestGenresOfHour,
 } as const;
 
 function getElementName(
@@ -41,6 +43,9 @@ function getElementName(
   }
   if ('artists' in result) {
     return result.artists.find(t => t.artist.id === id)?.artist.name;
+  }
+  if ('genres' in result) {
+    return result.genres.find(t => t.genre.id === id)?.genre.name;
   }
   return '';
 }
@@ -78,6 +83,15 @@ function getElementData(
     return found.artists.reduce<StackedBarProps['data'][number]>(
       (acc, curr) => {
         acc[curr.artist.id] = Math.floor((curr.count / total) * 1000) / 10;
+        return acc;
+      },
+      { x: index },
+    );
+  }
+  if ('genres' in found) {
+    return found.genres.reduce<StackedBarProps['data'][number]>(
+      (acc, curr) => {
+        acc[curr.genre.id] = Math.floor((curr.count / total) * 1000) / 10;
         return acc;
       },
       { x: index },

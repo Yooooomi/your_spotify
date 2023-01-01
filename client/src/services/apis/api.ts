@@ -440,6 +440,14 @@ export const api = {
         tracks: { count: number; track: Track; artist: Artist }[];
       }[]
     >('/spotify/top/hour-repartition/songs', { start, end }),
+  getBestGenresOfHour: (start: Date, end: Date) =>
+    get<
+      {
+        _id: number;
+        total: number;
+        genres: { count: number; genre: { id: string; name: string } }[];
+      }[]
+    >('/spotify/top/hour-repartition/genres', { start, end }),
   getBestAlbumsOfHour: (start: Date, end: Date) =>
     get<
       {
