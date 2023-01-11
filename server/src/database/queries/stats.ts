@@ -819,65 +819,62 @@ export const getBestArtistsOfHour = (user: User, start: Date, end: Date) => {
 export const getBestGenresOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $addFields: { hour: getGroupByDateProjection().hour } },
+    {
+      $addFields: { hour: getGroupByDateProjection().hour, amountListened: 1 },
+    },
     { $lookup: lightTrackLookupPipeline('id') },
     { $unwind: '$track' },
-    { $lookup: lightArtistLookupPipeline('track.artists', true) },
-    {
-      $project: {
-        hour: 1,
-        track: { id: 1, duration_ms: 1 }, // , 'name': 1
-        artist: { id: 1, genres: 1 }, // , 'name': 1
-      },
-    },
-    { $unwind: '$artist' },
-    { $addFields: { artistId: '$artist.id', genres: '$artist.genres' } },
-    {
-      $project: {
-        artist: 0,
-      },
-    },
-    { $unwind: '$genres' },
-    {
-      $group: {
-        _id: '$_id',
-        hour: { $first: '$hour' },
-        track: { $first: '$track' },
-        artistId: { $addToSet: '$artistId' },
-        amountGenres: { $sum: 1 },
-        genres: { $push: '$genres' },
-      },
-    },
-    { $unwind: '$artistId' },
-    { $lookup: lightArtistLookupPipeline('artistId', false) },
-    { $unwind: '$artist' },
-    { $unwind: '$genres' },
+    { $addFields: { amountArtists: { $size: '$track.artists' } } },
+    { $match: { amountArtists: { $ne: 0 } } },
     {
       $set: {
-        weight: { $divide: [1, '$amountGenres'] },
+        amountListened: { $divide: ['$amountListened', '$amountArtists'] },
       },
     },
+    { $unwind: '$track.artists' },
+    { $lookup: lightArtistLookupPipeline('track.artists', false) },
+    { $unwind: '$artist' },
+    {
+      $project: {
+        _id: 1,
+        hour: 1,
+        track: { id: 1, duration_ms: 1, name: 1 },
+        amountListened: 1,
+        amountArtists: 1,
+        artist: { id: 1, genres: 1 },
+        genres: 1,
+        artistId: 1,
+      },
+    },
+    { $addFields: { amountGenres: { $size: '$artist.genres' } } },
+    { $match: { amountGenres: { $ne: 0 } } },
+    {
+      $set: {
+        amountListened: { $divide: ['$amountListened', '$amountGenres'] },
+      },
+    },
+    { $unwind: '$artist.genres' },
     {
       $group: {
-        _id: { hour: '$hour', genre: '$genres' },
+        _id: { genre: '$artist.genres', hour: '$hour' },
         hour: { $first: '$hour' },
-        genre: { $first: '$genres' },
-        duration_ms: { $sum: { $multiply: ['$weight', '$track.duration_ms'] } },
-        amount_songs: { $sum: '$weight' },
-        artists: { $push: '$artist' },
+        genre: { $first: '$artist.genres' },
+        amountListened: { $sum: '$amountListened' },
+        artistIds: { $addToSet: '$artist.id' },
       },
     },
-    { $sort: { duration_ms: -1 } },
+    { $sort: { amountListened: -1 } },
     {
       $group: {
         _id: '$hour',
         genres: {
           $push: {
             genre: { id: '$genre', name: '$genre' },
-            count: '$amount_songs',
+            count: '$amountListened',
+            artistIds: '$artistIds',
           },
         },
-        total: { $sum: '$amount_songs' },
+        total: { $sum: '$amountListened' },
       },
     },
     { $sort: { _id: 1 } },

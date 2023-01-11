@@ -85,65 +85,52 @@ const lightArtistLookupPipeline = (
 // Build an aggregation to view total sales for each product in 2014.
 const aggregation = [
     { $match: { played_at: { $gt: start, $lt: end } } },
-    { $addFields: { hour: getGroupByDateProjection().hour } },
+    { $addFields: { hour: getGroupByDateProjection().hour, amountListened: 1 } },
     { $lookup: lightTrackLookupPipeline('id') },
-    { $unwind: '$track' },
-    { $lookup: lightArtistLookupPipeline('track.artists', true) },
-    {
-      $project: {
-        'hour': 1,
-        'track': {'id': 1, 'duration_ms': 1}, // , 'name': 1
-        'artist': {'id': 1, 'genres': 1} // , 'name': 1
+      { $unwind: '$track' },
+    { $addFields: { amountArtists: { $size: '$track.artists' } } },
+    { $match: { amountArtists: { $ne: 0 } } },
+    { $set: { amountListened: { $divide: ['$amountListened', '$amountArtists'] } } },
+    { $unwind: '$track.artists' },
+    { $lookup: lightArtistLookupPipeline('track.artists', false) },
+      { $unwind: '$artist' },
+    { 
+      $project: { 
+        _id: 1,
+        hour: 1,
+        track: { id: 1, duration_ms: 1, name: 1 },
+        amountListened: 1,
+        amountArtists: 1,
+        artist: { id: 1, genres: 1 },
+        genres: 1,
+        artistId: 1,
       }
     },
-    { $unwind: '$artist'},
-    { $addFields: { artistId: '$artist.id', genres: '$artist.genres' } },
-    {
-      $project: {
-        'artist': 0
-      }
-    },
-    { $unwind: '$genres'},
+    { $addFields: { amountGenres: { $size: '$artist.genres' } } },
+    { $match: { amountGenres: { $ne: 0 } } },
+    { $set: { amountListened: { $divide: ['$amountListened', '$amountGenres'] } } },
+    { $unwind: '$artist.genres' },
     {
       $group: {
-        _id: '$_id',
+        _id: { genre: '$artist.genres', hour: '$hour'},
         hour: { $first: '$hour' },
-        track: { $first: '$track' },
-        artistId: { $addToSet: '$artistId' },
-        amountGenres: { $sum: 1 },
-        genres: { $push: '$genres' },
-      },
-    },
-    { $unwind: '$artistId'},
-    { $lookup: lightArtistLookupPipeline('artistId', false) },
-    { $unwind: '$artist' },
-    { $unwind: '$genres'},
-    {
-      $set: { 
-        "weight": { $divide: [1, '$amountGenres'] }
+        // tracks: { $addToSet: '$track' },
+        genre: { $first: '$artist.genres' },
+        amountListened: { $sum: '$amountListened' },
+        artistIds: { $addToSet: '$artist.id' },
       }
     },
-    {
-      $group: {
-        _id: { hour: '$hour', genre: '$genres' },
-        hour: { $first: '$hour' },
-        genre: { $first: '$genres' },
-        duration_ms: { $sum: { $multiply: ['$weight', '$track.duration_ms']} },
-        amount_songs: { $sum: '$weight' },
-        artists: { $push: '$artist' },
-      }
-    },
-    { $sort: { duration_ms: -1 }},
+    { $sort: { amountListened: -1 }},
     {
       $group: {
         _id: '$hour',
         genres: { $push: {
           genre: '$genre',
-          amount_songs: '$amount_songs',
-          duration_ms: '$duration_ms',
-          artists: '$artists',
+          // tracks: '$tracks',
+          amountListened: '$amountListened',
+          artistIds: '$artistIds',
         }},
-        total: { $sum: '$amount_songs' }
+        total: { $sum: '$amountListened' }
       }
     },
     { $sort: { _id: 1 }},
@@ -154,5 +141,5 @@ const aggregation = [
 // You can use hasNext()/next() to iterate through the cursor page by page.
 
 db.infos.aggregate(aggregation)
-//db.infos.aggregate(aggregation.filter((_,i) => i < 11))
+//db.infos.aggregate(aggregation.filter((_,i) => i < 16))
 // dann genres dazu und neu ($unwind + ) grupieren
