@@ -41,12 +41,15 @@ export default function Genre(props: GenreProps | HeaderGenreProps) {
       <Text className={s.genrename}>{genre.name}</Text>
       {upmobile && (
         <Text className={s.genres}>
-          {genre.artists.map((artist, i) => (
-            <>
-              <InlineArtist artist={artist} />
-              {i + 1 < genre.artists.length && ', '}
-            </>
-          ))}
+          {genre.artists
+            .filter((_, i) => i < 7)
+            .map((artist, i) => (
+              <>
+                <InlineArtist artist={artist} />
+                {i + 1 < genre.artists.length && ', '}
+              </>
+            ))}
+          {genre.artists.length > 7 && '...'}
         </Text>
       )}
       <Text className={s.sumcount}>
