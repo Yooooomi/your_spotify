@@ -1,0 +1,158 @@
+// const mongoose = require("mongoose");
+
+// MongoDB Playground
+// To disable this template go to Settings | MongoDB | Use Default Template For Playground.
+// Make sure you are connected to enable completions and to be able to run a playground.
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// Select the database to use.
+use('test');
+
+
+/*res = db.infos.findOne({played_at: { $gte: new Date("2022-12-30T19:57:42.087Z")}})
+print(JSON.stringify(res))*/
+//const user = { _id: res.owner };
+
+const start = new Date('2023-01-10T15:36:12');
+const end = new Date('2023-01-11T15:36:12');
+
+const getGroupByDateProjection = () => ({
+  year: {
+    $year: {
+      date: '$played_at',
+      timezone: 'Europe/Paris',
+    },
+  },
+  month: {
+    $month: {
+      date: '$played_at',
+      timezone: 'Europe/Paris',
+    },
+  },
+  day: {
+    $dayOfMonth: {
+      date: '$played_at',
+      timezone: 'Europe/Paris',
+    },
+  },
+  week: {
+    $week: {
+      date: '$played_at',
+      timezone: 'Europe/Paris',
+    },
+  },
+  hour: {
+    $hour: {
+      date: '$played_at',
+      timezone: 'Europe/Paris',
+    },
+  },
+});
+
+const lightTrackLookupPipeline = (idField = 'id') => ({
+  let: { id: `$${idField}` },
+  pipeline: [
+    { $match: { $expr: { $eq: ['$id', '$$id'] } } },
+    {
+      $project: {
+        _id: 1,
+        id: 1,
+        name: 1,
+        artists: 1,
+        album: 1,
+        images: 1,
+        duration_ms: 1,
+      },
+    },
+  ],
+  from: 'tracks',
+  as: 'track',
+});
+
+const lightArtistLookupPipeline = (
+  idField = 'track.artists',
+  isFieldArray = true,
+) => ({
+  let: { id: isFieldArray ? { $first: `$${idField}` } : `$${idField}` },
+  pipeline: [
+    { $match: { $expr: { $eq: ['$id', '$$id'] } } },
+    { $project: { _id: 1, id: 1, name: 1, images: 1, genres: 1 } },
+  ],
+  from: 'artists',
+  as: 'artist',
+});
+
+// Build an aggregation to view total sales for each product in 2014.
+const aggregation = [
+    { $match: { played_at: { $gt: start, $lt: end } } },
+    { $addFields: { hour: getGroupByDateProjection().hour } },
+    { $lookup: lightTrackLookupPipeline('id') },
+    { $unwind: '$track' },
+    { $lookup: lightArtistLookupPipeline('track.artists', true) },
+    {
+      $project: {
+        'hour': 1,
+        'track': {'id': 1, 'duration_ms': 1}, // , 'name': 1
+        'artist': {'id': 1, 'genres': 1} // , 'name': 1
+      }
+    },
+    { $unwind: '$artist'},
+    { $addFields: { artistId: '$artist.id', genres: '$artist.genres' } },
+    {
+      $project: {
+        'artist': 0
+      }
+    },
+    { $unwind: '$genres'},
+    {
+      $group: {
+        _id: '$_id',
+        hour: { $first: '$hour' },
+        track: { $first: '$track' },
+        artistId: { $addToSet: '$artistId' },
+        amountGenres: { $sum: 1 },
+        genres: { $push: '$genres' },
+      },
+    },
+    { $unwind: '$artistId'},
+    { $lookup: lightArtistLookupPipeline('artistId', false) },
+    { $unwind: '$artist' },
+    { $unwind: '$genres'},
+    {
+      $set: { 
+        "weight": { $divide: [1, '$amountGenres'] }
+      }
+    },
+    {
+      $group: {
+        _id: { hour: '$hour', genre: '$genres' },
+        hour: { $first: '$hour' },
+        genre: { $first: '$genres' },
+        duration_ms: { $sum: { $multiply: ['$weight', '$track.duration_ms']} },
+        amount_songs: { $sum: '$weight' },
+        artists: { $push: '$artist' },
+      }
+    },
+    { $sort: { duration_ms: -1 }},
+    {
+      $group: {
+        _id: '$hour',
+        genres: { $push: {
+          genre: '$genre',
+          amount_songs: '$amount_songs',
+          duration_ms: '$duration_ms',
+          artists: '$artists',
+        }},
+        total: { $sum: '$amount_songs' }
+      }
+    },
+    { $sort: { _id: 1 }},
+  ];
+
+// Run the aggregation and open a cursor to the results.
+// Use toArray() to exhaust the cursor to return the whole result set.
+// You can use hasNext()/next() to iterate through the cursor page by page.
+
+db.infos.aggregate(aggregation)
+//db.infos.aggregate(aggregation.filter((_,i) => i < 11))
+// dann genres dazu und neu ($unwind + ) grupieren

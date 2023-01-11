@@ -815,3 +815,71 @@ export const getBestArtistsOfHour = (user: User, start: Date, end: Date) => {
     { $sort: { _id: 1 } },
   ]);
 };
+
+export const getBestGenresOfHour = (user: User, start: Date, end: Date) => {
+  return InfosModel.aggregate([
+    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $addFields: { hour: getGroupByDateProjection().hour } },
+    { $lookup: lightTrackLookupPipeline('id') },
+    { $unwind: '$track' },
+    { $lookup: lightArtistLookupPipeline('track.artists', true) },
+    {
+      $project: {
+        hour: 1,
+        track: { id: 1, duration_ms: 1 }, // , 'name': 1
+        artist: { id: 1, genres: 1 }, // , 'name': 1
+      },
+    },
+    { $unwind: '$artist' },
+    { $addFields: { artistId: '$artist.id', genres: '$artist.genres' } },
+    {
+      $project: {
+        artist: 0,
+      },
+    },
+    { $unwind: '$genres' },
+    {
+      $group: {
+        _id: '$_id',
+        hour: { $first: '$hour' },
+        track: { $first: '$track' },
+        artistId: { $addToSet: '$artistId' },
+        amountGenres: { $sum: 1 },
+        genres: { $push: '$genres' },
+      },
+    },
+    { $unwind: '$artistId' },
+    { $lookup: lightArtistLookupPipeline('artistId', false) },
+    { $unwind: '$artist' },
+    { $unwind: '$genres' },
+    {
+      $set: {
+        weight: { $divide: [1, '$amountGenres'] },
+      },
+    },
+    {
+      $group: {
+        _id: { hour: '$hour', genre: '$genres' },
+        hour: { $first: '$hour' },
+        genre: { $first: '$genres' },
+        duration_ms: { $sum: { $multiply: ['$weight', '$track.duration_ms'] } },
+        amount_songs: { $sum: '$weight' },
+        artists: { $push: '$artist' },
+      },
+    },
+    { $sort: { duration_ms: -1 } },
+    {
+      $group: {
+        _id: '$hour',
+        genres: {
+          $push: {
+            genre: { id: '$genre', name: '$genre' },
+            count: '$amount_songs',
+          },
+        },
+        total: { $sum: '$amount_songs' },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+};
