@@ -19,3 +19,6 @@ else
     echo "API_ENDPOINT is not defined, web app won't work"
     exit 1
 fi
+
+# Convert meta tag content image url to absolute url
+sed -i "s+:image\" content=\"\(.[^\"]*\)+:image\" content=\"$CLIENT_ENDPOINT/your_spotify_1200.png+g" "$VAR_PATH/index.html"

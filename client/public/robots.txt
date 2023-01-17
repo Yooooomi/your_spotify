@@ -1,3 +1,9 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Disallow:
+
+User-agent: Twitterbot
+Allow: /your_spotify_1200.png
+
+User-agent: facebookexternalhit
+Allow: /your_spotify_1200.png
