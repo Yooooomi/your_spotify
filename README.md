@@ -120,6 +120,11 @@ To do so, you need to create a **Spotify application** [here](https://developer.
    2. add your URI under the `Redirect URIs` section.
    - i.e: `http://localhost:8080/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
    3. Do not forget to hit the save button at the bottom of the popup.
+5. Once you have created your application, Spotify wants you to register the users that will be able to access the application. (You don't need to do that for the account that created the application)
+   1. Click the **Users and access** button
+   2. Click the **Add new user** button
+   3. Enter the required information, a name and the email the user's spotify account has been created with.
+   4. (Optional) You can **Request extension** if you do not want to register the users by hand.
 
 # Importing past history
 
@@ -168,6 +173,10 @@ This can happen if you revoked access on your Spotify account. To re-sync the so
 > The web application is telling me it cannot retrieve global preferences.
 
 This means that your web application can't connect to the backend. Check that your **API_ENDPOINT** env variable is reachable from the device you're using the platform from.
+
+> A specific user does not use the application in the same timezone as the server, how can I set a specific timezone for him?
+
+Any user can set his proper timezone in the settings, it will be used for any computed statistics. The timezone of the device will be used for everything else, such as song history.
 
 # External guides
 

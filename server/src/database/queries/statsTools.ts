@@ -72,35 +72,35 @@ export const sortByTimeSplit = (
   return [];
 };
 
-export const getGroupByDateProjection = () => ({
+export const getGroupByDateProjection = (userTimezone: string | undefined) => ({
   year: {
     $year: {
       date: '$played_at',
-      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+      timezone: userTimezone ?? getWithDefault('TIMEZONE', 'Europe/Paris'),
     },
   },
   month: {
     $month: {
       date: '$played_at',
-      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+      timezone: userTimezone ?? getWithDefault('TIMEZONE', 'Europe/Paris'),
     },
   },
   day: {
     $dayOfMonth: {
       date: '$played_at',
-      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+      timezone: userTimezone ?? getWithDefault('TIMEZONE', 'Europe/Paris'),
     },
   },
   week: {
     $week: {
       date: '$played_at',
-      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+      timezone: userTimezone ?? getWithDefault('TIMEZONE', 'Europe/Paris'),
     },
   },
   hour: {
     $hour: {
       date: '$played_at',
-      timezone: getWithDefault('TIMEZONE', 'Europe/Paris'),
+      timezone: userTimezone ?? getWithDefault('TIMEZONE', 'Europe/Paris'),
     },
   },
 });

@@ -22,7 +22,7 @@ export default function ArtistStatsWrapper() {
     );
   }
 
-  if ('code' in stats) {
+  if ('code' in stats || !params.id) {
     return (
       <FullscreenCentered>
         <Text element="h3">
@@ -32,5 +32,5 @@ export default function ArtistStatsWrapper() {
     );
   }
 
-  return <ArtistStats stats={stats} />;
+  return <ArtistStats artistId={params.id} stats={stats} />;
 }

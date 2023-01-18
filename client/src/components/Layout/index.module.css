@@ -23,10 +23,3 @@
 .contentdrawer {
   padding-left: 250px;
 }
-
-.drawerbutton {
-  position: absolute !important;
-  top: 6px;
-  left: 8px;
-  z-index: 1;
-}

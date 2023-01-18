@@ -11,7 +11,7 @@ import {
   SpotifyRequest,
 } from './types';
 import { getUserImporterState } from '../database/queries/importer';
-import { SpotifyAPI } from './spotifyApi';
+import { SpotifyAPI } from './apis/spotifyApi';
 
 type Location = 'body' | 'params' | 'query';
 

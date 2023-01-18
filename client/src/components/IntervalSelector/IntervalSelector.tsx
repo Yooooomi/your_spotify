@@ -137,12 +137,10 @@ export default function IntervalSelector({
         open={open}
         onClose={() => setOpen(false)}>
         <div className={s.dialogcontent}>
-          <div>
-            <RangePicker
-              value={customIntervalDate}
-              onChange={setCustomIntervalDate}
-            />
-          </div>
+          <RangePicker
+            value={customIntervalDate}
+            onChange={setCustomIntervalDate}
+          />
           <Button variant="contained" onClick={setCustom} disabled={!goodRange}>
             Apply
           </Button>

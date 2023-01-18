@@ -13,7 +13,7 @@ import { User } from '../../database/schemas/user';
 import { saveMusics } from '../../spotify/dbTools';
 import { logger } from '../logger';
 import { minOfArray, retryPromise } from '../misc';
-import { SpotifyAPI } from '../spotifyApi';
+import { SpotifyAPI } from '../apis/spotifyApi';
 import { Unpack } from '../types';
 import { getFromCacheString, setToCacheString } from './cache';
 import {

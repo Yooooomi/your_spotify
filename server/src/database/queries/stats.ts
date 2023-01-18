@@ -19,7 +19,9 @@ export const getMostListenedSongs = async (
 ) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
 
     {
       $group: {
@@ -81,7 +83,9 @@ export const getMostListenedArtist = async (
 ) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: {
         from: 'tracks',
@@ -145,7 +149,9 @@ export const getSongsPer = async (
 ) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $group: {
         _id: getGroupingByTimeSplit(timeSplit),
@@ -176,7 +182,7 @@ export const getTimePer = async (
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -210,7 +216,7 @@ export const albumDateRatio = async (
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -268,7 +274,7 @@ export const featRatio = async (
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -361,7 +367,7 @@ export const popularityPer = async (
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -403,7 +409,7 @@ export const differentArtistsPer = async (
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -454,7 +460,7 @@ export const getDayRepartition = async (user: User, start: Date, end: Date) => {
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -486,7 +492,9 @@ export const getBestArtistsPer = async (
 ) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: {
         from: 'tracks',
@@ -551,7 +559,9 @@ export const getBestSongsNbOffseted = (
 ) =>
   InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: lightTrackLookupPipeline(),
     },
@@ -600,7 +610,9 @@ export const getBestArtistsNbOffseted = (
 ) =>
   InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: lightTrackLookupPipeline(),
     },
@@ -651,7 +663,9 @@ export const getBestAlbumsNbOffseted = (
 ) =>
   InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: lightTrackLookupPipeline(),
     },
@@ -696,7 +710,11 @@ export const getBestAlbumsNbOffseted = (
 export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $addFields: { hour: getGroupByDateProjection().hour } },
+    {
+      $addFields: {
+        hour: getGroupByDateProjection(user.settings.timezone).hour,
+      },
+    },
     { $group: { _id: '$hour', songs: { $push: '$id' }, total: { $sum: 1 } } },
     { $unwind: '$songs' },
     {
@@ -736,7 +754,11 @@ export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
 export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $addFields: { hour: getGroupByDateProjection().hour } },
+    {
+      $addFields: {
+        hour: getGroupByDateProjection(user.settings.timezone).hour,
+      },
+    },
     { $group: { _id: '$hour', songs: { $push: '$id' }, total: { $sum: 1 } } },
     { $unwind: '$songs' },
     { $lookup: lightTrackLookupPipeline('songs') },
@@ -780,7 +802,11 @@ export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
 export const getBestArtistsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $addFields: { hour: getGroupByDateProjection().hour } },
+    {
+      $addFields: {
+        hour: getGroupByDateProjection(user.settings.timezone).hour,
+      },
+    },
     { $group: { _id: '$hour', songs: { $push: '$id' }, total: { $sum: 1 } } },
     { $unwind: '$songs' },
     { $lookup: lightTrackLookupPipeline('songs') },

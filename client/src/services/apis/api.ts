@@ -126,15 +126,6 @@ export type ArtistStatsResponse = {
     count: number;
     track: TrackWithAlbum;
   }[];
-  rank: {
-    index: number;
-    isMax: boolean;
-    isMin: boolean;
-    results: {
-      id: string;
-      count: number;
-    }[];
-  };
   total: {
     count: number;
   };
@@ -148,6 +139,7 @@ export type ArtistStatsResponse = {
 export const api = {
   publicToken: null as string | null,
 
+  version: () => get<{ update: boolean; version: string }>('/version'),
   spotify: () => get('/oauth/spotify'),
   logout: () => axios.post('/logout'),
   me: () => get<{ status: true; user: User } | { status: false }>('/me'),
@@ -270,7 +262,7 @@ export const api = {
       end,
       timeSplit,
     }),
-  setSetting: (settingName: string, settingValue: any) =>
+  setSetting: (settingName: keyof User['settings'], settingValue: any) =>
     axios.post('/settings', {
       [settingName]: settingValue,
     }),
@@ -290,6 +282,16 @@ export const api = {
     get<ArtistStatsResponse | { code: 'NEVER_LISTENED' }>(
       `/artist/${id}/stats`,
     ),
+  getArtistRank: (id: string) =>
+    get<{
+      index: number;
+      isMax: boolean;
+      isMin: boolean;
+      results: {
+        id: string;
+        count: number;
+      }[];
+    }>(`/artist/${id}/rank`),
   searchArtists: (str: string) => get<Artist[]>(`/artist/search/${str}`),
   getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>
     get<

@@ -19,3 +19,8 @@
   color: grey;
   font-weight: normal;
 }
+
+.marginBottom {
+  display: block;
+  margin-bottom: 8px;
+}

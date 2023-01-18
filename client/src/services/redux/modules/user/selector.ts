@@ -39,3 +39,7 @@ export const selectDarkMode = createSelector(
   selectUser,
   user => user?.settings.darkMode ?? 'follow',
 );
+export const selectTimezone = createSelector(
+  selectUser,
+  user => user?.settings.timezone ?? 'follow',
+);

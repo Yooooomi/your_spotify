@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { z } from 'zod';
 import { GlobalPreferences } from '../database/schemas/globalPreference';
 import { User } from '../database/schemas/user';
-import { SpotifyAPI } from './spotifyApi';
+import { SpotifyAPI } from './apis/spotifyApi';
 
 export interface GlobalPreferencesRequest extends Request {
   globalPreferences: GlobalPreferences;

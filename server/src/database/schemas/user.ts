@@ -18,6 +18,7 @@ export interface User {
     nbElements: number;
     metricUsed: 'number' | 'duration';
     darkMode: DarkModeType;
+    timezone: string | undefined;
   };
   lastImport: string | null;
   publicToken: string | null;
@@ -53,6 +54,7 @@ export const UserSchema = new Schema<User>(
         enum: ['follow', 'dark', 'light'],
         default: 'follow',
       },
+      timezone: { type: String, default: undefined, required: false },
     },
     lastImport: { type: String, default: null },
     publicToken: { type: String, default: null, index: true },

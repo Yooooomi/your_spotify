@@ -6,10 +6,13 @@
   padding: 16px;
 }
 
+.drawer {
+  width: 300px;
+}
+
 .title {
   display: block;
   margin-bottom: 32px;
-  text-decoration: none;
   color: white;
 }
 
@@ -26,7 +29,7 @@
 }
 
 .popper {
-  z-index: 3;
+  z-index: 10000;
 }
 
 .results {

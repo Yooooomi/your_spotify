@@ -34,6 +34,7 @@ h6 {
 :root {
   --track-options: 34px;
   --radius: 6px;
+  --page-padding: 32px;
 }
 
 .dark-vars {
@@ -43,7 +44,6 @@ h6 {
   --primary: white;
 
   --text-grey: rgb(90, 90, 90);
-  --page-padding: 32px;
 
   --hover: rgb(65, 65, 65);
 
@@ -65,7 +65,6 @@ h6 {
   --primary: black;
 
   --text-grey: rgb(90, 90, 90);
-  --page-padding: 32px;
 
   --hover: #eaeaea;
 

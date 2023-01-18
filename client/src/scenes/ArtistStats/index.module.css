@@ -1,7 +1,7 @@
 .headerimage {
   height: 60px;
   width: 60px;
-  border-radius: 6px;
+  border-radius: var(--radius);
   margin-right: 16px;
 }
 
@@ -17,30 +17,20 @@
   padding-right: 16px;
 }
 
-.chart {
-  height: 300px;
-}
-
 .ranks {
   display: flex;
-  align-items: center;
+  flex-grow: 1;
+  margin-left: 16px;
 }
 
-.rank {
-  margin-right: 16px;
+@media screen and (max-width: 900px) {
+  .ranks {
+    justify-content: center;
+  }
 }
 
-.before {
-  color: green;
-}
-
-.actual {
-  font-weight: bold;
-  color: var(--text-on-light);
-}
-
-.after {
-  color: red;
+.chart {
+  height: 300px;
 }
 
 .cardimg {

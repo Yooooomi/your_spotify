@@ -108,7 +108,12 @@ export const bestPeriodOfArtist = async (user: User, artistId: string) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id } },
     ...getArtistInfos(artistId),
-    { $project: { ...getGroupByDateProjection(), artistInfos: 1 } },
+    {
+      $project: {
+        ...getGroupByDateProjection(user.settings.timezone),
+        artistInfos: 1,
+      },
+    },
     {
       $group: { _id: null, items: { $push: '$$CURRENT' }, total: { $sum: 1 } },
     },
@@ -204,7 +209,7 @@ export const getRankOfArtist = async (user: User, artistId: string) => {
 export const getDayRepartitionOfArtist = (user: User, artistId: string) =>
   InfosModel.aggregate([
     { $match: { owner: user._id } },
-    { $addFields: getGroupByDateProjection() },
+    { $addFields: getGroupByDateProjection(user.settings.timezone) },
     ...getArtistInfos(artistId),
     {
       $lookup: {
