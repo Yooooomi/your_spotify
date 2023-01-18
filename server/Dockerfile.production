@@ -29,6 +29,7 @@ RUN apk add python3 gcc g++ make cmake
 COPY --from=builder /app/scripts/ /app/scripts/
 COPY --from=builder /app/package.json /app/package.json
 COPY --from=builder /app/lib/ /app/lib/
+COPY --from=builder /app/src/public/ /app/lib/public/
 
 RUN yarn --production
 
