@@ -9,14 +9,14 @@ else
     VAR_PATH="/app/build"
 fi
 
+cp "$VAR_PATH/index-template.html" "$VAR_PATH/index.html"
 cp "$VAR_PATH/variables-template.js" "$VAR_PATH/variables.js"
 
 if [ ! -z "$API_ENDPOINT" ]
 then
     echo "Setting API Endpoint to '$API_ENDPOINT'"
     sed -i "s;__API_ENDPOINT__;$API_ENDPOINT;g" "$VAR_PATH/variables.js"
-    # Convert meta tag content image url to absolute url
-    sed -i "s;image\" content=\"\(.[^\"]*\);image\" content=\"$API_ENDPOINT/static/your_spotify_1200.png;g" "$VAR_PATH/index.html"
+    sed -i "s;__API_ENDPOINT__;$API_ENDPOINT;g" "$VAR_PATH/index.html"
 else
     echo "API_ENDPOINT is not defined, web app won't work"
     exit 1
