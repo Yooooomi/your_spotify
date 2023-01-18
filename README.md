@@ -58,11 +58,12 @@ services:
     depends_on:
       - mongo
     environment:
-      - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard (see below)
-      - CLIENT_ENDPOINT=http://localhost:3000
-      - SPOTIFY_PUBLIC=__your_spotify_client_id__
-      - SPOTIFY_SECRET=__your_spotify_secret__
-      - CORS=http://localhost:3000,http://localhost:3001 # all if you want to allow every origin
+      API_ENDPOINT: http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard (see below)
+      CLIENT_ENDPOINT: http://localhost:3000
+      SPOTIFY_PUBLIC: __your_spotify_client_id__
+      SPOTIFY_SECRET: __your_spotify_secret__
+      CORS: http://localhost:3000,http://localhost:3001 # "all" if you want to allow every origin
+
   mongo:
     container_name: mongo
     image: mongo:4.4.8
@@ -75,7 +76,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_ENDPOINT=http://localhost:8080
+      API_ENDPOINT: http://localhost:8080
 ```
 
 > Some ARM-based devices might have trouble with Mongo >= 5. I suggest you use the image **mongo:4.4**.

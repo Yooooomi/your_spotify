@@ -6,6 +6,10 @@
   padding: 16px;
 }
 
+.root::-webkit-scrollbar {
+  display: none;
+}
+
 .drawer {
   width: 300px;
 }
