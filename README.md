@@ -76,7 +76,6 @@ services:
       - "3000:3000"
     environment:
       - API_ENDPOINT=http://localhost:8080
-      - CLIENT_ENDPOINT=http://localhost:3000
 ```
 
 > Some ARM-based devices might have trouble with Mongo >= 5. I suggest you use the image **mongo:4.4**.
