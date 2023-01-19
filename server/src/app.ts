@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+import * as path from 'path';
 
 import indexRouter from './routes/index';
 import oauthRouter from './routes/oauth';
@@ -14,6 +15,7 @@ const app = express();
 
 app.use(morgan('dev'));
 app.use(cookieParser());
+app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -45,7 +47,7 @@ app.use((req, res, next) => {
     );
     res.header(
       'Access-Control-Allow-Headers',
-      'Origin, Content-Type, Authorization, x-id, Content-Length, X-Requested-With',
+      'Origin, Content-Type, Authorization, x-id, Content-Length, X-Requested-With, x-xsrf-token',
     );
     res.header('Access-Control-Allow-Credentials', 'true');
   }

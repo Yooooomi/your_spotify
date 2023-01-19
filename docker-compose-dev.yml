@@ -10,8 +10,6 @@ services:
       args:
         NODE_ENV: development
     entrypoint: "/app/scripts/run/run_dev.sh"
-    ports:
-      - "8080:8080"
     volumes:
       - ./server/src/:/app/src/
     links:
@@ -19,20 +17,14 @@ services:
     depends_on:
       - mongo
     environment:
-      - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
-      - CLIENT_ENDPOINT=http://localhost:3000
-      - SPOTIFY_PUBLIC=__your_spotify_client_id__
-      - SPOTIFY_SECRET=__your_spotify_secret__
-      - CORS=all
-      - LOG_LEVEL=debug
+      CORS: all
+      LOG_LEVEL: debug
 
   mongo:
     logging:
       driver: none
     volumes:
-      - ./db_data:/data/db
-    ports:
-      - "27017:27017"
+      - ./db_data_new:/data/db
 
   web:
     container_name: web
@@ -43,11 +35,8 @@ services:
       args:
         NODE_ENV: development
     entrypoint: "/app/scripts/run/run_dev.sh"
-    ports:
-      - "3000:3000"
     volumes:
       - ./client/src:/app/src/
       - ./client/public:/app/public/
     environment:
-      - API_ENDPOINT=http://localhost:8080
-      - NODE_ENV=development
+      NODE_ENV: development

@@ -24,6 +24,7 @@ export default function Home() {
     <div className={s.root}>
       <Header
         title={`Welcome, ${user.username} 🎉`}
+        tinyTitle="Welcome"
         subtitle="Here is what happened for the period you chose on the right"
       />
       <div className={s.content}>

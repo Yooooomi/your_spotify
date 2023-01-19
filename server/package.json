@@ -1,11 +1,11 @@
 {
   "name": "server",
-  "version": "0.0.0",
+  "version": "1.4.0",
   "private": true,
   "scripts": {
     "start": "node lib/bin/www",
     "start:watch": "nodemon lib/bin/www",
-    "build": "tsc",
+    "build": "tsc && cp -r src/public lib/",
     "build:watch": "tsc --watch",
     "dev": "nodemon src/bin/www.ts",
     "migrate": "node ./lib/migrations.js",

@@ -4,7 +4,7 @@ import { SpotifyArtist, Artist } from '../database/schemas/artist';
 import { SpotifyTrack, Track } from '../database/schemas/track';
 import { logger } from '../tools/logger';
 import { retryPromise } from '../tools/misc';
-import { SpotifyAPI } from '../tools/spotifyApi';
+import { SpotifyAPI } from '../tools/apis/spotifyApi';
 
 const getIdsHandlingMax = async <
   T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist,

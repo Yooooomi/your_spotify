@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Link, useLocation } from 'react-router-dom';
 import { Paper, Popper } from '@mui/material';
@@ -29,9 +29,12 @@ import Text from '../../Text';
 import { alertMessage } from '../../../services/redux/modules/message/reducer';
 import { selectUser } from '../../../services/redux/modules/user/selector';
 import { useAppDispatch } from '../../../services/redux/tools';
+import { LayoutContext } from '../LayoutContext';
+import SiderTitle from './SiderTitle';
 
 interface SiderProps {
   className?: string;
+  isDrawer?: boolean;
 }
 
 const links = [
@@ -111,8 +114,9 @@ const links = [
   },
 ];
 
-export default function Sider({ className }: SiderProps) {
+export default function Sider({ className, isDrawer }: SiderProps) {
   const dispatch = useAppDispatch();
+  const layoutContext = useContext(LayoutContext);
   const user = useSelector(selectUser);
   const location = useLocation();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -125,7 +129,8 @@ export default function Sider({ className }: SiderProps) {
 
   const reset = useCallback(() => {
     setSearch('');
-  }, []);
+    layoutContext.closeDrawer();
+  }, [layoutContext]);
 
   const copyCurrentPage = useCallback(() => {
     if (!user?.publicToken) {
@@ -149,12 +154,10 @@ export default function Sider({ className }: SiderProps) {
   const toCopy = useShareLink();
 
   return (
-    <div className={clsx(s.root, className)}>
-      <Link to="/" className={s.title}>
-        <Text onDark element="h1">
-          Your Spotify
-        </Text>
-      </Link>
+    <div className={clsx(s.root, className, { [s.drawer]: isDrawer })}>
+      <div className={s.title}>
+        <SiderTitle />
+      </div>
       <input
         className={s.input}
         placeholder="Search..."
@@ -218,7 +221,11 @@ export default function Sider({ className }: SiderProps) {
                   );
                 }
                 return (
-                  <Link to={link.link} className={s.link} key={link.label}>
+                  <Link
+                    to={link.link}
+                    className={s.link}
+                    key={link.label}
+                    onClick={layoutContext.closeDrawer}>
                     <Text onDark>
                       {location.pathname === link.link
                         ? link.iconOn

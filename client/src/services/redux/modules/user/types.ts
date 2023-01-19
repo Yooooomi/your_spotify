@@ -17,6 +17,7 @@ export interface User {
     nbElements: number;
     metricUsed: 'number' | 'duration';
     darkMode: DarkModeType;
+    timezone: string | null | undefined;
   };
   publicToken: string | null;
   firstListenedAt: string;

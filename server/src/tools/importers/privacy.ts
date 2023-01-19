@@ -17,7 +17,7 @@ import {
   removeDiacritics,
   retryPromise,
 } from '../misc';
-import { SpotifyAPI } from '../spotifyApi';
+import { SpotifyAPI } from '../apis/spotifyApi';
 import { Unpack } from '../types';
 import { getFromCache, setToCache } from './cache';
 import {

@@ -13,6 +13,7 @@ const validators = {
   PORT: z.preprocess(toNumber, z.number().optional()),
   TIMEZONE: z.string().optional(),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).optional(),
+  NODE_ENV: z.enum(['production', 'development']).optional(),
 } as const;
 
 const env: Record<string, any> = {};

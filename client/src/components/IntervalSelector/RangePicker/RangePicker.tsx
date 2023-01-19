@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, CalendarPicker } from '@mui/x-date-pickers';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { MenuItem } from '@mui/material';
 import clsx from 'clsx';
 import s from './index.module.css';
@@ -73,6 +74,7 @@ function Day({ date, onClick, value, hovering, onHover }: DayProps) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const presets = [
   {
     label: 'Last week',
@@ -152,7 +154,7 @@ export default function RangePicker({ value, onChange }: RangePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <div className={s.panel}>
-        <div>
+        <div className={s.presets}>
           {presets.map(preset => (
             <MenuItem
               onClick={() =>

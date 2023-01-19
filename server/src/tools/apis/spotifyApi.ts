@@ -1,11 +1,11 @@
 import { AxiosError, AxiosInstance } from 'axios';
 import { Types } from 'mongoose';
-import { getUserFromField, storeInUser } from '../database';
-import { SpotifyTrack } from '../database/schemas/track';
-import { logger } from './logger';
-import { chunk, wait } from './misc';
-import { Spotify } from './oauth/Provider';
-import { PromiseQueue } from './queue';
+import { getUserFromField, storeInUser } from '../../database';
+import { SpotifyTrack } from '../../database/schemas/track';
+import { logger } from '../logger';
+import { chunk, wait } from '../misc';
+import { Spotify } from '../oauth/Provider';
+import { PromiseQueue } from '../queue';
 
 export const squeue = new PromiseQueue();
 

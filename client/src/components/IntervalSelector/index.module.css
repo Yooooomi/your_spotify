@@ -7,8 +7,5 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.dialogcontent > :last-child {
-  margin-top: 16px;
+  overflow: hidden;
 }

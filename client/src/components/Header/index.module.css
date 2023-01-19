@@ -24,10 +24,14 @@
 
 @media screen and (max-width: 900px) {
   .texts > h1 {
-    padding-left: 32px;
+    margin-bottom: unset;
   }
 }
 
 .texts > span {
   color: var(--text-grey);
+}
+
+.drawerbutton {
+  margin-right: 8px;
 }

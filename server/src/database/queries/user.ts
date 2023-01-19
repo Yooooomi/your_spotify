@@ -85,13 +85,19 @@ export const changeSetting = <F extends keyof User>(
   value: User[F],
   infos: Partial<User['settings']>,
 ) => {
-  const obj: Record<string, any> = {};
+  const toSet: Record<string, any> = {};
+  const toUnset: Record<string, any> = {};
   Object.keys(infos).forEach(key => {
-    obj[`settings.${key}`] = infos[key as keyof typeof infos];
+    const finalValue = infos[key as keyof typeof infos];
+    if (finalValue === undefined) {
+      toUnset[`settings.${key}`] = 1;
+    } else {
+      toSet[`settings.${key}`] = finalValue;
+    }
   });
   return UserModel.findOneAndUpdate(
     { [field]: value },
-    { $set: obj },
+    { $set: toSet, $unset: toUnset },
     { new: true },
   );
 };

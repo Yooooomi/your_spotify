@@ -12,7 +12,7 @@ import { User } from '../database/schemas/user';
 import { longWriteDbLock } from '../tools/lock';
 import { logger } from '../tools/logger';
 import { minOfArray, retryPromise, wait } from '../tools/misc';
-import { SpotifyAPI } from '../tools/spotifyApi';
+import { SpotifyAPI } from '../tools/apis/spotifyApi';
 import { saveMusics } from './dbTools';
 
 const loop = async (user: User) => {

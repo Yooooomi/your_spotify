@@ -53,7 +53,7 @@ router.get(
       const { user } = req as LoggedRequest;
       const { id } = req.params as TypedPayload<typeof getArtistStats>;
 
-      const artist = await getArtists([id]);
+      const [artist] = await getArtists([id]);
       if (!artist) {
         return res.status(404).end();
       }
@@ -62,10 +62,9 @@ router.get(
         getMostListenedSongOfArtist(user, id),
         bestPeriodOfArtist(user, id),
         getTotalListeningOfArtist(user, id),
-        getRankOfArtist(user, id),
         getDayRepartitionOfArtist(user, id),
       ];
-      const [firstLast, mostListened, bestPeriod, total, rank, dayRepartition] =
+      const [firstLast, mostListened, bestPeriod, total, dayRepartition] =
         await Promise.all(promises);
       if (!total) {
         return res.status(200).send({
@@ -73,14 +72,35 @@ router.get(
         });
       }
       return res.status(200).send({
-        artist: artist[0],
+        artist,
         firstLast,
         mostListened,
         bestPeriod,
         total,
-        rank,
         dayRepartition,
       });
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.get(
+  '/:id/rank',
+  validating(getArtistStats, 'params'),
+  isLoggedOrGuest,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { id } = req.params as TypedPayload<typeof getArtistStats>;
+
+    try {
+      const [artist] = await getArtists([id]);
+      if (!artist) {
+        return res.status(404).end();
+      }
+      const rank = await getRankOfArtist(user, id);
+      return res.status(200).send(rank);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
@@ -103,6 +123,7 @@ router.get(
       const results = await searchArtist(query);
       return res.status(200).send(results);
     } catch (e) {
+      logger.error(e);
       return res.status(500).end();
     }
   },

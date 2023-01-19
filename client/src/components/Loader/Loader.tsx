@@ -5,7 +5,7 @@ import s from './index.module.css';
 export default function Loader() {
   return (
     <div className={s.root}>
-      <CircularProgress />
+      <CircularProgress size={48} />
     </div>
   );
 }

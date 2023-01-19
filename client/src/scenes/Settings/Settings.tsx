@@ -23,6 +23,7 @@ import PublicToken from './PublicToken';
 import Rename from './Rename';
 import SetAdmin from './SetAdmin';
 import SettingLine from './SettingLine';
+import Timezone from './Timezone';
 
 export default function Settings() {
   const dispatch = useAppDispatch();
@@ -159,6 +160,17 @@ export default function Settings() {
             <Grid item xs={12} md={12} lg={6}>
               <TitleCard title="Public token">
                 <PublicToken />
+              </TitleCard>
+            </Grid>
+          )}
+          {!isPublic && (
+            <Grid item xs={12} md={12} lg={6}>
+              <TitleCard title="Timezone">
+                <Text element="span" className={s.marginBottom}>
+                  Statistics computed by the server need to know your timezone.
+                  Change this if your history does not match computed stats.
+                </Text>
+                <Timezone />
               </TitleCard>
             </Grid>
           )}
