@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import * as path from 'path';
+import cors from 'cors';
 
 import indexRouter from './routes/index';
 import oauthRouter from './routes/oauth';
@@ -9,51 +10,28 @@ import spotifyRouter from './routes/spotify';
 import globalRouter from './routes/global';
 import artistRouter from './routes/artist';
 import importRouter from './routes/importer';
-import { getWithDefault } from './tools/env';
+import { get } from './tools/env';
 
 const app = express();
+
+let corsValue = get('CORS');
+if (corsValue === 'all') {
+  corsValue = undefined;
+}
+
+app.use(
+  cors({
+    origin: corsValue ?? true,
+    methods: ['GET', 'PUT', 'POST', 'DELETE'],
+    credentials: true,
+  }),
+);
 
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-const cors = getWithDefault('CORS', 'all');
-const corsList = cors.split(',');
-
-app.use((req, res, next) => {
-  let origin = null;
-  const thisOrigin = req.get('origin');
-
-  if (!thisOrigin) {
-    return next();
-  }
-  if (cors === 'all') {
-    origin = thisOrigin;
-  } else {
-    const index = corsList.indexOf(thisOrigin);
-
-    if (index >= 0) {
-      origin = corsList[index];
-    }
-  }
-
-  if (origin) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header(
-      'Access-Control-Allow-Methods',
-      'GET, POST, PUT, DELETE, OPTIONS',
-    );
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, Content-Type, Authorization, x-id, Content-Length, X-Requested-With, x-xsrf-token',
-    );
-    res.header('Access-Control-Allow-Credentials', 'true');
-  }
-
-  return next();
-});
 
 app.use('/', indexRouter);
 app.use('/oauth', oauthRouter);

@@ -17,7 +17,6 @@ services:
     depends_on:
       - mongo
     environment:
-      CORS: all
       LOG_LEVEL: debug
 
   mongo:

@@ -1,6 +1,6 @@
 {
   "name": "client_ts",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "dependencies": {
     "@emotion/react": "11.10.4",
