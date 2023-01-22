@@ -62,8 +62,6 @@ services:
       CLIENT_ENDPOINT: http://localhost:3000
       SPOTIFY_PUBLIC: __your_spotify_client_id__
       SPOTIFY_SECRET: __your_spotify_secret__
-      CORS: http://localhost:3000,http://localhost:3001 # "all" if you want to allow every origin
-
   mongo:
     container_name: mongo
     image: mongo:4.4.8
@@ -93,7 +91,7 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | API_ENDPOINT          | REQUIRED | The endpoint of your server |
 | SPOTIFY_PUBLIC        | REQUIRED | The public key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
 | SPOTIFY_SECRET        | REQUIRED | The secret key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
-| CORS                  | all      | List of comma-separated origin allowed, or all to allow any origin |
+| CORS                  | _not defined_ | List of comma-separated origin allowed, or _nothing_ to allow any origin |
 | MAX_IMPORT_CACHE_SIZE | Infinite | The maximum element in the cache when importing data from an outside source, more cache means less requests to Spotify, resulting in faster imports |
 | MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database |
 | PORT                  | 8080 | The port of the server, do not modify if you're using docker |
