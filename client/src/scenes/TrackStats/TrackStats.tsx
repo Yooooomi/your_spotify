@@ -2,25 +2,24 @@ import React from 'react';
 import { CircularProgress, Grid } from '@mui/material';
 import Header from '../../components/Header';
 import TitleCard from '../../components/TitleCard';
-import { ArtistStatsResponse } from '../../services/apis/api';
+import { TrackStatsResponse } from '../../services/apis/api';
 import {
   buildFromDateId,
-  dateToListenedAt,
   dateToMonthAndYear,
+  formatDateTime,
 } from '../../services/stats';
 import { getAtLeastImage } from '../../services/tools';
 import s from './index.module.css';
-import DayRepartition from './DayRepartition';
 import Text from '../../components/Text';
-import ArtistRank from './ArtistRank/ArtistRank';
-import InlineTrack from '../../components/InlineTrack';
+import InlineArtist from '../../components/InlineArtist';
+import TrackRank from './TrackRank/TrackRank';
 
-interface ArtistStatsProps {
-  artistId: string;
-  stats: ArtistStatsResponse;
+interface TrackStatsProps {
+  trackId: string;
+  stats: TrackStatsResponse;
 }
 
-export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
+export default function TrackStats({ trackId, stats }: TrackStatsProps) {
   if (!stats) {
     return <CircularProgress />;
   }
@@ -31,18 +30,18 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
         left={
           <img
             className={s.headerimage}
-            src={getAtLeastImage(stats.artist.images, 60)}
-            alt="Artist"
+            src={getAtLeastImage(stats.album.images, 60)}
+            alt="Album"
           />
         }
-        title={stats.artist.name}
-        subtitle={stats.artist.genres.join(', ')}
+        title={stats.track.name}
+        subtitle={stats.artist.name}
         hideInterval
       />
       <div className={s.content}>
         <div className={s.header}>
           <div className={s.ranks}>
-            <ArtistRank artistId={artistId} />
+            <TrackRank trackId={trackId} />
           </div>
         </div>
         <Grid
@@ -59,61 +58,68 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
             alignItems="flex-start"
             spacing={2}>
             <Grid item xs={12}>
-              <TitleCard title="Songs listened">
+              <TitleCard title="Times listened">
                 <Text element="strong" className={s.songslistened}>
                   {stats.total.count}
                 </Text>
               </TitleCard>
             </Grid>
-            <Grid item xs={12}>
-              <TitleCard title="First and last time listened">
-                <div key={stats.firstLast.last.id} className={s.ml}>
-                  <img
-                    className={s.cardimg}
-                    src={getAtLeastImage(
-                      stats.firstLast.last.track.album.images,
-                      48,
-                    )}
-                    alt="album cover"
-                  />
-                  <div className={s.mlstat}>
+            {stats.firstLast.first.played_at !==
+              stats.firstLast.last.played_at && (
+              <Grid item xs={12}>
+                <TitleCard title="Last listened on">
+                  <div className={s.dateStat}>
                     <Text element="strong">
-                      <InlineTrack track={stats.firstLast.last.track} />
-                    </Text>
-                    <Text>
-                      Last listened on{' '}
-                      {dateToListenedAt(
-                        new Date(stats.firstLast.last.played_at),
-                      )}
+                      {formatDateTime(new Date(stats.firstLast.last.played_at))}
                     </Text>
                   </div>
+                </TitleCard>
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <TitleCard title="First listened on">
+                <div className={s.dateStat}>
+                  <Text element="strong">
+                    {formatDateTime(new Date(stats.firstLast.first.played_at))}
+                  </Text>
                 </div>
-                <div key={stats.firstLast.first.id} className={s.ml}>
+              </TitleCard>
+            </Grid>
+            <Grid item xs={12}>
+              <TitleCard title="Artist">
+                <div className={s.ml}>
                   <img
                     className={s.cardimg}
-                    src={getAtLeastImage(
-                      stats.firstLast.first.track.album.images,
-                      48,
-                    )}
+                    src={getAtLeastImage(stats.artist.images, 48)}
                     alt="album cover"
                   />
                   <div className={s.mlstat}>
                     <Text element="strong">
-                      <InlineTrack track={stats.firstLast.first.track} />
+                      <InlineArtist artist={stats.artist} />
                     </Text>
-                    <Text>
-                      First listened on{' '}
-                      {dateToListenedAt(
-                        new Date(stats.firstLast.first.played_at),
-                      )}
-                    </Text>
+                    <Text>{stats.artist.genres.join(', ')}</Text>
+                  </div>
+                </div>
+              </TitleCard>
+            </Grid>
+            <Grid item xs={12}>
+              <TitleCard title="Album">
+                <div className={s.ml}>
+                  <img
+                    className={s.cardimg}
+                    src={getAtLeastImage(stats.album.images, 48)}
+                    alt="album cover"
+                  />
+                  <div className={s.mlstat}>
+                    <Text element="strong">{stats.album.name}</Text>
+                    <Text>{stats.album.genres.join(', ')}</Text>
                   </div>
                 </div>
               </TitleCard>
             </Grid>
             <Grid item xs={12}>
               <TitleCard
-                title={`Top two months you listened to ${stats.artist.name}`}>
+                title={`Top two months you listened to ${stats.track.name}`}>
                 <div className={s.bestperiod}>
                   <Text element="strong">
                     {dateToMonthAndYear(
@@ -149,30 +155,19 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
                 )}
               </TitleCard>
             </Grid>
-            <Grid item xs={12}>
-              <DayRepartition
-                stats={stats.dayRepartition}
-                className={s.chart}
-              />
-            </Grid>
           </Grid>
           <Grid item xs={6}>
-            <TitleCard title="Most listened tracks">
-              {stats.mostListened.map((ml, k) => (
-                <div key={ml.track.id} className={s.ml}>
-                  <Text element="strong" className={s.mlrank}>
-                    #{k + 1}
-                  </Text>
+            <TitleCard title="Recently played on">
+              {stats.recentHistory.map(info => (
+                <div key={info.id} className={s.ml}>
                   <img
                     className={s.cardimg}
-                    src={getAtLeastImage(ml.track.album.images, 48)}
+                    src={getAtLeastImage(stats.album.images, 48)}
                     alt="album cover"
                   />
                   <div className={s.mlstat}>
-                    <Text element="strong">
-                      <InlineTrack track={ml.track} />
-                    </Text>
-                    <Text>{ml.count} times</Text>
+                    <Text element="strong">{stats.track.name}</Text>
+                    <Text>{formatDateTime(new Date(info.played_at))}</Text>
                   </div>
                 </div>
               ))}

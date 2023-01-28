@@ -1,0 +1,8 @@
+.root {
+  color: inherit;
+  text-decoration: none;
+}
+
+.root:hover {
+  text-decoration: underline;
+}

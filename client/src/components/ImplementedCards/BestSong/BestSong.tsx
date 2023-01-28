@@ -11,6 +11,7 @@ import { ImplementedCardProps } from '../types';
 import s from './index.module.css';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import Text from '../../Text';
+import InlineTrack from '../../InlineTrack';
 
 interface BestSongProps extends ImplementedCardProps {}
 
@@ -58,7 +59,10 @@ export default function BestSong({ className }: BestSongProps) {
           />
         </div>
         <div className={s.stats}>
-          <Text element="strong">{res?.track.name ?? 'No data'}</Text>
+          <Text element="strong">
+            {res && <InlineTrack track={res.track} />}
+            {!res && <Text>No data</Text>}
+          </Text>
           <div className={s.statnumbers}>
             <Text className={s.stat}>
               <Text element="strong">{res?.count ?? 0}</Text> times listened
