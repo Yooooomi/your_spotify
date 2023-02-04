@@ -135,17 +135,19 @@ The import process uses cache to limit requests to the Spotify API. By default, 
 
 ### Privacy data
 
+> Takes a maximum of 5 days
+
 - Request your **privacy data** at Spotify to have access to your history for the past year [here](https://www.spotify.com/us/account/privacy/).
-- Head to the **Settings** page and choose the **privacy** method.
+- Head to the **Settings** page and choose the **Account data** method.
 - Input your files starting with `StreamingHistoryX.json`.
 - Start your import.
 
 ### Full privacy data
 
-> Full privacy data can be obtained by emailing **privacy@spotify.com** and requesting your data since the creation of the account.
+> Takes a maximum of 30 days
 
-- Request your data by email.
-- Head to the **Settings** page and choose the **full-privacy** method.
+- Request your **Full privacy data** to have access to your history data since the creation of the account [here](https://www.spotify.com/us/account/privacy/).
+- Head to the **Settings** page and choose the **Extended streaming history** method.
 - Input your files starting with `endsongX.json`.
 - Start your import.
 
