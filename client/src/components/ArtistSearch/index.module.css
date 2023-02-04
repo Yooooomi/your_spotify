@@ -1,0 +1,43 @@
+.input {
+  border: none;
+  font-size: unset;
+  outline: none;
+  background: white;
+  border-radius: 6px;
+  padding: 8px;
+  transition: all 250ms;
+  margin-bottom: 32px;
+  width: 100%;
+}
+
+.popper {
+  z-index: 10000;
+}
+
+.results {
+  padding: 16px;
+  max-height: 50vh;
+  overflow-y: scroll;
+}
+
+.result {
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+}
+
+.result:hover {
+  background: var(--hover);
+}
+
+.resultimage {
+  height: 48px;
+  width: 48px;
+  border-radius: 6px;
+  margin-right: 8px;
+}

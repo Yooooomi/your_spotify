@@ -2,7 +2,7 @@ import { MenuItem, Select } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { api } from '../../../services/apis/api';
-import { useAPI } from '../../../services/hooks';
+import { useAPI } from '../../../services/hooks/hooks';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import { UnboxPromise } from '../../../services/types';
 import ChartCard from '../../ChartCard';

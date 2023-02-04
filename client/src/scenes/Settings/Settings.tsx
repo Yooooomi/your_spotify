@@ -1,43 +1,37 @@
-import { Button, CircularProgress, Grid } from '@mui/material';
-import React, { useCallback } from 'react';
+import { CircularProgress } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
+import ButtonsHeader from '../../components/ButtonsHeader';
 import FullscreenCentered from '../../components/FullscreenCentered';
 import Header from '../../components/Header';
+import Masonry from '../../components/Masonry';
 import Text from '../../components/Text';
-import TitleCard from '../../components/TitleCard';
 import { api } from '../../services/apis/api';
-import { useAPI } from '../../services/hooks';
+import { useAPI } from '../../services/hooks/hooks';
 import { selectSettings } from '../../services/redux/modules/settings/selector';
-import { changeRegistrations } from '../../services/redux/modules/settings/thunk';
 import {
   selectIsPublic,
   selectUser,
 } from '../../services/redux/modules/user/selector';
-import { useAppDispatch } from '../../services/redux/tools';
-import { getSpotifyLogUrl } from '../../services/tools';
-import DarkModeSwitch from './DarkModeSwitch';
+import { compact, conditionalEntry } from '../../services/tools';
+import AccountInfos from './AccountInfos';
+import AllowRegistration from './AllowRegistration';
+import BlacklistArtist from './BlacklistArtist';
+import DarkMode from './DarkMode';
 import DeleteUser from './DeleteUser';
 import Importer from './Importer';
 import s from './index.module.css';
 import PublicToken from './PublicToken';
-import Rename from './Rename';
+import RelogToSpotify from './RelogToSpotify';
 import SetAdmin from './SetAdmin';
-import SettingLine from './SettingLine';
+import SpotifyAccountInfos from './SpotifyAccountInfos';
 import Timezone from './Timezone';
 
 export default function Settings() {
-  const dispatch = useAppDispatch();
   const settings = useSelector(selectSettings);
   const sme = useAPI(api.sme);
   const user = useSelector(selectUser);
   const isPublic = useSelector(selectIsPublic);
-
-  const allowRegistration = useCallback(() => {
-    if (!settings) {
-      return;
-    }
-    dispatch(changeRegistrations(!settings.allowRegistrations));
-  }, [dispatch, settings]);
 
   if (!settings) {
     return (
@@ -52,6 +46,12 @@ export default function Settings() {
     return null;
   }
 
+  const tabs = compact([
+    { url: '/settings/account', label: 'Account' },
+    { url: '/settings/statistics', label: 'Statistics' },
+    conditionalEntry({ url: '/settings/admin', label: 'Admin' }, user.admin),
+  ]);
+
   return (
     <div>
       <Header
@@ -59,122 +59,52 @@ export default function Settings() {
         subtitle="Here are the settings for Your Spotify, anyone with an account can access this page"
         hideInterval
       />
+      <ButtonsHeader items={tabs} />
       <div className={s.content}>
-        <Grid container spacing={2}>
-          {!isPublic && (
-            <Grid item xs={12} md={12} lg={6}>
-              <TitleCard title="Account infos">
-                <SettingLine left="Account ID" right={user._id} />
-                <SettingLine left="Account name" right={user.username} />
-                <SettingLine
-                  left="Allow new registrations"
-                  right={settings.allowRegistrations.toString()}
-                />
-              </TitleCard>
-            </Grid>
-          )}
-          {sme && !isPublic && (
-            <Grid item xs={12} md={12} lg={6}>
-              <TitleCard title="Linked Spotify account">
-                <SettingLine left="Id" right={sme.id} />
-                <SettingLine left="Mail" right={sme.email} />
-                <SettingLine left="Product type" right={sme.product} />
-              </TitleCard>
-            </Grid>
-          )}
-          {user.admin && !isPublic && (
-            <>
-              <Grid item xs={12} md={12} lg={6}>
-                <TitleCard
-                  title="Set admin status"
-                  right={
-                    <Text className={s.onlyadmin}>
-                      Only admins can see this
-                    </Text>
-                  }>
-                  <SetAdmin />
-                </TitleCard>
-              </Grid>
-              <Grid item xs={12} md={12} lg={6}>
-                <TitleCard
-                  title="Delete users"
-                  right={
-                    <Text className={s.onlyadmin}>
-                      Only admins can see this
-                    </Text>
-                  }>
-                  <DeleteUser />
-                </TitleCard>
-              </Grid>
-            </>
-          )}
-          {!isPublic && (
-            <Grid item xs={12} md={12} lg={6}>
-              <TitleCard title="Miscellaneous">
-                {user.admin && (
-                  <SettingLine
-                    left={
-                      <Text>
-                        Allow new registrations&nbsp;
-                        <Text className={s.onlyadmin}>admin</Text>
-                      </Text>
-                    }
-                    right={
-                      <Button onClick={allowRegistration}>
-                        {settings.allowRegistrations ? 'YES' : 'NO'}
-                      </Button>
-                    }
+        <Routes>
+          <Route
+            path="/account"
+            element={
+              <Masonry>
+                {!isPublic && (
+                  <AccountInfos
+                    user={user}
+                    settings={settings}
+                    isPublic={isPublic}
                   />
                 )}
-                <SettingLine
-                  left="Relog to Spotify"
-                  right={
-                    <Button>
-                      <a href={getSpotifyLogUrl()}>Relog</a>
-                    </Button>
-                  }
-                />
-              </TitleCard>
-            </Grid>
-          )}
-          {!isPublic && (
-            <Grid item xs={12} md={12} lg={6}>
-              <TitleCard title="Import data">
-                <Importer />
-              </TitleCard>
-            </Grid>
-          )}
-          {!isPublic && (
-            <Grid item xs={12} md={12} lg={6}>
-              <TitleCard title="Rename account">
-                <Rename />
-              </TitleCard>
-            </Grid>
-          )}
-          <Grid item xs={12} md={12} lg={6}>
-            <TitleCard title="Dark mode">
-              <SettingLine left="Dark mode type" right={<DarkModeSwitch />} />
-            </TitleCard>
-          </Grid>
-          {!isPublic && (
-            <Grid item xs={12} md={12} lg={6}>
-              <TitleCard title="Public token">
-                <PublicToken />
-              </TitleCard>
-            </Grid>
-          )}
-          {!isPublic && (
-            <Grid item xs={12} md={12} lg={6}>
-              <TitleCard title="Timezone">
-                <Text element="span" className={s.marginBottom}>
-                  Statistics computed by the server need to know your timezone.
-                  Change this if your history does not match computed stats.
-                </Text>
-                <Timezone />
-              </TitleCard>
-            </Grid>
-          )}
-        </Grid>
+                {sme && !isPublic && (
+                  <SpotifyAccountInfos spotifyAccount={sme} />
+                )}
+                {!isPublic && <RelogToSpotify />}
+                <DarkMode />
+                {!isPublic && <Importer />}
+                {!isPublic && <PublicToken />}
+              </Masonry>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <Masonry>
+                {user.admin && !isPublic && <SetAdmin />}
+                {user.admin && !isPublic && <DeleteUser />}
+                {user.admin && !isPublic && (
+                  <AllowRegistration settings={settings} />
+                )}
+              </Masonry>
+            }
+          />
+          <Route
+            path="/statistics"
+            element={
+              <Masonry>
+                {!isPublic && <BlacklistArtist />}
+                {!isPublic && <Timezone />}
+              </Masonry>
+            }
+          />
+        </Routes>
       </div>
     </div>
   );

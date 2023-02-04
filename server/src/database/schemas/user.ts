@@ -19,6 +19,7 @@ export interface User {
     metricUsed: 'number' | 'duration';
     darkMode: DarkModeType;
     timezone: string | undefined;
+    blacklistedArtists: string[];
   };
   lastImport: string | null;
   publicToken: string | null;
@@ -54,6 +55,7 @@ export const UserSchema = new Schema<User>(
         enum: ['follow', 'dark', 'light'],
         default: 'follow',
       },
+      blacklistedArtists: [{ type: String }],
       timezone: { type: String, default: undefined, required: false },
     },
     lastImport: { type: String, default: null },

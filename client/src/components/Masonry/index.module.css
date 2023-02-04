@@ -1,0 +1,18 @@
+.mobile > * {
+  margin-bottom: 16px;
+}
+
+.web {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.web > * {
+  flex: 1;
+}
+
+.webelement > * {
+  margin-bottom: 16px;
+}

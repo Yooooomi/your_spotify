@@ -6,7 +6,8 @@ import {
   getUserFromField,
   storeInUser,
 } from '../database';
-import { get } from '../tools/env';
+import { getAdminUser } from '../database/queries/tools';
+import { get, getWithDefault } from '../tools/env';
 import { logger } from '../tools/logger';
 import {
   logged,
@@ -19,7 +20,21 @@ import { GlobalPreferencesRequest, SpotifyRequest } from '../tools/types';
 const router = Router();
 export default router;
 
-router.get('/spotify', (req, res) => res.redirect(Spotify.getRedirect()));
+router.get('/spotify', async (req, res) => {
+  const isOffline = getWithDefault('OFFLINE_DEV', false);
+  if (isOffline) {
+    const firstAdmin = await getAdminUser();
+    if (!firstAdmin) {
+      return res.status(404).end();
+    }
+    const token = sign({ userId: firstAdmin._id.toString() }, 'MyPrivateKey', {
+      expiresIn: '1h',
+    });
+    res.cookie('token', token);
+    return res.status(204).end();
+  }
+  res.redirect(Spotify.getRedirect());
+});
 
 router.get('/spotify/callback', withGlobalPreferences, async (req, res) => {
   const { query, globalPreferences } = req as GlobalPreferencesRequest;

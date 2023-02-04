@@ -136,7 +136,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings"
+                path="/settings/*"
                 element={
                   <PrivateRoute>
                     <Settings />

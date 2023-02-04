@@ -448,6 +448,9 @@ export const api = {
     name: string | undefined,
     context: PlaylistContext,
   ) => post('/spotify/playlist/create', { playlistId: id, name, ...context }),
+  blacklistArtist: (artistId: string) => post(`/artist/blacklist/${artistId}`),
+  unblacklistArtist: (artistId: string) =>
+    post(`/artist/unblacklist/${artistId}`),
 };
 
 export const DEFAULT_ITEMS_TO_LOAD = 20;

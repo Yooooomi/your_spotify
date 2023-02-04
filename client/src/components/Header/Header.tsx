@@ -15,6 +15,7 @@ import { useSider } from '../Layout/useSider';
 
 interface HeaderProps {
   left?: React.ReactNode;
+  right?: React.ReactNode;
   title: React.ReactNode;
   tinyTitle?: string;
   subtitle: string;
@@ -23,6 +24,7 @@ interface HeaderProps {
 
 export default function Header({
   left,
+  right,
   title,
   tinyTitle,
   subtitle,
@@ -58,6 +60,7 @@ export default function Header({
           {!siderIsDrawer && <Text>{subtitle}</Text>}
         </div>
       </div>
+      {right}
       {!hideInterval && (
         <div>
           <IntervalSelector value={intervalDetail} onChange={changeInterval} />

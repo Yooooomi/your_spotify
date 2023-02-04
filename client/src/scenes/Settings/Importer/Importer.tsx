@@ -17,6 +17,7 @@ import { ImporterStateTypes } from '../../../services/redux/modules/import/types
 import FullPrivacy from './FullPrivacy';
 import Text from '../../../components/Text';
 import { useAppDispatch } from '../../../services/redux/tools';
+import TitleCard from '../../../components/TitleCard';
 
 const ImportTypeToComponent: Record<ImporterStateTypes, any> = {
   privacy: Privacy,
@@ -55,7 +56,7 @@ export default function Importer() {
   }
 
   return (
-    <div>
+    <TitleCard title="Import data">
       <div>
         {running && (
           <div>
@@ -95,6 +96,6 @@ export default function Importer() {
         </div>
       )}
       {imports.length > 0 && <ImportHistory />}
-    </div>
+    </TitleCard>
   );
 }
