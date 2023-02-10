@@ -29,7 +29,7 @@ export const getSettings = myAsyncThunk<GlobalPreferences | null, void>(
       tapi.dispatch(
         alertMessage({
           level: 'error',
-          message: 'Could not retrieve global preferences',
+          message: "The web application can't communicate with the server",
         }),
       );
     }

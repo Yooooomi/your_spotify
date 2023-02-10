@@ -20,8 +20,11 @@ import { useAppDispatch } from '../../../services/redux/tools';
 import TitleCard from '../../../components/TitleCard';
 
 const ImportTypeToComponent: Record<ImporterStateTypes, any> = {
-  privacy: Privacy,
-  'full-privacy': FullPrivacy,
+  privacy: { label: 'Account data', component: Privacy },
+  'full-privacy': {
+    label: 'Extended streaming history',
+    component: FullPrivacy,
+  },
 };
 
 export default function Importer() {
@@ -47,7 +50,7 @@ export default function Importer() {
     [imports],
   );
   const Component = useMemo(
-    () => (importType ? ImportTypeToComponent[importType] : null),
+    () => (importType ? ImportTypeToComponent[importType].component : null),
     [importType],
   );
 
@@ -60,12 +63,9 @@ export default function Importer() {
       <div>
         {running && (
           <div>
-            <Text>Importing...</Text>
-            <div className={s.progress}>
-              <Text>
-                {running.current} /{running.total}
-              </Text>
-            </div>
+            <Text className={s.progress}>
+              Importing {running.current} of {running.total}
+            </Text>
             <LinearProgress
               style={{ width: '100%' }}
               variant="determinate"
@@ -87,7 +87,7 @@ export default function Importer() {
               }>
               {Object.values(ImporterStateTypes).map(typ => (
                 <MenuItem value={typ} key={typ}>
-                  {typ}
+                  {ImportTypeToComponent[typ].label}
                 </MenuItem>
               ))}
             </Select>

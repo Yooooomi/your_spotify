@@ -6,8 +6,7 @@ import {
   getUserFromField,
   storeInUser,
 } from '../database';
-import { getAdminUser } from '../database/queries/tools';
-import { get, getWithDefault } from '../tools/env';
+import { get } from '../tools/env';
 import { logger } from '../tools/logger';
 import {
   logged,
@@ -21,13 +20,9 @@ const router = Router();
 export default router;
 
 router.get('/spotify', async (req, res) => {
-  const isOffline = getWithDefault('OFFLINE_DEV', false);
+  const isOffline = get('OFFLINE_DEV_ID');
   if (isOffline) {
-    const firstAdmin = await getAdminUser();
-    if (!firstAdmin) {
-      return res.status(404).end();
-    }
-    const token = sign({ userId: firstAdmin._id.toString() }, 'MyPrivateKey', {
+    const token = sign({ userId: isOffline }, 'MyPrivateKey', {
       expiresIn: '1h',
     });
     res.cookie('token', token);

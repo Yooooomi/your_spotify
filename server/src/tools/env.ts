@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { logger } from './logger';
-import { toBoolean, toNumber } from './zod';
+import { toNumber } from './zod';
 
 const validators = {
   CLIENT_ENDPOINT: z.string(),
@@ -14,7 +14,7 @@ const validators = {
   TIMEZONE: z.string().optional(),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).optional(),
   NODE_ENV: z.enum(['production', 'development']).optional(),
-  OFFLINE_DEV: z.preprocess(toBoolean, z.boolean().optional()),
+  OFFLINE_DEV_ID: z.string().optional(),
 } as const;
 
 const env: Record<string, any> = {};
