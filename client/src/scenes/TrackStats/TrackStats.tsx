@@ -129,6 +129,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
             <TitleCard title="Recently played on">
               {stats.recentHistory.map(info => (
                 <ImageTwoLines
+                  className={s.recentitem}
                   key={info.id}
                   image={getAtLeastImage(stats.album.images, 48)}
                   first={stats.track.name}

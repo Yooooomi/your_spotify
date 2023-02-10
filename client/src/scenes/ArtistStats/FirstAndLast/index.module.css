@@ -18,5 +18,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 16px;
+}
+
+.item:not(:last-child) {
+  margin-bottom: 8px;
 }

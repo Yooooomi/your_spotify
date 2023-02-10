@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 import InlineTrack from '../../../components/InlineTrack';
 import Text from '../../../components/Text';
 import { api } from '../../../services/apis/api';
-import { useAPI } from '../../../services/hooks';
+import { useAPI } from '../../../services/hooks/hooks';
 import { useTracks } from '../../../services/track';
 import s from './index.module.css';
 

@@ -36,6 +36,9 @@
 .bestperiod {
   display: flex;
   flex-direction: column;
+}
+
+.bestperiod:not(:last-child) {
   margin-bottom: 16px;
 }
 
@@ -54,4 +57,8 @@
 
 .context > * {
   flex: 1;
+}
+
+.recentitem:not(:last-child) {
+  margin-bottom: 8px;
 }

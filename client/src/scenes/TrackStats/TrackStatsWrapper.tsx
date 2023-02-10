@@ -2,7 +2,7 @@ import { CircularProgress } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import SongStats from './TrackStats';
 import { api } from '../../services/apis/api';
-import { useAPI } from '../../services/hooks';
+import { useAPI } from '../../services/hooks/hooks';
 import FullscreenCentered from '../../components/FullscreenCentered';
 import Text from '../../components/Text';
 
