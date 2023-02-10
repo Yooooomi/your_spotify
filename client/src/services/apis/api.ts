@@ -136,6 +136,25 @@ export type ArtistStatsResponse = {
   }[];
 };
 
+export type TrackStatsResponse = {
+  track: Track;
+  artist: Artist;
+  album: Album;
+  bestPeriod: {
+    _id: DateId;
+    count: number;
+    total: number;
+  }[];
+  firstLast: {
+    first: TrackInfo;
+    last: TrackInfo;
+  };
+  recentHistory: TrackInfo[];
+  total: {
+    count: number;
+  };
+};
+
 export const api = {
   publicToken: null as string | null,
 
@@ -448,6 +467,19 @@ export const api = {
     name: string | undefined,
     context: PlaylistContext,
   ) => post('/spotify/playlist/create', { playlistId: id, name, ...context }),
+  getTrackDetails: (ids: string[]) => get<Track[]>(`/track/${ids.join(',')}`),
+  getTrackStats: (id: string) =>
+    get<TrackStatsResponse | { code: 'NEVER_LISTENED' }>(`/track/${id}/stats`),
+  getTrackRank: (id: string) =>
+    get<{
+      index: number;
+      isMax: boolean;
+      isMin: boolean;
+      results: {
+        id: string;
+        count: number;
+      }[];
+    }>(`/track/${id}/rank`),
   blacklistArtist: (artistId: string) => post(`/artist/blacklist/${artistId}`),
   unblacklistArtist: (artistId: string) =>
     post(`/artist/unblacklist/${artistId}`),

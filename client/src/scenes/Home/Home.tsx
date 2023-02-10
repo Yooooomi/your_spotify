@@ -21,7 +21,7 @@ export default function Home() {
   }
 
   return (
-    <div className={s.root}>
+    <div>
       <Header
         title={`Welcome, ${user.username} 🎉`}
         tinyTitle="Welcome"

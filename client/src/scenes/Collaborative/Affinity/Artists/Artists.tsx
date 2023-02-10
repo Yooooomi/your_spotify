@@ -57,7 +57,7 @@ export default function Artists() {
   const realIds = [user._id, ...ids];
 
   return (
-    <div className={s.root}>
+    <div>
       <Header
         title="Affinity by artist"
         subtitle={`Affinity computed between ${realIds

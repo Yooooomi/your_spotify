@@ -1,0 +1,22 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+}
+
+.content > :last-child {
+  color: var(--text-grey);
+}
+
+.image {
+  height: 48px;
+  width: 48px;
+  border-radius: 6px;
+}

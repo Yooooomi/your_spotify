@@ -1,27 +1,27 @@
+import React from 'react';
 import { CircularProgress, Grid } from '@mui/material';
-import { useSelector } from 'react-redux';
 import Header from '../../components/Header';
 import TitleCard from '../../components/TitleCard';
-import { ArtistStatsResponse } from '../../services/apis/api';
-import { buildFromDateId, dateToMonthAndYear } from '../../services/stats';
+import { TrackStatsResponse } from '../../services/apis/api';
+import {
+  buildFromDateId,
+  dateToMonthAndYear,
+  formatDateTime,
+} from '../../services/stats';
 import { getAtLeastImage } from '../../services/tools';
 import s from './index.module.css';
-import DayRepartition from './DayRepartition';
 import Text from '../../components/Text';
-import ArtistRank from './ArtistRank/ArtistRank';
-import InlineTrack from '../../components/InlineTrack';
+import InlineArtist from '../../components/InlineArtist';
+import TrackRank from './TrackRank/TrackRank';
 import FirstAndLast from './FirstAndLast';
-import ArtistContextMenu from './ArtistContextMenu';
-import { selectBlacklistedArtist } from '../../services/redux/modules/user/selector';
+import ImageTwoLines from '../../components/ImageTwoLines';
 
-interface ArtistStatsProps {
-  artistId: string;
-  stats: ArtistStatsResponse;
+interface TrackStatsProps {
+  trackId: string;
+  stats: TrackStatsResponse;
 }
 
-export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
-  const blacklisted = useSelector(selectBlacklistedArtist(artistId));
-
+export default function TrackStats({ trackId, stats }: TrackStatsProps) {
   if (!stats) {
     return <CircularProgress />;
   }
@@ -32,25 +32,18 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
         left={
           <img
             className={s.headerimage}
-            src={getAtLeastImage(stats.artist.images, 60)}
-            alt="Artist"
+            src={getAtLeastImage(stats.album.images, 60)}
+            alt="Album"
           />
         }
-        right={
-          <ArtistContextMenu
-            artistId={stats.artist.id}
-            artistName={stats.artist.name}
-            blacklisted={blacklisted}
-          />
-        }
-        title={stats.artist.name}
-        subtitle={stats.artist.genres.join(', ')}
+        title={stats.track.name}
+        subtitle={<InlineArtist artist={stats.artist} />}
         hideInterval
       />
       <div className={s.content}>
         <div className={s.header}>
           <div className={s.ranks}>
-            <ArtistRank artistId={artistId} />
+            <TrackRank trackId={trackId} />
           </div>
         </div>
         <Grid
@@ -67,7 +60,21 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
             alignItems="flex-start"
             spacing={2}>
             <Grid item xs={12}>
-              <TitleCard title="Songs listened">
+              <TitleCard title="Context" contentClassName={s.context}>
+                <ImageTwoLines
+                  image={getAtLeastImage(stats.artist.images, 48)}
+                  first={<InlineArtist artist={stats.artist} />}
+                  second="Artist"
+                />
+                <ImageTwoLines
+                  image={getAtLeastImage(stats.album.images, 48)}
+                  first={stats.album.name}
+                  second="Album"
+                />
+              </TitleCard>
+            </Grid>
+            <Grid item xs={12}>
+              <TitleCard title="Times listened">
                 <Text element="strong" className={s.songslistened}>
                   {stats.total.count}
                 </Text>
@@ -75,19 +82,13 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
             </Grid>
             <Grid item xs={12}>
               <FirstAndLast
-                firstImages={stats.firstLast.first.track.album.images}
-                lastImages={stats.firstLast.last.track.album.images}
                 firstDate={new Date(stats.firstLast.first.played_at)}
                 lastDate={new Date(stats.firstLast.last.played_at)}
-                firstElement={
-                  <InlineTrack track={stats.firstLast.first.track} />
-                }
-                lastElement={<InlineTrack track={stats.firstLast.last.track} />}
               />
             </Grid>
             <Grid item xs={12}>
               <TitleCard
-                title={`Top two months you listened to ${stats.artist.name}`}>
+                title={`Top two months you listened to ${stats.track.name}`}>
                 <div className={s.bestperiod}>
                   <Text element="strong">
                     {dateToMonthAndYear(
@@ -123,32 +124,16 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
                 )}
               </TitleCard>
             </Grid>
-            <Grid item xs={12}>
-              <DayRepartition
-                stats={stats.dayRepartition}
-                className={s.chart}
-              />
-            </Grid>
           </Grid>
           <Grid item xs={6}>
-            <TitleCard title="Most listened tracks">
-              {stats.mostListened.map((ml, k) => (
-                <div key={ml.track.id} className={s.ml}>
-                  <Text element="strong" className={s.mlrank}>
-                    #{k + 1}
-                  </Text>
-                  <img
-                    className={s.cardimg}
-                    src={getAtLeastImage(ml.track.album.images, 48)}
-                    alt="album cover"
-                  />
-                  <div className={s.mlstat}>
-                    <Text element="strong">
-                      <InlineTrack track={ml.track} />
-                    </Text>
-                    <Text>{ml.count} times</Text>
-                  </div>
-                </div>
+            <TitleCard title="Recently played on">
+              {stats.recentHistory.map(info => (
+                <ImageTwoLines
+                  key={info.id}
+                  image={getAtLeastImage(stats.album.images, 48)}
+                  first={stats.track.name}
+                  second={formatDateTime(new Date(info.played_at))}
+                />
               ))}
             </TitleCard>
           </Grid>

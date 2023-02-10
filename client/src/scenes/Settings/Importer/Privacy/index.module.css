@@ -7,3 +7,17 @@
   display: block;
   margin-top: 16px !important;
 }
+
+.alert {
+  color: orange;
+  font-weight: bold;
+  margin: 16px 0px;
+  display: block;
+}
+
+.noalert {
+  color: green;
+  font-weight: bold;
+  margin: 16px 0px;
+  display: block;
+}

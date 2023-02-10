@@ -5,6 +5,7 @@ import Text from '../Text';
 
 interface TitleCardProps {
   className?: string;
+  contentClassName?: string;
   title: string;
   children: React.ReactNode;
   fade?: boolean;
@@ -13,6 +14,7 @@ interface TitleCardProps {
 
 export default function TitleCard({
   className,
+  contentClassName,
   title,
   children,
   fade,
@@ -25,7 +27,9 @@ export default function TitleCard({
           <Text element="h3">{title}</Text>
           <div>{right}</div>
         </div>
-        <div className={clsx(s.content, { fade })}>{children}</div>
+        <div className={clsx(s.content, { fade }, contentClassName)}>
+          {children}
+        </div>
       </div>
     </div>
   );

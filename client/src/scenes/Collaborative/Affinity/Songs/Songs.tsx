@@ -77,7 +77,7 @@ export default function Songs() {
   );
 
   return (
-    <div className={s.root}>
+    <div>
       <Header
         title="Affinity by song"
         subtitle={`Affinity computed between ${realIds
