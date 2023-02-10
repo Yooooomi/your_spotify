@@ -2,12 +2,12 @@ import { debounce } from '@mui/material';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { detailIntervalToQuery } from './intervals';
+import { detailIntervalToQuery } from '../intervals';
 import {
   selectIntervalDetail,
   selectUser,
-} from './redux/modules/user/selector';
-import { UnboxPromise } from './types';
+} from '../redux/modules/user/selector';
+import { UnboxPromise } from '../types';
 
 export function useAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
   call: Fn,
@@ -118,7 +118,7 @@ export function useSheetState() {
     setOpen(true);
   }, []);
 
-  return [open, onOpen, onClose];
+  return [open, onOpen, onClose] as const;
 }
 
 export function useIsGuest() {

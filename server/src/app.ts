@@ -15,8 +15,8 @@ import { get } from './tools/env';
 
 const app = express();
 
-let corsValue = get('CORS');
-if (corsValue === 'all') {
+let corsValue = get('CORS')?.split(',');
+if (corsValue?.[0] === 'all') {
   corsValue = undefined;
 }
 

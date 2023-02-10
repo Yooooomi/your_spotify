@@ -480,6 +480,9 @@ export const api = {
         count: number;
       }[];
     }>(`/track/${id}/rank`),
+  blacklistArtist: (artistId: string) => post(`/artist/blacklist/${artistId}`),
+  unblacklistArtist: (artistId: string) =>
+    post(`/artist/unblacklist/${artistId}`),
 };
 
 export const DEFAULT_ITEMS_TO_LOAD = 20;

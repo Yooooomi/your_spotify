@@ -105,13 +105,15 @@ export class PrivacyImporter
   };
 
   initWithJSONContent = async (content: any[]) => {
-    try {
-      const validations = privacyFileSchema.parse(content);
-      this.elements = validations;
+    const value = privacyFileSchema.safeParse(content);
+    if (value.success) {
+      this.elements = value.data;
       return content;
-    } catch (e) {
-      logger.error(e);
     }
+    logger.error(
+      'If you submitted the right files and this error comes up, please open an issue with the following logs at https://github.com/Yooooomi/your_spotify',
+      JSON.stringify(value.error.issues, null, ' '),
+    );
     return null;
   };
 

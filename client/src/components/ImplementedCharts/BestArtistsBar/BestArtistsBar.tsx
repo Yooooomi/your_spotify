@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { Tooltip as MuiTooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { api, DEFAULT_ITEMS_TO_LOAD } from '../../../services/apis/api';
-import { useAPI, useResizeDebounce } from '../../../services/hooks';
+import { useAPI, useResizeDebounce } from '../../../services/hooks/hooks';
 import Bar from '../../charts/Bar';
 import { ImplementedChartProps } from '../types';
 import { Artist } from '../../../services/types';

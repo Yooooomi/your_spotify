@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import clsx from 'clsx';
-import { Link, useLocation } from 'react-router-dom';
-import { Paper, Popper } from '@mui/material';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
@@ -22,15 +21,15 @@ import {
   ShareOutlined,
 } from '@mui/icons-material';
 import s from './index.module.css';
-import { useConditionalAPI, useShareLink } from '../../../services/hooks';
-import { api } from '../../../services/apis/api';
-import { getAtLeastImage } from '../../../services/tools';
+import { useShareLink } from '../../../services/hooks/hooks';
 import Text from '../../Text';
 import { alertMessage } from '../../../services/redux/modules/message/reducer';
 import { selectUser } from '../../../services/redux/modules/user/selector';
 import { useAppDispatch } from '../../../services/redux/tools';
 import { LayoutContext } from '../LayoutContext';
 import SiderTitle from './SiderTitle';
+import ArtistSearch from '../../ArtistSearch';
+import { Artist } from '../../../services/types';
 
 interface SiderProps {
   className?: string;
@@ -100,7 +99,7 @@ const links = [
       },
       {
         label: 'Settings',
-        link: '/settings',
+        link: '/settings/account',
         icon: <SettingsOutlined />,
         iconOn: <Settings />,
       },
@@ -118,19 +117,16 @@ export default function Sider({ className, isDrawer }: SiderProps) {
   const dispatch = useAppDispatch();
   const layoutContext = useContext(LayoutContext);
   const user = useSelector(selectUser);
+  const navigate = useNavigate();
   const location = useLocation();
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [search, setSearch] = useState('');
-  const results = useConditionalAPI(
-    search.length >= 3,
-    api.searchArtists,
-    search,
-  );
 
-  const reset = useCallback(() => {
-    setSearch('');
-    layoutContext.closeDrawer();
-  }, [layoutContext]);
+  const goToArtist = useCallback(
+    (artist: Artist) => {
+      navigate(`/artist/${artist.id}`);
+      layoutContext.closeDrawer();
+    },
+    [layoutContext, navigate],
+  );
 
   const copyCurrentPage = useCallback(() => {
     if (!user?.publicToken) {
@@ -158,43 +154,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       <div className={s.title}>
         <SiderTitle />
       </div>
-      <input
-        className={s.input}
-        placeholder="Search..."
-        value={search}
-        onChange={ev => setSearch(ev.target.value)}
-        ref={inputRef}
-      />
-      <Popper
-        open={search.length > 0}
-        anchorEl={inputRef.current}
-        placement="bottom"
-        className={s.popper}>
-        <Paper
-          className={s.results}
-          style={{ width: inputRef.current?.clientWidth }}>
-          {search.length < 3 && (
-            <Text element="strong">At least 3 characters</Text>
-          )}
-          {results?.length === 0 && (
-            <Text element="strong">No results found</Text>
-          )}
-          {results?.map(res => (
-            <Link
-              to={`/artist/${res.id}`}
-              className={s.result}
-              key={res.id}
-              onClick={reset}>
-              <img
-                className={s.resultimage}
-                src={getAtLeastImage(res.images, 48)}
-                alt="Artist"
-              />
-              <Text element="strong">{res.name}</Text>
-            </Link>
-          ))}
-        </Paper>
-      </Popper>
+      <ArtistSearch onResultClick={goToArtist} />
       <nav>
         {links.map(category => (
           <div className={s.category} key={category.label}>

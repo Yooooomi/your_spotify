@@ -29,7 +29,7 @@ const fullPrivacyFileSchema = z.array(
     platform: z.string(),
     ms_played: z.number(),
     conn_country: z.string(),
-    ip_addr_decrypted: z.string(),
+    ip_addr_decrypted: z.nullable(z.string()),
     user_agent_decrypted: z.nullable(z.string()),
     master_metadata_track_name: z.nullable(z.string()),
     master_metadata_album_artist_name: z.nullable(z.string()),
@@ -120,13 +120,15 @@ export class FullPrivacyImporter
   };
 
   initWithJSONContent = async (content: any[]) => {
-    try {
-      const validations = fullPrivacyFileSchema.parse(content);
-      this.elements = validations;
+    const value = fullPrivacyFileSchema.safeParse(content);
+    if (value.success) {
+      this.elements = value.data;
       return content;
-    } catch (e) {
-      logger.error(e);
     }
+    logger.error(
+      'If you submitted the right files and this error comes up, please open an issue with the following logs at https://github.com/Yooooomi/your_spotify',
+      JSON.stringify(value.error.issues, null, ' '),
+    );
     return null;
   };
 

@@ -19,7 +19,17 @@ import { GlobalPreferencesRequest, SpotifyRequest } from '../tools/types';
 const router = Router();
 export default router;
 
-router.get('/spotify', (req, res) => res.redirect(Spotify.getRedirect()));
+router.get('/spotify', async (req, res) => {
+  const isOffline = get('OFFLINE_DEV_ID');
+  if (isOffline) {
+    const token = sign({ userId: isOffline }, 'MyPrivateKey', {
+      expiresIn: '1h',
+    });
+    res.cookie('token', token);
+    return res.status(204).end();
+  }
+  res.redirect(Spotify.getRedirect());
+});
 
 router.get('/spotify/callback', withGlobalPreferences, async (req, res) => {
   const { query, globalPreferences } = req as GlobalPreferencesRequest;

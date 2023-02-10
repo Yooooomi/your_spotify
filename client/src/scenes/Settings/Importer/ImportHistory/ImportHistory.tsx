@@ -53,10 +53,7 @@ export default function ImportHistory() {
           left={
             <Text>
               Import of {dateToListenedAt(new Date(st.createdAt))}
-              <Text className={s.importertype}>
-                from
-                {st.type}
-              </Text>
+              <Text className={s.importertype}>from {st.type}</Text>
             </Text>
           }
           right={

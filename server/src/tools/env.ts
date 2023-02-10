@@ -14,6 +14,7 @@ const validators = {
   TIMEZONE: z.string().optional(),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).optional(),
   NODE_ENV: z.enum(['production', 'development']).optional(),
+  OFFLINE_DEV_ID: z.string().optional(),
 } as const;
 
 const env: Record<string, any> = {};
