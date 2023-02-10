@@ -10,12 +10,13 @@ import spotifyRouter from './routes/spotify';
 import globalRouter from './routes/global';
 import artistRouter from './routes/artist';
 import importRouter from './routes/importer';
+import trackRouter from './routes/track';
 import { get } from './tools/env';
 
 const app = express();
 
-let corsValue = get('CORS');
-if (corsValue === 'all') {
+let corsValue = get('CORS')?.split(',');
+if (corsValue?.[0] === 'all') {
   corsValue = undefined;
 }
 
@@ -38,6 +39,7 @@ app.use('/oauth', oauthRouter);
 app.use('/spotify', spotifyRouter);
 app.use('/global', globalRouter);
 app.use('/artist', artistRouter);
+app.use('/track', trackRouter);
 app.use('/', importRouter);
 
 export default app;

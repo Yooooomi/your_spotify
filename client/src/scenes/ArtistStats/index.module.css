@@ -47,7 +47,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 16px;
+}
+
+.ml:not(:last-child) {
+  margin-bottom: 8px;
 }
 
 .mlrank {
@@ -68,6 +71,9 @@
 .bestperiod {
   display: flex;
   flex-direction: column;
+}
+
+.bestperiod:not(:last-child) {
   margin-bottom: 16px;
 }
 

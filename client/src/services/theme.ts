@@ -19,6 +19,26 @@ export const useTheme = () => {
           },
         },
         components: {
+          MuiTab: {
+            defaultProps: {
+              disableRipple: true,
+              focusRipple: false,
+              disableFocusRipple: true,
+              disableTouchRipple: true,
+            },
+          },
+          MuiTabs: {
+            defaultProps: {
+              disableRipple: true,
+              focusRipple: false,
+              disableTouchRipple: true,
+            },
+            styleOverrides: {
+              root: {
+                backgroundColor: 'var(--header-background)',
+              },
+            },
+          },
           MuiPaper: {
             styleOverrides: {
               root: {

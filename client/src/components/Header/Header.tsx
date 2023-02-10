@@ -1,6 +1,6 @@
 import { IconButton } from '@mui/material';
 import { Menu } from '@mui/icons-material';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { IntervalDetail } from '../../services/intervals';
 import { setDataInterval } from '../../services/redux/modules/user/reducer';
@@ -15,14 +15,16 @@ import { useSider } from '../Layout/useSider';
 
 interface HeaderProps {
   left?: React.ReactNode;
+  right?: React.ReactNode;
   title: React.ReactNode;
   tinyTitle?: string;
-  subtitle: string;
+  subtitle: ReactNode;
   hideInterval?: boolean;
 }
 
 export default function Header({
   left,
+  right,
   title,
   tinyTitle,
   subtitle,
@@ -58,6 +60,7 @@ export default function Header({
           {!siderIsDrawer && <Text>{subtitle}</Text>}
         </div>
       </div>
+      {right}
       {!hideInterval && (
         <div>
           <IntervalSelector value={intervalDetail} onChange={changeInterval} />

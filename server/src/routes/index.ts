@@ -192,11 +192,11 @@ router.get('/version', logged, async (_, res) => {
     return res.status(200).send({ update: false, version: '1.0.0' });
   }
   try {
-    const [release] = await GithubAPI.releases();
-    if (Version.from(release.tag_name).isNewerThan(Version.thisOne())) {
-      return res.status(200).send({ update: true, version: release.tag_name });
+    const version = await GithubAPI.lastPackageJsonVersion();
+    if (version.isNewerThan(Version.thisOne())) {
+      return res.status(200).send({ update: true });
     }
-    return res.status(200).send({ update: false, version: release.tag_name });
+    return res.status(200).send({ update: false });
   } catch (e) {
     logger.error(e);
     return res.status(500).end();

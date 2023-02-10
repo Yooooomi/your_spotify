@@ -12,11 +12,6 @@
   margin: auto;
 }
 
-.title {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
 .album {
   display: flex;
   flex-direction: row;

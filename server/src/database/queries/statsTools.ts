@@ -1,7 +1,32 @@
-import { PipelineStage } from 'mongoose';
+import { PipelineStage, Types } from 'mongoose';
 import { getWithDefault } from '../../tools/env';
 import { Timesplit } from '../../tools/types';
 import { User } from '../schemas/user';
+
+export const basicMatch = (
+  userId: string | Types.ObjectId,
+  start: Date,
+  end: Date,
+) => ({
+  owner: userId instanceof Types.ObjectId ? userId : new Types.ObjectId(userId),
+  blacklistedBy: { $exists: 0 },
+  played_at: { $gt: start, $lt: end },
+});
+
+export const basicMatchUsers = (
+  userIds: string[] | Types.ObjectId[],
+  start: Date,
+  end: Date,
+) => ({
+  owner: {
+    $in:
+      userIds[0] instanceof Types.ObjectId
+        ? userIds
+        : userIds.map(id => new Types.ObjectId(id)),
+  },
+  blacklistedBy: { $exists: 0 },
+  played_at: { $gt: start, $lt: end },
+});
 
 export const getGroupingByTimeSplit = (timeSplit: Timesplit, prefix = '') => {
   if (prefix !== '') prefix = `${prefix}.`;

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { api } from '../../../services/apis/api';
-import { useAPI } from '../../../services/hooks';
+import { useAPI } from '../../../services/hooks/hooks';
 import Bar from '../../charts/Bar';
 import { ImplementedChartProps } from '../types';
 import ChartCard from '../../ChartCard';

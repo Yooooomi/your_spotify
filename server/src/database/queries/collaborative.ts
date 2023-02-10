@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { InfosModel } from '../Models';
 import {
+  basicMatchUsers,
   lightAlbumLookupPipeline,
   lightArtistLookupPipeline,
   lightTrackLookupPipeline,
@@ -28,10 +29,7 @@ export const getCollaborativeBestSongs = (
   const users = _users.map(u => new mongoose.Types.ObjectId(u));
   return InfosModel.aggregate([
     {
-      $match: {
-        owner: { $in: users },
-        played_at: { $gt: start, $lt: end },
-      },
+      $match: basicMatchUsers(_users, start, end),
     },
     {
       $addFields: fromPairs(
@@ -117,10 +115,7 @@ export const getCollaborativeBestAlbums = (
   const users = _users.map(u => new mongoose.Types.ObjectId(u));
   return InfosModel.aggregate([
     {
-      $match: {
-        owner: { $in: users },
-        played_at: { $gt: start, $lt: end },
-      },
+      $match: basicMatchUsers(_users, start, end),
     },
     {
       $addFields: fromPairs(
@@ -206,10 +201,7 @@ export const getCollaborativeBestArtists = (
   const users = _users.map(u => new mongoose.Types.ObjectId(u));
   return InfosModel.aggregate([
     {
-      $match: {
-        owner: { $in: users },
-        played_at: { $gt: start, $lt: end },
-      },
+      $match: basicMatchUsers(_users, start, end),
     },
     {
       $addFields: fromPairs(

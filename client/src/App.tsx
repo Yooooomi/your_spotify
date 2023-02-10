@@ -26,6 +26,7 @@ import Affinity from './scenes/Collaborative/Affinity';
 import { useTheme } from './services/theme';
 import { selectDarkMode } from './services/redux/modules/user/selector';
 import PlaylistDialog from './components/PlaylistDialog';
+import TrackStats from './scenes/TrackStats';
 
 function App() {
   const dark = useSelector(selectDarkMode);
@@ -136,7 +137,15 @@ function App() {
                 }
               />
               <Route
-                path="/settings"
+                path="/song/:id"
+                element={
+                  <PrivateRoute>
+                    <TrackStats />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/settings/*"
                 element={
                   <PrivateRoute>
                     <Settings />

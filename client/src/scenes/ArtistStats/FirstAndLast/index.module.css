@@ -1,0 +1,25 @@
+.stat {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+}
+
+.stat > :last-child {
+  color: var(--text-grey);
+}
+
+.cover {
+  height: 48px;
+  width: 48px;
+  border-radius: 6px;
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.item:not(:last-child) {
+  margin-bottom: 8px;
+}

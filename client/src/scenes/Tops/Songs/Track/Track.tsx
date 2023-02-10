@@ -5,6 +5,7 @@ import s from './index.module.css';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist, Album, Track as TrackType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
+import InlineTrack from '../../../../components/InlineTrack';
 import Text from '../../../../components/Text';
 import PlayButton from '../../../../components/PlayButton';
 import TrackOptions from '../../../../components/TrackOptions';
@@ -66,7 +67,9 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         />
       )}
       <div className={s.name}>
-        <Text className={s.trackname}>{track.name}</Text>
+        <Text className={s.trackname}>
+          <InlineTrack track={track} />{' '}
+        </Text>
         <Text className={s.artistname}>
           {artists.map(art => (
             <React.Fragment key={art.id}>

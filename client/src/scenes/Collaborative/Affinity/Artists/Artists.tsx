@@ -7,7 +7,7 @@ import InlineArtist from '../../../../components/InlineArtist';
 import Text from '../../../../components/Text';
 import { api } from '../../../../services/apis/api';
 import { intervalToDisplay } from '../../../../services/date';
-import { useAPI } from '../../../../services/hooks';
+import { useAPI } from '../../../../services/hooks/hooks';
 import { useOldestListenedAtFromUsers } from '../../../../services/intervals';
 import { AdminAccount } from '../../../../services/redux/modules/admin/reducer';
 import { selectAccounts } from '../../../../services/redux/modules/admin/selector';
@@ -57,7 +57,7 @@ export default function Artists() {
   const realIds = [user._id, ...ids];
 
   return (
-    <div className={s.root}>
+    <div>
       <Header
         title="Affinity by artist"
         subtitle={`Affinity computed between ${realIds

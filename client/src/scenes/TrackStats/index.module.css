@@ -1,0 +1,64 @@
+.headerimage {
+  height: 60px;
+  width: 60px;
+  border-radius: var(--radius);
+  margin-right: 16px;
+}
+
+.content {
+  padding: var(--page-padding);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-right: 16px;
+}
+
+.ranks {
+  display: flex;
+  flex-grow: 1;
+  margin-left: 16px;
+}
+
+@media screen and (max-width: 900px) {
+  .ranks {
+    justify-content: center;
+  }
+}
+
+.songslistened {
+  font-size: 1.4em;
+}
+
+.bestperiod {
+  display: flex;
+  flex-direction: column;
+}
+
+.bestperiod:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+.bestperiod > strong {
+  font-size: 1.4em;
+}
+
+.bestperiod > span {
+  color: var(--text-grey);
+}
+
+.context {
+  display: flex;
+  flex-direction: row;
+}
+
+.context > * {
+  flex: 1;
+}
+
+.recentitem:not(:last-child) {
+  margin-bottom: 8px;
+}

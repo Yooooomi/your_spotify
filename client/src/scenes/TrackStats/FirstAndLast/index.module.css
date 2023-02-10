@@ -1,0 +1,18 @@
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat > :last-child {
+  color: var(--text-grey);
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.item:not(:last-child) {
+  margin-bottom: 8px;
+}

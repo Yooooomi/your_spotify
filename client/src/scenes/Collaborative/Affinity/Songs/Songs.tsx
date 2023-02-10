@@ -11,7 +11,7 @@ import Text from '../../../../components/Text';
 import TrackOptions from '../../../../components/TrackOptions';
 import { api } from '../../../../services/apis/api';
 import { intervalToDisplay } from '../../../../services/date';
-import { useAPI } from '../../../../services/hooks';
+import { useAPI } from '../../../../services/hooks/hooks';
 import { useOldestListenedAtFromUsers } from '../../../../services/intervals';
 import { AdminAccount } from '../../../../services/redux/modules/admin/reducer';
 import { selectAccounts } from '../../../../services/redux/modules/admin/selector';
@@ -77,7 +77,7 @@ export default function Songs() {
   );
 
   return (
-    <div className={s.root}>
+    <div>
       <Header
         title="Affinity by song"
         subtitle={`Affinity computed between ${realIds
