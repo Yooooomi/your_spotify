@@ -48,8 +48,14 @@ export default function Settings() {
 
   const tabs = compact([
     { url: '/settings/account', label: 'Account' },
-    { url: '/settings/statistics', label: 'Statistics' },
-    conditionalEntry({ url: '/settings/admin', label: 'Admin' }, user.admin),
+    conditionalEntry(
+      { url: '/settings/statistics', label: 'Statistics' },
+      !isPublic,
+    ),
+    conditionalEntry(
+      { url: '/settings/admin', label: 'Admin' },
+      user.admin && !isPublic,
+    ),
   ]);
 
   return (
@@ -76,8 +82,8 @@ export default function Settings() {
                 {sme && !isPublic && (
                   <SpotifyAccountInfos spotifyAccount={sme} />
                 )}
-                {!isPublic && <RelogToSpotify />}
                 <DarkMode />
+                {!isPublic && <RelogToSpotify />}
                 {!isPublic && <Importer />}
                 {!isPublic && <PublicToken />}
               </Masonry>

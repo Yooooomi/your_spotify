@@ -1,6 +1,7 @@
 import { Tab, Tabs } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Text from '../Text';
 import s from './index.module.css';
 
 export interface ButtonsHeaderItem {
@@ -25,12 +26,12 @@ export default function ButtonsHeader({ items }: ButtonsHeaderProps) {
   );
 
   return (
-    <Tabs value={tab} onChange={(_, v) => goto(v)}>
+    <Tabs value={tab} onChange={(_, v) => goto(v)} textColor="secondary">
       {items.map((item, k) => (
         <Tab
           className={s.item}
           key={item.url}
-          label={item.label}
+          label={<Text>{item.label}</Text>}
           value={k}
           role="link"
         />

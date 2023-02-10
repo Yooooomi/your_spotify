@@ -35,7 +35,7 @@ export const useTheme = () => {
             },
             styleOverrides: {
               root: {
-                backgroundColor: 'white',
+                backgroundColor: 'var(--header-background)',
               },
             },
           },
