@@ -24,6 +24,10 @@ export const getSpotifyLogUrl = () => `${window.API_ENDPOINT}/oauth/spotify`;
 export const compact = <T>(arr: (T | undefined)[]): T[] =>
   arr.filter(a => a != null) as T[];
 
+export const conditionalEntry = <T>(value: T, state: boolean) => {
+  return state ? value : undefined;
+};
+
 export function getMinOfArray<T>(
   array: T[],
   fn: (item: T) => number,

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { Skeleton } from '@mui/material';
 import { api } from '../../../services/apis/api';
-import { useAPI } from '../../../services/hooks';
+import { useAPI } from '../../../services/hooks/hooks';
 import { Timesplit } from '../../../services/types';
 import TitleCard from '../../TitleCard';
 import { ImplementedCardProps } from '../types';

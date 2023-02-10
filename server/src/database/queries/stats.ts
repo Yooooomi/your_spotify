@@ -2,6 +2,7 @@ import { Timesplit } from '../../tools/types';
 import { InfosModel } from '../Models';
 import { User } from '../schemas/user';
 import {
+  basicMatch,
   getGroupByDateProjection,
   getGroupingByTimeSplit,
   getTrackSumType,
@@ -18,7 +19,7 @@ export const getMostListenedSongs = async (
   timeSplit: Timesplit = Timesplit.hour,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
@@ -82,7 +83,7 @@ export const getMostListenedArtist = async (
   timeSplit = Timesplit.hour,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
@@ -148,7 +149,7 @@ export const getSongsPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
@@ -179,7 +180,7 @@ export const getTimePer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -213,7 +214,7 @@ export const albumDateRatio = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -271,7 +272,7 @@ export const featRatio = async (
   timeSplit: Timesplit,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -364,7 +365,7 @@ export const popularityPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -406,7 +407,7 @@ export const differentArtistsPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -457,7 +458,7 @@ export const differentArtistsPer = async (
 
 export const getDayRepartition = async (user: User, start: Date, end: Date) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -491,7 +492,7 @@ export const getBestArtistsPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
@@ -558,7 +559,7 @@ export const getBestSongsNbOffseted = (
   offset: number,
 ) =>
   InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
@@ -609,7 +610,7 @@ export const getBestArtistsNbOffseted = (
   offset: number,
 ) =>
   InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
@@ -662,7 +663,7 @@ export const getBestAlbumsNbOffseted = (
   offset: number,
 ) =>
   InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
@@ -709,7 +710,7 @@ export const getBestAlbumsNbOffseted = (
 
 export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $addFields: {
         hour: getGroupByDateProjection(user.settings.timezone).hour,
@@ -753,7 +754,7 @@ export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
 
 export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $addFields: {
         hour: getGroupByDateProjection(user.settings.timezone).hour,
@@ -801,7 +802,7 @@ export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
 
 export const getBestArtistsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $addFields: {
         hour: getGroupByDateProjection(user.settings.timezone).hour,

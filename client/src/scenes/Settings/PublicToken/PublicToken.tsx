@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSelector } from 'react-redux';
 import Text from '../../../components/Text';
+import TitleCard from '../../../components/TitleCard';
 import { alertMessage } from '../../../services/redux/modules/message/reducer';
 import { selectUser } from '../../../services/redux/modules/user/selector';
 import { generateNewPublicToken } from '../../../services/redux/modules/user/thunk';
@@ -35,7 +36,7 @@ export default function PublicToken() {
   const link = `${location}/?token=${user.publicToken}`;
 
   return (
-    <div>
+    <TitleCard title="Public token">
       <Text element="div" className={s.disclaimer}>
         The generated url will allow anyone with it to view your stats
         indefinitely. The user won&apos;t be able to execute any action that
@@ -61,6 +62,6 @@ export default function PublicToken() {
         left="Regenerate"
         right={<Button onClick={generate}>Generate</Button>}
       />
-    </div>
+    </TitleCard>
   );
 }

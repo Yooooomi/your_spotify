@@ -1,0 +1,32 @@
+.root {
+  width: 100%;
+}
+
+.none {
+  color: grey;
+}
+
+.search {
+  background-color: rgb(234, 234, 234);
+}
+
+.artist {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.artistcover {
+  margin-right: 8px;
+  border-radius: var(--radius);
+}
+
+.unblacklist {
+  margin-left: auto !important;
+}
+
+.marginbottom {
+  display: block;
+  margin-bottom: 16px;
+}

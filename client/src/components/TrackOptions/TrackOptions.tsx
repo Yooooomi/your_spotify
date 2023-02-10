@@ -5,7 +5,7 @@ import { Track } from '../../services/types';
 import s from './index.module.css';
 import { useAppDispatch } from '../../services/redux/tools';
 import { setPlaylistContext } from '../../services/redux/modules/playlist/reducer';
-import { useIsGuest } from '../../services/hooks';
+import { useIsGuest } from '../../services/hooks/hooks';
 
 interface TrackOptionsProps {
   track: Track;

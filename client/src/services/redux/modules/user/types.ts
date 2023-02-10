@@ -18,6 +18,7 @@ export interface User {
     metricUsed: 'number' | 'duration';
     darkMode: DarkModeType;
     timezone: string | null | undefined;
+    blacklistedArtists: string[] | undefined;
   };
   publicToken: string | null;
   firstListenedAt: string;

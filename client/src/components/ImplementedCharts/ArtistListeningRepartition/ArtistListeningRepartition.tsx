@@ -10,7 +10,7 @@ import {
 } from 'recharts';
 import { api } from '../../../services/apis/api';
 import { getColor } from '../../../services/colors';
-import { useAPI } from '../../../services/hooks';
+import { useAPI } from '../../../services/hooks/hooks';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import {
   buildXYDataObjSpread,

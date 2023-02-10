@@ -1,11 +1,11 @@
 import { CircularProgress } from '@mui/material';
 import clsx from 'clsx';
-import { useEffect, useCallback, useState, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import InlineArtist from '../../../components/InlineArtist';
 import Text from '../../../components/Text';
 import { api } from '../../../services/apis/api';
-import { useAPI } from '../../../services/hooks';
-import { Artist } from '../../../services/types';
+import { useLoadArtists } from '../../../services/hooks/artist';
+import { useAPI } from '../../../services/hooks/hooks';
 import s from './index.module.css';
 
 interface ArtistRankProps {
@@ -13,36 +13,17 @@ interface ArtistRankProps {
 }
 
 export default function ArtistRank({ artistId }: ArtistRankProps) {
-  const [artists, setArtists] = useState<Record<string, Artist>>({});
   const artistRank = useAPI(api.getArtistRank, artistId);
 
   const ids = useMemo(
     () => artistRank?.results.map(r => r.id) ?? [],
     [artistRank?.results],
   );
-
-  useEffect(() => {
-    async function fetchArtists() {
-      if (!ids.every(id => id in artists)) {
-        try {
-          const { data } = await api.getArtists(ids);
-          setArtists(
-            data.reduce<Record<string, Artist>>((acc, curr) => {
-              acc[curr.id] = curr;
-              return acc;
-            }, {}),
-          );
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-    fetchArtists();
-  }, [artists, ids]);
+  const { artists, loaded } = useLoadArtists(ids);
 
   const getArtist = useCallback((id: string) => artists[id], [artists]);
 
-  if (!artistRank || !ids.every(id => id in artists)) {
+  if (!artistRank || !loaded) {
     return (
       <div className={s.loading}>
         <CircularProgress size={24} />

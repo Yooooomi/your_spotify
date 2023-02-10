@@ -1,5 +1,5 @@
-import React from 'react';
 import { CircularProgress, Grid } from '@mui/material';
+import { useSelector } from 'react-redux';
 import Header from '../../components/Header';
 import TitleCard from '../../components/TitleCard';
 import { ArtistStatsResponse } from '../../services/apis/api';
@@ -14,6 +14,8 @@ import DayRepartition from './DayRepartition';
 import Text from '../../components/Text';
 import ArtistRank from './ArtistRank/ArtistRank';
 import InlineTrack from '../../components/InlineTrack';
+import ArtistContextMenu from './ArtistContextMenu';
+import { selectBlacklistedArtist } from '../../services/redux/modules/user/selector';
 
 interface ArtistStatsProps {
   artistId: string;
@@ -21,6 +23,8 @@ interface ArtistStatsProps {
 }
 
 export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
+  const blacklisted = useSelector(selectBlacklistedArtist(artistId));
+
   if (!stats) {
     return <CircularProgress />;
   }
@@ -33,6 +37,13 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
             className={s.headerimage}
             src={getAtLeastImage(stats.artist.images, 60)}
             alt="Artist"
+          />
+        }
+        right={
+          <ArtistContextMenu
+            artistId={stats.artist.id}
+            artistName={stats.artist.name}
+            blacklisted={blacklisted}
           />
         }
         title={stats.artist.name}

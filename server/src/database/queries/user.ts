@@ -10,18 +10,6 @@ import {
 import { Infos } from '../schemas/info';
 import { User } from '../schemas/user';
 
-export const getSongsNbInterval = async (
-  id: string,
-  start: Date,
-  end: Date,
-) => {
-  const res = await InfosModel.aggregate([
-    { $match: { owner: id, played_at: { $gt: start, $lt: end } } },
-    { $group: { _id: null, count: { $sum: 1 } } },
-  ]);
-  return res[0].count;
-};
-
 export const getUserFromField = async <F extends keyof User>(
   field: F,
   value: User[F],
@@ -142,9 +130,12 @@ export const getSongs = async (
   const fullUser = await UserModel.findById(userId).populate({
     path: 'tracks',
     model: 'Infos',
-    match: inter
-      ? { played_at: { $gt: inter.start, $lt: inter.end } }
-      : undefined,
+    match: {
+      ...(inter
+        ? { played_at: { $gt: inter.start, $lt: inter.end } }
+        : undefined),
+      blacklistedBy: { $exists: 0 },
+    },
     options: { skip: offset, limit: number, sort: { played_at: -1 } },
     populate: {
       path: 'track',
@@ -159,22 +150,6 @@ export const getSongs = async (
     return [];
   }
   return fullUser.tracks;
-};
-
-export const getSongsInterval = async (id: string, start: Date, end: Date) => {
-  const user = await UserModel.findById(id).populate({
-    path: 'tracks',
-    match: {
-      played_at: {
-        $gte: start,
-        $lt: end,
-      },
-    },
-  });
-  if (!user) {
-    return [];
-  }
-  return user.tracks;
 };
 
 export const getUsersNb = () => UserModel.find().countDocuments();
@@ -270,3 +245,13 @@ export const setUserAdmin = (userId: string, admin: boolean) =>
 
 export const setUserPublicToken = (userId: string, token: string | null) =>
   UserModel.findByIdAndUpdate(userId, { publicToken: token });
+
+export const blacklistArtist = (userId: string, artistId: string) =>
+  UserModel.findByIdAndUpdate(userId, {
+    $push: { 'settings.blacklistedArtists': artistId },
+  });
+
+export const unblacklistArtist = (userId: string, artistId: string) =>
+  UserModel.findByIdAndUpdate(userId, {
+    $pull: { 'settings.blacklistedArtists': artistId },
+  });

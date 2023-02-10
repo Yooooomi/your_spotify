@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Version } from '../version';
 
 interface Author {
   login: string;
@@ -62,5 +63,13 @@ export class GithubAPI {
       'https://api.github.com/repos/yooooomi/your_spotify/releases',
     );
     return releases as Release[];
+  }
+
+  static async lastPackageJsonVersion() {
+    const { data: file } = await axios.get(
+      'https://raw.githubusercontent.com/Yooooomi/your_spotify/master/server/package.json',
+    );
+    const content = JSON.parse(file);
+    return Version.from(content.version);
   }
 }
