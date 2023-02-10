@@ -57,7 +57,7 @@ export default function Albums() {
   const realIds = [user._id, ...ids];
 
   return (
-    <div className={s.root}>
+    <div>
       <Header
         title="Affinity by album"
         subtitle={`Affinity computed between ${realIds

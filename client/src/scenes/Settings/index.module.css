@@ -2,18 +2,6 @@
   padding: var(--page-padding);
 }
 
-.form > *:not(:last-child) {
-  margin-bottom: 8px;
-}
-
-.form {
-  text-align: right;
-}
-
-.ids {
-  margin-top: 16px;
-}
-
 .onlyadmin {
   font-style: italic;
   color: grey;

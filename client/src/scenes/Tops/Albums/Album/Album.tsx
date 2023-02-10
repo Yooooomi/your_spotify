@@ -29,7 +29,7 @@ export default function Album(props: AlbumProps | HeaderAlbumProps) {
     return (
       <div className={s.root}>
         <div className={clsx(s.name, s.header)}>
-          <Text className={s.trackname}>Album name / Artist</Text>
+          <Text>Album name / Artist</Text>
         </div>
         <Text className={clsx(s.sumcount, s.header)}>Count</Text>
         <Text className={clsx(s.sumduration, s.header)}>Total duration</Text>

@@ -1,6 +1,6 @@
 import { IconButton } from '@mui/material';
 import { Menu } from '@mui/icons-material';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { IntervalDetail } from '../../services/intervals';
 import { setDataInterval } from '../../services/redux/modules/user/reducer';
@@ -17,7 +17,7 @@ interface HeaderProps {
   left?: React.ReactNode;
   title: React.ReactNode;
   tinyTitle?: string;
-  subtitle: string;
+  subtitle: ReactNode;
   hideInterval?: boolean;
 }
 

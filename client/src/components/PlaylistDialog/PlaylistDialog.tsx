@@ -106,14 +106,12 @@ export default function PlaylistDialog() {
           </Tabs>
         </Box>
         <TabPanel index={0} value={tab}>
-          <div className={s.playlistName}>
-            <Input
-              fullWidth
-              placeholder="Name of the playlist..."
-              value={playlistName}
-              onChange={ev => setPlaylistName(ev.target.value)}
-            />
-          </div>
+          <Input
+            fullWidth
+            placeholder="Name of the playlist..."
+            value={playlistName}
+            onChange={ev => setPlaylistName(ev.target.value)}
+          />
         </TabPanel>
         <TabPanel index={1} value={tab}>
           <FormControl fullWidth>
@@ -122,7 +120,6 @@ export default function PlaylistDialog() {
               classes={{ select: s.playlistItem }}
               labelId="playlist"
               label="Select a playlist"
-              className={s.playlistSelect}
               value={selectedPlaylist}
               onChange={ev => setSelectedPlaylist(ev.target.value)}>
               {playlists?.map(playlist => (

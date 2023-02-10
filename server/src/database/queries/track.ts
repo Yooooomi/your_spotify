@@ -1,10 +1,7 @@
 import { TrackModel } from '../Models';
 import { User } from '../schemas/user';
 import { InfosModel } from '../Models';
-import {
-  getGroupByDateProjection,
-  getGroupingByTimeSplit,
-} from './statsTools';
+import { getGroupByDateProjection, getGroupingByTimeSplit } from './statsTools';
 import { Timesplit } from '../../tools/types';
 
 export const getTrackBySpotifyId = (id: string) => TrackModel.findOne({ id });
@@ -55,10 +52,13 @@ export const getRankOfTrack = async (user: User, trackId: string) => {
   return res[0];
 };
 
-export const getTrackListenedCount = (user: User, trackId: string) => 
-  InfosModel.where({ 'owner': user._id, id: trackId }).count();
+export const getTrackListenedCount = (user: User, trackId: string) =>
+  InfosModel.where({ owner: user._id, id: trackId }).count();
 
-export const getTrackFirstAndLastListened = async (user: User, trackId: string) => {
+export const getTrackFirstAndLastListened = async (
+  user: User,
+  trackId: string,
+) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id, id: trackId } },
     { $sort: { played_at: 1 } },
@@ -75,7 +75,7 @@ export const getTrackFirstAndLastListened = async (user: User, trackId: string) 
 
 export const bestPeriodOfTrack = async (user: User, trackId: string) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, id: trackId} },
+    { $match: { owner: user._id, id: trackId } },
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -99,10 +99,8 @@ export const bestPeriodOfTrack = async (user: User, trackId: string) => {
   return res;
 };
 
-export const getTrackRecentHistory = async (user: User, trackId: string) => {
-  const res = await InfosModel.find()
-    .where({ owner: user._id, id: trackId})
+export const getTrackRecentHistory = async (user: User, trackId: string) =>
+  InfosModel.find()
+    .where({ owner: user._id, id: trackId })
     .limit(10)
-    .sort({ played_at: -1})
-  return res;
-};
+    .sort({ played_at: -1 });

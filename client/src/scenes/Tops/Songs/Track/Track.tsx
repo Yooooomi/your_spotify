@@ -68,7 +68,7 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
       )}
       <div className={s.name}>
         <Text className={s.trackname}>
-          <InlineTrack key={track.id} track={track} />{' '}
+          <InlineTrack track={track} />{' '}
         </Text>
         <Text className={s.artistname}>
           {artists.map(art => (

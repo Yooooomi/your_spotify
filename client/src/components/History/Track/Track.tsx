@@ -10,6 +10,7 @@ import InlineArtist from '../../InlineArtist';
 import PlayButton from '../../PlayButton';
 import Text from '../../Text';
 import TrackOptions from '../../TrackOptions';
+import InlineTrack from '../../InlineTrack';
 
 interface TrackProps {
   line?: false;
@@ -48,7 +49,9 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
         <PlayButton className={s.play} id={track.id} covers={album.images} />
       )}
       <div className={s.name}>
-        <Text className={s.trackname}>{track.name}</Text>
+        <Text className={s.trackname}>
+          <InlineTrack track={track} />
+        </Text>
         <Text className={s.artistname}>
           {artists.map((art, k, a) => (
             <React.Fragment key={art.id}>

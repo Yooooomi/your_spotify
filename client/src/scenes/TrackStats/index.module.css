@@ -29,31 +29,8 @@
   }
 }
 
-.cardimg {
-  height: 48px;
-  width: 48px;
-  border-radius: 6px;
-}
-
 .songslistened {
   font-size: 1.4em;
-}
-
-.ml {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.mlstat {
-  display: flex;
-  flex-direction: column;
-  margin-left: 16px;
-}
-
-.mlstat > :last-child {
-  color: var(--text-grey);
 }
 
 .bestperiod {
@@ -70,6 +47,11 @@
   color: var(--text-grey);
 }
 
-.dateStat > strong {
-  font-size: 1.4em;
+.context {
+  display: flex;
+  flex-direction: row;
+}
+
+.context > * {
+  flex: 1;
 }

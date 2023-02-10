@@ -3,17 +3,14 @@ import { CircularProgress, Grid } from '@mui/material';
 import Header from '../../components/Header';
 import TitleCard from '../../components/TitleCard';
 import { ArtistStatsResponse } from '../../services/apis/api';
-import {
-  buildFromDateId,
-  dateToListenedAt,
-  dateToMonthAndYear,
-} from '../../services/stats';
+import { buildFromDateId, dateToMonthAndYear } from '../../services/stats';
 import { getAtLeastImage } from '../../services/tools';
 import s from './index.module.css';
 import DayRepartition from './DayRepartition';
 import Text from '../../components/Text';
 import ArtistRank from './ArtistRank/ArtistRank';
 import InlineTrack from '../../components/InlineTrack';
+import FirstAndLast from './FirstAndLast';
 
 interface ArtistStatsProps {
   artistId: string;
@@ -66,50 +63,16 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
               </TitleCard>
             </Grid>
             <Grid item xs={12}>
-              <TitleCard title="First and last time listened">
-                <div key={stats.firstLast.last.id} className={s.ml}>
-                  <img
-                    className={s.cardimg}
-                    src={getAtLeastImage(
-                      stats.firstLast.last.track.album.images,
-                      48,
-                    )}
-                    alt="album cover"
-                  />
-                  <div className={s.mlstat}>
-                    <Text element="strong">
-                      <InlineTrack track={stats.firstLast.last.track} />
-                    </Text>
-                    <Text>
-                      Last listened on{' '}
-                      {dateToListenedAt(
-                        new Date(stats.firstLast.last.played_at),
-                      )}
-                    </Text>
-                  </div>
-                </div>
-                <div key={stats.firstLast.first.id} className={s.ml}>
-                  <img
-                    className={s.cardimg}
-                    src={getAtLeastImage(
-                      stats.firstLast.first.track.album.images,
-                      48,
-                    )}
-                    alt="album cover"
-                  />
-                  <div className={s.mlstat}>
-                    <Text element="strong">
-                      <InlineTrack track={stats.firstLast.first.track} />
-                    </Text>
-                    <Text>
-                      First listened on{' '}
-                      {dateToListenedAt(
-                        new Date(stats.firstLast.first.played_at),
-                      )}
-                    </Text>
-                  </div>
-                </div>
-              </TitleCard>
+              <FirstAndLast
+                firstImages={stats.firstLast.first.track.album.images}
+                lastImages={stats.firstLast.last.track.album.images}
+                firstDate={new Date(stats.firstLast.first.played_at)}
+                lastDate={new Date(stats.firstLast.last.played_at)}
+                firstElement={
+                  <InlineTrack track={stats.firstLast.first.track} />
+                }
+                lastElement={<InlineTrack track={stats.firstLast.last.track} />}
+              />
             </Grid>
             <Grid item xs={12}>
               <TitleCard

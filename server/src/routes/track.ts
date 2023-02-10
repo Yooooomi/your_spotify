@@ -52,11 +52,9 @@ router.get(
     try {
       const { user } = req as LoggedRequest;
       const { id } = req.params as TypedPayload<typeof getTrackStats>;
-      const [ track ]= await getTracks([id]);
+      const [track] = await getTracks([id]);
       if (!track) {
-        return res.status(200).send({
-          code: 'NEVER_LISTENED',
-        });
+        return res.status(404).end();
       }
       const promises = [
         getAlbums([track.album]),
@@ -64,9 +62,13 @@ router.get(
         getArtists([track.artists[0]]),
         getTrackFirstAndLastListened(user, track.id),
         bestPeriodOfTrack(user, track.id),
-        getTrackRecentHistory(user, track.id)
+        getTrackRecentHistory(user, track.id),
       ];
-      const [ [album], count, [artist], firstLast, bestPeriod, recentHistory ] = await Promise.all(promises);
+      const [[album], count, [artist], firstLast, bestPeriod, recentHistory] =
+        await Promise.all(promises);
+      if (!count) {
+        return res.status(200).send({ code: 'NEVER_LISTENED' });
+      }
       return res.status(200).send({
         track,
         artist,
@@ -75,8 +77,8 @@ router.get(
         firstLast,
         recentHistory,
         total: {
-          count
-        }
+          count,
+        },
       });
     } catch (e) {
       logger.error(e);
@@ -94,7 +96,7 @@ router.get(
     const { id } = req.params as TypedPayload<typeof getTrackStats>;
 
     try {
-      const [ track ] = await getTracks([id]);
+      const [track] = await getTracks([id]);
       if (!track) {
         return res.status(404).end();
       }
