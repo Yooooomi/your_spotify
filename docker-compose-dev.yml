@@ -22,7 +22,7 @@ services:
       LOG_LEVEL: debug
       API_ENDPOINT: http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
       CLIENT_ENDPOINT: http://localhost:3000
-      OFFLINE_DEV: true
+      # OFFLINE_DEV_ID: true
 
   mongo:
     image: mongo:4.4.8

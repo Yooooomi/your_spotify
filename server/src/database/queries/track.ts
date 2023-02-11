@@ -104,6 +104,16 @@ export const getTrackRecentHistory = async (user: User, trackId: string) =>
 
 export const getTrackBySpotifyId = (id: string) => TrackModel.findOne({ id });
 
+export const checkBlacklistConsistency = () =>
+  InfosModel.updateMany(
+    {
+      blacklistedBy: { $size: 0 },
+    },
+    {
+      $unset: { blacklistedBy: 1 },
+    },
+  );
+
 export const unblacklistByArtist = async (userId: string, artistId: string) => {
   const albums = await AlbumModel.find({ 'artists.0': artistId });
   const albumIds = albums.map(alb => alb.id);
