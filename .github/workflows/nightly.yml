@@ -1,0 +1,54 @@
+---
+name: Nightly build CI
+
+on:
+  push:
+    paths:
+      - .github/workflows/nightly.yml
+      - client/**
+      - server/**
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push client nightly
+        uses: docker/build-push-action@v4
+        with:
+          context: ./client
+          file: ./client/Dockerfile.production
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            yooooomi/your_spotify_client:nightly
+            yooooomi/your_spotify_client:${{ github.sha }}
+
+      - name: Build and push server nightly
+        uses: docker/build-push-action@v4
+        with:
+          context: ./server
+          file: ./server/Dockerfile.production
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            yooooomi/your_spotify_server:nightly
+            yooooomi/your_spotify_server:${{ github.sha }}
