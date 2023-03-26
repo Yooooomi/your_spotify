@@ -8,11 +8,7 @@ import http from 'http';
 import { dbLoop } from '../spotify/looper';
 import app from '../app';
 import { logger } from '../tools/logger';
-import {
-  checkBlacklistConsistency,
-  connect,
-  getLongestListeningSession,
-} from '../database';
+import { checkBlacklistConsistency, connect } from '../database';
 import { getWithDefault } from '../tools/env';
 import { fixRunningImportsAtStart } from '../database/queries/importer';
 import { repairDatabase } from '../tools/repair';
@@ -78,10 +74,4 @@ connect().then(async () => {
   fixRunningImportsAtStart().catch(logger.error);
   checkBlacklistConsistency().catch(logger.error);
   dbLoop().catch(logger.error);
-  const start = new Date();
-  start.setDate(start.getDate() - 2);
-  const end = new Date();
-  getLongestListeningSession('63e7c242187705a32333b267', start, end)
-    .then(e => console.log(JSON.stringify(e, null, ' ')))
-    .catch(console.error);
 });

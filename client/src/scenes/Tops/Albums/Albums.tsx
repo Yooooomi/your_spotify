@@ -15,7 +15,7 @@ import AlbumHeader from './Album/AlbumHeader';
 export default function Albums() {
   const { interval } = useSelector(selectRawIntervalDetail);
   const [items, setItems] = useState<
-    UnboxPromise<ReturnType<typeof api['getBestAlbums']>>['data']
+    UnboxPromise<ReturnType<(typeof api)['getBestAlbums']>>['data']
   >([]);
   const [hasMore, setHasMore] = useState(true);
   const ref = useRef<(force?: boolean) => void>();

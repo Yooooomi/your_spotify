@@ -15,7 +15,7 @@ import s from './index.module.css';
 export default function Artists() {
   const { interval } = useSelector(selectRawIntervalDetail);
   const [items, setItems] = useState<
-    UnboxPromise<ReturnType<typeof api['getBestArtists']>>['data']
+    UnboxPromise<ReturnType<(typeof api)['getBestArtists']>>['data']
   >([]);
   const [hasMore, setHasMore] = useState(true);
   const ref = useRef<(force?: boolean) => void>();
