@@ -183,7 +183,7 @@ Any user can set his proper timezone in the settings, it will be used for any co
 
 # External guides
 
-- [BreadNet](https://breadnet.co.uk/installing) installation tutorial
+- [BreadNet](https://breadnet.co.uk/your-spotify-2022) installation tutorial
 
 # Contributing
 
