@@ -1,11 +1,12 @@
 ---
-name: Server build CI
+name: Nightly build CI
 
 on:
   push:
     paths:
+      - .github/workflows/nightly.yml
+      - client/**
       - server/**
-      - .github/workflows/server.yml
     branches:
       - master
 
@@ -30,11 +31,24 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v3
+      - name: Build and push client nightly
+        uses: docker/build-push-action@v4
+        with:
+          context: ./client
+          file: ./client/Dockerfile.production
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            yooooomi/your_spotify_client:nightly
+            yooooomi/your_spotify_client:${{ github.sha }}
+
+      - name: Build and push server nightly
+        uses: docker/build-push-action@v4
         with:
           context: ./server
           file: ./server/Dockerfile.production
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: yooooomi/your_spotify_server:latest
+          tags: |
+            yooooomi/your_spotify_server:nightly
+            yooooomi/your_spotify_server:${{ github.sha }}
