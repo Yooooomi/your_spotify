@@ -109,3 +109,11 @@ h6 {
   background: none;
   background-color: none;
 }
+
+.right {
+  text-align: right;
+}
+
+.center {
+  text-align: center;
+}

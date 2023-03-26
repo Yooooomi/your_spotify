@@ -1,3 +1,5 @@
+import { ReactHTML } from 'react';
+
 export type UnboxPromise<T extends Promise<any>> = T extends Promise<infer U>
   ? U
   : never;
@@ -95,6 +97,10 @@ export type TrackWithAlbum = Omit<Track, 'album'> & {
   album: Album;
 };
 
+export type TrackWithFullAlbum = Track & {
+  full_album: Album;
+};
+
 export interface TrackInfo {
   _id: string;
   owner: string;
@@ -102,11 +108,15 @@ export interface TrackInfo {
   played_at: string;
 }
 
-export type TrackInfoWithTrack = TrackInfo & {
+export type TrackInfoWithFullTrack = TrackInfo & {
   track: Track & {
     full_album: Album;
     full_artist: Artist[];
   };
+};
+
+export type TrackInfoWithTrack = TrackInfo & {
+  track: Track;
 };
 
 export interface DateId {
@@ -132,3 +142,6 @@ export enum CollaborativeMode {
   AVERAGE = 'average',
   MINIMA = 'minima',
 }
+
+export type HTMLTag = keyof ReactHTML;
+export type HTMLProps<T extends HTMLTag> = JSX.IntrinsicElements[T];

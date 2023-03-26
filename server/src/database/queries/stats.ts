@@ -842,3 +842,102 @@ export const getBestArtistsOfHour = (user: User, start: Date, end: Date) => {
     { $sort: { _id: 1 } },
   ]);
 };
+
+export const getLongestListeningSession = (
+  userId: string,
+  start: Date,
+  end: Date,
+) => {
+  const sessionBreakThreshold = 10 * 60 * 1000;
+  const subtract = {
+    $cond: [
+      '$$value.last',
+      {
+        $subtract: [
+          '$$this.played_at',
+          {
+            $add: ['$$value.last.played_at', '$$value.last.track.duration_ms'],
+          },
+        ],
+      },
+      sessionBreakThreshold + 1,
+    ],
+  };
+
+  const item = { subtract, info: '$$this' };
+
+  return InfosModel.aggregate([
+    { $match: basicMatch(userId, start, end) },
+    { $sort: { played_at: 1 } },
+    { $lookup: lightTrackLookupPipeline() },
+    { $unwind: '$track' },
+    {
+      $group: {
+        _id: '$owner',
+        infos: { $push: '$$ROOT' },
+      },
+    },
+    {
+      $addFields: {
+        distanceToLast: {
+          $reduce: {
+            input: '$infos',
+            initialValue: { distance: [], current: [] },
+            in: {
+              distance: {
+                $concatArrays: [
+                  '$$value.distance',
+                  {
+                    $cond: {
+                      if: {
+                        $gt: [subtract, sessionBreakThreshold],
+                      },
+                      then: ['$$value.current'],
+                      else: [],
+                    },
+                  },
+                ],
+              },
+              current: {
+                $cond: {
+                  if: {
+                    $gt: [subtract, sessionBreakThreshold],
+                  },
+                  then: [item],
+                  else: {
+                    $concatArrays: ['$$value.current', [item]],
+                  },
+                },
+              },
+              last: '$$this',
+            },
+          },
+        },
+      },
+    },
+    { $unset: ['infos', 'distanceToLast.last'] },
+    {
+      $addFields: {
+        'distanceToLast.distance': {
+          $concatArrays: [
+            '$distanceToLast.distance',
+            ['$distanceToLast.current'],
+          ],
+        },
+      },
+    },
+    { $unset: 'distanceToLast.current' },
+    {
+      $unwind: {
+        path: '$distanceToLast.distance',
+      },
+    },
+    {
+      $addFields: {
+        sessionLength: { $size: '$distanceToLast.distance' },
+      },
+    },
+    { $sort: { sessionLength: -1 } },
+    { $limit: 3 },
+  ]);
+};

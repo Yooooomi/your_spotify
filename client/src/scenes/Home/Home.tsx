@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Header from '../../components/Header';

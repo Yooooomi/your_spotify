@@ -12,6 +12,12 @@
   margin: auto;
 }
 
+@media screen and (max-width: 1250px) {
+  .content {
+    width: 95%;
+  }
+}
+
 .track {
   display: flex;
   flex-direction: row;

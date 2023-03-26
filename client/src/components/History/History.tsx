@@ -3,17 +3,19 @@ import { Checkbox } from '@mui/material';
 import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { api, ApiData, DEFAULT_ITEMS_TO_LOAD } from '../../services/apis/api';
-import { TrackInfoWithTrack } from '../../services/types';
+import { TrackInfoWithFullTrack } from '../../services/types';
 import Loader from '../Loader';
 import TitleCard from '../TitleCard';
 import Track from './Track';
 import s from './index.module.css';
 import Text from '../Text';
 import { selectRawIntervalDetail } from '../../services/redux/modules/user/selector';
+import { GridWrapper } from '../Grid';
+import TrackHeader from './Track/TrackHeader';
 
 export default function History() {
   const { interval } = useSelector(selectRawIntervalDetail);
-  const [items, setItems] = useState<TrackInfoWithTrack[]>([]);
+  const [items, setItems] = useState<TrackInfoWithFullTrack[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [followInterval, setFollowInterval] = useState(true);
   const ref = useRef<(force?: boolean) => void>();
@@ -63,22 +65,23 @@ export default function History() {
           <Text>Follow interval</Text>
         </div>
       }>
-      <Track line playable />
       <InfiniteScroll
         dataLength={items.length}
         next={ref.current}
         hasMore={hasMore}
         loader={<Loader />}>
-        {items.map(item => (
-          <Track
-            playable
-            key={item.played_at}
-            listenedAt={new Date(item.played_at)}
-            artists={item.track.full_artist}
-            album={item.track.full_album}
-            track={item.track}
-          />
-        ))}
+        <GridWrapper>
+          <TrackHeader key="header" />
+          {items.map(item => (
+            <Track
+              key={item.played_at}
+              listenedAt={new Date(item.played_at)}
+              artists={item.track.full_artist}
+              album={item.track.full_album}
+              track={item.track}
+            />
+          ))}
+        </GridWrapper>
       </InfiniteScroll>
     </TitleCard>
   );

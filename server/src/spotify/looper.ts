@@ -100,6 +100,7 @@ const reflect = (p: Promise<any>) =>
 const WAIT_SECONDS = 120;
 
 export const dbLoop = async () => {
+  // return;
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const nbUsers = await getUsersNb();

@@ -1,50 +1,17 @@
-.root {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  border-radius: 6px;
-}
-
-.root:hover {
-  background: var(--hover);
-}
-
 .header {
-  font-weight: bold;
+  margin-bottom: 16px;
 }
 
-.albumcover {
-  height: 48px;
-  width: 48px;
-  margin-right: 16px;
-  border-radius: 6px;
+.cover {
+  border-radius: var(--radius);
 }
 
-.name {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex: 4;
-}
-
-.albumname {
-  margin-bottom: 4px;
-  font-weight: bold;
+.names {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .artistname {
-  font-size: 0.9em;
-  color: var(--text-grey);
-}
-
-.sumcount {
-  flex: 1;
-  text-align: center;
-}
-
-.sumduration {
-  flex: 1;
-  text-align: right;
+  color: var(--text-grey) !important;
 }

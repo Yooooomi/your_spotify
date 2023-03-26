@@ -1,4 +1,3 @@
-import React from 'react';
 import { TooltipProps } from 'recharts';
 import { Payload } from 'recharts/types/component/DefaultTooltipContent';
 import s from './index.module.css';

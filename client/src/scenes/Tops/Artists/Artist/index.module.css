@@ -1,43 +1,17 @@
-.root {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  border-radius: 6px;
-}
-
-.root:hover {
-  background: var(--hover);
+.row {
+  height: 48px;  
 }
 
 .header {
-  font-weight: bold;
+  margin-bottom: 16px;
 }
 
-.artistcover {
-  height: 48px;
-  width: 48px;
-  margin-right: 16px;
-  border-radius: 6px;
+.cover {
+  border-radius: var(--radius);
 }
 
-.artistname {
-  flex: 2;
-  font-weight: bold;
-}
-
-.genres {
-  text-align: center;
-  flex: 4;
-}
-
-.sumcount {
-  flex: 1;
-  text-align: center;
-}
-
-.sumduration {
-  flex: 1;
-  text-align: right;
+.names {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

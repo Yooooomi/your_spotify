@@ -93,7 +93,7 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | SPOTIFY_SECRET        | REQUIRED | The secret key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
 | CORS                  | _not defined_ | List of comma-separated origin allowed, or _nothing_ to allow any origin |
 | MAX_IMPORT_CACHE_SIZE | Infinite | The maximum element in the cache when importing data from an outside source, more cache means less requests to Spotify, resulting in faster imports |
-| MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database |
+| MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database, where **mongo** is the name of your service in the compose file |
 | PORT                  | 8080 | The port of the server, do not modify if you're using docker |
 | TIMEZONE              | Europe/Paris | The timezone of your stats, only affects read requests since data is saved with UTC time |
 | LOG_LEVEL             | info | The log level, debug is useful if you encouter any bugs |

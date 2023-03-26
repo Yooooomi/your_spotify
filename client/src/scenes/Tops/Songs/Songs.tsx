@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useSelector } from 'react-redux';
 import AddToPlaylist from '../../../components/AddToPlaylist';
+import { GridWrapper } from '../../../components/Grid';
 import Header from '../../../components/Header';
 import Loader from '../../../components/Loader';
 import { DEFAULT_PLAYLIST_NB } from '../../../components/PlaylistDialog/PlaylistDialog';
@@ -13,8 +14,9 @@ import {
 } from '../../../services/apis/api';
 import { PlaylistContext } from '../../../services/redux/modules/playlist/types';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
-import s from './index.module.css';
 import Track from './Track';
+import TrackHeader from './Track/TrackHeader';
+import s from './index.module.css';
 
 export default function Songs() {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -66,25 +68,27 @@ export default function Songs() {
         <TitleCard
           title="Top songs"
           right={<AddToPlaylist context={context} />}>
-          <Track line playable />
           <InfiniteScroll
             next={ref.current}
             hasMore={hasMore}
             dataLength={items.length}
             loader={<Loader />}>
-            {items.map(item => (
-              <Track
-                playable
-                key={item.track.id}
-                track={item.track}
-                album={item.album}
-                artists={[item.artist]}
-                count={item.count}
-                totalCount={item.total_count}
-                duration={item.duration_ms}
-                totalDuration={item.total_duration_ms}
-              />
-            ))}
+            <GridWrapper>
+              <TrackHeader />
+              {items.map(item => (
+                <Track
+                  playable
+                  key={item.track.id}
+                  track={item.track}
+                  album={item.album}
+                  artists={[item.artist]}
+                  count={item.count}
+                  totalCount={item.total_count}
+                  duration={item.duration_ms}
+                  totalDuration={item.total_duration_ms}
+                />
+              ))}
+            </GridWrapper>
           </InfiniteScroll>
         </TitleCard>
       </div>

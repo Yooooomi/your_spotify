@@ -1,4 +1,4 @@
-import React from 'react';
+import { forwardRef } from 'react';
 import { Paper } from '@mui/material';
 import clsx from 'clsx';
 import s from './index.module.css';
@@ -11,7 +11,7 @@ interface ChartCardProps {
   children: React.ReactNode;
 }
 
-const ChartCard = React.forwardRef<HTMLDivElement, ChartCardProps>(
+const ChartCard = forwardRef<HTMLDivElement, ChartCardProps>(
   ({ className, title, right, children }, ref) => {
     return (
       <Paper ref={ref} className={clsx(s.root, className)}>

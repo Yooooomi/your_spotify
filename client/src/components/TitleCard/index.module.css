@@ -11,6 +11,10 @@
   height: 100%;
 }
 
+.nopadding {
+  padding: 0px !important;
+}
+
 .title {
   display: flex;
   align-items: center;

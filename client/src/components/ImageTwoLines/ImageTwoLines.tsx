@@ -5,7 +5,7 @@ import s from './index.module.css';
 
 interface ImageTwoLinesProps {
   className?: string;
-  image: string;
+  image: ReactNode;
   first: ReactNode;
   second: ReactNode;
 }
@@ -18,7 +18,7 @@ export default function ImageTwoLines({
 }: ImageTwoLinesProps) {
   return (
     <div className={clsx(s.root, className)}>
-      <img className={s.image} src={image} alt="album cover" />
+      {image}
       <div className={s.content}>
         <Text element="strong">{first}</Text>
         <Text>{second}</Text>

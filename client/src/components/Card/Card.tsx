@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface CardProps {
   top: React.ReactNode;
   middle: React.ReactNode;

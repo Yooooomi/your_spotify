@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams, useSearchParams } from 'react-router-dom';
 import Header from '../../../../components/Header';
+import IdealImage from '../../../../components/IdealImage';
 import InlineArtist from '../../../../components/InlineArtist';
 import Text from '../../../../components/Text';
 import { api } from '../../../../services/apis/api';
@@ -12,7 +13,6 @@ import { useOldestListenedAtFromUsers } from '../../../../services/intervals';
 import { AdminAccount } from '../../../../services/redux/modules/admin/reducer';
 import { selectAccounts } from '../../../../services/redux/modules/admin/selector';
 import { selectUser } from '../../../../services/redux/modules/user/selector';
-import { getAtLeastImage } from '../../../../services/tools';
 import { CollaborativeMode } from '../../../../services/types';
 import { AFFINITY_PREFIX } from '../types';
 import s from './index.module.css';
@@ -83,9 +83,10 @@ export default function Albums() {
               <Text element="strong" className={s.ranking}>
                 #{index + 1}
               </Text>
-              <img
+              <IdealImage
                 alt="cover"
-                src={getAtLeastImage(res.album.images, 48)}
+                images={res.album.images}
+                size={48}
                 className={s.albumimage}
               />
               <div className={s.albumname}>

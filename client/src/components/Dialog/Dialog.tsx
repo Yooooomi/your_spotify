@@ -1,12 +1,12 @@
-import React from 'react';
 import {
   Dialog as MDialog,
+  DialogProps as MDialogProps,
   DialogContent,
   DialogTitle,
   Grow,
 } from '@mui/material';
 
-interface DialogProps {
+interface DialogProps extends MDialogProps {
   open: boolean;
   title: string;
   children: React.ReactNode;
@@ -18,13 +18,16 @@ export default function Dialog({
   onClose,
   title,
   children,
+  ...other
 }: DialogProps) {
   return (
     <MDialog
       open={open}
       maxWidth="xl"
       onClose={onClose}
-      TransitionComponent={Grow}>
+      TransitionComponent={Grow}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...other}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
     </MDialog>

@@ -1,15 +1,15 @@
-import React from 'react';
-import clsx from 'clsx';
-import { useMediaQuery } from '@mui/material';
-import s from './index.module.css';
+import { useMemo } from 'react';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist as ArtistType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
-import { getAtLeastImage } from '../../../../services/tools';
 import Text from '../../../../components/Text';
+import { useMobile } from '../../../../services/hooks/hooks';
+import { ColumnDescription, GridRowWrapper } from '../../../../components/Grid';
+import s from './index.module.css';
+import IdealImage from '../../../../components/IdealImage';
+import { useArtistGrid } from './ArtistGrid';
 
 interface ArtistProps {
-  line?: false;
   artist: ArtistType;
   count: number;
   totalCount: number;
@@ -17,49 +17,96 @@ interface ArtistProps {
   totalDuration: number;
 }
 
-interface HeaderArtistProps {
-  line: true;
-}
+export default function Artist({
+  artist,
+  duration,
+  totalDuration,
+  count,
+  totalCount,
+}: ArtistProps) {
+  const [isMobile, isTablet] = useMobile();
+  const artistGrid = useArtistGrid();
 
-export default function Artist(props: ArtistProps | HeaderArtistProps) {
-  const upmd = useMediaQuery('(min-width: 1150px)');
-  const upmobile = useMediaQuery('(min-width: 600px)');
+  const genres = artist.genres.join(', ');
 
-  if (props.line) {
-    return (
-      <div className={s.root}>
-        <Text className={s.artistname}>Artist name</Text>
-        {upmobile && <Text className={clsx(s.genres, s.header)}>Genres</Text>}
-        <Text className={clsx(s.sumcount, s.header)}>Count</Text>
-        <Text className={clsx(s.sumduration, s.header)}>Total duration</Text>
-      </div>
-    );
-  }
-
-  const { artist, duration, totalDuration, count, totalCount } = props;
-  return (
-    <div className={s.root}>
-      <img
-        className={s.artistcover}
-        src={getAtLeastImage(artist.images, 48)}
-        alt="Artist cover"
-      />
-      <Text className={s.artistname}>
-        <InlineArtist artist={artist} />
-      </Text>
-      {upmobile && <Text className={s.genres}>{artist.genres.join(', ')}</Text>}
-      <Text className={s.sumcount}>
-        {count}{' '}
-        {upmd && (
-          <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>
-        )}
-      </Text>
-      <Text className={s.sumduration}>
-        {msToMinutesAndSeconds(duration)}{' '}
-        {upmd && (
-          <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>
-        )}
-      </Text>
-    </div>
+  const columns = useMemo<ColumnDescription[]>(
+    () => [
+      {
+        ...artistGrid.cover,
+        node: (
+          <IdealImage
+            images={artist.images}
+            size={48}
+            alt="Artist cover"
+            className={s.cover}
+            width={48}
+            height={48}
+          />
+        ),
+      },
+      {
+        ...artistGrid.title,
+        node: (
+          <Text className={s.names}>
+            <InlineArtist artist={artist} />
+          </Text>
+        ),
+      },
+      {
+        ...artistGrid.genres,
+        node: !isTablet && (
+          <Text className={s.names} title={genres}>
+            {genres}
+          </Text>
+        ),
+      },
+      {
+        ...artistGrid.count,
+        node: (
+          <Text>
+            {count}
+            {!isMobile && (
+              <>
+                {' '}
+                <Text>({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+              </>
+            )}
+          </Text>
+        ),
+      },
+      {
+        ...artistGrid.total,
+        node: (
+          <Text className="center">
+            {msToMinutesAndSeconds(duration)}
+            {!isMobile && (
+              <>
+                {' '}
+                <Text>
+                  ({Math.floor((duration / totalDuration) * 10000) / 100}%)
+                </Text>
+              </>
+            )}
+          </Text>
+        ),
+      },
+    ],
+    [
+      artist,
+      artistGrid.count,
+      artistGrid.cover,
+      artistGrid.genres,
+      artistGrid.title,
+      artistGrid.total,
+      count,
+      duration,
+      genres,
+      isMobile,
+      isTablet,
+      totalCount,
+      totalDuration,
+    ],
   );
+
+  return <GridRowWrapper className={s.row} columns={columns} />;
 }

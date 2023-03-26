@@ -1,4 +1,3 @@
-import React from 'react';
 import { CircularProgress, Grid } from '@mui/material';
 import Header from '../../components/Header';
 import TitleCard from '../../components/TitleCard';
@@ -8,13 +7,13 @@ import {
   dateToMonthAndYear,
   formatDateTime,
 } from '../../services/stats';
-import { getAtLeastImage } from '../../services/tools';
 import s from './index.module.css';
 import Text from '../../components/Text';
 import InlineArtist from '../../components/InlineArtist';
 import TrackRank from './TrackRank/TrackRank';
 import FirstAndLast from './FirstAndLast';
 import ImageTwoLines from '../../components/ImageTwoLines';
+import IdealImage from '../../components/IdealImage';
 
 interface TrackStatsProps {
   trackId: string;
@@ -30,9 +29,10 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
     <div>
       <Header
         left={
-          <img
+          <IdealImage
             className={s.headerimage}
-            src={getAtLeastImage(stats.album.images, 60)}
+            images={stats.album.images}
+            size={60}
             alt="Album"
           />
         }
@@ -62,12 +62,12 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
             <Grid item xs={12}>
               <TitleCard title="Context" contentClassName={s.context}>
                 <ImageTwoLines
-                  image={getAtLeastImage(stats.artist.images, 48)}
+                  image={<IdealImage images={stats.artist.images} size={48} />}
                   first={<InlineArtist artist={stats.artist} />}
                   second="Artist"
                 />
                 <ImageTwoLines
-                  image={getAtLeastImage(stats.album.images, 48)}
+                  image={<IdealImage images={stats.album.images} size={48} />}
                   first={stats.album.name}
                   second="Album"
                 />
@@ -131,7 +131,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
                 <ImageTwoLines
                   className={s.recentitem}
                   key={info.id}
-                  image={getAtLeastImage(stats.album.images, 48)}
+                  image={<IdealImage images={stats.album.images} size={48} />}
                   first={stats.track.name}
                   second={formatDateTime(new Date(info.played_at))}
                 />

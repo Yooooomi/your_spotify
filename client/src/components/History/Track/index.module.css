@@ -1,66 +1,17 @@
-.root {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  border-radius: 6px;
-}
-
-.root > :last-child {
-  opacity: 0;
-}
-
-.root:hover > :last-child {
-  opacity: 1;
-}
-
-.root:hover {
-  background: var(--hover);
+.row {
+  height: 48px;
 }
 
 .header {
-  font-weight: bold;
+  margin-bottom: 16px;
 }
 
-.play {
-  height: 32px;
-  width: 32px;
-  margin-right: 8px !important;
-}
-
-.name {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex: 4;
-}
-
-.trackname {
-  margin-bottom: 4px;
-  font-weight: bold;
+.names {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .artistname {
-  font-size: 0.9em;
-  color: var(--text-grey);
-}
-
-.albumname {
-  flex: 1;
-  text-align: center;
-}
-
-.duration {
-  flex: 1;
-  text-align: center;
-}
-
-.playedat {
-  flex: 1;
-  text-align: right;
-}
-
-.trackoptions {
-  width: var(--track-options);
+  color: var(--text-grey) !important;
 }

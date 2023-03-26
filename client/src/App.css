@@ -1,10 +1,31 @@
-
-
-.app {
-}
-
 .default-chart {
   position: relative;
   height: 700px;
   width: 100%;
+}
+
+.play-button-holder .play-image {
+  opacity: inherit;
+}
+
+.play-button-holder .play-button {
+  display: none;
+}
+
+@media screen and (min-width: 960px) {
+  .play-button-holder .play-image {
+    opacity: inherit;
+  }
+  
+  .play-button-holder .play-button {
+    display: none !important;
+  }
+  
+  .play-button-holder:hover .play-image {
+    opacity: 0.4;
+  }
+  
+  .play-button-holder:hover .play-button {
+    display: inherit !important;
+  }
 }

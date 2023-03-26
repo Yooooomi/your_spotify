@@ -1,24 +1,33 @@
 import clsx from 'clsx';
-import React, { ReactNode } from 'react';
+import React, { ReactHTML, ReactNode } from 'react';
+import { HTMLTag, HTMLProps } from '../../services/types';
 import s from './index.module.css';
 
-interface TextProps {
+export type TextProps<T extends HTMLTag> = HTMLProps<T> & {
   className?: string;
   children: ReactNode;
-  element?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'span' | 'strong' | 'div';
+  element?: T;
   onDark?: boolean;
-}
+  noStyle?: boolean;
+};
 
-export default function Text({
+export default function Text<T extends keyof ReactHTML = 'span'>({
   className,
   children,
   element,
   onDark,
-}: TextProps) {
+  noStyle,
+  ...other
+}: TextProps<T>) {
   return React.createElement(
     element ?? 'span',
     {
-      className: clsx(className, onDark ? s.onDark : s.root),
+      className: clsx(
+        // eslint-disable-next-line no-nested-ternary
+        noStyle ? undefined : onDark ? s.onDark : s.root,
+        className,
+      ),
+      ...other,
     },
     children,
   );

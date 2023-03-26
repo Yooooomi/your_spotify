@@ -4,7 +4,6 @@ import Header from '../../components/Header';
 import TitleCard from '../../components/TitleCard';
 import { ArtistStatsResponse } from '../../services/apis/api';
 import { buildFromDateId, dateToMonthAndYear } from '../../services/stats';
-import { getAtLeastImage } from '../../services/tools';
 import s from './index.module.css';
 import DayRepartition from './DayRepartition';
 import Text from '../../components/Text';
@@ -13,6 +12,7 @@ import InlineTrack from '../../components/InlineTrack';
 import FirstAndLast from './FirstAndLast';
 import ArtistContextMenu from './ArtistContextMenu';
 import { selectBlacklistedArtist } from '../../services/redux/modules/user/selector';
+import IdealImage from '../../components/IdealImage';
 
 interface ArtistStatsProps {
   artistId: string;
@@ -30,9 +30,10 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
     <div>
       <Header
         left={
-          <img
+          <IdealImage
             className={s.headerimage}
-            src={getAtLeastImage(stats.artist.images, 60)}
+            images={stats.artist.images}
+            size={60}
             alt="Artist"
           />
         }
@@ -137,9 +138,10 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
                   <Text element="strong" className={s.mlrank}>
                     #{k + 1}
                   </Text>
-                  <img
+                  <IdealImage
                     className={s.cardimg}
-                    src={getAtLeastImage(ml.track.album.images, 48)}
+                    images={ml.track.album.images}
+                    size={48}
                     alt="album cover"
                   />
                   <div className={s.mlstat}>

@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import { dateToListenedAt } from '../../../services/stats';
-import { getAtLeastImage } from '../../../services/tools';
 import { SpotifyImage } from '../../../services/types';
 import Text from '../../../components/Text';
 import TitleCard from '../../../components/TitleCard';
 import s from './index.module.css';
+import IdealImage from '../../../components/IdealImage';
 
 interface FirstAndLastProps {
   firstImages: SpotifyImage[];
@@ -26,9 +26,10 @@ export default function FirstAndLast({
   return (
     <TitleCard title="First and last time listened">
       <div className={s.item}>
-        <img
+        <IdealImage
           className={s.cover}
-          src={getAtLeastImage(lastImages, 48)}
+          images={lastImages}
+          size={48}
           alt="album cover"
         />
         <div className={s.stat}>
@@ -37,9 +38,10 @@ export default function FirstAndLast({
         </div>
       </div>
       <div className={s.item}>
-        <img
+        <IdealImage
           className={s.cover}
-          src={getAtLeastImage(firstImages, 48)}
+          images={firstImages}
+          size={48}
           alt="cover"
         />
         <div className={s.stat}>

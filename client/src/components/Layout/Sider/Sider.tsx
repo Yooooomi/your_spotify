@@ -19,6 +19,8 @@ import {
   ExitToApp,
   Share,
   ShareOutlined,
+  Speed,
+  SpeedOutlined,
 } from '@mui/icons-material';
 import s from './index.module.css';
 import { useShareLink } from '../../../services/hooks/hooks';
@@ -28,8 +30,8 @@ import { selectUser } from '../../../services/redux/modules/user/selector';
 import { useAppDispatch } from '../../../services/redux/tools';
 import { LayoutContext } from '../LayoutContext';
 import SiderTitle from './SiderTitle';
-import ArtistSearch from '../../ArtistSearch';
-import { Artist } from '../../../services/types';
+import SiderSearch from '../../SiderSearch';
+import { Artist, TrackWithFullAlbum } from '../../../services/types';
 
 interface SiderProps {
   className?: string;
@@ -45,6 +47,12 @@ const links = [
         link: '/',
         icon: <HomeOutlined />,
         iconOn: <Home />,
+      },
+      {
+        label: 'Longest sessions',
+        link: '/sessions',
+        icon: <SpeedOutlined />,
+        iconOn: <Speed />,
       },
       {
         label: 'All stats',
@@ -128,6 +136,14 @@ export default function Sider({ className, isDrawer }: SiderProps) {
     [layoutContext, navigate],
   );
 
+  const goToTrack = useCallback(
+    (track: TrackWithFullAlbum) => {
+      navigate(`/song/${track.id}`);
+      layoutContext.closeDrawer();
+    },
+    [layoutContext, navigate],
+  );
+
   const copyCurrentPage = useCallback(() => {
     if (!user?.publicToken) {
       dispatch(
@@ -154,7 +170,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       <div className={s.title}>
         <SiderTitle />
       </div>
-      <ArtistSearch onResultClick={goToArtist} />
+      <SiderSearch onArtistClick={goToArtist} onTrackClick={goToTrack} />
       <nav>
         {links.map(category => (
           <div className={s.category} key={category.label}>

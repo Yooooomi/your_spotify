@@ -19,6 +19,7 @@ import {
   getBestSongsOfHour,
   getBestAlbumsOfHour,
   getBestArtistsOfHour,
+  getLongestListeningSession,
 } from '../database';
 import {
   CollaborativeMode,
@@ -509,9 +510,7 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end } = req.query as TypedPayload<
-      typeof collaborativeSchema
-    >;
+    const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
       const result = await getBestSongsOfHour(user, start, end);
@@ -529,9 +528,7 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end } = req.query as TypedPayload<
-      typeof collaborativeSchema
-    >;
+    const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
       const result = await getBestAlbumsOfHour(user, start, end);
@@ -549,12 +546,32 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end } = req.query as TypedPayload<
-      typeof collaborativeSchema
-    >;
+    const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
       const result = await getBestArtistsOfHour(user, start, end);
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.get(
+  '/top/sessions',
+  validating(interval, 'query'),
+  isLoggedOrGuest,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end } = req.query as TypedPayload<typeof interval>;
+
+    try {
+      const result = await getLongestListeningSession(
+        user._id.toString(),
+        start,
+        end,
+      );
       return res.status(200).send(result);
     } catch (e) {
       logger.error(e);

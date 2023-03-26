@@ -1,4 +1,3 @@
-import React from 'react';
 import { CircularProgress } from '@mui/material';
 import s from './index.module.css';
 

@@ -6,6 +6,11 @@ import { Timesplit } from '../../tools/types';
 export const getTracks = (tracksId: string[]) =>
   TrackModel.find({ id: { $in: tracksId } });
 
+export const searchTrack = (str: string) =>
+  TrackModel.find({ name: { $regex: new RegExp(str, 'i') } }).populate(
+    'full_album',
+  );
+
 export const getRankOfTrack = async (user: User, trackId: string) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id } },

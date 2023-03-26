@@ -3,28 +3,20 @@
   height: 48px;
   width: 48px;
   overflow: hidden;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .image {
+  position: absolute;
+  top: 0px;
+  left: 0px;
   height: 48px;
   width: 48px;
-  border-radius: 6px;
-}
-
-.button {
-  position: absolute !important;
-  opacity: 0;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-}
-
-.root:hover > .button {
-  opacity: 1;
 }
 
 .icon {
-  opacity: 1;
-  color: black !important;
+  color: var(--primary) !important;
 }

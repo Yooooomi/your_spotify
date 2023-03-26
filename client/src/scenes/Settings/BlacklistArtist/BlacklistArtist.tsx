@@ -2,16 +2,17 @@ import { CircularProgress, IconButton } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import UnblacklistIcon from '@mui/icons-material/CloseRounded';
-import ArtistSearch from '../../../components/ArtistSearch';
+import ResourceSearch from '../../../components/SiderSearch';
 import Text from '../../../components/Text';
 import { useLoadArtists } from '../../../services/hooks/artist';
 import { selectBlacklistedArtists } from '../../../services/redux/modules/user/selector';
-import { compact, getAtLeastImage } from '../../../services/tools';
+import { compact } from '../../../services/tools';
 import { Artist } from '../../../services/types';
 import s from './index.module.css';
 import BlacklistArtistDialog from '../../../components/BlacklistArtistDialog';
 import InlineArtist from '../../../components/InlineArtist';
 import TitleCard from '../../../components/TitleCard';
+import IdealImage from '../../../components/IdealImage';
 
 export default function BlacklistArtist() {
   const [askedBlacklist, setAskedBlacklist] = useState<Artist | undefined>();
@@ -43,15 +44,19 @@ export default function BlacklistArtist() {
         again.
       </Text>
       <div className={s.root}>
-        <ArtistSearch onResultClick={askBlacklist} inputClassname={s.search} />
+        <ResourceSearch
+          onArtistClick={askBlacklist}
+          inputClassname={s.search}
+        />
         {blacklisted.length === 0 && (
           <Text className={s.none}>You have not blacklisted any artist</Text>
         )}
         {compact(blacklisted.map(b => artists[b])).map(artist => (
           <div key={artist.id} className={s.artist}>
-            <img
+            <IdealImage
               className={s.artistcover}
-              src={getAtLeastImage(artist.images, 48)}
+              images={artist.images}
+              size={48}
               width={48}
               height={48}
               alt="artist"

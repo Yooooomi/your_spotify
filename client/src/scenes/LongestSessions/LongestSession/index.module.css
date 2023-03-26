@@ -1,0 +1,24 @@
+.accordion {
+  border: 1px solid var(--hover);
+}
+
+.accordion:not(:first-of-type) {
+  margin-top: -1px;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.line > :first-child {
+  margin-right: 8px;
+  width: 32px;
+}
+
+.cover {
+  height: 48px;
+  width: 48px;
+  border-radius: var(--radius);
+}

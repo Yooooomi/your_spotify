@@ -1,0 +1,12 @@
+.rowwrapper {
+  display: grid;
+  width: 100%;
+  grid-gap: 8px;
+  align-items: center;
+}
+
+.wrapper {
+  width: 100%;
+  display: grid;
+  row-gap: 8px;
+}
