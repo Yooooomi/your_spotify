@@ -47,7 +47,7 @@ export default function Artist({
       {
         ...artistGrid.title,
         node: (
-          <Text className={s.names}>
+          <Text className="otext">
             <InlineArtist artist={artist} />
           </Text>
         ),
@@ -55,7 +55,7 @@ export default function Artist({
       {
         ...artistGrid.genres,
         node: !isTablet && (
-          <Text className={s.names} title={genres}>
+          <Text className="otext" title={genres}>
             {genres}
           </Text>
         ),

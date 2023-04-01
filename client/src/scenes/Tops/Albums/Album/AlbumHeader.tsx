@@ -11,7 +11,7 @@ export default function AlbumHeader() {
     () => [
       {
         ...albumGrid.cover,
-        node: <div className={s.albumcover} />,
+        node: <div />,
       },
       {
         ...albumGrid.title,

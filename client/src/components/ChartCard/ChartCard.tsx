@@ -9,12 +9,17 @@ interface ChartCardProps {
   title: string;
   right?: React.ReactNode;
   children: React.ReactNode;
+  noBorder?: boolean;
 }
 
 const ChartCard = forwardRef<HTMLDivElement, ChartCardProps>(
-  ({ className, title, right, children }, ref) => {
+  ({ className, title, right, children, noBorder }, ref) => {
     return (
-      <Paper ref={ref} className={clsx(s.root, className)}>
+      <Paper
+        ref={ref}
+        className={clsx(s.root, className, {
+          [s.noborder]: noBorder,
+        })}>
         <div className={s.title}>
           <Text element="h3">{title}</Text>
           {right}

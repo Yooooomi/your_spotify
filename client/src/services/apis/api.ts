@@ -178,7 +178,7 @@ export const api = {
     axios.post('/spotify/play', {
       id,
     }),
-  getTracks: (number: number, offset: number, start?: Date, end?: Date) =>
+  getTracks: (start: Date, end: Date, number: number, offset: number) =>
     get<TrackInfoWithFullTrack[]>('/spotify/gethistory', {
       number,
       offset,

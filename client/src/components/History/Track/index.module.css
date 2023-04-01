@@ -6,12 +6,6 @@
   margin-bottom: 16px;
 }
 
-.names {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.artistname {
-  color: var(--text-grey) !important;
+.names > :first-child {
+  margin-bottom: 4px;
 }

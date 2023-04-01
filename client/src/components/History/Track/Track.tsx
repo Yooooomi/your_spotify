@@ -40,24 +40,22 @@ export default function Track({
       {
         ...trackGrid.title,
         node: (
-          <div className={s.names}>
-            <Text element="div">
-              <InlineTrack track={track} />
-            </Text>
-            <Text element="div" className={s.artistname}>
+          <div className={clsx('otext', s.names)}>
+            <InlineTrack track={track} element="div" />
+            <div className="subtitle">
               {artists.map((art, k, a) => (
                 <Fragment key={art.id}>
                   <InlineArtist artist={art} noStyle />
                   {k !== a.length - 1 && ', '}
                 </Fragment>
               ))}
-            </Text>
+            </div>
           </div>
         ),
       },
       {
         ...trackGrid.album,
-        node: !isTablet && <Text className={clsx(s.names)}>{album.name}</Text>,
+        node: !isTablet && <Text className="otext">{album.name}</Text>,
       },
       {
         ...trackGrid.duration,

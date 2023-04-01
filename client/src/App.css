@@ -4,6 +4,16 @@
   width: 100%;
 }
 
+.otext {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subtitle {
+  color: var(--text-grey);
+}
+
 .play-button-holder .play-image {
   opacity: inherit;
 }

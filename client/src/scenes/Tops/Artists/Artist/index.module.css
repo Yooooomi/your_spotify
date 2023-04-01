@@ -9,9 +9,3 @@
 .cover {
   border-radius: var(--radius);
 }
-
-.names {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}

@@ -49,11 +49,9 @@ export default function Track(props: TrackProps) {
       {
         ...trackGrid.title,
         node: (
-          <div className={s.names}>
-            <Text element="div">
-              <InlineTrack track={track} />
-            </Text>
-            <div className={s.artistname}>
+          <div className={clsx('otext', s.names)}>
+            <InlineTrack element="div" track={track} />
+            <div className="subtitle">
               {artists.map((art, k, a) => (
                 <Fragment key={art.id}>
                   <InlineArtist artist={art} noStyle />
@@ -67,7 +65,7 @@ export default function Track(props: TrackProps) {
       {
         ...trackGrid.album,
         node: !isTablet && (
-          <InlineAlbum element="div" className={s.names} album={album} />
+          <InlineAlbum element="div" className="otext" album={album} />
         ),
       },
       {

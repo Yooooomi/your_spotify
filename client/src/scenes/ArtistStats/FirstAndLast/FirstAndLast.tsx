@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import { dateToListenedAt } from '../../../services/stats';
 import { SpotifyImage } from '../../../services/types';
-import Text from '../../../components/Text';
 import TitleCard from '../../../components/TitleCard';
 import s from './index.module.css';
 import IdealImage from '../../../components/IdealImage';
+import ImageTwoLines from '../../../components/ImageTwoLines';
 
 interface FirstAndLastProps {
   firstImages: SpotifyImage[];
@@ -26,28 +26,32 @@ export default function FirstAndLast({
   return (
     <TitleCard title="First and last time listened">
       <div className={s.item}>
-        <IdealImage
-          className={s.cover}
-          images={lastImages}
-          size={48}
-          alt="album cover"
+        <ImageTwoLines
+          image={
+            <IdealImage
+              className={s.cover}
+              images={lastImages}
+              size={48}
+              alt="album cover"
+            />
+          }
+          first={lastElement}
+          second={`Last listened on ${dateToListenedAt(new Date(lastDate))}`}
         />
-        <div className={s.stat}>
-          <Text element="strong">{lastElement}</Text>
-          <Text>Last listened on {dateToListenedAt(new Date(lastDate))}</Text>
-        </div>
       </div>
       <div className={s.item}>
-        <IdealImage
-          className={s.cover}
-          images={firstImages}
-          size={48}
-          alt="cover"
+        <ImageTwoLines
+          image={
+            <IdealImage
+              className={s.cover}
+              images={firstImages}
+              size={48}
+              alt="cover"
+            />
+          }
+          first={firstElement}
+          second={`First listened on ${dateToListenedAt(new Date(firstDate))}`}
         />
-        <div className={s.stat}>
-          <Text element="strong">{firstElement}</Text>
-          <Text>First listened on {dateToListenedAt(new Date(firstDate))}</Text>
-        </div>
       </div>
     </TitleCard>
   );

@@ -35,20 +35,22 @@ h6 {
   --track-options: 34px;
   --radius: 6px;
   --page-padding: 32px;
+  --accent: #FB717B;
 }
 
 .dark-vars {
-  --shadow: 3px 3px 40px -5px rgba(170, 170, 170, 0.112);
+  --content-border: 1px solid rgb(51, 51, 52);
   --hardshadow: 3px 3px 40px -5px rgba(170, 170, 170, 0.437);
 
   --primary: white;
 
   --text-grey: rgb(90, 90, 90);
+  --border-color: rgb(90, 90, 90);
 
   --hover: rgb(65, 65, 65);
 
   --background: black;
-  --header-background: rgb(40, 40, 44);
+  --header-background: black;
   --content-background: black;
 
   --text-on-light: white;
@@ -59,12 +61,13 @@ h6 {
 }
 
 .light-vars {
-  --shadow: 5px 6px 40px -5px rgba(0, 0, 0, 0.05);
+  --shadow: 5px 5px 8px -2px rgba(0,0,0,0.05);
   --hardshadow: 5px 6px 40px -5px rgba(0, 0, 0, 0.2);
 
   --primary: black;
 
   --text-grey: rgb(90, 90, 90);
+  --border-color: rgb(227, 229, 233);
 
   --hover: #eaeaea;
 
@@ -82,6 +85,10 @@ h6 {
 @media screen and (max-width: 960px) {
   :root {
     --page-padding: 8px;
+  }
+
+  * {
+    user-select: none;
   }
 }
 

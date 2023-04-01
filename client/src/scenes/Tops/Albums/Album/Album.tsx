@@ -49,14 +49,14 @@ export default function Album({
         node: (
           <div className={s.names}>
             <Text element="div">{album.name}</Text>
-            <Text element="div" className={s.artistname}>
+            <div className="subtitle">
               {artists.map((art, k, a) => (
                 <Fragment key={art.id}>
                   <InlineArtist artist={art} noStyle />
                   {k !== a.length - 1 && ', '}
                 </Fragment>
               ))}
-            </Text>
+            </div>
           </div>
         ),
       },

@@ -28,6 +28,15 @@ export const selectRawIntervalDetail = createSelector(
     ),
 );
 
+export const selectRawAllInterval = createSelector(
+  selectUserState,
+  (state): RawIntervalDetail =>
+    getRawIntervalDetail(
+      fromReduxIntervalDetail({ type: 'userbased', index: 0 }),
+      state.user,
+    ),
+);
+
 export const selectPublicToken = createSelector(
   selectUserState,
   state => state.publicToken,

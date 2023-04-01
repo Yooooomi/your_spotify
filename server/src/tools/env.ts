@@ -23,14 +23,14 @@ type EnvVariable = keyof typeof validators;
 
 export function getWithDefault<E extends EnvVariable>(
   variable: E,
-  defaultValue: NonNullable<z.infer<typeof validators[E]>>,
-): NonNullable<z.infer<typeof validators[E]>> {
+  defaultValue: NonNullable<z.infer<(typeof validators)[E]>>,
+): NonNullable<z.infer<(typeof validators)[E]>> {
   return env[variable] ?? defaultValue;
 }
 
 export function get<E extends EnvVariable>(
   variable: E,
-): z.infer<typeof validators[E]> {
+): z.infer<(typeof validators)[E]> {
   return env[variable];
 }
 

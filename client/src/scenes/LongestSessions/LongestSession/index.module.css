@@ -16,9 +16,3 @@
   margin-right: 8px;
   width: 32px;
 }
-
-.cover {
-  height: 48px;
-  width: 48px;
-  border-radius: var(--radius);
-}

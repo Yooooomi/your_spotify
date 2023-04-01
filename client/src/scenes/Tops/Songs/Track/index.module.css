@@ -1,19 +1,12 @@
 .row {
   height: 48px;
   overflow: hidden;
-  user-select: none;
 }
 
 .header {
   margin-bottom: 16px;
 }
 
-.names {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.artistname {
-  color: var(--text-grey);
+.names > :first-child {
+  margin-bottom: 4px;
 }

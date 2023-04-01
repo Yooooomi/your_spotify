@@ -179,6 +179,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
             </Text>
             {toCopy &&
               category.items.map(link => {
+                const active = location.pathname === link.link;
                 if (link.link === '/share') {
                   return (
                     <CopyToClipboard
@@ -186,12 +187,14 @@ export default function Sider({ className, isDrawer }: SiderProps) {
                       onCopy={copyCurrentPage}
                       text={toCopy}>
                       <div className={s.link} key={link.label}>
-                        <Text onDark>
-                          {location.pathname === link.link
-                            ? link.iconOn
-                            : link.icon}
+                        <Text
+                          onDark
+                          className={clsx(s.linkcontent, {
+                            [s.active]: active,
+                          })}>
+                          {active ? link.iconOn : link.icon}
+                          {link.label}
                         </Text>
-                        <Text onDark>{link.label}</Text>
                       </div>
                     </CopyToClipboard>
                   );
@@ -202,12 +205,13 @@ export default function Sider({ className, isDrawer }: SiderProps) {
                     className={s.link}
                     key={link.label}
                     onClick={layoutContext.closeDrawer}>
-                    <Text onDark>
-                      {location.pathname === link.link
-                        ? link.iconOn
-                        : link.icon}
+                    <Text
+                      onDark
+                      element="div"
+                      className={clsx(s.linkcontent, { [s.active]: active })}>
+                      {active ? link.iconOn : link.icon}
+                      {link.label}
                     </Text>
-                    <Text onDark>{link.label}</Text>
                   </Link>
                 );
               })}

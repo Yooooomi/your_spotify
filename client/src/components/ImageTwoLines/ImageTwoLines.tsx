@@ -20,7 +20,9 @@ export default function ImageTwoLines({
     <div className={clsx(s.root, className)}>
       {image}
       <div className={s.content}>
-        <Text element="strong">{first}</Text>
+        <Text element="strong" className={s.first}>
+          {first}
+        </Text>
         <Text>{second}</Text>
       </div>
     </div>

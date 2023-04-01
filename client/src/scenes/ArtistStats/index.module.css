@@ -58,16 +58,6 @@
   width: 48px;
 }
 
-.mlstat {
-  display: flex;
-  flex-direction: column;
-  margin-left: 16px;
-}
-
-.mlstat > :last-child {
-  color: var(--text-grey);
-}
-
 .bestperiod {
   display: flex;
   flex-direction: column;

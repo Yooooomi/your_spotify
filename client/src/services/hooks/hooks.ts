@@ -161,7 +161,9 @@ export function useLongPress(callback: () => void, ms = 300) {
     undefined,
   );
 
-  const stop = useCallback(() => {
+  const stop = useCallback((event: Event) => {
+    event.preventDefault();
+    event.stopPropagation();
     document.removeEventListener('scroll', stop);
     clearTimeout(currentTimeout.current);
     currentTimeout.current = undefined;

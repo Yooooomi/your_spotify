@@ -11,6 +11,14 @@ export default function IdealImage({
   size,
   ...other
 }: IdealImageProps) {
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  return <img alt="cover" src={getAtLeastImage(images, size)} {...other} />;
+  return (
+    <img
+      alt="cover"
+      src={getAtLeastImage(images, size)}
+      height={size}
+      width={size}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...other}
+    />
+  );
 }
