@@ -1,5 +1,12 @@
-import { debounce } from '@mui/material';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { debounce, useMediaQuery } from '@mui/material';
+import {
+  TouchEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { detailIntervalToQuery } from '../intervals';
@@ -140,4 +147,50 @@ export function useResizeDebounce(
       window.removeEventListener('resize', internCb);
     };
   }, [cb, ref]);
+}
+
+export function useMobile(): [boolean, boolean] {
+  return [
+    useMediaQuery('(max-width: 960px)'),
+    useMediaQuery('(max-width: 1250px)'),
+  ];
+}
+
+export function useLongPress(callback: () => void, ms = 300) {
+  const currentTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+
+  const stop = useCallback((event: Event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    document.removeEventListener('scroll', stop);
+    clearTimeout(currentTimeout.current);
+    currentTimeout.current = undefined;
+  }, []);
+
+  const start = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      document.addEventListener('scroll', stop);
+      event.preventDefault();
+      event.stopPropagation();
+      clearTimeout(currentTimeout.current);
+      currentTimeout.current = setTimeout(callback, ms);
+    },
+    [callback, ms, stop],
+  );
+
+  return {
+    onTouchStart: start,
+    onTouchEnd: stop,
+  };
+}
+
+export function useBooleanState(): [boolean, () => void, () => void] {
+  const [open, setOpen] = useState(false);
+
+  const onOpen = useCallback(() => setOpen(true), []);
+  const onClose = useCallback(() => setOpen(false), []);
+
+  return [open, onOpen, onClose];
 }

@@ -59,6 +59,19 @@ export function intervalToDisplay(start: Date, end: Date) {
   return `${dateToMonthsYear(start)} to ${dateToMonthsYear(end)}`;
 }
 
+export function intervalToHoursAndMinutes(start: Date, end: Date) {
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  let diff = end.getTime() - start.getTime();
+  const hours = Math.floor(diff / hour);
+  diff -= hours * hour;
+  const minutes = Math.floor(diff / minute);
+  if (hours === 0) {
+    return `${minutes} minutes`;
+  }
+  return `${hours} hours and ${minutes} minutes`;
+}
+
 export function intervalToKey(start: Date, end: Date) {
   return `${start.getTime()}-${end.getTime()}`;
 }

@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import s from './index.module.css';
 import Text from '../Text';
@@ -10,6 +9,8 @@ interface TitleCardProps {
   children: React.ReactNode;
   fade?: boolean;
   right?: React.ReactNode;
+  noPadding?: boolean;
+  noBorder?: boolean;
 }
 
 export default function TitleCard({
@@ -19,10 +20,12 @@ export default function TitleCard({
   children,
   fade,
   right,
+  noPadding,
+  noBorder,
 }: TitleCardProps) {
   return (
-    <div className={clsx(s.root, className)}>
-      <div className={s.container}>
+    <div className={clsx(s.root, className, { [s.noborder]: noBorder })}>
+      <div className={clsx(s.container, { [s.nopadding]: noPadding })}>
         <div className={s.title}>
           <Text element="h3">{title}</Text>
           <div>{right}</div>

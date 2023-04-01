@@ -13,10 +13,11 @@ import {
   Track,
   TrackWithAlbum,
   TrackInfo,
-  TrackInfoWithTrack,
+  TrackInfoWithFullTrack,
   SpotifyMe,
   CollaborativeMode,
   UnboxPromise,
+  TrackWithFullAlbum,
 } from '../types';
 
 const axios = Axios.create({
@@ -177,8 +178,8 @@ export const api = {
     axios.post('/spotify/play', {
       id,
     }),
-  getTracks: (number: number, offset: number, start?: Date, end?: Date) =>
-    get<TrackInfoWithTrack[]>('/spotify/gethistory', {
+  getTracks: (start: Date, end: Date, number: number, offset: number) =>
+    get<TrackInfoWithFullTrack[]>('/spotify/gethistory', {
       number,
       offset,
       start,
@@ -296,6 +297,7 @@ export const api = {
       start,
       end,
     }),
+  getAlbums: (ids: string[]) => get<Album[]>(`/album/${ids.join(',')}`),
   getArtists: (ids: string[]) => get<Artist[]>(`/artist/${ids.join(',')}`),
   getArtistStats: (id: string) =>
     get<ArtistStatsResponse | { code: 'NEVER_LISTENED' }>(
@@ -311,7 +313,8 @@ export const api = {
         count: number;
       }[];
     }>(`/artist/${id}/rank`),
-  searchArtists: (str: string) => get<Artist[]>(`/artist/search/${str}`),
+  search: (str: string) =>
+    get<{ artists: Artist[]; tracks: TrackWithFullAlbum[] }>(`/search/${str}`),
   getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>
     get<
       {
@@ -483,6 +486,18 @@ export const api = {
   blacklistArtist: (artistId: string) => post(`/artist/blacklist/${artistId}`),
   unblacklistArtist: (artistId: string) =>
     post(`/artist/unblacklist/${artistId}`),
+  getLongestSessions: (start: Date, end: Date) =>
+    get<
+      {
+        sessionLength: number;
+        distanceToLast: {
+          distance: {
+            subtract: number;
+            info: TrackInfo & { track: Track };
+          }[];
+        };
+      }[]
+    >('/spotify/top/sessions', { start, end }),
 };
 
 export const DEFAULT_ITEMS_TO_LOAD = 20;

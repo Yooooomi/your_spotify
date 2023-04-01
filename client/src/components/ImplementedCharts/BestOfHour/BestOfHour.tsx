@@ -29,7 +29,7 @@ const elementToCall = {
 
 function getElementName(
   result: UnboxPromise<
-    ReturnType<typeof elementToCall[Element]>
+    ReturnType<(typeof elementToCall)[Element]>
   >['data'][number],
   id: string,
 ) {
@@ -46,7 +46,7 @@ function getElementName(
 }
 
 function getElementData(
-  result: UnboxPromise<ReturnType<typeof elementToCall[Element]>>['data'],
+  result: UnboxPromise<ReturnType<(typeof elementToCall)[Element]>>['data'],
   index: number,
 ) {
   const foundIndex = result.findIndex(r => r._id === index);

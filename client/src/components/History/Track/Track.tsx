@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment, useMemo } from 'react';
 import clsx from 'clsx';
 import {
   dateToListenedAt,
@@ -7,68 +7,82 @@ import {
 import { Album, Artist, Track as TrackType } from '../../../services/types';
 import s from './index.module.css';
 import InlineArtist from '../../InlineArtist';
-import PlayButton from '../../PlayButton';
 import Text from '../../Text';
 import TrackOptions from '../../TrackOptions';
 import InlineTrack from '../../InlineTrack';
+import { ColumnDescription, GridRowWrapper } from '../../Grid';
+import PlayButton from '../../PlayButton';
+import { useMobile } from '../../../services/hooks/hooks';
+import { trackGrid } from './TrackGrid';
+import LongClickableTrack from '../../LongClickableTrack';
 
 interface TrackProps {
-  line?: false;
   listenedAt?: Date;
   track: TrackType;
   artists: Artist[];
   album: Album;
-  playable?: boolean;
 }
 
-interface HeaderTrackProps {
-  line: true;
-  playable?: boolean;
-}
+export default function Track({
+  track,
+  album,
+  artists,
+  listenedAt,
+}: TrackProps) {
+  const [isMobile, isTablet] = useMobile();
 
-export default function Track(props: TrackProps | HeaderTrackProps) {
-  if (props.line) {
-    return (
-      <div className={s.root}>
-        <div className={clsx(s.name, s.header)}>
-          <Text className={s.trackname}>Track name / Artist</Text>
-        </div>
-        <Text className={clsx(s.albumname, s.header)}>Album name</Text>
-        <Text className={clsx(s.duration, s.header)}>Duration</Text>
-        <Text className={clsx(s.playedat, s.header)}>Listened at</Text>
-        <div className={clsx(s.trackoptions, s.header)} />
-      </div>
-    );
-  }
-
-  const { track, album, artists, listenedAt, playable } = props;
+  const columns = useMemo<ColumnDescription[]>(
+    () => [
+      {
+        ...trackGrid.cover,
+        node: <PlayButton id={track.id} covers={album.images} />,
+      },
+      {
+        ...trackGrid.title,
+        node: (
+          <div className={clsx('otext', s.names)}>
+            <InlineTrack track={track} element="div" />
+            <div className="subtitle">
+              {artists.map((art, k, a) => (
+                <Fragment key={art.id}>
+                  <InlineArtist artist={art} noStyle />
+                  {k !== a.length - 1 && ', '}
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        ),
+      },
+      {
+        ...trackGrid.album,
+        node: !isTablet && <Text className="otext">{album.name}</Text>,
+      },
+      {
+        ...trackGrid.duration,
+        node: !isMobile && (
+          <Text>{msToMinutesAndSeconds(track.duration_ms)}</Text>
+        ),
+      },
+      {
+        ...trackGrid.listened,
+        node: listenedAt && !isMobile && (
+          <Text>{dateToListenedAt(listenedAt)}</Text>
+        ),
+      },
+      {
+        ...trackGrid.option,
+        node: !isMobile && <TrackOptions track={track} />,
+      },
+    ],
+    [album.images, album.name, artists, isMobile, isTablet, listenedAt, track],
+  );
 
   return (
-    <div className={s.root}>
-      {playable && (
-        <PlayButton className={s.play} id={track.id} covers={album.images} />
-      )}
-      <div className={s.name}>
-        <Text className={s.trackname}>
-          <InlineTrack track={track} />
-        </Text>
-        <Text className={s.artistname}>
-          {artists.map((art, k, a) => (
-            <React.Fragment key={art.id}>
-              <InlineArtist artist={art} />
-              {k !== a.length - 1 && ', '}
-            </React.Fragment>
-          ))}
-        </Text>
-      </div>
-      <Text className={s.albumname}>{album.name}</Text>
-      <Text className={s.duration}>
-        {msToMinutesAndSeconds(track.duration_ms)}
-      </Text>
-      {listenedAt && (
-        <Text className={s.playedat}>{dateToListenedAt(listenedAt)}</Text>
-      )}
-      <TrackOptions track={track} />
-    </div>
+    <LongClickableTrack track={track}>
+      <GridRowWrapper
+        className={clsx('play-button-holder', s.row)}
+        columns={columns}
+      />
+    </LongClickableTrack>
   );
 }

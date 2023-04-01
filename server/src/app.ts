@@ -9,8 +9,10 @@ import oauthRouter from './routes/oauth';
 import spotifyRouter from './routes/spotify';
 import globalRouter from './routes/global';
 import artistRouter from './routes/artist';
+import albumRouter from './routes/album';
 import importRouter from './routes/importer';
 import trackRouter from './routes/track';
+import searchRouter from './routes/search';
 import { get } from './tools/env';
 
 const app = express();
@@ -39,7 +41,9 @@ app.use('/oauth', oauthRouter);
 app.use('/spotify', spotifyRouter);
 app.use('/global', globalRouter);
 app.use('/artist', artistRouter);
+app.use('/album', albumRouter);
 app.use('/track', trackRouter);
+app.use('/search', searchRouter);
 app.use('/', importRouter);
 
 export default app;

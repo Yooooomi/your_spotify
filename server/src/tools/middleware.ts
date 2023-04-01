@@ -17,7 +17,7 @@ type Location = 'body' | 'params' | 'query';
 
 export const validating =
   (
-    schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any, any>,
+    schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
     location: Location = 'body',
   ) =>
   (req: Request, res: Response, next: NextFunction) => {

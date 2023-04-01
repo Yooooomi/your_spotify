@@ -4,6 +4,11 @@
   align-items: center;
 }
 
+.root > img {
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -14,8 +19,7 @@
   color: var(--text-grey);
 }
 
-.image {
-  height: 48px;
-  width: 48px;
-  border-radius: 6px;
+.first {
+  font-weight: 400;
+  margin-bottom: 4px;
 }

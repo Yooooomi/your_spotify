@@ -1,15 +1,15 @@
-import React from 'react';
-import clsx from 'clsx';
-import { useMediaQuery } from '@mui/material';
+import { Fragment, useMemo } from 'react';
 import s from './index.module.css';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist, Album as AlbumType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
-import { getAtLeastImage } from '../../../../services/tools';
 import Text from '../../../../components/Text';
+import { useMobile } from '../../../../services/hooks/hooks';
+import { ColumnDescription, GridRowWrapper } from '../../../../components/Grid';
+import IdealImage from '../../../../components/IdealImage';
+import { useAlbumGrid } from './AlbumGrid';
 
 interface AlbumProps {
-  line?: false;
   artists: Artist[];
   album: AlbumType;
   count: number;
@@ -18,56 +18,94 @@ interface AlbumProps {
   totalDuration: number;
 }
 
-interface HeaderAlbumProps {
-  line: true;
-}
+export default function Album({
+  album,
+  artists,
+  duration,
+  totalDuration,
+  count,
+  totalCount,
+}: AlbumProps) {
+  const [isMobile] = useMobile();
+  const albumGrid = useAlbumGrid();
 
-export default function Album(props: AlbumProps | HeaderAlbumProps) {
-  const upmd = useMediaQuery('(min-width: 1150px)');
-
-  if (props.line) {
-    return (
-      <div className={s.root}>
-        <div className={clsx(s.name, s.header)}>
-          <Text>Album name / Artist</Text>
-        </div>
-        <Text className={clsx(s.sumcount, s.header)}>Count</Text>
-        <Text className={clsx(s.sumduration, s.header)}>Total duration</Text>
-      </div>
-    );
-  }
-
-  const { album, artists, duration, totalDuration, count, totalCount } = props;
-  return (
-    <div className={s.root}>
-      <img
-        className={s.albumcover}
-        src={getAtLeastImage(album.images, 48)}
-        alt="Album cover"
-      />
-      <div className={s.name}>
-        <Text className={s.albumname}>{album.name}</Text>
-        <Text className={s.artistname}>
-          {artists.map((art, k, a) => (
-            <React.Fragment key={art.id}>
-              <InlineArtist artist={art} key={art.id} />
-              {k !== a.length - 1 && ', '}
-            </React.Fragment>
-          ))}
-        </Text>
-      </div>
-      <Text className={s.sumcount}>
-        {count}{' '}
-        {upmd && (
-          <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>
-        )}
-      </Text>
-      <Text className={s.sumduration}>
-        {msToMinutesAndSeconds(duration)}{' '}
-        {upmd && (
-          <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>
-        )}
-      </Text>
-    </div>
+  const columns = useMemo<ColumnDescription[]>(
+    () => [
+      {
+        ...albumGrid.cover,
+        node: (
+          <IdealImage
+            className={s.cover}
+            images={album.images}
+            alt="Album cover"
+            size={48}
+            width={48}
+            height={48}
+          />
+        ),
+      },
+      {
+        ...albumGrid.title,
+        node: (
+          <div className={s.names}>
+            <Text element="div">{album.name}</Text>
+            <div className="subtitle">
+              {artists.map((art, k, a) => (
+                <Fragment key={art.id}>
+                  <InlineArtist artist={art} noStyle />
+                  {k !== a.length - 1 && ', '}
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        ),
+      },
+      {
+        ...albumGrid.count,
+        node: (
+          <Text>
+            {count}
+            {!isMobile && (
+              <>
+                {' '}
+                <Text>({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+              </>
+            )}
+          </Text>
+        ),
+      },
+      {
+        ...albumGrid.total,
+        node: (
+          <Text className="center">
+            {msToMinutesAndSeconds(duration)}
+            {!isMobile && (
+              <>
+                {' '}
+                <Text>
+                  ({Math.floor((duration / totalDuration) * 10000) / 100}%)
+                </Text>
+              </>
+            )}
+          </Text>
+        ),
+      },
+    ],
+    [
+      album.images,
+      album.name,
+      albumGrid.count,
+      albumGrid.cover,
+      albumGrid.title,
+      albumGrid.total,
+      artists,
+      count,
+      duration,
+      isMobile,
+      totalCount,
+      totalDuration,
+    ],
   );
+
+  return <GridRowWrapper columns={columns} />;
 }

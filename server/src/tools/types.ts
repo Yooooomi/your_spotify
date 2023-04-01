@@ -9,7 +9,7 @@ export interface GlobalPreferencesRequest extends Request {
 }
 
 export type TypedPayload<
-  T extends z.AnyZodObject | z.ZodDiscriminatedUnion<any, any, any>,
+  T extends z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
 > = z.infer<T>;
 
 export interface LoggedRequest extends Request {

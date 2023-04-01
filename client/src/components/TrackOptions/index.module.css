@@ -13,7 +13,3 @@
 .guest {
   width: 34px;
 }
-
-.item {
-  border-radius: var(--radius) !important;
-}

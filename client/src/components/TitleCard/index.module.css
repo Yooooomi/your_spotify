@@ -2,6 +2,11 @@
   background-color: var(--background);
   box-shadow: var(--shadow) !important;
   border-radius: 6px;
+  border: var(--content-border);
+}
+
+.noborder {
+  border: unset;
 }
 
 .container {
@@ -9,6 +14,10 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.nopadding {
+  padding: 0px !important;
 }
 
 .title {

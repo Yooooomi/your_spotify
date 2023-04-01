@@ -1,5 +1,5 @@
-import { useMediaQuery } from '@mui/material';
 import { ReactNode } from 'react';
+import { useMobile } from '../../services/hooks/hooks';
 import s from './index.module.css';
 
 interface MasonryProps {
@@ -7,9 +7,9 @@ interface MasonryProps {
 }
 
 export default function Masonry({ children }: MasonryProps) {
-  const isMobile = useMediaQuery('(max-width: 1250px)');
+  const [, isTablet] = useMobile();
 
-  if (isMobile) {
+  if (isTablet) {
     return <div className={s.mobile}>{children}</div>;
   }
   return (

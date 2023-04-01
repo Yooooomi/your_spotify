@@ -1,7 +1,5 @@
-import React from 'react';
+import { Fragment, useMemo } from 'react';
 import clsx from 'clsx';
-import { useMediaQuery } from '@mui/material';
-import s from './index.module.css';
 import { msToMinutesAndSeconds } from '../../../../services/stats';
 import { Artist, Album, Track as TrackType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
@@ -9,9 +7,14 @@ import InlineTrack from '../../../../components/InlineTrack';
 import Text from '../../../../components/Text';
 import PlayButton from '../../../../components/PlayButton';
 import TrackOptions from '../../../../components/TrackOptions';
+import { useMobile } from '../../../../services/hooks/hooks';
+import s from './index.module.css';
+import { ColumnDescription, GridRowWrapper } from '../../../../components/Grid';
+import InlineAlbum from '../../../../components/InlineAlbum';
+import LongClickableTrack from '../../../../components/LongClickableTrack';
+import { useTrackGrid } from './TrackGrid';
 
 interface TrackProps {
-  line?: false;
   track: TrackType;
   artists: Artist[];
   album: Album;
@@ -22,30 +25,9 @@ interface TrackProps {
   totalDuration: number;
 }
 
-interface HeaderTrackProps {
-  line: true;
-  playable?: boolean;
-}
-
-export default function Track(props: TrackProps | HeaderTrackProps) {
-  const upmd = useMediaQuery('(min-width: 1150px)');
-
-  if (props.line) {
-    return (
-      <div className={s.root}>
-        <div className={clsx(s.name, s.header)}>
-          <Text className={s.trackname}>Track name / Artist</Text>
-        </div>
-        {upmd && (
-          <Text className={clsx(s.albumname, s.header)}>Album name</Text>
-        )}
-        {upmd && <Text className={clsx(s.duration, s.header)}>Duration</Text>}
-        <Text className={clsx(s.sumcount, s.header)}>Count</Text>
-        <Text className={clsx(s.sumduration, s.header)}>Total duration</Text>
-        <div className={s.trackoptions} />
-      </div>
-    );
-  }
+export default function Track(props: TrackProps) {
+  const [isMobile, isTablet] = useMobile();
+  const trackGrid = useTrackGrid();
 
   const {
     track,
@@ -57,46 +39,103 @@ export default function Track(props: TrackProps | HeaderTrackProps) {
     count,
     totalCount,
   } = props;
+
+  const columns = useMemo<ColumnDescription[]>(
+    () => [
+      {
+        ...trackGrid.cover,
+        node: playable && <PlayButton id={track.id} covers={album.images} />,
+      },
+      {
+        ...trackGrid.title,
+        node: (
+          <div className={clsx('otext', s.names)}>
+            <InlineTrack element="div" track={track} />
+            <div className="subtitle">
+              {artists.map((art, k, a) => (
+                <Fragment key={art.id}>
+                  <InlineArtist artist={art} noStyle />
+                  {k !== a.length - 1 && ', '}
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        ),
+      },
+      {
+        ...trackGrid.album,
+        node: !isTablet && (
+          <InlineAlbum element="div" className="otext" album={album} />
+        ),
+      },
+      {
+        ...trackGrid.duration,
+        node: !isMobile && (
+          <Text element="div">{msToMinutesAndSeconds(track.duration_ms)}</Text>
+        ),
+      },
+      {
+        ...trackGrid.count,
+        node: (
+          <Text element="div">
+            {count}
+            {!isMobile && (
+              <>
+                {' '}
+                <Text>({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+              </>
+            )}
+          </Text>
+        ),
+      },
+      {
+        ...trackGrid.total,
+        node: (
+          <Text element="div" className="center">
+            {msToMinutesAndSeconds(duration)}
+            {!isMobile && (
+              <>
+                {' '}
+                <Text>
+                  ({Math.floor((duration / totalDuration) * 10000) / 100}%)
+                </Text>
+              </>
+            )}
+          </Text>
+        ),
+      },
+      {
+        ...trackGrid.options,
+        node: !isMobile && <TrackOptions track={track} />,
+      },
+    ],
+    [
+      album,
+      artists,
+      count,
+      duration,
+      isMobile,
+      isTablet,
+      playable,
+      totalCount,
+      totalDuration,
+      track,
+      trackGrid.album,
+      trackGrid.count,
+      trackGrid.cover,
+      trackGrid.duration,
+      trackGrid.options,
+      trackGrid.title,
+      trackGrid.total,
+    ],
+  );
+
   return (
-    <div className={s.root}>
-      {playable && (
-        <PlayButton
-          id={track.id}
-          covers={album.images}
-          className={s.albumcover}
-        />
-      )}
-      <div className={s.name}>
-        <Text className={s.trackname}>
-          <InlineTrack track={track} />{' '}
-        </Text>
-        <Text className={s.artistname}>
-          {artists.map(art => (
-            <React.Fragment key={art.id}>
-              <InlineArtist key={art.id} artist={art} />{' '}
-            </React.Fragment>
-          ))}
-        </Text>
-      </div>
-      {upmd && <Text className={s.albumname}>{album.name}</Text>}
-      {upmd && (
-        <Text className={s.duration}>
-          {msToMinutesAndSeconds(track.duration_ms)}
-        </Text>
-      )}
-      <Text className={s.sumcount}>
-        {count}{' '}
-        {upmd && (
-          <Text>({Math.floor((count / totalCount) * 10000) / 100})</Text>
-        )}
-      </Text>
-      <Text className={s.sumduration}>
-        {msToMinutesAndSeconds(duration)}{' '}
-        {upmd && (
-          <Text>({Math.floor((duration / totalDuration) * 10000) / 100})</Text>
-        )}
-      </Text>
-      <TrackOptions track={track} />
-    </div>
+    <LongClickableTrack track={track}>
+      <GridRowWrapper
+        columns={columns}
+        className={clsx('play-button-holder', s.row)}
+      />
+    </LongClickableTrack>
   );
 }

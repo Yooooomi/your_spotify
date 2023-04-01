@@ -12,6 +12,12 @@
   margin: auto;
 }
 
+@media screen and (max-width: 1250px) {
+  .content {
+    width: 95%;
+  }
+}
+
 .album {
   display: flex;
   flex-direction: row;
@@ -29,6 +35,7 @@
   height: 48px;
   width: 48px;
   margin-right: 8px;
+  border-radius: var(--radius);
 }
 
 .albumname {

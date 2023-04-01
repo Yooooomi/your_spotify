@@ -1,13 +1,3 @@
-.stat {
-  display: flex;
-  flex-direction: column;
-  margin-left: 16px;
-}
-
-.stat > :last-child {
-  color: var(--text-grey);
-}
-
 .cover {
   height: 48px;
   width: 48px;

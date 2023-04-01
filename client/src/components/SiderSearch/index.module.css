@@ -15,7 +15,8 @@
 }
 
 .results {
-  padding: 16px;
+  padding: 8px;
+  padding-top: 16px;
   max-height: 50vh;
   overflow-y: scroll;
 }
@@ -40,4 +41,31 @@
   width: 48px;
   border-radius: 6px;
   margin-right: 8px;
+}
+
+.section {
+  position: relative;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.section::before {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background-color: var(--primary);
+}
+
+.section::after {
+  content: "";
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background-color: var(--primary);
 }

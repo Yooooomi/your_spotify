@@ -31,13 +31,23 @@
 .link {
   display: flex;
   margin-bottom: 8px;
-  padding: 8px;
+  padding: 4px;
   color: white;
   text-decoration: none;
   border-radius: 6px;
   flex-direction: row;
   align-items: center;
   cursor: pointer;
+}
+
+.linkcontent {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.linkcontent > :first-child {
+  margin-right: 8px;
 }
 
 .link > span {
@@ -47,4 +57,8 @@
 .link:hover {
   background: grey;
   text-decoration: underline;
+}
+
+.active {
+  color: var(--accent) !important;
 }

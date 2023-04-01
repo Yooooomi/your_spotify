@@ -2,6 +2,11 @@
   padding: 16px;
   box-shadow: var(--shadow) !important;
   background-color: var(--background) !important;
+  border: var(--content-border) !important;
+}
+
+.noborder {
+  border: none;
 }
 
 .root > div > h3 {

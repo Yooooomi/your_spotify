@@ -4,7 +4,6 @@ import Header from '../../components/Header';
 import TitleCard from '../../components/TitleCard';
 import { ArtistStatsResponse } from '../../services/apis/api';
 import { buildFromDateId, dateToMonthAndYear } from '../../services/stats';
-import { getAtLeastImage } from '../../services/tools';
 import s from './index.module.css';
 import DayRepartition from './DayRepartition';
 import Text from '../../components/Text';
@@ -13,6 +12,8 @@ import InlineTrack from '../../components/InlineTrack';
 import FirstAndLast from './FirstAndLast';
 import ArtistContextMenu from './ArtistContextMenu';
 import { selectBlacklistedArtist } from '../../services/redux/modules/user/selector';
+import IdealImage from '../../components/IdealImage';
+import ImageTwoLines from '../../components/ImageTwoLines';
 
 interface ArtistStatsProps {
   artistId: string;
@@ -30,9 +31,10 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
     <div>
       <Header
         left={
-          <img
+          <IdealImage
             className={s.headerimage}
-            src={getAtLeastImage(stats.artist.images, 60)}
+            images={stats.artist.images}
+            size={60}
             alt="Artist"
           />
         }
@@ -130,24 +132,25 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
               />
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} lg={6}>
             <TitleCard title="Most listened tracks">
               {stats.mostListened.map((ml, k) => (
                 <div key={ml.track.id} className={s.ml}>
                   <Text element="strong" className={s.mlrank}>
                     #{k + 1}
                   </Text>
-                  <img
-                    className={s.cardimg}
-                    src={getAtLeastImage(ml.track.album.images, 48)}
-                    alt="album cover"
+                  <ImageTwoLines
+                    image={
+                      <IdealImage
+                        className={s.cardimg}
+                        images={ml.track.album.images}
+                        size={48}
+                        alt="album cover"
+                      />
+                    }
+                    first={<InlineTrack track={ml.track} />}
+                    second={`${ml.count} times`}
                   />
-                  <div className={s.mlstat}>
-                    <Text element="strong">
-                      <InlineTrack track={ml.track} />
-                    </Text>
-                    <Text>{ml.count} times</Text>
-                  </div>
                 </div>
               ))}
             </TitleCard>

@@ -27,6 +27,7 @@ import { useTheme } from './services/theme';
 import { selectDarkMode } from './services/redux/modules/user/selector';
 import PlaylistDialog from './components/PlaylistDialog';
 import TrackStats from './scenes/TrackStats';
+import LongestSessions from './scenes/LongestSessions';
 
 function App() {
   const dark = useSelector(selectDarkMode);
@@ -55,6 +56,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Home />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/sessions"
+                element={
+                  <PrivateRoute>
+                    <LongestSessions />
                   </PrivateRoute>
                 }
               />
