@@ -55,25 +55,28 @@ export function useConditionalAPI<
   condition: boolean,
   call: Fn,
   ...args: Parameters<Fn>
-): null | UnboxPromise<ReturnType<Fn>>['data'] {
+): [null | UnboxPromise<ReturnType<Fn>>['data'], boolean] {
   const [value, setValue] = useState<
     UnboxPromise<ReturnType<Fn>>['data'] | null
   >(null);
+  const loading = useRef(false);
 
   useEffect(() => {
     async function fetch() {
       const result = await call(...args);
+      loading.current = false;
       setValue(result.data);
     }
 
     setValue(null);
     if (condition) {
+      loading.current = true;
       fetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...args, condition, call]);
 
-  return value;
+  return [value, loading.current];
 }
 
 export function useShareLink() {
@@ -161,9 +164,7 @@ export function useLongPress(callback: () => void, ms = 300) {
     undefined,
   );
 
-  const stop = useCallback((event: Event) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const stop = useCallback(() => {
     document.removeEventListener('scroll', stop);
     clearTimeout(currentTimeout.current);
     currentTimeout.current = undefined;
