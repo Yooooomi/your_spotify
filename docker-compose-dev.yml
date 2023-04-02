@@ -29,7 +29,7 @@ services:
     logging:
       driver: none
     volumes:
-      - ./db_data_new:/data/db
+      - ./db_data:/data/db
     ports:
       - "27017:27017"
 

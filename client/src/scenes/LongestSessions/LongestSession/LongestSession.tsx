@@ -54,7 +54,8 @@ export default function LongestSession({ tracks }: LongestSessionProps) {
       onChange={(_, value) => setExpanded(value)}>
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Text>
-          {dateToListenedAt(new Date(tracks[0].played_at))} for {totalDuration}
+          {dateToListenedAt(new Date(tracks[0].played_at))} for {totalDuration}{' '}
+          ({tracks.length} songs)
         </Text>
       </AccordionSummary>
       <AccordionDetails>
