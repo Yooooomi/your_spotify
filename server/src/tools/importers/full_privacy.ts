@@ -97,7 +97,10 @@ export class FullPrivacyImporter
         date,
         60,
       );
-      if (duplicate.length > 0) {
+      const currentImportDuplicate = finalInfos.find(
+        e => Math.abs(e.played_at.getTime() - date.getTime()) <= 60 * 1000,
+      );
+      if (duplicate.length > 0 || currentImportDuplicate) {
         logger.info(
           `${item.track.name} - ${item.track.artists[0].name} was duplicate`,
         );
