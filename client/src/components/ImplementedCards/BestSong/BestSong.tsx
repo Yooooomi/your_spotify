@@ -58,10 +58,8 @@ export default function BestSong({ className }: BestSongProps) {
           />
         </div>
         <div className={s.stats}>
-          <Text element="strong">
-            {res && <InlineTrack track={res.track} />}
-            {!res && <Text>No data</Text>}
-          </Text>
+          {res && <InlineTrack element="strong" track={res.track} />}
+          {!res && <Text element="strong">No data</Text>}
           <div className={s.statnumbers}>
             <Text className={s.stat}>
               <Text element="strong">{res?.count ?? 0}</Text> times listened

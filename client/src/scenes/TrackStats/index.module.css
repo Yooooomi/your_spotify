@@ -1,6 +1,6 @@
 .headerimage {
-  height: 60px;
-  width: 60px;
+  height: var(--header-image-size);
+  width: var(--header-image-size);
   border-radius: var(--radius);
   margin-right: 16px;
 }
@@ -13,19 +13,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding-right: 16px;
-}
-
-.ranks {
-  display: flex;
-  flex-grow: 1;
-  margin-left: 16px;
+  margin-bottom: 16px;
 }
 
 @media screen and (max-width: 900px) {
-  .ranks {
+  .header {
+    margin: 16px 0px;
     justify-content: center;
+    text-align: center;
+  }
+
+  .headerimage {
+    margin-right: 8px;
   }
 }
 

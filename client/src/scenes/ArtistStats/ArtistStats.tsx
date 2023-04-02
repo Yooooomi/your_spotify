@@ -51,9 +51,7 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
       />
       <div className={s.content}>
         <div className={s.header}>
-          <div className={s.ranks}>
-            <ArtistRank artistId={artistId} />
-          </div>
+          <ArtistRank artistId={artistId} />
         </div>
         <Grid
           container

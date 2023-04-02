@@ -42,7 +42,6 @@
 
 .stats > strong {
   font-size: 1.4em;
-  color: var(--text-grey);
 }
 
 .statnumbers {
