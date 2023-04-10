@@ -42,9 +42,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
       />
       <div className={s.content}>
         <div className={s.header}>
-          <div className={s.ranks}>
-            <TrackRank trackId={trackId} />
-          </div>
+          <TrackRank trackId={trackId} />
         </div>
         <Grid
           container
@@ -125,7 +123,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
               </TitleCard>
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item lg={6} xs={12}>
             <TitleCard title="Recently played on">
               {stats.recentHistory.map(info => (
                 <ImageTwoLines

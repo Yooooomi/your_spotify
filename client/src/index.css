@@ -36,6 +36,7 @@ h6 {
   --radius: 6px;
   --page-padding: 32px;
   --accent: #FB717B;
+  --header-image-size: 60px;
 }
 
 .dark-vars {
@@ -82,13 +83,16 @@ h6 {
   --divider: rgb(232, 232, 232);
 }
 
+@media (hover: none) and (pointer: coarse) {
+  * {
+    user-select: none;
+  }
+}
+
 @media screen and (max-width: 960px) {
   :root {
     --page-padding: 8px;
-  }
-
-  * {
-    user-select: none;
+    --header-image-size: 40px;
   }
 }
 

@@ -1,3 +1,4 @@
+import { deleteInfos, getAllUsers, getPossibleDuplicates } from '../database';
 import {
   getAdminUser,
   getAlbumsWithoutArtist,
@@ -32,4 +33,27 @@ export const repairDatabase = async () => {
     logger.info('Database fixed');
   }
   longWriteDbLock.unlock();
+};
+
+export const deletePossibleDuplicates = async () => {
+  const users = await getAllUsers();
+  const allToDelete = new Set<string>();
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const user of users) {
+    // eslint-disable-next-line no-await-in-loop
+    const duplicates = await getPossibleDuplicates(user._id.toString(), 30);
+    const nbDuplicates = duplicates.reduce((acc, curr) => {
+      curr.duplicates.forEach((duplicate: any) => {
+        allToDelete.add(duplicate[1]._id.toString());
+      });
+      return acc + curr.duplicates.length;
+    }, 0);
+    if (nbDuplicates > 0) {
+      console.log(
+        `Removing ${nbDuplicates} duplicates for user ${user.username}`,
+      );
+    }
+  }
+  await deleteInfos([...allToDelete.values()]);
 };

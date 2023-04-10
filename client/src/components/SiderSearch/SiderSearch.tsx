@@ -5,6 +5,7 @@ import { api } from '../../services/apis/api';
 import { useConditionalAPI } from '../../services/hooks/hooks';
 import { Artist, TrackWithFullAlbum } from '../../services/types';
 import IdealImage from '../IdealImage';
+import Loader from '../Loader';
 import Text from '../Text';
 import s from './index.module.css';
 
@@ -21,7 +22,11 @@ export default function ArtistSearch({
 }: ArtistSearchProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [search, setSearch] = useState('');
-  const results = useConditionalAPI(search.length >= 3, api.search, search);
+  const [results, loading] = useConditionalAPI(
+    search.length >= 3,
+    api.search,
+    search,
+  );
 
   const internOnArtistClick = useCallback(
     (artist: Artist) => {
@@ -61,10 +66,17 @@ export default function ArtistSearch({
         <Paper
           className={s.results}
           style={{ width: inputRef.current?.clientWidth }}>
-          {search.length < 3 && (
-            <Text element="strong">At least 3 characters</Text>
+          {loading && results === null && <Loader />}
+          {!loading && search.length < 3 && (
+            <Text className={s.alert} element="strong">
+              At least 3 characters
+            </Text>
           )}
-          {totalResults === 0 && <Text element="strong">No results found</Text>}
+          {!loading && search.length >= 3 && totalResults === 0 && (
+            <Text className={s.alert} element="strong">
+              No results found
+            </Text>
+          )}
           {displayAll && (results?.artists.length ?? 0) > 0 && (
             <Text element="div" className={s.section}>
               Artists
@@ -86,7 +98,7 @@ export default function ArtistSearch({
                 <Text element="strong">{res.name}</Text>
               </button>
             ))}
-          {displayAll && (results?.tracks.length ?? 0) && (
+          {displayAll && (results?.tracks.length ?? 0) > 0 && (
             <Text element="div" className={s.section}>
               Tracks
             </Text>

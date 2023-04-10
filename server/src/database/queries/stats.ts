@@ -934,10 +934,15 @@ export const getLongestListeningSession = (
     },
     {
       $addFields: {
-        sessionLength: { $size: '$distanceToLast.distance' },
+        sessionLength: {
+          $subtract: [
+            { $last: '$distanceToLast.distance.info.played_at' },
+            { $first: '$distanceToLast.distance.info.played_at' },
+          ],
+        },
       },
     },
     { $sort: { sessionLength: -1 } },
-    { $limit: 3 },
+    { $limit: 5 },
   ]);
 };

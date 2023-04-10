@@ -1,13 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { Checkbox } from '@mui/material';
 import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { api } from '../../services/apis/api';
 import Loader from '../Loader';
 import TitleCard from '../TitleCard';
 import Track from './Track';
-import s from './index.module.css';
-import Text from '../Text';
 import {
   selectRawAllInterval,
   selectRawIntervalDetail,
@@ -15,6 +12,7 @@ import {
 import { GridWrapper } from '../Grid';
 import TrackHeader from './Track/TrackHeader';
 import { useInfiniteScroll } from '../../services/hooks/scrolling';
+import CheckboxWithText from '../CheckboxWithText';
 
 export default function History() {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -25,24 +23,19 @@ export default function History() {
     api.getTracks,
   );
 
-  const handleSetFollowInterval = useCallback(
-    (_: React.SyntheticEvent, value: boolean) => {
-      setFollowInterval(value);
-    },
-    [],
-  );
+  const handleSetFollowInterval = useCallback((value: boolean) => {
+    setFollowInterval(value);
+  }, []);
 
   return (
     <TitleCard
       title="Your history"
       right={
-        <div className={s.followinterval}>
-          <Checkbox
-            checked={followInterval}
-            onChange={handleSetFollowInterval}
-          />
-          <Text>Follow interval</Text>
-        </div>
+        <CheckboxWithText
+          checked={followInterval}
+          onChecked={handleSetFollowInterval}
+          text="Follow interval"
+        />
       }>
       <InfiniteScroll
         dataLength={items.length}

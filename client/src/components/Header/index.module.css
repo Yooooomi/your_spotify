@@ -26,6 +26,10 @@
   .texts > h1 {
     margin-bottom: unset;
   }
+
+  .root {
+    padding: 16px 8px;
+  }
 }
 
 .texts > span {
@@ -33,5 +37,5 @@
 }
 
 .drawerbutton {
-  margin-right: 8px;
+  margin-right: 8px !important;
 }
