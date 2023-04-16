@@ -57,15 +57,16 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
           container
           justifyContent="flex-start"
           alignItems="flex-start"
-          spacing={2}>
+          spacing={2}
+          style={{ marginTop: 0 }}>
           <Grid
             container
             item
             xs={12}
             lg={6}
+            spacing={2}
             justifyContent="flex-start"
-            alignItems="flex-start"
-            spacing={2}>
+            alignItems="flex-start">
             <Grid item xs={12}>
               <TitleCard title="Songs listened">
                 <Text element="strong" className={s.songslistened}>

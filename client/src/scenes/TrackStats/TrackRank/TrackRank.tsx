@@ -54,7 +54,7 @@ export default function TrackRank({ trackId }: TrackRankProps) {
             k +
             (trackRank.isMax ? 1 : 0) +
             (trackRank.isMin ? -1 : 0)}{' '}
-          <InlineTrack track={getTrack(rank.id)} />
+          <InlineTrack track={getTrack(rank.id)} noStyle />
         </div>
       ))}
     </div>
