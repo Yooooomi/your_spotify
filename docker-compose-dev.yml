@@ -25,11 +25,11 @@ services:
       # OFFLINE_DEV_ID: true
 
   mongo:
-    image: mongo:4.4.8
+    image: mongo:6
     logging:
       driver: none
     volumes:
-      - ./db_data:/data/db
+      - db_data:/data/db
     ports:
       - "27017:27017"
 
@@ -50,3 +50,6 @@ services:
     environment:
       NODE_ENV: development
       API_ENDPOINT: http://localhost:8080
+
+volumes:
+  db_data:
