@@ -64,7 +64,7 @@ services:
       SPOTIFY_SECRET: __your_spotify_secret__
   mongo:
     container_name: mongo
-    image: mongo:4.4.8
+    image: mongo:6
     volumes:
       - ./your_spotify_db:/data/db
 
