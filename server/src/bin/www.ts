@@ -11,7 +11,7 @@ import { logger } from '../tools/logger';
 import { checkBlacklistConsistency, connect } from '../database';
 import { getWithDefault } from '../tools/env';
 import { fixRunningImportsAtStart } from '../database/queries/importer';
-import { deletePossibleDuplicates, repairDatabase } from '../tools/repair';
+import { Database } from '../tools/database';
 
 /**
  * Get port from environment and store in Express.
@@ -70,8 +70,7 @@ connect().then(async () => {
   server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);
-  await repairDatabase().catch(logger.error);
-  await deletePossibleDuplicates();
+  await Database.startup();
   fixRunningImportsAtStart().catch(logger.error);
   checkBlacklistConsistency().catch(logger.error);
   dbLoop().catch(logger.error);
