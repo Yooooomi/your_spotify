@@ -48,7 +48,8 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
           container
           justifyContent="flex-start"
           alignItems="flex-start"
-          spacing={2}>
+          spacing={2}
+          style={{ marginTop: 0 }}>
           <Grid
             container
             item

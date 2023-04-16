@@ -54,7 +54,7 @@ export default function ArtistRank({ artistId }: ArtistRankProps) {
             k +
             (artistRank.isMax ? 1 : 0) +
             (artistRank.isMin ? -1 : 0)}{' '}
-          <InlineArtist artist={getArtist(rank.id)!} />
+          <InlineArtist artist={getArtist(rank.id)!} noStyle />
         </div>
       ))}
     </div>

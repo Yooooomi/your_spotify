@@ -24,7 +24,6 @@ export class Database {
       throw new Error('Cannot downgrade the database');
     }
     if (major === compatibilityMajor) {
-      console.log('Same versions', major, compatibilityMajor);
       return;
     }
     console.log('Setting feature compatibility version to', major, minor);
