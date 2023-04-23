@@ -17,13 +17,13 @@ export class Database {
   static async detectUpgrade() {
     const infos = await getMongoInfos();
     const [major, minor] = infos.versionArray;
-    const compatibility = await getCompatibilityVersion();
-    const compatibilityMajor =
-      +compatibility.featureCompatibilityVersion.version.split('.')[0];
-    if (compatibilityMajor > major) {
+    const [compatibilityMajor, compatibilityMinor] = (
+      await getCompatibilityVersion()
+    ).featureCompatibilityVersion.version.split('.');
+    if (+compatibilityMajor > major) {
       throw new Error('Cannot downgrade the database');
     }
-    if (major === compatibilityMajor) {
+    if (major === +compatibilityMajor && minor === +compatibilityMinor) {
       return;
     }
     console.log('Setting feature compatibility version to', major, minor);
