@@ -26,7 +26,7 @@ export class Database {
     if (major === +compatibilityMajor && minor === +compatibilityMinor) {
       return;
     }
-    console.log('Setting feature compatibility version to', major, minor);
+    logger.info(`Setting feature compatibility version to ${major}.${minor}`);
     await setFeatureCompatibilityVersion(`${major}.${minor ?? 0}`);
   }
 
