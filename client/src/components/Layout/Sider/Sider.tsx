@@ -21,6 +21,8 @@ import {
   ShareOutlined,
   Speed,
   SpeedOutlined,
+  EmojiEventsIcon,
+  EmojiEventsIconOutlined,
 } from '@mui/icons-material';
 import s from './index.module.css';
 import { useShareLink } from '../../../services/hooks/hooks';
@@ -93,6 +95,12 @@ const links = [
         link: '/collaborative/affinity',
         icon: <MusicNoteOutlined />,
         iconOn: <MusicNote />,
+      },
+      {
+        label: 'Leaderboard',
+        link: '/collaborative/leaderboard',
+        icon: <EmojiEventsIconOutlined />,
+        iconOn: <EmojiEventsIcon />,
       },
     ],
   },
