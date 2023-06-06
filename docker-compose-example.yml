@@ -13,8 +13,8 @@ services:
     environment:
       API_ENDPOINT: http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
       CLIENT_ENDPOINT: http://localhost:3000
-      SPOTIFY_PUBLIC: 61dadf3087564298bc80db25cf28443a
-      SPOTIFY_SECRET: 1a4fed5519994e79b0b53cb43303a42c
+      SPOTIFY_PUBLIC: 634101c7d87f41168fc27787b20fa653
+      SPOTIFY_SECRET: ed86adad6b264d22a330d8c816335674
       CORS: http://localhost:3000,http://localhost:3001 # "all" if you want to allow every origin
 
   mongo:
