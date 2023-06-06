@@ -180,13 +180,13 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       </div>
       <SiderSearch onArtistClick={goToArtist} onTrackClick={goToTrack} />
       <nav>
-      <a>AHOJ DEJNY</a>
+        
         {links.map(category => (
           <div className={s.category} key={category.label}>
             <Text element="div" onDark className={s.categoryname}>
               {category.label}
             </Text>
-            <a>AHOJ DEJNY</a>
+           
             {toCopy &&
               category.items.map(link => {
                 const active = location.pathname === link.link;
@@ -207,7 +207,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
                           {active ? link.iconOn : link.icon}
                           {link.label}
                         </Text>
-                        <a>AHOJ DEJNY</a>
+                        
                       </div>
                     </CopyToClipboard>
                   );
