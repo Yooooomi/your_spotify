@@ -40,7 +40,7 @@ export default function FullPrivacy() {
         Read more{' '}
         <a
           target="_blank"
-          href="https://www.spotify.com/fr/account/privacy/"
+          href="https://www.spotify.com/account/privacy/"
           rel="noreferrer">
           here
         </a>
