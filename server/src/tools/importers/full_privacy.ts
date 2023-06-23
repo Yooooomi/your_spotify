@@ -74,6 +74,9 @@ export class FullPrivacyImporter
   static idFromSpotifyURI = (uri: string) => uri.split(':')[2];
 
   search = async (spotifyIds: string[]) => {
+    if (spotifyIds.length === 0) {
+      return [];
+    }
     const res = await retryPromise(
       () => this.spotifyApi.getTracksFromIds(spotifyIds),
       10,
