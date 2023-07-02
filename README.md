@@ -36,6 +36,10 @@ It's composed of a web server which polls the Spotify API every now and then and
 2. You need to provide the **Server** environment the **public** AND **secret** key of the application (cf. [Installation](#installation)).
 3. You need to provide an **authorized** redirect URI to the `docker-compose` file.
 
+## Domains
+
+A note of caution: It is strongly advised to refrain from using the word 'spotify' in your domain, as Google has a history of flagging not only your subdomain but also all other associated subdomains and the root domain as deceptive websites. This can result in users being unable to access any of your websites through popular browsers like Google Chrome, Safari, or Firefox due to a false positive.
+
 > A tutorial is available at the end of this readme.
 
 # Installation
