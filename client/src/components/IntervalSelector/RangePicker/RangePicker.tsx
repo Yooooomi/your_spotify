@@ -124,6 +124,15 @@ const presets = [
       return date;
     },
   },
+  {
+    label: 'This year',
+    create: () => {
+      const date = fresh(new Date(), true);
+      date.setMonth(0);
+      date.setDate(1);
+      return date;
+    },
+  },
 ];
 
 interface RangePickerProps {
