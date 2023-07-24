@@ -13,7 +13,7 @@ export function useArtistGrid() {
         genres: { unit: '2fr', key: 'genres' },
         count: { unit: commonUnits.percentage(isMobile), key: 'count' },
         total: { unit: commonUnits.percentage(isMobile), key: 'total' },
-      } as const),
+      }) as const,
     [isMobile],
   );
 }

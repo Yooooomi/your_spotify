@@ -100,8 +100,8 @@ export default function PlaylistDialog() {
       </Text>
       <Box borderBottom={1} borderColor="divider" className={s.tabs}>
         <Tabs value={tab} onChange={(_, value) => setTab(value)}>
-          <Tab disableRipple label="Create" />
-          <Tab disableRipple label="Add to existing" />
+          <Tab label="Create" />
+          <Tab label="Add to existing" />
         </Tabs>
       </Box>
       <TabPanel index={0} value={tab}>

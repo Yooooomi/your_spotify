@@ -12,7 +12,7 @@ export function useAlbumGrid() {
         title: { unit: commonUnits.mainTitle, key: 'title' },
         count: { unit: commonUnits.percentage(isMobile), key: 'count' },
         total: { unit: commonUnits.percentage(isMobile), key: 'total' },
-      } as const),
+      }) as const,
     [isMobile],
   );
 }

@@ -162,6 +162,7 @@ export const api = {
   version: () => get<{ update: boolean; version: string }>('/version'),
   spotify: () => get('/oauth/spotify'),
   logout: () => axios.post('/logout'),
+  // eslint-disable-next-line no-restricted-globals
   me: () => get<{ status: true; user: User } | { status: false }>('/me'),
   sme: () => get<SpotifyMe>('/oauth/spotify/me'),
   globalPreferences: () => get<GlobalPreferences>('/global/preferences'),

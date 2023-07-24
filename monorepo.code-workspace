@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "path": "server"
+    },
+    {
+      "path": "client"
+    },
+    {
+      "path": ".",
+      "name": "root"
+    }
+  ],
+  "settings": {
+    "jest.disabledWorkspaceFolders": ["root"],
+    "typescript.tsdk": "server/node_modules/typescript/lib",
+    "editor.formatOnSave": true
+  },
+  "extensions": {
+    "recommendations": ["dbaeumer.vscode-eslint"]
+  }
+}

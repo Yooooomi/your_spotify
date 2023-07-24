@@ -431,7 +431,7 @@ const collaborativeSchema = intervalPerSchema.merge(
 router.get(
   '/collaborative/top/songs',
   validating(collaborativeSchema, 'query'),
-  isLoggedOrGuest,
+  logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = req.query as TypedPayload<
@@ -457,7 +457,7 @@ router.get(
 router.get(
   '/collaborative/top/albums',
   validating(collaborativeSchema, 'query'),
-  isLoggedOrGuest,
+  logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = req.query as TypedPayload<
@@ -482,7 +482,7 @@ router.get(
 router.get(
   '/collaborative/top/artists',
   validating(collaborativeSchema, 'query'),
-  isLoggedOrGuest,
+  logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = req.query as TypedPayload<
