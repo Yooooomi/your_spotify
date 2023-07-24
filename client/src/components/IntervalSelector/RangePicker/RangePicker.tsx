@@ -1,7 +1,10 @@
 import { useCallback, useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider, CalendarPicker } from '@mui/x-date-pickers';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import {
+  LocalizationProvider,
+  DateCalendar,
+  PickersDayProps,
+} from '@mui/x-date-pickers';
 import { MenuItem } from '@mui/material';
 import clsx from 'clsx';
 import s from './index.module.css';
@@ -13,11 +16,19 @@ interface DayProps {
   hovering: Date | undefined;
   onHover: (date: Date | undefined) => void;
   onClick: (date: Date) => void;
+  outsideCurrentMonth: boolean;
 }
 
 export type Range = [Date | undefined, Date | undefined];
 
-function Day({ date, onClick, value, hovering, onHover }: DayProps) {
+function Day({
+  date,
+  onClick,
+  value,
+  hovering,
+  onHover,
+  outsideCurrentMonth,
+}: DayProps) {
   const [start, end] = value;
 
   const hasNoValue = !start && !end;
@@ -51,6 +62,7 @@ function Day({ date, onClick, value, hovering, onHover }: DayProps) {
       onClick={() => onClick(date)}
       onMouseEnter={() => onHover(date)}
       className={clsx('no-button', s.day, {
+        [s.outside]: outsideCurrentMonth,
         [s.lonelyHovered]:
           isBeingHovered &&
           (hasNoValue || (hasBothValue && !isBetweenBothValues)),
@@ -65,12 +77,37 @@ function Day({ date, onClick, value, hovering, onHover }: DayProps) {
           (hasBothValue && isEnd) ||
           (!hasBothValue && isBeingHovered && isAfterStart) ||
           (!hasBothValue && isStart && hoveringIsBeforeStart),
-
-        // [s.start]: start && start.getTime() === date.getTime(),
-        // [s.end]: end && end.getTime() === date.getTime(),
       })}>
       {date.getDate()}
     </button>
+  );
+}
+
+interface DayWrapperAdditionalProps {
+  internSetValue: (newValue: Date) => void;
+  rangeValue: Range;
+  hover: Date;
+  setHover: (newHover: Date | undefined) => void;
+}
+
+function DayWrapper({
+  day,
+  internSetValue,
+  rangeValue,
+  setHover,
+  hover,
+  outsideCurrentMonth,
+}: PickersDayProps<Date> & DayWrapperAdditionalProps) {
+  return (
+    <Day
+      key={day.getTime()}
+      outsideCurrentMonth={outsideCurrentMonth}
+      onClick={internSetValue}
+      value={rangeValue}
+      onHover={setHover}
+      hovering={hover}
+      date={day}
+    />
   );
 }
 
@@ -166,6 +203,7 @@ export default function RangePicker({ value, onChange }: RangePickerProps) {
         <div className={s.presets}>
           {presets.map(preset => (
             <MenuItem
+              key={preset.label}
               onClick={() =>
                 onChange([preset.create(), fresh(new Date(), true)])
               }>
@@ -173,20 +211,21 @@ export default function RangePicker({ value, onChange }: RangePickerProps) {
             </MenuItem>
           ))}
         </div>
-        <CalendarPicker
+        <DateCalendar
           classes={{ root: s.calendarRoot }}
-          date={null}
+          value={null}
           onChange={() => {}}
-          renderDay={a => (
-            <Day
-              key={(a as unknown as Date).getTime()}
-              onClick={internSetValue}
-              value={value}
-              onHover={setHover}
-              hovering={hover}
-              date={a as unknown as Date}
-            />
-          )}
+          slots={{
+            day: DayWrapper as any,
+          }}
+          slotProps={{
+            day: {
+              hover,
+              internSetValue,
+              setHover,
+              rangeValue: value,
+            } as any,
+          }}
         />
       </div>
     </LocalizationProvider>

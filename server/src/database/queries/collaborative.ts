@@ -8,10 +8,13 @@ import {
 } from './statsTools';
 
 function fromPairs<K extends string, V>(pairs: [K, V][]) {
-  return pairs.reduce<Record<K, V>>((acc, [key, value]) => {
-    acc[key] = value;
-    return acc;
-  }, {} as Record<K, V>);
+  return pairs.reduce<Record<K, V>>(
+    (acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    },
+    {} as Record<K, V>,
+  );
 }
 
 export enum CollaborativeMode {

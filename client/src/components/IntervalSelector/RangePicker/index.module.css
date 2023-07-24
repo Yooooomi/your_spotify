@@ -7,7 +7,7 @@
 }
 
 .presets {
-  overflow: scroll;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--divider);
@@ -32,7 +32,11 @@
     flex-direction: row;
     border-right: unset;
     margin-right: unset;
-    }
+  }
+}
+
+.outside {
+  color: grey;
 }
 
 .day {

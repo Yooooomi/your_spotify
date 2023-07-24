@@ -77,6 +77,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       <nav>
         {links.map(category => (
           <SiderCategory
+            key={category.label}
             user={user}
             pathname={location.pathname}
             onCopy={copyCurrentPage}

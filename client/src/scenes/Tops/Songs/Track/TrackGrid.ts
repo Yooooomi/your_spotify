@@ -15,7 +15,7 @@ export function useTrackGrid() {
         count: { unit: commonUnits.percentage(isMobile), key: 'count' },
         total: { unit: commonUnits.percentage(isMobile), key: 'total' },
         options: { unit: commonUnits.options, key: 'options' },
-      } as const),
+      }) as const,
     [isMobile],
   );
 }
