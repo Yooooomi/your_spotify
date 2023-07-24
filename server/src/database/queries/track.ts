@@ -1,4 +1,4 @@
-import { AlbumModel, InfosModel, TrackModel } from '../Models';
+import { InfosModel, TrackModel } from '../Models';
 import { User } from '../schemas/user';
 import { getGroupByDateProjection, getGroupingByTimeSplit } from './statsTools';
 import { Timesplit } from '../../tools/types';
@@ -120,9 +120,7 @@ export const checkBlacklistConsistency = () =>
   );
 
 export const unblacklistByArtist = async (userId: string, artistId: string) => {
-  const albums = await AlbumModel.find({ 'artists.0': artistId });
-  const albumIds = albums.map(alb => alb.id);
-  const tracks = await TrackModel.find({ album: { $in: albumIds } });
+  const tracks = await TrackModel.find({ 'artists.0': artistId });
   const trackIds = tracks.map(t => t.id);
   await InfosModel.updateMany(
     {
@@ -144,9 +142,7 @@ export const unblacklistByArtist = async (userId: string, artistId: string) => {
 };
 
 export const blacklistByArtist = async (userId: string, artistId: string) => {
-  const albums = await AlbumModel.find({ 'artists.0': artistId });
-  const albumIds = albums.map(alb => alb.id);
-  const tracks = await TrackModel.find({ album: { $in: albumIds } });
+  const tracks = await TrackModel.find({ 'artists.0': artistId });
   const trackIds = tracks.map(t => t.id);
   return InfosModel.updateMany(
     {
