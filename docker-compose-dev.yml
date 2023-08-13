@@ -21,8 +21,8 @@ services:
     environment:
       - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
       - CLIENT_ENDPOINT=http://localhost:3000
-      - SPOTIFY_PUBLIC=__your_spotify_client_id__
-      - SPOTIFY_SECRET=__your_spotify_secret__
+      - SPOTIFY_PUBLIC=9cfa632419a14fbf9db7dd95493be119
+      - SPOTIFY_SECRET=25b577283c8146b8b2da7bb6b19d25c9
       - CORS=all
       - LOG_LEVEL=debug
 
