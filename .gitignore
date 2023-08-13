@@ -103,3 +103,5 @@ dist
 # TernJS port file
 .tern-port
 docker-compose-personal.yml
+
+db_data/
