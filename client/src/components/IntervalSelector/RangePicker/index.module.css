@@ -1,11 +1,42 @@
 .panel {
   display: flex;
   align-items: flex-start;
+  flex-direction: row;
+  width: 100%;
+  align-items: stretch;
+}
+
+.presets {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--divider);
+  margin-right: 8px;
+  margin-bottom: 8px;
 }
 
 .calendarRoot {
+  margin: unset !important;
   margin-top: -16px !important;
-  border-left: 1px solid var(--divider);
+  margin-left: -16px !important;
+}
+
+@media screen and (max-width: 560px) {
+  .panel {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .presets {
+    width: 100%;
+    flex-direction: row;
+    border-right: unset;
+    margin-right: unset;
+  }
+}
+
+.outside {
+  color: grey;
 }
 
 .day {

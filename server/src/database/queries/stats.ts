@@ -2,6 +2,7 @@ import { Timesplit } from '../../tools/types';
 import { InfosModel } from '../Models';
 import { User } from '../schemas/user';
 import {
+  basicMatch,
   getGroupByDateProjection,
   getGroupingByTimeSplit,
   getTrackSumType,
@@ -18,8 +19,10 @@ export const getMostListenedSongs = async (
   timeSplit: Timesplit = Timesplit.hour,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
 
     {
       $group: {
@@ -80,8 +83,10 @@ export const getMostListenedArtist = async (
   timeSplit = Timesplit.hour,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: {
         from: 'tracks',
@@ -144,8 +149,10 @@ export const getSongsPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $group: {
         _id: getGroupingByTimeSplit(timeSplit),
@@ -173,10 +180,10 @@ export const getTimePer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -207,10 +214,10 @@ export const albumDateRatio = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -265,10 +272,10 @@ export const featRatio = async (
   timeSplit: Timesplit,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -358,10 +365,10 @@ export const popularityPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -400,10 +407,10 @@ export const differentArtistsPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -451,10 +458,10 @@ export const differentArtistsPer = async (
 
 export const getDayRepartition = async (user: User, start: Date, end: Date) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
+    { $match: basicMatch(user._id, start, end) },
     {
       $project: {
-        ...getGroupByDateProjection(),
+        ...getGroupByDateProjection(user.settings.timezone),
         id: 1,
       },
     },
@@ -485,8 +492,10 @@ export const getBestArtistsPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: {
         from: 'tracks',
@@ -550,8 +559,10 @@ export const getBestSongsNbOffseted = (
   offset: number,
 ) =>
   InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: lightTrackLookupPipeline(),
     },
@@ -599,8 +610,10 @@ export const getBestArtistsNbOffseted = (
   offset: number,
 ) =>
   InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: lightTrackLookupPipeline(),
     },
@@ -650,8 +663,10 @@ export const getBestAlbumsNbOffseted = (
   offset: number,
 ) =>
   InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $project: { ...getGroupByDateProjection(), id: 1 } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+    },
     {
       $lookup: lightTrackLookupPipeline(),
     },
@@ -794,8 +809,12 @@ export const getBestGenresNbOffseted = (
 
 export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $addFields: { hour: getGroupByDateProjection().hour } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $addFields: {
+        hour: getGroupByDateProjection(user.settings.timezone).hour,
+      },
+    },
     { $group: { _id: '$hour', songs: { $push: '$id' }, total: { $sum: 1 } } },
     { $unwind: '$songs' },
     {
@@ -834,8 +853,12 @@ export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
 
 export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $addFields: { hour: getGroupByDateProjection().hour } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $addFields: {
+        hour: getGroupByDateProjection(user.settings.timezone).hour,
+      },
+    },
     { $group: { _id: '$hour', songs: { $push: '$id' }, total: { $sum: 1 } } },
     { $unwind: '$songs' },
     { $lookup: lightTrackLookupPipeline('songs') },
@@ -878,8 +901,12 @@ export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
 
 export const getBestArtistsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
-    { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
-    { $addFields: { hour: getGroupByDateProjection().hour } },
+    { $match: basicMatch(user._id, start, end) },
+    {
+      $addFields: {
+        hour: getGroupByDateProjection(user.settings.timezone).hour,
+      },
+    },
     { $group: { _id: '$hour', songs: { $push: '$id' }, total: { $sum: 1 } } },
     { $unwind: '$songs' },
     { $lookup: lightTrackLookupPipeline('songs') },
@@ -919,7 +946,10 @@ export const getBestGenresOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
     { $match: { owner: user._id, played_at: { $gt: start, $lt: end } } },
     {
-      $addFields: { hour: getGroupByDateProjection().hour, amountListened: 1 },
+      $addFields: {
+        hour: getGroupByDateProjection(user.settings.timezone).hour,
+        amountListened: 1,
+      },
     },
     { $lookup: lightTrackLookupPipeline('id') },
     { $unwind: '$track' },
@@ -977,5 +1007,109 @@ export const getBestGenresOfHour = (user: User, start: Date, end: Date) => {
       },
     },
     { $sort: { _id: 1 } },
+  ]);
+};
+
+export const getLongestListeningSession = (
+  userId: string,
+  start: Date,
+  end: Date,
+) => {
+  const sessionBreakThreshold = 10 * 60 * 1000;
+  const subtract = {
+    $cond: [
+      '$$value.last',
+      {
+        $subtract: [
+          '$$this.played_at',
+          {
+            $add: ['$$value.last.played_at', '$$value.last.track.duration_ms'],
+          },
+        ],
+      },
+      sessionBreakThreshold + 1,
+    ],
+  };
+
+  const item = { subtract, info: '$$this' };
+
+  return InfosModel.aggregate([
+    { $match: basicMatch(userId, start, end) },
+    { $sort: { played_at: 1 } },
+    { $lookup: lightTrackLookupPipeline() },
+    { $unwind: '$track' },
+    {
+      $group: {
+        _id: '$owner',
+        infos: { $push: '$$ROOT' },
+      },
+    },
+    {
+      $addFields: {
+        distanceToLast: {
+          $reduce: {
+            input: '$infos',
+            initialValue: { distance: [], current: [] },
+            in: {
+              distance: {
+                $concatArrays: [
+                  '$$value.distance',
+                  {
+                    $cond: {
+                      if: {
+                        $gt: [subtract, sessionBreakThreshold],
+                      },
+                      then: ['$$value.current'],
+                      else: [],
+                    },
+                  },
+                ],
+              },
+              current: {
+                $cond: {
+                  if: {
+                    $gt: [subtract, sessionBreakThreshold],
+                  },
+                  then: [item],
+                  else: {
+                    $concatArrays: ['$$value.current', [item]],
+                  },
+                },
+              },
+              last: '$$this',
+            },
+          },
+        },
+      },
+    },
+    { $unset: ['infos', 'distanceToLast.last'] },
+    {
+      $addFields: {
+        'distanceToLast.distance': {
+          $concatArrays: [
+            '$distanceToLast.distance',
+            ['$distanceToLast.current'],
+          ],
+        },
+      },
+    },
+    { $unset: 'distanceToLast.current' },
+    {
+      $unwind: {
+        path: '$distanceToLast.distance',
+      },
+    },
+    {
+      $addFields: {
+        sessionLength: {
+          $subtract: [
+            { $last: '$distanceToLast.distance.info.played_at' },
+            { $first: '$distanceToLast.distance.info.played_at' },
+          ],
+        },
+      },
+    },
+    { $sort: { sessionLength: -1 } },
+    { $limit: 5 },
   ]);
 };

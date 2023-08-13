@@ -104,4 +104,5 @@ dist
 .tern-port
 docker-compose-personal.yml
 
-db_data/
+client/public/index.html
+client/public/variables.js

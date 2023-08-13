@@ -13,7 +13,7 @@ import s from './index.module.css';
 export default function Genres() {
   const { interval } = useSelector(selectRawIntervalDetail);
   const [items, setItems] = useState<
-    UnboxPromise<ReturnType<typeof api['getBestGenres']>>['data']
+    UnboxPromise<ReturnType<(typeof api)['getBestGenres']>>['data']
   >([]);
   const [hasMore, setHasMore] = useState(true);
   const ref = useRef<(force?: boolean) => void>();

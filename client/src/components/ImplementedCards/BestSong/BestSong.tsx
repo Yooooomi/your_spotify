@@ -1,9 +1,8 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { Skeleton } from '@mui/material';
 import clsx from 'clsx';
 import { api } from '../../../services/apis/api';
-import { useAPI } from '../../../services/hooks';
+import { useAPI } from '../../../services/hooks/hooks';
 import { msToMinutes } from '../../../services/stats';
 import { getImage } from '../../../services/tools';
 import TitleCard from '../../TitleCard';
@@ -11,6 +10,7 @@ import { ImplementedCardProps } from '../types';
 import s from './index.module.css';
 import { selectRawIntervalDetail } from '../../../services/redux/modules/user/selector';
 import Text from '../../Text';
+import InlineTrack from '../../InlineTrack';
 
 interface BestSongProps extends ImplementedCardProps {}
 
@@ -58,7 +58,8 @@ export default function BestSong({ className }: BestSongProps) {
           />
         </div>
         <div className={s.stats}>
-          <Text element="strong">{res?.track.name ?? 'No data'}</Text>
+          {res && <InlineTrack element="strong" track={res.track} />}
+          {!res && <Text element="strong">No data</Text>}
           <div className={s.statnumbers}>
             <Text className={s.stat}>
               <Text element="strong">{res?.count ?? 0}</Text> times listened

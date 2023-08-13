@@ -1,11 +1,23 @@
-import React from 'react';
 import { CircularProgress } from '@mui/material';
+import clsx from 'clsx';
+import { HTMLProps } from '../../services/types';
+import Text from '../Text';
 import s from './index.module.css';
 
-export default function Loader() {
+interface LoaderProps extends HTMLProps<'div'> {
+  text?: string;
+}
+
+export default function Loader({ text, className, ...other }: LoaderProps) {
   return (
-    <div className={s.root}>
-      <CircularProgress />
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <div className={clsx(s.root, className)} {...other}>
+      <CircularProgress size={24} />
+      {text && (
+        <Text element="div" className={s.text}>
+          {text}
+        </Text>
+      )}
     </div>
   );
 }

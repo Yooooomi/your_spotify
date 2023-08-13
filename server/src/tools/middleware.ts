@@ -11,13 +11,13 @@ import {
   SpotifyRequest,
 } from './types';
 import { getUserImporterState } from '../database/queries/importer';
-import { SpotifyAPI } from './spotifyApi';
+import { SpotifyAPI } from './apis/spotifyApi';
 
 type Location = 'body' | 'params' | 'query';
 
 export const validating =
   (
-    schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any, any>,
+    schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
     location: Location = 'body',
   ) =>
   (req: Request, res: Response, next: NextFunction) => {

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Button, CircularProgress } from '@mui/material';
 import { startImportFullPrivacy } from '../../../../services/redux/modules/import/thunk';
 import s from './index.module.css';
@@ -40,7 +40,7 @@ export default function FullPrivacy() {
         Read more{' '}
         <a
           target="_blank"
-          href="https://www.spotify.com/fr/account/privacy/"
+          href="https://www.spotify.com/account/privacy/"
           rel="noreferrer">
           here
         </a>

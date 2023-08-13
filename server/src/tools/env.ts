@@ -13,6 +13,8 @@ const validators = {
   PORT: z.preprocess(toNumber, z.number().optional()),
   TIMEZONE: z.string().optional(),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).optional(),
+  NODE_ENV: z.enum(['production', 'development']).optional(),
+  OFFLINE_DEV_ID: z.string().optional(),
 } as const;
 
 const env: Record<string, any> = {};
@@ -21,14 +23,14 @@ type EnvVariable = keyof typeof validators;
 
 export function getWithDefault<E extends EnvVariable>(
   variable: E,
-  defaultValue: NonNullable<z.infer<typeof validators[E]>>,
-): NonNullable<z.infer<typeof validators[E]>> {
+  defaultValue: NonNullable<z.infer<(typeof validators)[E]>>,
+): NonNullable<z.infer<(typeof validators)[E]>> {
   return env[variable] ?? defaultValue;
 }
 
 export function get<E extends EnvVariable>(
   variable: E,
-): z.infer<typeof validators[E]> {
+): z.infer<(typeof validators)[E]> {
   return env[variable];
 }
 

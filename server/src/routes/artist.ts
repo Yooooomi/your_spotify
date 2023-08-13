@@ -9,9 +9,13 @@ import {
   getRankOfArtist,
   searchArtist,
   getDayRepartitionOfArtist,
+  blacklistArtist,
+  unblacklistArtist,
+  blacklistByArtist,
+  unblacklistByArtist,
 } from '../database';
 import { logger } from '../tools/logger';
-import { isLoggedOrGuest, validating } from '../tools/middleware';
+import { isLoggedOrGuest, logged, validating } from '../tools/middleware';
 import { LoggedRequest, TypedPayload } from '../tools/types';
 
 const router = Router();
@@ -53,7 +57,7 @@ router.get(
       const { user } = req as LoggedRequest;
       const { id } = req.params as TypedPayload<typeof getArtistStats>;
 
-      const artist = await getArtists([id]);
+      const [artist] = await getArtists([id]);
       if (!artist) {
         return res.status(404).end();
       }
@@ -62,10 +66,9 @@ router.get(
         getMostListenedSongOfArtist(user, id),
         bestPeriodOfArtist(user, id),
         getTotalListeningOfArtist(user, id),
-        getRankOfArtist(user, id),
         getDayRepartitionOfArtist(user, id),
       ];
-      const [firstLast, mostListened, bestPeriod, total, rank, dayRepartition] =
+      const [firstLast, mostListened, bestPeriod, total, dayRepartition] =
         await Promise.all(promises);
       if (!total) {
         return res.status(200).send({
@@ -73,14 +76,35 @@ router.get(
         });
       }
       return res.status(200).send({
-        artist: artist[0],
+        artist,
         firstLast,
         mostListened,
         bestPeriod,
         total,
-        rank,
         dayRepartition,
       });
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.get(
+  '/:id/rank',
+  validating(getArtistStats, 'params'),
+  isLoggedOrGuest,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { id } = req.params as TypedPayload<typeof getArtistStats>;
+
+    try {
+      const [artist] = await getArtists([id]);
+      if (!artist) {
+        return res.status(404).end();
+      }
+      const rank = await getRankOfArtist(user, id);
+      return res.status(200).send(rank);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
@@ -103,6 +127,49 @@ router.get(
       const results = await searchArtist(query);
       return res.status(200).send(results);
     } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+const blacklist = z.object({
+  id: z.string(),
+});
+
+router.post(
+  '/blacklist/:id',
+  validating(blacklist, 'params'),
+  logged,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { id } = req.params as TypedPayload<typeof blacklist>;
+
+    try {
+      await blacklistArtist(user._id.toString(), id);
+      await blacklistByArtist(user._id.toString(), id);
+      return res.status(204).end();
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.post(
+  '/unblacklist/:id',
+  validating(blacklist, 'params'),
+  logged,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { id } = req.params as TypedPayload<typeof blacklist>;
+
+    try {
+      await unblacklistArtist(user._id.toString(), id);
+      await unblacklistByArtist(user._id.toString(), id);
+      return res.status(204).end();
+    } catch (e) {
+      logger.error(e);
       return res.status(500).end();
     }
   },

@@ -13,7 +13,7 @@ import { User } from '../../database/schemas/user';
 import { saveMusics } from '../../spotify/dbTools';
 import { logger } from '../logger';
 import { minOfArray, retryPromise } from '../misc';
-import { SpotifyAPI } from '../spotifyApi';
+import { SpotifyAPI } from '../apis/spotifyApi';
 import { Unpack } from '../types';
 import { getFromCacheString, setToCacheString } from './cache';
 import {
@@ -28,23 +28,23 @@ const fullPrivacyFileSchema = z.array(
     username: z.string(),
     platform: z.string(),
     ms_played: z.number(),
-    conn_country: z.string(),
-    ip_addr_decrypted: z.string(),
-    user_agent_decrypted: z.nullable(z.string()),
-    master_metadata_track_name: z.nullable(z.string()),
-    master_metadata_album_artist_name: z.nullable(z.string()),
-    master_metadata_album_album_name: z.nullable(z.string()),
-    spotify_track_uri: z.nullable(z.string()),
-    episode_name: z.nullable(z.string()),
-    episode_show_name: z.nullable(z.string()),
-    spotify_episode_uri: z.nullable(z.string()),
+    conn_country: z.string().nullable(),
+    ip_addr_decrypted: z.string().nullable(),
+    user_agent_decrypted: z.string().nullable(),
+    master_metadata_track_name: z.string().nullable(),
+    master_metadata_album_artist_name: z.string().nullable(),
+    master_metadata_album_album_name: z.string().nullable(),
+    spotify_track_uri: z.string().nullable(),
+    episode_name: z.string().nullable(),
+    episode_show_name: z.string().nullable(),
+    spotify_episode_uri: z.string().nullable(),
     reason_start: z.string(),
     reason_end: z.string(),
     shuffle: z.boolean(),
-    skipped: z.nullable(z.boolean()),
-    offline: z.nullable(z.boolean()),
-    offline_timestamp: z.nullable(z.number()),
-    incognito_mode: z.nullable(z.boolean()),
+    skipped: z.boolean().nullable(),
+    offline: z.boolean().nullable(),
+    offline_timestamp: z.number().nullable(),
+    incognito_mode: z.boolean().nullable(),
   }),
 );
 
@@ -74,6 +74,9 @@ export class FullPrivacyImporter
   static idFromSpotifyURI = (uri: string) => uri.split(':')[2];
 
   search = async (spotifyIds: string[]) => {
+    if (spotifyIds.length === 0) {
+      return [];
+    }
     const res = await retryPromise(
       () => this.spotifyApi.getTracksFromIds(spotifyIds),
       10,
@@ -97,7 +100,10 @@ export class FullPrivacyImporter
         date,
         60,
       );
-      if (duplicate.length > 0) {
+      const currentImportDuplicate = finalInfos.find(
+        e => Math.abs(e.played_at.getTime() - date.getTime()) <= 60 * 1000,
+      );
+      if (duplicate.length > 0 || currentImportDuplicate) {
         logger.info(
           `${item.track.name} - ${item.track.artists[0].name} was duplicate`,
         );
@@ -120,13 +126,15 @@ export class FullPrivacyImporter
   };
 
   initWithJSONContent = async (content: any[]) => {
-    try {
-      const validations = fullPrivacyFileSchema.parse(content);
-      this.elements = validations;
+    const value = fullPrivacyFileSchema.safeParse(content);
+    if (value.success) {
+      this.elements = value.data;
       return content;
-    } catch (e) {
-      logger.error(e);
     }
+    logger.error(
+      'If you submitted the right files and this error comes up, please open an issue with the following logs at https://github.com/Yooooomi/your_spotify',
+      JSON.stringify(value.error.issues, null, ' '),
+    );
     return null;
   };
 

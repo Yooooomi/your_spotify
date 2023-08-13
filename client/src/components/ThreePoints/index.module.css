@@ -9,5 +9,6 @@
 }
 
 .destructive {
-  color: red !important;
+  color: rgb(242, 93, 93) !important;
+  font-weight: normal;
 }

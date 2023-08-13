@@ -82,7 +82,7 @@ export class Spotify extends Provider {
   static getHttpClient = (accessToken: string) =>
     Axios.create({
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
       baseURL: 'https://api.spotify.com/v1',

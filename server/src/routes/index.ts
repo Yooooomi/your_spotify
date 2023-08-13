@@ -25,15 +25,18 @@ import {
 } from '../tools/types';
 import { toBoolean, toNumber } from '../tools/zod';
 import { deleteUser } from '../tools/user';
+import { GithubAPI } from '../tools/apis/githubApi';
+import { Version } from '../tools/version';
+import { getWithDefault } from '../tools/env';
 
 const router = Router();
 export default router;
 
-router.get('/', (req, res) => {
+router.get('/', (_, res) => {
   res.status(200).send('Hello !');
 });
 
-router.post('/logout', async (req, res) => {
+router.post('/logout', async (_, res) => {
   res.clearCookie('token');
   return res.status(200).end();
 });
@@ -47,6 +50,11 @@ const settingsSchema = z.object({
   ),
   metricUsed: z.enum(['number', 'duration']).optional(),
   darkMode: z.enum(['follow', 'dark', 'light']).optional(),
+  timezone: z
+    .string()
+    .nullable()
+    .transform(e => e ?? undefined)
+    .optional(),
 });
 
 router.post(
@@ -91,7 +99,7 @@ router.post('/generate-public-token', logged, async (req, res) => {
   }
 });
 
-router.get('/accounts', isLoggedOrGuest, async (req, res) => {
+router.get('/accounts', isLoggedOrGuest, async (_, res) => {
   try {
     const users = await getAllUsers();
     return res.status(200).send(
@@ -173,6 +181,22 @@ router.put('/rename', validating(rename), logged, async (req, res) => {
   try {
     await storeInUser('_id', user._id, { username: newName });
     return res.status(204).end();
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
+});
+
+router.get('/version', logged, async (_, res) => {
+  if (getWithDefault('NODE_ENV', 'development') === 'development') {
+    return res.status(200).send({ update: false, version: '1.0.0' });
+  }
+  try {
+    const version = await GithubAPI.lastPackageJsonVersion();
+    if (version.isNewerThan(Version.thisOne())) {
+      return res.status(200).send({ update: true });
+    }
+    return res.status(200).send({ update: false });
   } catch (e) {
     logger.error(e);
     return res.status(500).end();

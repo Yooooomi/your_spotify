@@ -2,6 +2,21 @@ import { api } from '../../../apis/api';
 import { GlobalPreferences } from '../../../types';
 import { myAsyncThunk } from '../../tools';
 import { alertMessage } from '../message/reducer';
+import { checkLogged } from '../user/thunk';
+import { User } from '../user/types';
+
+export const getVersion = myAsyncThunk<
+  { update: boolean; version: string },
+  void
+>('@settings/version', async () => {
+  try {
+    const version = await api.version();
+    return version.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+});
 
 export const getSettings = myAsyncThunk<GlobalPreferences | null, void>(
   '@settings/get',
@@ -14,7 +29,7 @@ export const getSettings = myAsyncThunk<GlobalPreferences | null, void>(
       tapi.dispatch(
         alertMessage({
           level: 'error',
-          message: 'Could not retrieve global preferences',
+          message: "The web application can't communicate with the server",
         }),
       );
     }
@@ -48,3 +63,30 @@ export const changeRegistrations = myAsyncThunk<
     throw e;
   }
 });
+
+export const changeTimezone = myAsyncThunk<void, User['settings']['timezone']>(
+  '@settings/change-timezone',
+  async (newTimezone, tapi) => {
+    try {
+      await api.setSetting('timezone', newTimezone);
+      tapi.dispatch(checkLogged());
+      tapi.dispatch(
+        alertMessage({
+          level: 'success',
+          message: `Updated timezone status to ${
+            newTimezone ?? 'follow backend timezone'
+          }`,
+        }),
+      );
+    } catch (e) {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: 'error',
+          message: `Could not update registration status to ${newTimezone}`,
+        }),
+      );
+      throw e;
+    }
+  },
+);

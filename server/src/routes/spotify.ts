@@ -21,6 +21,7 @@ import {
   getBestAlbumsOfHour,
   getBestArtistsOfHour,
   getBestGenresOfHour,
+  getLongestListeningSession,
 } from '../database';
 import {
   CollaborativeMode,
@@ -458,7 +459,7 @@ const collaborativeSchema = intervalPerSchema.merge(
 router.get(
   '/collaborative/top/songs',
   validating(collaborativeSchema, 'query'),
-  isLoggedOrGuest,
+  logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = req.query as TypedPayload<
@@ -484,7 +485,7 @@ router.get(
 router.get(
   '/collaborative/top/albums',
   validating(collaborativeSchema, 'query'),
-  isLoggedOrGuest,
+  logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = req.query as TypedPayload<
@@ -509,7 +510,7 @@ router.get(
 router.get(
   '/collaborative/top/artists',
   validating(collaborativeSchema, 'query'),
-  isLoggedOrGuest,
+  logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = req.query as TypedPayload<
@@ -537,9 +538,7 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end } = req.query as TypedPayload<
-      typeof collaborativeSchema
-    >;
+    const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
       const result = await getBestSongsOfHour(user, start, end);
@@ -577,9 +576,7 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end } = req.query as TypedPayload<
-      typeof collaborativeSchema
-    >;
+    const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
       const result = await getBestAlbumsOfHour(user, start, end);
@@ -597,12 +594,32 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end } = req.query as TypedPayload<
-      typeof collaborativeSchema
-    >;
+    const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
       const result = await getBestArtistsOfHour(user, start, end);
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.get(
+  '/top/sessions',
+  validating(interval, 'query'),
+  isLoggedOrGuest,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end } = req.query as TypedPayload<typeof interval>;
+
+    try {
+      const result = await getLongestListeningSession(
+        user._id.toString(),
+        start,
+        end,
+      );
       return res.status(200).send(result);
     } catch (e) {
       logger.error(e);

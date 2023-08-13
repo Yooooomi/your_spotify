@@ -1,0 +1,13 @@
+.loader {
+  margin-top: 16px;
+}
+
+@media screen and (min-width: 960px) {
+  .content {
+    padding: var(--page-padding);
+  }
+
+  .loader {
+    margin-top: 0px;
+  }
+}

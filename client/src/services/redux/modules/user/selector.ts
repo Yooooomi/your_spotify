@@ -28,6 +28,15 @@ export const selectRawIntervalDetail = createSelector(
     ),
 );
 
+export const selectRawAllInterval = createSelector(
+  selectUserState,
+  (state): RawIntervalDetail =>
+    getRawIntervalDetail(
+      fromReduxIntervalDetail({ type: 'userbased', index: 0 }),
+      state.user,
+    ),
+);
+
 export const selectPublicToken = createSelector(
   selectUserState,
   state => state.publicToken,
@@ -38,4 +47,16 @@ export const selectIsPublic = createSelector(selectPublicToken, token =>
 export const selectDarkMode = createSelector(
   selectUser,
   user => user?.settings.darkMode ?? 'follow',
+);
+export const selectTimezone = createSelector(
+  selectUser,
+  user => user?.settings.timezone ?? 'follow',
+);
+export const selectBlacklistedArtist = (artistId: string) =>
+  createSelector(selectUser, user =>
+    Boolean(user?.settings.blacklistedArtists?.find(art => art === artistId)),
+  );
+export const selectBlacklistedArtists = createSelector(
+  selectUser,
+  user => user?.settings.blacklistedArtists ?? [],
 );

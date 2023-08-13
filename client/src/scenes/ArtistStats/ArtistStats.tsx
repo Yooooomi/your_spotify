@@ -1,54 +1,29 @@
-import React, { useCallback, useEffect, useState } from 'react';
 import { CircularProgress, Grid } from '@mui/material';
-import clsx from 'clsx';
+import { useSelector } from 'react-redux';
 import Header from '../../components/Header';
-import InlineArtist from '../../components/InlineArtist';
 import TitleCard from '../../components/TitleCard';
-import { api, ArtistStatsResponse } from '../../services/apis/api';
-import {
-  buildFromDateId,
-  dateToListenedAt,
-  dateToMonthAndYear,
-} from '../../services/stats';
-import { getAtLeastImage } from '../../services/tools';
-import { Artist } from '../../services/types';
+import { ArtistStatsResponse } from '../../services/apis/api';
+import { buildFromDateId, dateToMonthAndYear } from '../../services/stats';
 import s from './index.module.css';
 import DayRepartition from './DayRepartition';
 import Text from '../../components/Text';
+import ArtistRank from './ArtistRank/ArtistRank';
+import InlineTrack from '../../components/InlineTrack';
+import FirstAndLast from './FirstAndLast';
+import ArtistContextMenu from './ArtistContextMenu';
+import { selectBlacklistedArtist } from '../../services/redux/modules/user/selector';
+import IdealImage from '../../components/IdealImage';
+import ImageTwoLines from '../../components/ImageTwoLines';
 
 interface ArtistStatsProps {
+  artistId: string;
   stats: ArtistStatsResponse;
 }
 
-export default function ArtistStats({ stats }: ArtistStatsProps) {
-  const [artists, setArtists] = useState<Artist[]>([]);
-
-  useEffect(() => {
-    async function fetchArtists() {
-      const ids = stats?.rank.results.map(r => r.id) ?? [];
-      if (!ids.every(id => artists.some(a => a.id === id))) {
-        try {
-          const { data } = await api.getArtists(ids);
-          setArtists(data);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-    fetchArtists();
-  }, [artists, stats]);
-
-  const getArtist = useCallback(
-    (id: string) => artists.find(a => a.id === id),
-    [artists],
-  );
+export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
+  const blacklisted = useSelector(selectBlacklistedArtist(artistId));
 
   if (!stats) {
-    return <CircularProgress />;
-  }
-
-  const ids = stats?.rank.results.map(r => r.id) ?? [];
-  if (!ids.every(id => artists.some(a => a.id === id))) {
     return <CircularProgress />;
   }
 
@@ -56,10 +31,18 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
     <div>
       <Header
         left={
-          <img
+          <IdealImage
             className={s.headerimage}
-            src={getAtLeastImage(stats.artist.images, 60)}
+            images={stats.artist.images}
+            size={60}
             alt="Artist"
+          />
+        }
+        right={
+          <ArtistContextMenu
+            artistId={stats.artist.id}
+            artistName={stats.artist.name}
+            blacklisted={blacklisted}
           />
         }
         title={stats.artist.name}
@@ -68,50 +51,22 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
       />
       <div className={s.content}>
         <div className={s.header}>
-          <Text element="h1">Rank #{stats.rank.index + 1}</Text>
-          <div>
-            <div className={s.ranks}>
-              {stats.rank.results.map((rank, k, a) => (
-                <div
-                  key={rank.id}
-                  className={clsx({
-                    [s.rank]: true,
-                    [s.before]:
-                      !stats.rank.isMax &&
-                      ((stats.rank.isMin && k < 2) ||
-                        (!stats.rank.isMin && k === 0)),
-                    [s.after]:
-                      !stats.rank.isMin &&
-                      ((stats.rank.isMax && k > 0) ||
-                        (!stats.rank.isMax && k === 2)),
-                    [s.actual]:
-                      (stats.rank.isMax && k === 0) ||
-                      (stats.rank.isMin && k === a.length - 1) ||
-                      (!stats.rank.isMax && !stats.rank.isMin && k === 1),
-                  })}>
-                  #
-                  {stats.rank.index +
-                    k +
-                    (stats.rank.isMax ? 1 : 0) +
-                    (stats.rank.isMin ? -1 : 0)}{' '}
-                  <InlineArtist artist={getArtist(rank.id)!} />
-                </div>
-              ))}
-            </div>
-          </div>
+          <ArtistRank artistId={artistId} />
         </div>
         <Grid
           container
           justifyContent="flex-start"
           alignItems="flex-start"
-          spacing={2}>
+          spacing={2}
+          style={{ marginTop: 0 }}>
           <Grid
             container
             item
-            xs={6}
+            xs={12}
+            lg={6}
+            spacing={2}
             justifyContent="flex-start"
-            alignItems="flex-start"
-            spacing={2}>
+            alignItems="flex-start">
             <Grid item xs={12}>
               <TitleCard title="Songs listened">
                 <Text element="strong" className={s.songslistened}>
@@ -120,50 +75,16 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
               </TitleCard>
             </Grid>
             <Grid item xs={12}>
-              <TitleCard title="First and last time listened">
-                <div key={stats.firstLast.last.id} className={s.ml}>
-                  <img
-                    className={s.cardimg}
-                    src={getAtLeastImage(
-                      stats.firstLast.last.track.album.images,
-                      48,
-                    )}
-                    alt="album cover"
-                  />
-                  <div className={s.mlstat}>
-                    <Text element="strong">
-                      {stats.firstLast.last.track.name}
-                    </Text>
-                    <Text>
-                      Last listened on{' '}
-                      {dateToListenedAt(
-                        new Date(stats.firstLast.last.played_at),
-                      )}
-                    </Text>
-                  </div>
-                </div>
-                <div key={stats.firstLast.first.id} className={s.ml}>
-                  <img
-                    className={s.cardimg}
-                    src={getAtLeastImage(
-                      stats.firstLast.first.track.album.images,
-                      48,
-                    )}
-                    alt="album cover"
-                  />
-                  <div className={s.mlstat}>
-                    <Text element="strong">
-                      {stats.firstLast.first.track.name}
-                    </Text>
-                    <Text>
-                      First listened on{' '}
-                      {dateToListenedAt(
-                        new Date(stats.firstLast.first.played_at),
-                      )}
-                    </Text>
-                  </div>
-                </div>
-              </TitleCard>
+              <FirstAndLast
+                firstImages={stats.firstLast.first.track.album.images}
+                lastImages={stats.firstLast.last.track.album.images}
+                firstDate={new Date(stats.firstLast.first.played_at)}
+                lastDate={new Date(stats.firstLast.last.played_at)}
+                firstElement={
+                  <InlineTrack track={stats.firstLast.first.track} />
+                }
+                lastElement={<InlineTrack track={stats.firstLast.last.track} />}
+              />
             </Grid>
             <Grid item xs={12}>
               <TitleCard
@@ -210,22 +131,25 @@ export default function ArtistStats({ stats }: ArtistStatsProps) {
               />
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} lg={6}>
             <TitleCard title="Most listened tracks">
               {stats.mostListened.map((ml, k) => (
                 <div key={ml.track.id} className={s.ml}>
                   <Text element="strong" className={s.mlrank}>
                     #{k + 1}
                   </Text>
-                  <img
-                    className={s.cardimg}
-                    src={getAtLeastImage(ml.track.album.images, 48)}
-                    alt="album cover"
+                  <ImageTwoLines
+                    image={
+                      <IdealImage
+                        className={s.cardimg}
+                        images={ml.track.album.images}
+                        size={48}
+                        alt="album cover"
+                      />
+                    }
+                    first={<InlineTrack track={ml.track} />}
+                    second={`${ml.count} times`}
                   />
-                  <div className={s.mlstat}>
-                    <Text element="strong">{ml.track.name}</Text>
-                    <Text>{ml.count} times</Text>
-                  </div>
                 </div>
               ))}
             </TitleCard>

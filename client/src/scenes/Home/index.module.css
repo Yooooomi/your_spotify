@@ -1,26 +1,5 @@
-.root {
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  background-color: white;
-  padding: 16px;
-}
-
-.header > div > h1 {
-  margin-bottom: 8px;
-}
-
-.header > div > span {
-  color: var(--text-grey);
-}
-
 .content {
   padding: var(--page-padding);
-  height: 500px;
 }
 
 .timelisten {

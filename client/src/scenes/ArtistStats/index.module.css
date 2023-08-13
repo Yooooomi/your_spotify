@@ -1,7 +1,7 @@
 .headerimage {
-  height: 60px;
-  width: 60px;
-  border-radius: 6px;
+  height: var(--header-image-size);
+  width: var(--header-image-size);
+  border-radius: var(--radius);
   margin-right: 16px;
 }
 
@@ -13,34 +13,24 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding-right: 16px;
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+@media screen and (max-width: 900px) {
+  .header {
+    justify-content: center;
+    text-align: center;
+    margin: 16px 0px;
+  }
+
+  .headerimage {
+    margin-right: 8px;
+  }
 }
 
 .chart {
   height: 300px;
-}
-
-.ranks {
-  display: flex;
-  align-items: center;
-}
-
-.rank {
-  margin-right: 16px;
-}
-
-.before {
-  color: green;
-}
-
-.actual {
-  font-weight: bold;
-  color: var(--text-on-light);
-}
-
-.after {
-  color: red;
 }
 
 .cardimg {
@@ -57,7 +47,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 16px;
+}
+
+.ml:not(:last-child) {
+  margin-bottom: 8px;
 }
 
 .mlrank {
@@ -65,19 +58,12 @@
   width: 48px;
 }
 
-.mlstat {
-  display: flex;
-  flex-direction: column;
-  margin-left: 16px;
-}
-
-.mlstat > :last-child {
-  color: var(--text-grey);
-}
-
 .bestperiod {
   display: flex;
   flex-direction: column;
+}
+
+.bestperiod:not(:last-child) {
   margin-bottom: 16px;
 }
 

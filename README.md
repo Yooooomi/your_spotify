@@ -58,14 +58,13 @@ services:
     depends_on:
       - mongo
     environment:
-      - API_ENDPOINT=http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard (see below)
-      - CLIENT_ENDPOINT=http://localhost:3000
-      - SPOTIFY_PUBLIC=__your_spotify_client_id__
-      - SPOTIFY_SECRET=__your_spotify_secret__
-      - CORS=http://localhost:3000,http://localhost:3001 # all if you want to allow every origin
+      API_ENDPOINT: http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard (see below)
+      CLIENT_ENDPOINT: http://localhost:3000
+      SPOTIFY_PUBLIC: __your_spotify_client_id__
+      SPOTIFY_SECRET: __your_spotify_secret__
   mongo:
     container_name: mongo
-    image: mongo:4.4.8
+    image: mongo:6
     volumes:
       - ./your_spotify_db:/data/db
 
@@ -75,7 +74,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_ENDPOINT=http://localhost:8080
+      API_ENDPOINT: http://localhost:8080
 ```
 
 > Some ARM-based devices might have trouble with Mongo >= 5. I suggest you use the image **mongo:4.4**.
@@ -92,9 +91,9 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | API_ENDPOINT          | REQUIRED | The endpoint of your server |
 | SPOTIFY_PUBLIC        | REQUIRED | The public key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
 | SPOTIFY_SECRET        | REQUIRED | The secret key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
-| CORS                  | all      | List of comma-separated origin allowed, or all to allow any origin |
+| CORS                  | _not defined_ | List of comma-separated origin allowed, or _nothing_ to allow any origin |
 | MAX_IMPORT_CACHE_SIZE | Infinite | The maximum element in the cache when importing data from an outside source, more cache means less requests to Spotify, resulting in faster imports |
-| MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database |
+| MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database, where **mongo** is the name of your service in the compose file |
 | PORT                  | 8080 | The port of the server, do not modify if you're using docker |
 | TIMEZONE              | Europe/Paris | The timezone of your stats, only affects read requests since data is saved with UTC time |
 | LOG_LEVEL             | info | The log level, debug is useful if you encouter any bugs |
@@ -120,6 +119,11 @@ To do so, you need to create a **Spotify application** [here](https://developer.
    2. add your URI under the `Redirect URIs` section.
    - i.e: `http://localhost:8080/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
    3. Do not forget to hit the save button at the bottom of the popup.
+5. Once you have created your application, Spotify wants you to register the users that will be able to access the application. (You don't need to do that for the account that created the application)
+   1. Click the **Users and access** button
+   2. Click the **Add new user** button
+   3. Enter the required information, a name and the email the user's spotify account has been created with.
+   4. (Optional) You can **Request extension** if you do not want to register the users by hand.
 
 # Importing past history
 
@@ -131,17 +135,21 @@ The import process uses cache to limit requests to the Spotify API. By default, 
 
 ### Privacy data
 
+> Takes a maximum of 5 days.
+> Only gets you the last year of history.
+
 - Request your **privacy data** at Spotify to have access to your history for the past year [here](https://www.spotify.com/us/account/privacy/).
-- Head to the **Settings** page and choose the **privacy** method.
+- Head to the **Settings** page and choose the **Account data** method.
 - Input your files starting with `StreamingHistoryX.json`.
 - Start your import.
 
 ### Full privacy data
 
-> Full privacy data can be obtained by emailing **privacy@spotify.com** and requesting your data since the creation of the account.
+> Takes a maximum of 30 days.
+> Gets you the whole history since the creation of your account.
 
-- Request your data by email.
-- Head to the **Settings** page and choose the **full-privacy** method.
+- Request your **Full privacy data** to have access to your history data since the creation of the account [here](https://www.spotify.com/us/account/privacy/).
+- Head to the **Settings** page and choose the **Extended streaming history** method.
 - Input your files starting with `endsongX.json`.
 - Start your import.
 
@@ -153,7 +161,7 @@ An import can fail:
 
 A failed import can be retried in the **Settings** page. Be sure to clean your failed imports if you do not want to retry it as it will remove the files used for it.
 
-It is safer to import data at account creation. Though **YourSpotify** detects duplicates, some may still be inserted. However, song search is pretty accurate since it filters on artist then search for the song name.
+It is safer to import data at account creation. Though **YourSpotify** detects duplicates, some may still be inserted.
 
 # FAQ
 
@@ -169,9 +177,13 @@ This can happen if you revoked access on your Spotify account. To re-sync the so
 
 This means that your web application can't connect to the backend. Check that your **API_ENDPOINT** env variable is reachable from the device you're using the platform from.
 
+> A specific user does not use the application in the same timezone as the server, how can I set a specific timezone for him?
+
+Any user can set his proper timezone in the settings, it will be used for any computed statistics. The timezone of the device will be used for everything else, such as song history.
+
 # External guides
 
-- [BreadNet](https://breadnet.co.uk/installing) installation tutorial
+- [BreadNet](https://breadnet.co.uk/your-spotify-2022) installation tutorial
 
 # Contributing
 

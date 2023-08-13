@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { CircularProgress } from '@mui/material';
 import { dateToListenedAt } from '../../../../services/stats';
@@ -53,10 +53,7 @@ export default function ImportHistory() {
           left={
             <Text>
               Import of {dateToListenedAt(new Date(st.createdAt))}
-              <Text className={s.importertype}>
-                from
-                {st.type}
-              </Text>
+              <Text className={s.importertype}>from {st.type}</Text>
             </Text>
           }
           right={

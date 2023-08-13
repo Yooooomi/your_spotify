@@ -1,8 +1,10 @@
 .root {
-  height: 50px;
+  height: 60px;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
   text-align: center;
+}
+
+.text {
+  margin-top: 8px;
 }

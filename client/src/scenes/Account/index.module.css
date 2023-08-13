@@ -5,15 +5,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: var(--page-padding);
 }
 
 .title {
   margin-bottom: 32px;
   font-size: 4em;
+  text-align: center;
 }
 
 .welcome {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
 .link {

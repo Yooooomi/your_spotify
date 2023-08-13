@@ -12,7 +12,7 @@ import { User } from '../database/schemas/user';
 import { longWriteDbLock } from '../tools/lock';
 import { logger } from '../tools/logger';
 import { minOfArray, retryPromise, wait } from '../tools/misc';
-import { SpotifyAPI } from '../tools/spotifyApi';
+import { SpotifyAPI } from '../tools/apis/spotifyApi';
 import { saveMusics } from './dbTools';
 
 const loop = async (user: User) => {
@@ -54,7 +54,11 @@ const loop = async (user: User) => {
       const tracks = items.map(e => e.track);
       try {
         await saveMusics(user._id.toString(), tracks);
-        const infos: { played_at: Date; id: string }[] = [];
+        const infos: {
+          played_at: Date;
+          id: string;
+          blacklistedBy?: 'artist';
+        }[] = [];
         for (let i = 0; i < items.length; i += 1) {
           const item = items[i];
           const date = new Date(item.played_at);
@@ -65,9 +69,13 @@ const loop = async (user: User) => {
             30,
           );
           if (duplicate.length === 0) {
+            const isBlacklisted = user.settings.blacklistedArtists.find(
+              a => a === item.track.artists[0].id,
+            );
             infos.push({
               played_at: new Date(item.played_at),
               id: item.track.id,
+              ...(isBlacklisted ? { blacklistedBy: 'artist' } : {}),
             });
           }
         }
@@ -100,6 +108,7 @@ const reflect = (p: Promise<any>) =>
 const WAIT_SECONDS = 120;
 
 export const dbLoop = async () => {
+  // return;
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const nbUsers = await getUsersNb();

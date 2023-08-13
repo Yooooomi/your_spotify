@@ -116,3 +116,39 @@ export const playTrack = myAsyncThunk<void, string>(
     }
   },
 );
+
+export const blacklistArtist = myAsyncThunk<void, string>(
+  '@user/blacklist-artist',
+  async (payload, tapi) => {
+    try {
+      await api.blacklistArtist(payload);
+      tapi.dispatch(checkLogged());
+    } catch (e) {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: 'error',
+          message: 'Could not blacklist this artist',
+        }),
+      );
+    }
+  },
+);
+
+export const unblacklistArtist = myAsyncThunk<void, string>(
+  '@user/unblacklist-artist',
+  async (payload, tapi) => {
+    try {
+      await api.unblacklistArtist(payload);
+      tapi.dispatch(checkLogged());
+    } catch (e) {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: 'error',
+          message: 'Could not unblacklist this artist',
+        }),
+      );
+    }
+  },
+);

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Header from '../../components/Header';
@@ -21,9 +20,10 @@ export default function Home() {
   }
 
   return (
-    <div className={s.root}>
+    <div>
       <Header
         title={`Welcome, ${user.username} 🎉`}
+        tinyTitle="Welcome"
         subtitle="Here is what happened for the period you chose on the right"
       />
       <div className={s.content}>

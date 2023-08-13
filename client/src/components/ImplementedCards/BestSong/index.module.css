@@ -41,7 +41,6 @@
 
 .stats > strong {
   font-size: 1.4em;
-  color: var(--text-grey);
 }
 
 .statnumbers {
@@ -49,7 +48,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: -16px;
+  padding-bottom: 16px;
 }
 
 .stat {

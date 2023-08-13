@@ -13,11 +13,12 @@ import {
   Track,
   TrackWithAlbum,
   TrackInfo,
-  TrackInfoWithTrack,
+  TrackInfoWithFullTrack,
   SpotifyMe,
   CollaborativeMode,
   UnboxPromise,
   Genre,
+  TrackWithFullAlbum,
 } from '../types';
 
 const axios = Axios.create({
@@ -127,15 +128,6 @@ export type ArtistStatsResponse = {
     count: number;
     track: TrackWithAlbum;
   }[];
-  rank: {
-    index: number;
-    isMax: boolean;
-    isMin: boolean;
-    results: {
-      id: string;
-      count: number;
-    }[];
-  };
   total: {
     count: number;
   };
@@ -146,11 +138,32 @@ export type ArtistStatsResponse = {
   }[];
 };
 
+export type TrackStatsResponse = {
+  track: Track;
+  artist: Artist;
+  album: Album;
+  bestPeriod: {
+    _id: DateId;
+    count: number;
+    total: number;
+  }[];
+  firstLast: {
+    first: TrackInfo;
+    last: TrackInfo;
+  };
+  recentHistory: TrackInfo[];
+  total: {
+    count: number;
+  };
+};
+
 export const api = {
   publicToken: null as string | null,
 
+  version: () => get<{ update: boolean; version: string }>('/version'),
   spotify: () => get('/oauth/spotify'),
   logout: () => axios.post('/logout'),
+  // eslint-disable-next-line no-restricted-globals
   me: () => get<{ status: true; user: User } | { status: false }>('/me'),
   sme: () => get<SpotifyMe>('/oauth/spotify/me'),
   globalPreferences: () => get<GlobalPreferences>('/global/preferences'),
@@ -167,8 +180,8 @@ export const api = {
     axios.post('/spotify/play', {
       id,
     }),
-  getTracks: (number: number, offset: number, start?: Date, end?: Date) =>
-    get<TrackInfoWithTrack[]>('/spotify/gethistory', {
+  getTracks: (start: Date, end: Date, number: number, offset: number) =>
+    get<TrackInfoWithFullTrack[]>('/spotify/gethistory', {
       number,
       offset,
       start,
@@ -271,7 +284,7 @@ export const api = {
       end,
       timeSplit,
     }),
-  setSetting: (settingName: string, settingValue: any) =>
+  setSetting: (settingName: keyof User['settings'], settingValue: any) =>
     axios.post('/settings', {
       [settingName]: settingValue,
     }),
@@ -286,12 +299,24 @@ export const api = {
       start,
       end,
     }),
+  getAlbums: (ids: string[]) => get<Album[]>(`/album/${ids.join(',')}`),
   getArtists: (ids: string[]) => get<Artist[]>(`/artist/${ids.join(',')}`),
   getArtistStats: (id: string) =>
     get<ArtistStatsResponse | { code: 'NEVER_LISTENED' }>(
       `/artist/${id}/stats`,
     ),
-  searchArtists: (str: string) => get<Artist[]>(`/artist/search/${str}`),
+  getArtistRank: (id: string) =>
+    get<{
+      index: number;
+      isMax: boolean;
+      isMin: boolean;
+      results: {
+        id: string;
+        count: number;
+      }[];
+    }>(`/artist/${id}/rank`),
+  search: (str: string) =>
+    get<{ artists: Artist[]; tracks: TrackWithFullAlbum[] }>(`/search/${str}`),
   getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>
     get<
       {
@@ -470,6 +495,34 @@ export const api = {
     name: string | undefined,
     context: PlaylistContext,
   ) => post('/spotify/playlist/create', { playlistId: id, name, ...context }),
+  getTrackDetails: (ids: string[]) => get<Track[]>(`/track/${ids.join(',')}`),
+  getTrackStats: (id: string) =>
+    get<TrackStatsResponse | { code: 'NEVER_LISTENED' }>(`/track/${id}/stats`),
+  getTrackRank: (id: string) =>
+    get<{
+      index: number;
+      isMax: boolean;
+      isMin: boolean;
+      results: {
+        id: string;
+        count: number;
+      }[];
+    }>(`/track/${id}/rank`),
+  blacklistArtist: (artistId: string) => post(`/artist/blacklist/${artistId}`),
+  unblacklistArtist: (artistId: string) =>
+    post(`/artist/unblacklist/${artistId}`),
+  getLongestSessions: (start: Date, end: Date) =>
+    get<
+      {
+        sessionLength: number;
+        distanceToLast: {
+          distance: {
+            subtract: number;
+            info: TrackInfo & { track: Track };
+          }[];
+        };
+      }[]
+    >('/spotify/top/sessions', { start, end }),
 };
 
 export const DEFAULT_ITEMS_TO_LOAD = 20;

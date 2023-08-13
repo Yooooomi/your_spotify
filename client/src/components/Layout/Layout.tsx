@@ -1,59 +1,56 @@
-import React, { useCallback, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Drawer, IconButton, useMediaQuery } from '@mui/material';
-import { Menu } from '@mui/icons-material';
+import React, { useMemo, useState } from 'react';
+import { Drawer } from '@mui/material';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import s from './index.module.css';
 import Sider from './Sider';
 import { selectPublicToken } from '../../services/redux/modules/user/selector';
 import Text from '../Text';
+import { LayoutContext } from './LayoutContext';
+import { useSider } from './useSider';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const hideSideOnRoutes = ['/login', '/register'];
-
 export default function Layout({ children }: LayoutProps) {
   const [open, setOpen] = useState(false);
-  const { pathname } = useLocation();
-  const routeAllowsSider = !hideSideOnRoutes.includes(pathname);
-  const showSider = !useMediaQuery('(max-width: 900px)');
+  const { siderAllowed, siderIsDrawer } = useSider();
 
   const publicToken = useSelector(selectPublicToken);
 
-  const drawer = useCallback(() => {
-    setOpen(old => !old);
-  }, []);
+  const layoutContextValue = useMemo(
+    () => ({
+      openDrawer: () => setOpen(true),
+      closeDrawer: () => setOpen(false),
+    }),
+    [],
+  );
 
   return (
-    <div className={s.root}>
-      {routeAllowsSider && !showSider && (
-        <Drawer open={open} anchor="left" onClose={() => setOpen(false)}>
-          <Sider />
-        </Drawer>
-      )}
-      <section className={s.sider}>
-        {routeAllowsSider && showSider && <Sider />}
-      </section>
-      <section
-        className={clsx({
-          [s.content]: true,
-          [s.contentdrawer]: routeAllowsSider && showSider,
-        })}>
-        {publicToken && (
-          <div className={s.publictoken}>
-            <Text>You are viewing as guest</Text>
-          </div>
+    <LayoutContext.Provider value={layoutContextValue}>
+      <div className={s.root}>
+        {siderAllowed && siderIsDrawer && (
+          <Drawer open={open} anchor="left" onClose={() => setOpen(false)}>
+            <Sider isDrawer />
+          </Drawer>
         )}
-        {routeAllowsSider && !showSider && (
-          <IconButton onClick={drawer} className={s.drawerbutton}>
-            <Menu />
-          </IconButton>
-        )}
-        {children}
-      </section>
-    </div>
+        <section className={s.sider}>
+          {siderAllowed && !siderIsDrawer && <Sider />}
+        </section>
+        <section
+          className={clsx({
+            [s.content]: true,
+            [s.contentdrawer]: siderAllowed && !siderIsDrawer,
+          })}>
+          {publicToken && (
+            <div className={s.publictoken}>
+              <Text>You are viewing as guest</Text>
+            </div>
+          )}
+          {children}
+        </section>
+      </div>
+    </LayoutContext.Provider>
   );
 }

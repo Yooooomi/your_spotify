@@ -1,9 +1,8 @@
-import React from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { Skeleton } from '@mui/material';
 import { api } from '../../../services/apis/api';
-import { useAPI } from '../../../services/hooks';
+import { useAPI } from '../../../services/hooks/hooks';
 import { msToMinutes } from '../../../services/stats';
 import { getImage } from '../../../services/tools';
 import TitleCard from '../../TitleCard';
@@ -59,10 +58,8 @@ export default function BestArtist({ className }: BestArtistProps) {
           />
         </div>
         <div className={s.stats}>
-          <Text element="strong">
-            {res && <InlineArtist artist={res.artist} />}
-            {!res && <Text>No data</Text>}
-          </Text>
+          {res && <InlineArtist element="strong" artist={res.artist} />}
+          {!res && <Text element="strong">No data</Text>}
           <div className={s.statnumbers}>
             <Text className={s.stat}>
               <Text element="strong">{res?.count ?? 0}</Text> songs listened

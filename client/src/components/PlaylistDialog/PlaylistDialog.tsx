@@ -23,8 +23,8 @@ import {
   fetchPlaylists,
 } from '../../services/redux/modules/playlist/thunk';
 import { useAppDispatch } from '../../services/redux/tools';
-import { getAtLeastImage } from '../../services/tools';
 import Dialog from '../Dialog';
+import IdealImage from '../IdealImage';
 import LoadingButton from '../LoadingButton';
 import TabPanel from '../TabPanel';
 import Text from '../Text';
@@ -95,61 +95,57 @@ export default function PlaylistDialog() {
 
   return (
     <Dialog onClose={reset} open={open} title="Add to a playlist">
-      <div className={s.root}>
-        <Text className={s.text} element="div">
-          Either select a playlist to add the songs to, or create a new one.
-        </Text>
-        <Box borderBottom={1} borderColor="divider" className={s.tabs}>
-          <Tabs value={tab} onChange={(_, value) => setTab(value)}>
-            <Tab disableRipple label="Create" />
-            <Tab disableRipple label="Add to existing" />
-          </Tabs>
-        </Box>
-        <TabPanel index={0} value={tab}>
-          <div className={s.playlistName}>
-            <Input
-              fullWidth
-              placeholder="Name of the playlist..."
-              value={playlistName}
-              onChange={ev => setPlaylistName(ev.target.value)}
-            />
-          </div>
-        </TabPanel>
-        <TabPanel index={1} value={tab}>
-          <FormControl fullWidth>
-            <InputLabel id="playlist">Select a playlist</InputLabel>
-            <Select
-              classes={{ select: s.playlistItem }}
-              labelId="playlist"
-              label="Select a playlist"
-              className={s.playlistSelect}
-              value={selectedPlaylist}
-              onChange={ev => setSelectedPlaylist(ev.target.value)}>
-              {playlists?.map(playlist => (
-                <MenuItem key={playlist.id} value={playlist.id}>
-                  <img
-                    alt="playlist cover"
-                    className={s.playlistCover}
-                    src={getAtLeastImage(playlist.images, 50)}
-                  />
-                  {playlist.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </TabPanel>
-        {(context?.type === 'top' || context?.type === 'affinity') && (
-          <CountChooser value={context.nb} setValue={changeNumber} />
-        )}
-        <div className={s.button}>
-          <LoadingButton
-            loading={loading}
-            variant="contained"
-            onClick={add}
-            disabled={!canAdd}>
-            {selectedPlaylist ? 'Add' : 'Create'}
-          </LoadingButton>
-        </div>
+      <Text className={s.text} element="div">
+        Either select a playlist to add the songs to, or create a new one.
+      </Text>
+      <Box borderBottom={1} borderColor="divider" className={s.tabs}>
+        <Tabs value={tab} onChange={(_, value) => setTab(value)}>
+          <Tab label="Create" />
+          <Tab label="Add to existing" />
+        </Tabs>
+      </Box>
+      <TabPanel index={0} value={tab}>
+        <Input
+          fullWidth
+          placeholder="Name of the playlist..."
+          value={playlistName}
+          onChange={ev => setPlaylistName(ev.target.value)}
+        />
+      </TabPanel>
+      <TabPanel index={1} value={tab}>
+        <FormControl fullWidth>
+          <InputLabel id="playlist">Select a playlist</InputLabel>
+          <Select
+            classes={{ select: s.playlistItem }}
+            labelId="playlist"
+            label="Select a playlist"
+            value={selectedPlaylist}
+            onChange={ev => setSelectedPlaylist(ev.target.value)}>
+            {playlists?.map(playlist => (
+              <MenuItem key={playlist.id} value={playlist.id}>
+                <IdealImage
+                  alt="playlist cover"
+                  className={s.playlistCover}
+                  images={playlist.images}
+                  size={50}
+                />
+                {playlist.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </TabPanel>
+      {(context?.type === 'top' || context?.type === 'affinity') && (
+        <CountChooser value={context.nb} setValue={changeNumber} />
+      )}
+      <div className={s.button}>
+        <LoadingButton
+          loading={loading}
+          variant="contained"
+          onClick={add}
+          disabled={!canAdd}>
+          {selectedPlaylist ? 'Add' : 'Create'}
+        </LoadingButton>
       </div>
     </Dialog>
   );

@@ -5,6 +5,7 @@ import path from 'path';
 import { connect } from './database';
 import { MigrationModel } from './database/Models';
 import { logger } from './tools/logger';
+import { Database } from './tools/database';
 
 type Callback = (err: any, data: any) => void;
 export class MongoDbStore {
@@ -42,7 +43,8 @@ load(
     migrationsDirectory: path.join(__dirname, 'migrations'),
     stateStore: new MongoDbStore(),
   },
-  (err: any, set: MigrationSet) => {
+  async (err: any, set: MigrationSet) => {
+    await Database.startup();
     logger.info('Starting migrations');
     if (err) {
       logger.error(`Error ${err}`);

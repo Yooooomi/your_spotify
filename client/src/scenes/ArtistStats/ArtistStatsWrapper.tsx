@@ -1,9 +1,8 @@
 import { CircularProgress } from '@mui/material';
-import React from 'react';
 import { useParams } from 'react-router-dom';
 import ArtistStats from './ArtistStats';
 import { api } from '../../services/apis/api';
-import { useAPI } from '../../services/hooks';
+import { useAPI } from '../../services/hooks/hooks';
 import FullscreenCentered from '../../components/FullscreenCentered';
 import Text from '../../components/Text';
 
@@ -22,7 +21,7 @@ export default function ArtistStatsWrapper() {
     );
   }
 
-  if ('code' in stats) {
+  if ('code' in stats || !params.id) {
     return (
       <FullscreenCentered>
         <Text element="h3">
@@ -32,5 +31,5 @@ export default function ArtistStatsWrapper() {
     );
   }
 
-  return <ArtistStats stats={stats} />;
+  return <ArtistStats artistId={params.id} stats={stats} />;
 }

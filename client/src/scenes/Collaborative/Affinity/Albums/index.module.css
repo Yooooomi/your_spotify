@@ -12,9 +12,10 @@
   margin: auto;
 }
 
-.title {
-  text-align: center;
-  margin-bottom: 32px;
+@media screen and (max-width: 1250px) {
+  .content {
+    width: 95%;
+  }
 }
 
 .album {
@@ -34,6 +35,7 @@
   height: 48px;
   width: 48px;
   margin-right: 8px;
+  border-radius: var(--radius);
 }
 
 .albumname {

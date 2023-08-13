@@ -331,6 +331,14 @@ export const dateToListenedAt = (date: Date) => {
   )} at ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
+export const formatDateTime = (date: Date) => {
+  return `${
+    months[date.getMonth()]
+  } ${date.getDate()}, ${date.getFullYear()}  at ${pad(date.getHours())}:${pad(
+    date.getMinutes(),
+  )}`;
+};
+
 export const getLastPeriod = (start: Date, end: Date) => {
   const diff = end.getTime() - start.getTime();
   const oldStart = new Date(start.getTime() - diff);

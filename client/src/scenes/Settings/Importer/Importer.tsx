@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   CircularProgress,
   FormControl,
@@ -17,10 +17,14 @@ import { ImporterStateTypes } from '../../../services/redux/modules/import/types
 import FullPrivacy from './FullPrivacy';
 import Text from '../../../components/Text';
 import { useAppDispatch } from '../../../services/redux/tools';
+import TitleCard from '../../../components/TitleCard';
 
 const ImportTypeToComponent: Record<ImporterStateTypes, any> = {
-  privacy: Privacy,
-  'full-privacy': FullPrivacy,
+  privacy: { label: 'Account data', component: Privacy },
+  'full-privacy': {
+    label: 'Extended streaming history',
+    component: FullPrivacy,
+  },
 };
 
 export default function Importer() {
@@ -46,7 +50,7 @@ export default function Importer() {
     [imports],
   );
   const Component = useMemo(
-    () => (importType ? ImportTypeToComponent[importType] : null),
+    () => (importType ? ImportTypeToComponent[importType].component : null),
     [importType],
   );
 
@@ -55,16 +59,13 @@ export default function Importer() {
   }
 
   return (
-    <div>
+    <TitleCard title="Import data">
       <div>
         {running && (
           <div>
-            <Text>Importing...</Text>
-            <div className={s.progress}>
-              <Text>
-                {running.current} /{running.total}
-              </Text>
-            </div>
+            <Text className={s.progress}>
+              Importing {running.current} of {running.total}
+            </Text>
             <LinearProgress
               style={{ width: '100%' }}
               variant="determinate"
@@ -86,7 +87,7 @@ export default function Importer() {
               }>
               {Object.values(ImporterStateTypes).map(typ => (
                 <MenuItem value={typ} key={typ}>
-                  {typ}
+                  {ImportTypeToComponent[typ].label}
                 </MenuItem>
               ))}
             </Select>
@@ -95,6 +96,6 @@ export default function Importer() {
         </div>
       )}
       {imports.length > 0 && <ImportHistory />}
-    </div>
+    </TitleCard>
   );
 }

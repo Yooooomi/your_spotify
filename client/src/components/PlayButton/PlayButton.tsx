@@ -4,8 +4,8 @@ import clsx from 'clsx';
 import { useCallback } from 'react';
 import { playTrack } from '../../services/redux/modules/user/thunk';
 import { useAppDispatch } from '../../services/redux/tools';
-import { getAtLeastImage } from '../../services/tools';
 import { SpotifyImage } from '../../services/types';
+import IdealImage from '../IdealImage';
 import s from './index.module.css';
 
 interface PlayButtonProps {
@@ -23,9 +23,13 @@ export default function PlayButton({ id, covers, className }: PlayButtonProps) {
 
   return (
     <div className={clsx(s.root, className)}>
-      <img src={getAtLeastImage(covers, 48)} alt="cover" className={s.image} />
-      <IconButton onClick={play} className={s.button}>
-        <PlayArrow className={s.icon} fontSize="large" />
+      <IdealImage
+        images={covers}
+        size={48}
+        className={clsx('play-image', s.image)}
+      />
+      <IconButton onClick={play} className="play-button">
+        <PlayArrow className={s.icon} />
       </IconButton>
     </div>
   );

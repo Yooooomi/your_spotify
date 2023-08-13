@@ -12,9 +12,10 @@
   margin: auto;
 }
 
-.title {
-  text-align: center;
-  margin-bottom: 32px;
+@media screen and (max-width: 1250px) {
+  .content {
+    width: 95%;
+  }
 }
 
 .track {

@@ -8,7 +8,6 @@ import {
   Radio,
   RadioGroup,
   Select,
-  useMediaQuery,
 } from '@mui/material';
 import React, { useState, useCallback, useMemo } from 'react';
 import {
@@ -16,6 +15,7 @@ import {
   getAppropriateTimesplitFromRange,
   endOfDay,
 } from '../../services/date';
+import { useMobile } from '../../services/hooks/hooks';
 import {
   allIntervals,
   getAllIndexFromIntervalDetail,
@@ -40,7 +40,7 @@ export default function IntervalSelector({
   selectType,
   forceTiny,
 }: IntervalSelectorProps) {
-  const upmd = !useMediaQuery('(max-width: 1250px)') && !forceTiny;
+  const upmd = !useMobile()[1] && !forceTiny;
   const [open, setOpen] = useState(false);
   const [customIntervalDate, setCustomIntervalDate] = useState<Range>([
     undefined,
@@ -137,12 +137,10 @@ export default function IntervalSelector({
         open={open}
         onClose={() => setOpen(false)}>
         <div className={s.dialogcontent}>
-          <div>
-            <RangePicker
-              value={customIntervalDate}
-              onChange={setCustomIntervalDate}
-            />
-          </div>
+          <RangePicker
+            value={customIntervalDate}
+            onChange={setCustomIntervalDate}
+          />
           <Button variant="contained" onClick={setCustom} disabled={!goodRange}>
             Apply
           </Button>

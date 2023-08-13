@@ -22,6 +22,7 @@ module.exports = {
   ignorePatterns: ['.eslintrc.js'],
   plugins: ['@typescript-eslint'],
   rules: {
+    'no-restricted-globals': 'off',
     'max-classes-per-file': 'off',
     'consistent-return': 'off',
     'no-continue': 'off',
@@ -38,12 +39,12 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-param-reassign': 'off',
     '@typescript-eslint/no-unused-vars': [
-      "error",
-      { 
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_",
-        "caughtErrorsIgnorePattern": "^_"
-      }
-    ]
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      },
+    ],
   },
 };

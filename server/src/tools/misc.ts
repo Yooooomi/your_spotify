@@ -278,19 +278,26 @@ export const retryPromise = async <T>(
   max: number,
   time: number,
 ): Promise<T> => {
+  if (max <= 0) {
+    throw new Error('Cannot retry 0 times');
+  }
+
+  let lastError: Error | undefined;
   for (let i = 0; i < max; i += 1) {
     try {
       // eslint-disable-next-line no-await-in-loop
       const res = await fn();
       return res;
     } catch (e) {
+      lastError = e;
       logger.error(`Retrying crashed promise, ${i + 1}/${max}`, e);
       // eslint-disable-next-line no-await-in-loop
       await wait(time * 1000);
     }
   }
-  // Cannot happen
-  return null as any;
+  // lastError cannot be undefined here
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
+  throw lastError;
 };
 
 export const minOfArray = <T>(array: T[], fn: (item: T) => number) => {

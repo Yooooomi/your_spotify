@@ -21,7 +21,7 @@ The environment variables are the same as in the docker-compose for server, with
 
 - Go to the client directory and `yarn` in it
 - Run `yarn build`
-- In the build directory produced, copy `variables.js` into `variables-final.js` and replace the endpoint with the API_ENDPOINT, that is the endpoint of your backend
+- In the build directory produced, copy `variables-template.js` into `variables.js` and replace the endpoint with the API_ENDPOINT, that is the endpoint of your backend
 - Host the static website in the build directory the way you want, I personally use `serve`
 
 > Note that you need to redirect all 404 errors to index.html, serve does this by default.

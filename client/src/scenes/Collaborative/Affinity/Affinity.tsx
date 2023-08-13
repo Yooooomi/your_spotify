@@ -14,7 +14,7 @@ import {
   IntervalDetail,
   presetIntervals,
 } from '../../../services/intervals';
-import { useNavigateAndSearch } from '../../../services/hooks';
+import { useNavigateAndSearch } from '../../../services/hooks/hooks';
 import { AFFINITY_PREFIX } from './types';
 import Header from '../../../components/Header';
 

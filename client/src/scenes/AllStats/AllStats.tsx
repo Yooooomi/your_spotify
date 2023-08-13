@@ -1,5 +1,4 @@
 import { Grid } from '@mui/material';
-import React from 'react';
 import { useSelector } from 'react-redux';
 import Header from '../../components/Header';
 import ArtistListeningRepartition from '../../components/ImplementedCharts/ArtistListeningRepartition';

@@ -1,17 +1,19 @@
 import { CircularProgress } from '@mui/material';
+import clsx from 'clsx';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams, useSearchParams } from 'react-router-dom';
 import AddToPlaylist from '../../../../components/AddToPlaylist';
 import Header from '../../../../components/Header';
 import InlineArtist from '../../../../components/InlineArtist';
+import InlineTrack from '../../../../components/InlineTrack';
 import PlayButton from '../../../../components/PlayButton';
 import { DEFAULT_PLAYLIST_NB } from '../../../../components/PlaylistDialog/PlaylistDialog';
 import Text from '../../../../components/Text';
 import TrackOptions from '../../../../components/TrackOptions';
 import { api } from '../../../../services/apis/api';
 import { intervalToDisplay } from '../../../../services/date';
-import { useAPI } from '../../../../services/hooks';
+import { useAPI } from '../../../../services/hooks/hooks';
 import { useOldestListenedAtFromUsers } from '../../../../services/intervals';
 import { AdminAccount } from '../../../../services/redux/modules/admin/reducer';
 import { selectAccounts } from '../../../../services/redux/modules/admin/selector';
@@ -77,7 +79,7 @@ export default function Songs() {
   );
 
   return (
-    <div className={s.root}>
+    <div>
       <Header
         title="Affinity by song"
         subtitle={`Affinity computed between ${realIds
@@ -102,7 +104,9 @@ export default function Songs() {
           }
 
           return (
-            <div key={res.track.id} className={s.track}>
+            <div
+              key={res.track.id}
+              className={clsx('play-button-holder', s.track)}>
               <Text element="strong" className={s.ranking}>
                 #{index + 1}
               </Text>
@@ -112,7 +116,9 @@ export default function Songs() {
                 className={s.trackimage}
               />
               <div className={s.trackname}>
-                <Text element="div">{res.track.name}</Text>
+                <Text element="div">
+                  <InlineTrack track={res.track} />
+                </Text>
                 <Text className={s.artist}>
                   <InlineArtist artist={res.artist} />
                 </Text>
