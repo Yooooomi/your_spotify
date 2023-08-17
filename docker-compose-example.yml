@@ -1,32 +1,58 @@
 version: "3"
 
 services:
-  server:
-    image: yooooomi/your_spotify_server
+  app:
+    container_name: server
     restart: always
-    ports:
-      - "8080:8080"
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: development
+    entrypoint: "/app/scripts/run/run_dev.sh"
+    volumes:
+      - ./server/src/:/app/src/
     links:
       - mongo
     depends_on:
       - mongo
+    ports:
+      - "8080:8080"
     environment:
       API_ENDPOINT: http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
       CLIENT_ENDPOINT: http://localhost:3000
       SPOTIFY_PUBLIC: __your_spotify_client_id__
       SPOTIFY_SECRET: __your_spotify_secret__
-      CORS: http://localhost:3000,http://localhost:3001 # "all" if you want to allow every origin
+      LOG_LEVEL: debug
 
   mongo:
-    container_name: mongo
     image: mongo:6
+    restart: always
+    logging:
+      driver: none
     volumes:
-      - ./your_spotify_db:/data/db
+      - your_spotify_db:/data/db
+    ports:
+      - "27017:27017"
 
   web:
-    image: yooooomi/your_spotify_client
+    container_name: web
     restart: always
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: development
+    entrypoint: "/app/scripts/run/run_dev.sh"
+    volumes:
+      - ./client/src:/app/src/
+      - ./client/public:/app/public/
     ports:
       - "3000:3000"
     environment:
+      NODE_ENV: development
       API_ENDPOINT: http://localhost:8080
+
+volumes:
+  your_spotify_db:
+    external: true
