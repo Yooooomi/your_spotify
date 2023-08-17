@@ -2,7 +2,7 @@ version: "3"
 
 services:
   app:
-    container_name: server
+    container_name: your-spotify-server
     restart: always
     build:
       context: ./server
@@ -36,7 +36,7 @@ services:
       - "27017:27017"
 
   web:
-    container_name: web
+    container_name: your-spotify-web
     restart: always
     build:
       context: ./client
