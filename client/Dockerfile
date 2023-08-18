@@ -18,9 +18,9 @@ ENV NODE_ENV ${NODE_ENV:-production}
 
 RUN yarn --frozen-lockfile --dev
 
-COPY src/ src/
-COPY public/ public/
+#COPY src/ src/
+#COPY public/ public/
 
-RUN sh scripts/build/*.sh
+#RUN sh scripts/build/*.sh
 
-ENTRYPOINT [ "sh", "/app/scripts/run/run.sh" ]
+ENTRYPOINT [ "sh", "/app/scripts/run/run_dev.sh" ]

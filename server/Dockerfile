@@ -16,7 +16,7 @@ RUN sed -i 's@"extends": "../tsconfig.json",@@g' tsconfig.json
 
 RUN yarn --frozen-lockfile
 
-COPY src/ src/
+#COPY src/ src/
 COPY scripts/ scripts/
 
-ENTRYPOINT [ "sh", "scripts/run/run.sh" ]
+ENTRYPOINT [ "sh", "scripts/run/run_dev.sh" ]
