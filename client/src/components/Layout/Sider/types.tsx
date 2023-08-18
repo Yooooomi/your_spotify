@@ -110,7 +110,7 @@ export const links: SiderCategory[] = [
       },
       {
         label: 'Settings',
-        link: '/settings',
+        link: '/settings/account',
         icon: <SettingsOutlined />,
         iconOn: <Settings />,
       },
