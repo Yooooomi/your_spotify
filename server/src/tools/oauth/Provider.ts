@@ -19,8 +19,11 @@ export class Provider {
 }
 
 export class Spotify extends Provider {
-  static getRedirect = () => {
-    const { scopes } = credentials.spotify;
+  static getRedirect = (read_only: boolean = false) => {
+
+    const { scopesAll, scopesReadOnly } = credentials.spotify;
+    const scopes = read_only ? scopesReadOnly : scopesAll;
+    console.log(read_only, scopes);
     const { redirectUri } = credentials.spotify;
 
     return `https://accounts.spotify.com/authorize?response_type=code&client_id=${

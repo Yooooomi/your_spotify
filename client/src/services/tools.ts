@@ -18,8 +18,9 @@ export function getAtLeastImage(images: SpotifyImage[], size: number) {
   );
 }
 
-// @ts-ignore
-export const getSpotifyLogUrl = () => `${window.API_ENDPOINT}/oauth/spotify`;
+export const getSpotifyLogUrl = (readOnlyPermission: boolean = false) =>
+  // @ts-ignore
+  `${window.API_ENDPOINT}/oauth/spotify?read_only=${readOnlyPermission}`;
 
 export const compact = <T>(arr: (T | undefined)[]): T[] =>
   arr.filter(a => a != null) as T[];
