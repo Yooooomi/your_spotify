@@ -2,16 +2,8 @@ version: "3"
 
 services:
   app:
-    container_name: your-spotify-server
+    image: fabalexsie/your_spotify_server
     restart: always
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-      args:
-        NODE_ENV: development
-    entrypoint: "/app/scripts/run/run_dev.sh"
-    volumes:
-      - ./server/src/:/app/src/
     links:
       - mongo
     depends_on:
@@ -23,7 +15,6 @@ services:
       CLIENT_ENDPOINT: http://localhost:3000
       SPOTIFY_PUBLIC: __your_spotify_client_id__
       SPOTIFY_SECRET: __your_spotify_secret__
-      LOG_LEVEL: debug
 
   mongo:
     image: mongo:6
@@ -36,17 +27,8 @@ services:
       - "27017:27017"
 
   web:
-    container_name: your-spotify-web
+    image: fabalexsie/your_spotify_client
     restart: always
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-      args:
-        NODE_ENV: development
-    entrypoint: "/app/scripts/run/run_dev.sh"
-    volumes:
-      - ./client/src:/app/src/
-      - ./client/public:/app/public/
     ports:
       - "3000:3000"
     environment:

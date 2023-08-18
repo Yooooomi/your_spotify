@@ -105,6 +105,7 @@ dist
 docker-compose-personal.yml
 docker-compose-dev.yml
 docker-compose.yml
+docker-compose-prod.yml
 
 client/public/index.html
 client/public/variables.js
