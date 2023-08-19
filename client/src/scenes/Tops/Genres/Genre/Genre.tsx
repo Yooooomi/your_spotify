@@ -17,67 +17,49 @@ interface GenreProps {
 }
 
 function genreToImageAsBase64(genre: string) {
-  function stringToColor(inputString: string) {
-    // Simple hash function to convert the string into a numeric value
-    function hashString(input: string) {
-      let hash = 0;
-      for (let i = 0; i < input.length; i += 1) {
-        // eslint-disable-next-line no-bitwise
-        hash = input.charCodeAt(i) + (hash << 5) - hash;
-      }
-      return hash;
-    }
-
-    // Generate RGB color components from the hash value
-    function hashToColor(hash: number) {
-      // eslint-disable-next-line no-bitwise
-      const r = (hash & 0xff0000) >> 16;
-      // eslint-disable-next-line no-bitwise
-      const g = (hash & 0x00ff00) >> 8;
-      // eslint-disable-next-line no-bitwise
-      const b = hash & 0x0000ff;
-      return `rgb(${r},${g},${b})`;
-    }
-
-    const hashValue = hashString(inputString);
-    const color = hashToColor(hashValue);
-
-    return color;
+  // Calc hash from genre name
+  let hash = 0;
+  for (let i = 0; i < genre.length; i += 1) {
+    // eslint-disable-next-line no-bitwise
+    hash = genre.charCodeAt(i) + (hash << 5) - hash;
   }
 
-  function colorToImage(color: string, letter: string) {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+  // Generate RGB color components from the hash value
+  // eslint-disable-next-line no-bitwise
+  const r = (hash & 0xff0000) >> 16;
+  // eslint-disable-next-line no-bitwise
+  const g = (hash & 0x00ff00) >> 8;
+  // eslint-disable-next-line no-bitwise
+  const b = hash & 0x0000ff;
+  const color = `rgb(${r},${g},${b})`;
 
-    if (context) {
-      // Set canvas dimensions
-      const width = 50;
-      const height = 50;
-      canvas.width = width;
-      canvas.height = height;
+  // Create canvas with genre letter on top of a colored rectangle
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  if (context) {
+    // Set canvas dimensions
+    const width = 48; // commonUnits.cover
+    const height = 48;
+    canvas.width = width;
+    canvas.height = height;
 
-      // Draw colored rectangle
-      context.fillStyle = color;
-      context.fillRect(0, 0, width, height);
+    // Draw colored rectangle
+    context.fillStyle = color;
+    context.fillRect(0, 0, width, height);
 
-      // Draw letter on top of the rectangle
-      context.font = '30px Arial';
-      context.fillStyle = 'white';
-      context.textAlign = 'center';
-      context.textBaseline = 'middle';
-      context.fillText(letter.toUpperCase(), width / 2, height / 2);
+    // Draw letter on top of the rectangle
+    context.font = '30px Arial';
+    context.fillStyle = 'white';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(genre[0].toUpperCase(), width / 2, height / 2);
 
-      // Convert canvas to image data URL
-      const imageDataURL = canvas.toDataURL();
+    // Convert canvas to image data URL
+    const imageDataURL = canvas.toDataURL();
 
-      return imageDataURL;
-    }
-    return '/no_data_faded.png'; // from tools.ts
+    return imageDataURL;
   }
-
-  const color = stringToColor(genre);
-  const image = colorToImage(color, genre[0]);
-  return image;
+  return '/no_data_faded.png'; // from tools.ts
 }
 
 export default function Genre({
