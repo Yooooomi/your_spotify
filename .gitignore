@@ -103,5 +103,12 @@ dist
 # TernJS port file
 .tern-port
 docker-compose-personal.yml
+docker-compose-dev.yml
+docker-compose.yml
+docker-compose-prod.yml
+
 client/public/index.html
 client/public/variables.js
+
+# VSCode files
+.vscode/
