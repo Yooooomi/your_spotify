@@ -1,8 +1,8 @@
-import { PlayArrow } from '@mui/icons-material';
+import { Queue } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import clsx from 'clsx';
 import { useCallback } from 'react';
-import { playTrack } from '../../services/redux/modules/user/thunk';
+import { addToQueue } from '../../services/redux/modules/user/thunk';
 import { useAppDispatch } from '../../services/redux/tools';
 import { SpotifyImage } from '../../services/types';
 import IdealImage from '../IdealImage';
@@ -18,7 +18,7 @@ export default function PlayButton({ id, covers, className }: PlayButtonProps) {
   const dispatch = useAppDispatch();
 
   const play = useCallback(() => {
-    dispatch(playTrack(id));
+    dispatch(addToQueue(id));
   }, [dispatch, id]);
 
   return (
@@ -29,7 +29,7 @@ export default function PlayButton({ id, covers, className }: PlayButtonProps) {
         className={clsx('play-image', s.image)}
       />
       <IconButton onClick={play} className="play-button">
-        <PlayArrow className={s.icon} />
+        <Queue className={s.icon} />
       </IconButton>
     </div>
   );

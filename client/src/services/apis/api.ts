@@ -180,6 +180,10 @@ export const api = {
     axios.post('/spotify/play', {
       id,
     }),
+  addToQueue: (id: string) =>
+    axios.post('/spotify/addtoqueue', {
+      id,
+    }),
   getTracks: (start: Date, end: Date, number: number, offset: number) =>
     get<TrackInfoWithFullTrack[]>('/spotify/gethistory', {
       number,
