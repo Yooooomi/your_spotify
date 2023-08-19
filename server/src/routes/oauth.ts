@@ -28,7 +28,7 @@ router.get('/spotify', async (req, res) => {
     res.cookie('token', token);
     return res.status(204).end();
   }
-  res.redirect(Spotify.getRedirect());
+  res.redirect(Spotify.getRedirect(req.query.read_only === 'true'));
 });
 
 router.get('/spotify/callback', withGlobalPreferences, async (req, res) => {
