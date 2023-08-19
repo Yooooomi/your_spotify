@@ -16,9 +16,11 @@ import {
   getBestSongsNbOffseted,
   getBestArtistsNbOffseted,
   getBestAlbumsNbOffseted,
+  getBestGenresNbOffseted,
   getBestSongsOfHour,
   getBestAlbumsOfHour,
   getBestArtistsOfHour,
+  getBestGenresOfHour,
   getLongestListeningSession,
 } from '../database';
 import {
@@ -396,6 +398,32 @@ router.get(
 );
 
 router.get(
+  '/top/genres',
+  validating(intervalPerSchemaNbOffset, 'query'),
+  isLoggedOrGuest,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end, nb, offset } = req.query as TypedPayload<
+      typeof intervalPerSchemaNbOffset
+    >;
+
+    try {
+      const result = await getBestGenresNbOffseted(
+        user,
+        start,
+        end,
+        nb,
+        offset,
+      );
+      return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.get(
   '/top/albums',
   validating(intervalPerSchemaNbOffset, 'query'),
   isLoggedOrGuest,
@@ -515,6 +543,26 @@ router.get(
     try {
       const result = await getBestSongsOfHour(user, start, end);
       return res.status(200).send(result);
+    } catch (e) {
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
+router.get(
+  '/top/hour-repartition/genres',
+  validating(interval, 'query'),
+  isLoggedOrGuest,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end } = req.query as TypedPayload<
+      typeof collaborativeSchema
+    >;
+
+    try {
+      const resultBestGenres = await getBestGenresOfHour(user, start, end);
+      return res.status(200).send(resultBestGenres);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();

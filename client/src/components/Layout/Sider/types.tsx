@@ -15,6 +15,8 @@ import {
   ExitToApp,
   Share,
   ShareOutlined,
+  CategoryOutlined,
+  Category,
   Speed,
   SpeedOutlined,
 } from '@mui/icons-material';
@@ -76,6 +78,12 @@ export const links: SiderCategory[] = [
         link: '/top/albums',
         icon: <AlbumOutlined />,
         iconOn: <Album />,
+      },
+      {
+        label: 'Top genres',
+        link: '/top/genres',
+        icon: <CategoryOutlined />,
+        iconOn: <Category />,
       },
     ],
   },

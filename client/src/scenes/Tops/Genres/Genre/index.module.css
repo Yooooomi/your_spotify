@@ -1,0 +1,11 @@
+.row {
+  height: 48px;  
+}
+
+.header {
+  margin-bottom: 16px;
+}
+
+.cover {
+  border-radius: var(--radius);
+}

@@ -17,6 +17,7 @@ import {
   SpotifyMe,
   CollaborativeMode,
   UnboxPromise,
+  Genre,
   TrackWithFullAlbum,
 } from '../types';
 
@@ -349,6 +350,21 @@ export const api = {
       nb,
       offset,
     }),
+  getBestGenres: (start: Date, end: Date, nb: number, offset: number) =>
+    get<
+      {
+        count: number;
+        duration_ms: number;
+        total_count: number;
+        total_duration_ms: number;
+        genre: Genre;
+      }[]
+    >('/spotify/top/genres', {
+      start,
+      end,
+      nb,
+      offset,
+    }),
   getBestAlbums: (start: Date, end: Date, nb: number, offset: number) =>
     get<
       {
@@ -449,6 +465,14 @@ export const api = {
         tracks: { count: number; track: Track; artist: Artist }[];
       }[]
     >('/spotify/top/hour-repartition/songs', { start, end }),
+  getBestGenresOfHour: (start: Date, end: Date) =>
+    get<
+      {
+        _id: number;
+        total: number;
+        genres: { count: number; genre: { id: string; name: string } }[];
+      }[]
+    >('/spotify/top/hour-repartition/genres', { start, end }),
   getBestAlbumsOfHour: (start: Date, end: Date) =>
     get<
       {

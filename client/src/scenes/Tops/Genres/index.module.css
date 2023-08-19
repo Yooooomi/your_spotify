@@ -1,0 +1,5 @@
+@media screen and (min-width: 960px) {
+  .content {
+    padding: var(--page-padding);
+  }
+}
