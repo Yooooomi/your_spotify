@@ -75,6 +75,15 @@ export class SpotifyAPI {
     });
   }
 
+  public async addToQueue(trackUri: string) {
+    await squeue.queue(async () => {
+      await this.checkToken();
+      return this.client.post(
+        `https://api.spotify.com/v1/me/player/queue?uri=${trackUri}`,
+      );
+    });
+  }
+
   public async me() {
     const res = await squeue.queue(async () => {
       await this.checkToken();

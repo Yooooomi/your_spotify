@@ -117,6 +117,48 @@ export const playTrack = myAsyncThunk<void, string>(
   },
 );
 
+export const addToQueue = myAsyncThunk<void, string>(
+  '@user/play-track',
+  async (payload, tapi) => {
+    try {
+      await api.addToQueue(payload);
+      tapi.dispatch(
+        alertMessage({
+          level: 'success',
+          message: 'Successfully added the song to the waiting queue',
+        }),
+      );
+    } catch (e: any) {
+      const reason = e?.response?.data?.reason;
+      if (reason === 'NO_ACTIVE_DEVICE') {
+        tapi.dispatch(
+          alertMessage({
+            level: 'info',
+            message:
+              'Could not add the song to the waiting queue, no active player detected',
+          }),
+        );
+      } else if (reason === 'PREMIUM_REQUIRED') {
+        tapi.dispatch(
+          alertMessage({
+            level: 'error',
+            message:
+              'You cannot add a song to the waiting queue from the platform without a premium account',
+          }),
+        );
+      } else {
+        console.error(e);
+        tapi.dispatch(
+          alertMessage({
+            level: 'error',
+            message: 'Could not add song to the waiting queue',
+          }),
+        );
+      }
+    }
+  },
+);
+
 export const blacklistArtist = myAsyncThunk<void, string>(
   '@user/blacklist-artist',
   async (payload, tapi) => {

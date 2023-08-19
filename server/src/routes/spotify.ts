@@ -76,6 +76,36 @@ router.post(
   },
 );
 
+const addToQueueSchema = z.object({
+  id: z.string(),
+});
+
+router.post(
+  '/addtoqueue',
+  validating(addToQueueSchema),
+  logged,
+  withHttpClient,
+  async (req, res) => {
+    const { client } = req as SpotifyRequest;
+    const { id } = req.body as TypedPayload<typeof addToQueueSchema>;
+
+    try {
+      const track = await getTrackBySpotifyId(id);
+
+      if (!track) return res.status(400).end();
+      await client.addToQueue(track.uri);
+      return res.status(200).end();
+    } catch (e) {
+      if (e.response) {
+        logger.error(e.response.data);
+        return res.status(400).send(e.response.data.error);
+      }
+      logger.error(e);
+      return res.status(500).end();
+    }
+  },
+);
+
 const gethistorySchema = z.object({
   number: z.preprocess(toNumber, z.number().max(20)),
   offset: z.preprocess(toNumber, z.number()),
