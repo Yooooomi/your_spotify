@@ -150,7 +150,7 @@ The import process uses cache to limit requests to the Spotify API. By default, 
 
 - Request your **Full privacy data** to have access to your history data since the creation of the account [here](https://www.spotify.com/us/account/privacy/).
 - Head to the **Settings** page and choose the **Extended streaming history** method.
-- Input your files starting with `endsongX.json`.
+- Input your files starting with `endsongX.json` or `Streaming_History_Audio_X.json`.
 - Start your import.
 
 ## Troubleshoot
