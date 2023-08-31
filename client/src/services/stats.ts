@@ -15,7 +15,12 @@ export const fresh = (d: Date, eraseHour = false) => {
 
 export const buildFromDateId = (dateId: DateId) => {
   const date = fresh(
-    new Date(dateId.year, dateId.month ?? 1, dateId.day ?? 1, dateId.hour ?? 0),
+    new Date(
+      dateId.year,
+      (dateId.month ?? 1) - 1,
+      dateId.day ?? 1,
+      dateId.hour ?? 0,
+    ),
   );
   return date;
 };
