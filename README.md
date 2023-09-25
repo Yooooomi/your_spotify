@@ -97,6 +97,7 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | PORT                  | 8080 | The port of the server, do not modify if you're using docker |
 | TIMEZONE              | Europe/Paris | The timezone of your stats, only affects read requests since data is saved with UTC time |
 | LOG_LEVEL             | info | The log level, debug is useful if you encouter any bugs |
+| COOKIE_VALIDITY_MS | 1h | Validity time of the authentication cookie, following [this pattern](https://github.com/vercel/ms) |
 
 ## CORS
 

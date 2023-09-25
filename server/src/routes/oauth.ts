@@ -6,7 +6,7 @@ import {
   getUserFromField,
   storeInUser,
 } from '../database';
-import { get } from '../tools/env';
+import { get, getWithDefault } from '../tools/env';
 import { logger } from '../tools/logger';
 import {
   logged,
@@ -23,7 +23,7 @@ router.get('/spotify', async (req, res) => {
   const isOffline = get('OFFLINE_DEV_ID');
   if (isOffline) {
     const token = sign({ userId: isOffline }, 'MyPrivateKey', {
-      expiresIn: '1h',
+      expiresIn: getWithDefault('COOKIE_VALIDITY_MS', '1h'),
     });
     res.cookie('token', token);
     return res.status(204).end();

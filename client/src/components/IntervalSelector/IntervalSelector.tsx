@@ -1,4 +1,4 @@
-import { Settings } from '@mui/icons-material';
+import { Settings, SettingsOutlined } from '@mui/icons-material';
 import {
   SelectProps,
   Button,
@@ -99,9 +99,7 @@ export default function IntervalSelector({
           ))}
         </RadioGroup>
         <IconButton size="small" onClick={() => setOpen(true)}>
-          <Settings
-            style={{ color: existingInterval === -1 ? '#000000' : undefined }}
-          />
+          {existingInterval === -1 ? <Settings /> : <SettingsOutlined />}
         </IconButton>
       </div>
     );
