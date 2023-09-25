@@ -15,6 +15,7 @@ const validators = {
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).optional(),
   NODE_ENV: z.enum(['production', 'development']).optional(),
   OFFLINE_DEV_ID: z.string().optional(),
+  COOKIE_VALIDITY_MS: z.string().optional(),
 } as const;
 
 const env: Record<string, any> = {};

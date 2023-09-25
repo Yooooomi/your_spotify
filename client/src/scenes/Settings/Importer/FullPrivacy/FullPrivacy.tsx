@@ -24,7 +24,7 @@ export default function FullPrivacy() {
       return false;
     }
     return Array.from(Array(files.length).keys()).some(
-      i => !files.item(i)?.name.startsWith('endsong'),
+      i => !files.item(i)?.name.startsWith('Streaming_History_Audio'),
     );
   }, [files]);
 
@@ -34,10 +34,11 @@ export default function FullPrivacy() {
         Here you can import previous data from Spotify privacy data. This is the
         data you requested by mail specifically asking for extended data. It
         usually takes a few weeks for them to get back to you. Once received,
-        upload here your files beginning with <code>endsong</code>
+        upload here your files beginning with&nbsp;
+        <code>Streaming_History_Audio</code>
         .
         <br />
-        Read more{' '}
+        Read more&nbsp;
         <a
           target="_blank"
           href="https://www.spotify.com/account/privacy/"
@@ -54,7 +55,9 @@ export default function FullPrivacy() {
           style={{ display: 'none' }}
           onChange={ev => setFiles(ev.target.files)}
         />
-        <Button component="span">Select your endsongX.json files</Button>
+        <Button component="span">
+          Select your Streaming_History_Audio.json files
+        </Button>
       </label>
       {files &&
         Array.from(Array(files.length).keys()).map(i => (
@@ -62,8 +65,8 @@ export default function FullPrivacy() {
         ))}
       {wrongFiles && (
         <Text className={s.alert}>
-          Some file do not being with <code>endsong</code>, import might not
-          work
+          Some file do not being with <code>Streaming_History_Audio</code>,
+          import might not work
         </Text>
       )}
       {files && !wrongFiles && (

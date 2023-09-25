@@ -6,6 +6,7 @@ import { setAdmin } from '../../../services/redux/modules/admin/thunk';
 import { selectAccounts } from '../../../services/redux/modules/admin/selector';
 import { useAppDispatch } from '../../../services/redux/tools';
 import TitleCard from '../../../components/TitleCard';
+import { alertMessage } from '../../../services/redux/modules/message/reducer';
 
 export default function SetAdmin() {
   const dispatch = useAppDispatch();
@@ -15,7 +16,16 @@ export default function SetAdmin() {
     async (id: string, status: boolean) => {
       try {
         dispatch(setAdmin({ id, status }));
-      } catch (e) {
+      } catch (e: any) {
+        if (e?.response?.data?.code === 'CANNOT_HAVE_ZERO_ADMIN') {
+          dispatch(
+            alertMessage({
+              level: 'error',
+              message:
+                'Cannot have less than one administrator of the platform',
+            }),
+          );
+        }
         console.error(e);
       }
     },

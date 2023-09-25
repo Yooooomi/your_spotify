@@ -1,4 +1,9 @@
-import { getAllUsers, getPossibleDuplicates, deleteInfos } from '../database';
+import {
+  getAllUsers,
+  getPossibleDuplicates,
+  deleteInfos,
+  getUserInfoCount,
+} from '../database';
 import {
   getCompatibilityVersion,
   getMongoInfos,
@@ -30,9 +35,9 @@ export class Database {
     await setFeatureCompatibilityVersion(`${major}.${minor ?? 0}`);
   }
 
-  static async repair() {
+  static async fixMissingTrackData() {
     await longWriteDbLock.lock();
-    logger.info('Checking database...');
+    logger.info('Checking database for missing track data...');
     const user = await getAdminUser();
     if (!user) {
       logger.warn('No user is admin, cannot auto fix database');
@@ -61,20 +66,31 @@ export class Database {
     const users = await getAllUsers();
     const allToDelete = new Set<string>();
 
+    const duplicateBatch = 10_000;
+
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users) {
       // eslint-disable-next-line no-await-in-loop
-      const duplicates = await getPossibleDuplicates(user._id.toString(), 30);
-      const nbDuplicates = duplicates.reduce((acc, curr) => {
-        curr.duplicates.forEach((duplicate: any) => {
-          allToDelete.add(duplicate[1]._id.toString());
-        });
-        return acc + curr.duplicates.length;
-      }, 0);
-      if (nbDuplicates > 0) {
-        console.log(
-          `Removing ${nbDuplicates} duplicates for user ${user.username}`,
+      const infoCountForUser = await getUserInfoCount(user._id.toString());
+      for (let i = 0; i < infoCountForUser; i += 1) {
+        // eslint-disable-next-line no-await-in-loop
+        const duplicates = await getPossibleDuplicates(
+          user._id.toString(),
+          30,
+          duplicateBatch,
+          i * duplicateBatch,
         );
+        const nbDuplicates = duplicates.reduce((acc, curr) => {
+          curr.duplicates.forEach((duplicate: any) => {
+            allToDelete.add(duplicate[1]._id.toString());
+          });
+          return acc + curr.duplicates.length;
+        }, 0);
+        if (nbDuplicates > 0) {
+          console.log(
+            `Removing ${nbDuplicates} duplicates for user ${user.username}`,
+          );
+        }
       }
     }
     await deleteInfos([...allToDelete.values()]);
@@ -82,7 +98,7 @@ export class Database {
 
   static async startup() {
     await Database.detectUpgrade();
-    await Database.repair();
+    await Database.fixMissingTrackData();
     await Database.deletePossibleDuplicates();
   }
 }

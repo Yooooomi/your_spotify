@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Text from '../../../components/Text';
@@ -19,14 +19,14 @@ export default function Login() {
   return (
     <div className={s.root}>
       <Text element="h1" className={s.title}>
-        Your Spotify
+        Login
       </Text>
       <Text className={s.welcome}>
-        To access your personal dashboard, please login through Spotify
+        To access your personal dashboard, please login with your account
       </Text>
       <div>
         <a className={s.link} href={getSpotifyLogUrl()}>
-          Login with Spotify
+          Login
         </a>
       </div>
     </div>

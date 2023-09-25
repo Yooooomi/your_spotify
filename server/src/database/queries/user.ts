@@ -121,13 +121,21 @@ export const getCloseTrackId = async (
   });
 };
 
+export const getUserInfoCount = async (userId: string) => {
+  return InfosModel.count({ owner: new Types.ObjectId(userId) });
+};
+
 export const getPossibleDuplicates = async (
   userId: string,
   secondsPlusMinus: number,
+  count: number,
+  offset: number,
 ) => {
   return InfosModel.aggregate([
     { $match: { owner: new Types.ObjectId(userId) } },
     { $sort: { played_at: 1 } },
+    { $skip: offset },
+    { $limit: count },
     {
       $group: {
         _id: '$id',
@@ -315,6 +323,8 @@ export const getFirstInfo = async (userId: string) => {
     .limit(1);
   return infos[0];
 };
+
+export const getAllAdmins = () => UserModel.find({ admin: true });
 
 export const setUserAdmin = (userId: string, admin: boolean) =>
   UserModel.findByIdAndUpdate(userId, { admin });

@@ -9,7 +9,7 @@ import { dbLoop } from '../spotify/looper';
 import app from '../app';
 import { logger } from '../tools/logger';
 import { checkBlacklistConsistency, connect } from '../database';
-import { getWithDefault } from '../tools/env';
+import { get, getWithDefault } from '../tools/env';
 import { fixRunningImportsAtStart } from '../database/queries/importer';
 
 /**
@@ -71,5 +71,11 @@ connect().then(async () => {
   server.on('listening', onListening);
   fixRunningImportsAtStart().catch(logger.error);
   checkBlacklistConsistency().catch(logger.error);
+  const domain = get('CLIENT_ENDPOINT');
+  if (domain.toLowerCase().includes('spotify')) {
+    logger.warn(
+      'Spotify was detected in CLIENT_ENDPOINT, Google might mark your entire domain as deceptive. https://github.com/Yooooomi/your_spotify/pull/254',
+    );
+  }
   dbLoop().catch(logger.error);
 });

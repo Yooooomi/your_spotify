@@ -11,6 +11,7 @@ import {
 } from '../tools/middleware';
 import {
   changeSetting,
+  getAllAdmins,
   getAllUsers,
   getUserFromField,
   setUserAdmin,
@@ -135,6 +136,10 @@ router.put(
     const { status } = req.body as TypedPayload<typeof setAdminBody>;
 
     try {
+      const users = await getAllAdmins();
+      if (users.length <= 1) {
+        return res.status(400).send({ code: 'CANNOT_HAVE_ZERO_ADMIN' });
+      }
       await setUserAdmin(id, status);
       return res.status(204).end();
     } catch (e) {
