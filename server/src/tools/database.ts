@@ -66,7 +66,7 @@ export class Database {
     const users = await getAllUsers();
     const allToDelete = new Set<string>();
 
-    const duplicateBatch = 10_000;
+    const duplicateBatch = 50_000;
 
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users) {
