@@ -72,13 +72,13 @@ export class Database {
     for (const user of users) {
       // eslint-disable-next-line no-await-in-loop
       const infoCountForUser = await getUserInfoCount(user._id.toString());
-      for (let i = 0; i < infoCountForUser; i += 1) {
+      for (let i = 0; i < infoCountForUser; i += duplicateBatch) {
         // eslint-disable-next-line no-await-in-loop
         const duplicates = await getPossibleDuplicates(
           user._id.toString(),
           30,
           duplicateBatch,
-          i * duplicateBatch,
+          i,
         );
         const nbDuplicates = duplicates.reduce((acc, curr) => {
           curr.duplicates.forEach((duplicate: any) => {
