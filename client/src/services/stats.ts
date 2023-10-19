@@ -14,11 +14,14 @@ export const fresh = (d: Date, eraseHour = false) => {
 };
 
 export const buildFromDateId = (dateId: DateId) => {
-  const date = fresh(new Date());
-  date.setFullYear(dateId.year);
-  date.setMonth((dateId.month ?? 1) - 1);
-  date.setDate(dateId.day ?? 1);
-  date.setHours(dateId.hour ?? 0);
+  const date = fresh(
+    new Date(
+      dateId.year,
+      (dateId.month ?? 1) - 1,
+      dateId.day ?? 1,
+      dateId.hour ?? 0,
+    ),
+  );
   return date;
 };
 
