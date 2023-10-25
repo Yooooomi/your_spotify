@@ -3,7 +3,7 @@ version: "3"
 services:
   app:
     image: fabalexsie/your_spotify_server
-    restart: always
+    restart: unless-stopped
     links:
       - mongo
     depends_on:
@@ -18,7 +18,7 @@ services:
 
   mongo:
     image: mongo:6
-    restart: always
+    restart: unless-stopped
     logging:
       driver: none
     volumes:
@@ -28,7 +28,7 @@ services:
 
   web:
     image: fabalexsie/your_spotify_client
-    restart: always
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
