@@ -276,7 +276,7 @@ export function beforeParenthesis(str: string) {
 export const retryPromise = async <T>(
   fn: () => Promise<T>,
   max: number,
-  time: number,
+  timeSeconds: number,
 ): Promise<T> => {
   if (max <= 0) {
     throw new Error('Cannot retry 0 times');
@@ -284,15 +284,22 @@ export const retryPromise = async <T>(
 
   let lastError: Error | undefined;
   for (let i = 0; i < max; i += 1) {
+    const isLastTry = i === max - 1;
     try {
       // eslint-disable-next-line no-await-in-loop
       const res = await fn();
       return res;
     } catch (e) {
       lastError = e;
-      logger.error(`Retrying crashed promise, ${i + 1}/${max}`, e);
+      logger.error(
+        `Retrying crashed promise, ${i + 1}/${max}${
+          isLastTry ? '' : `, retrying in ${timeSeconds} seconds...`
+        }`,
+      );
+    }
+    if (!isLastTry) {
       // eslint-disable-next-line no-await-in-loop
-      await wait(time * 1000);
+      await wait(timeSeconds * 1000);
     }
   }
   // lastError cannot be undefined here

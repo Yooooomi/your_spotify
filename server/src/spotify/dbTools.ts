@@ -1,10 +1,18 @@
+import mongoose from 'mongoose';
 import { TrackModel, AlbumModel, ArtistModel } from '../database/Models';
 import { SpotifyAlbum, Album } from '../database/schemas/album';
 import { SpotifyArtist, Artist } from '../database/schemas/artist';
 import { SpotifyTrack, Track } from '../database/schemas/track';
 import { logger } from '../tools/logger';
-import { retryPromise } from '../tools/misc';
+import { minOfArray, retryPromise } from '../tools/misc';
 import { SpotifyAPI } from '../tools/apis/spotifyApi';
+import {
+  addTrackIdsToUser,
+  storeInUser,
+  storeFirstListenedAtIfLess,
+} from '../database';
+import { Infos } from '../database/schemas/info';
+import { longWriteDbLock } from '../tools/lock';
 
 const getIdsHandlingMax = async <
   T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist,
@@ -37,7 +45,7 @@ const getIdsHandlingMax = async <
 
 const url = 'https://api.spotify.com/v1/tracks';
 
-const storeTracksAndReturnAlbumsArtists = async (
+const getTracksAndRelatedAlbumArtists = async (
   userId: string,
   ids: string[],
 ) => {
@@ -49,8 +57,8 @@ const storeTracksAndReturnAlbumsArtists = async (
     'tracks',
   );
 
-  const artistIds: string[] = [];
-  const albumIds: string[] = [];
+  const artistIds: Set<string> = new Set();
+  const albumIds: Set<string> = new Set();
 
   const tracks: Track[] = spotifyTracks.map<Track>(track => {
     logger.info(
@@ -58,14 +66,9 @@ const storeTracksAndReturnAlbumsArtists = async (
     );
 
     track.artists.forEach(art => {
-      if (!artistIds.includes(art.id)) {
-        artistIds.push(art.id);
-      }
+      artistIds.add(art.id);
     });
-
-    if (!albumIds.includes(track.album.id)) {
-      albumIds.push(track.album.id);
-    }
+    albumIds.add(track.album.id);
 
     return {
       ...track,
@@ -74,17 +77,18 @@ const storeTracksAndReturnAlbumsArtists = async (
     };
   });
 
-  await TrackModel.create(tracks).catch(() => {});
+  // await TrackModel.create(tracks).catch(() => {});
 
   return {
-    artists: artistIds,
-    albums: albumIds,
+    tracks,
+    artists: [...artistIds.values()],
+    albums: [...albumIds.values()],
   };
 };
 
 const albumUrl = 'https://api.spotify.com/v1/albums';
 
-export const storeAlbums = async (userId: string, ids: string[]) => {
+export const getAlbums = async (userId: string, ids: string[]) => {
   const spotifyAlbums = await getIdsHandlingMax<SpotifyAlbum>(
     userId,
     albumUrl,
@@ -104,13 +108,13 @@ export const storeAlbums = async (userId: string, ids: string[]) => {
     };
   });
 
-  await AlbumModel.create(albums).catch(() => {});
+  return albums;
 };
 
 const artistUrl = 'https://api.spotify.com/v1/artists';
 
-export const storeArtists = async (userId: string, ids: string[]) => {
-  const artists = await getIdsHandlingMax<SpotifyTrack>(
+export const getArtists = async (userId: string, ids: string[]) => {
+  const artists = await getIdsHandlingMax<Artist>(
     userId,
     artistUrl,
     ids,
@@ -122,11 +126,14 @@ export const storeArtists = async (userId: string, ids: string[]) => {
     logger.info(`Storing non existing artist ${artist.name}`),
   );
 
-  await ArtistModel.create(artists).catch(() => {});
+  return artists;
 };
 
-export const saveMusics = async (userId: string, tracks: SpotifyTrack[]) => {
-  const ids = tracks.map(track => track.id);
+export const getTracksAlbumsArtists = async (
+  userId: string,
+  spotifyTracks: SpotifyTrack[],
+) => {
+  const ids = spotifyTracks.map(track => track.id);
   const storedTracks: Track[] = await TrackModel.find({ id: { $in: ids } });
   const missingTrackIds = ids.filter(
     id => !storedTracks.find(stored => stored.id.toString() === id.toString()),
@@ -134,30 +141,94 @@ export const saveMusics = async (userId: string, tracks: SpotifyTrack[]) => {
 
   if (missingTrackIds.length === 0) {
     logger.info('No missing tracks, passing...');
-    return;
+    return {
+      tracks: [],
+      albums: [],
+      artists: [],
+    };
   }
 
-  const { artists, albums } = await storeTracksAndReturnAlbumsArtists(
-    userId,
-    missingTrackIds,
-  );
+  const {
+    tracks,
+    artists: relatedArtists,
+    albums: relatedAlbums,
+  } = await getTracksAndRelatedAlbumArtists(userId, missingTrackIds);
 
-  const storedAlbums: Album[] = await AlbumModel.find({ id: { $in: albums } });
-  const missingAlbumIds = albums.filter(
+  const storedAlbums: Album[] = await AlbumModel.find({
+    id: { $in: relatedAlbums },
+  });
+  const missingAlbumIds = relatedAlbums.filter(
     alb => !storedAlbums.find(salb => salb.id.toString() === alb.toString()),
   );
 
   const storedArtists: Artist[] = await ArtistModel.find({
-    id: { $in: artists },
+    id: { $in: relatedArtists },
   });
-  const missingArtistIds = artists.filter(
+  const missingArtistIds = relatedArtists.filter(
     alb => !storedArtists.find(salb => salb.id.toString() === alb.toString()),
   );
 
-  if (missingAlbumIds.length > 0) {
-    await storeAlbums(userId, missingAlbumIds);
-  }
-  if (missingArtistIds.length > 0) {
-    await storeArtists(userId, missingArtistIds);
-  }
+  const albums =
+    missingAlbumIds.length > 0 ? await getAlbums(userId, missingAlbumIds) : [];
+  const artists =
+    missingArtistIds.length > 0
+      ? await getArtists(userId, missingArtistIds)
+      : [];
+
+  return {
+    tracks,
+    albums,
+    artists,
+  };
 };
+
+export async function storeTrackAlbumArtist({
+  tracks,
+  albums,
+  artists,
+}: {
+  tracks?: Track[];
+  albums?: Album[];
+  artists?: Artist[];
+}) {
+  if (tracks) {
+    await TrackModel.create(tracks);
+  }
+  if (albums) {
+    await AlbumModel.create(albums);
+  }
+  if (artists) {
+    await ArtistModel.create(artists);
+  }
+}
+
+export async function storeIterationOfLoop(
+  userId: string,
+  iterationTimestamp: number,
+  tracks: Track[],
+  albums: Album[],
+  artists: Artist[],
+  infos: Omit<Infos, 'owner'>[],
+) {
+  await longWriteDbLock.lock();
+
+  await storeTrackAlbumArtist({
+    tracks,
+    albums,
+    artists,
+  });
+
+  await addTrackIdsToUser(userId, infos);
+
+  await storeInUser('_id', new mongoose.Types.ObjectId(userId), {
+    lastTimestamp: iterationTimestamp,
+  });
+
+  const min = minOfArray(infos, item => item.played_at.getTime());
+
+  if (min) {
+    await storeFirstListenedAtIfLess(userId, infos[min.minIndex].played_at);
+  }
+
+  longWriteDbLock.unlock();
+}

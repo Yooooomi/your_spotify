@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { logger } from './logger';
-import { toNumber } from './zod';
+import { toBoolean, toNumber } from './zod';
 
 const validators = {
   CLIENT_ENDPOINT: z.string(),
@@ -16,6 +16,7 @@ const validators = {
   NODE_ENV: z.enum(['production', 'development']).optional(),
   OFFLINE_DEV_ID: z.string().optional(),
   COOKIE_VALIDITY_MS: z.string().optional(),
+  MONGO_NO_ADMIN_RIGHTS: z.preprocess(toBoolean, z.boolean().optional()),
 } as const;
 
 const env: Record<string, any> = {};

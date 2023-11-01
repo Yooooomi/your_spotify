@@ -77,9 +77,5 @@ connect().then(async () => {
       'Spotify was detected in CLIENT_ENDPOINT, Google might mark your entire domain as deceptive. https://github.com/Yooooomi/your_spotify/pull/254',
     );
   }
-  dbLoop().catch(err => {
-    logger.error(err);
-
-    process.exit(1);
-  });
+  dbLoop().catch(logger.error);
 });

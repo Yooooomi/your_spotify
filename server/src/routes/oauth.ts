@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { sign } from 'jsonwebtoken';
 import {
   createUser,
-  getNumberOfUsers,
+  getUserCount,
   getUserFromField,
   storeInUser,
 } from '../database';
@@ -45,7 +45,7 @@ router.get('/spotify/callback', withGlobalPreferences, async (req, res) => {
       if (!globalPreferences.allowRegistrations) {
         return res.redirect(`${get('CLIENT_ENDPOINT')}/registrations-disabled`);
       }
-      const nbUsers = await getNumberOfUsers();
+      const nbUsers = await getUserCount();
       user = await createUser(
         spotifyMe.display_name,
         spotifyMe.id,

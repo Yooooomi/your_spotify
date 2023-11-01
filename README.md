@@ -98,6 +98,7 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | TIMEZONE              | Europe/Paris | The timezone of your stats, only affects read requests since data is saved with UTC time |
 | LOG_LEVEL             | info | The log level, debug is useful if you encouter any bugs |
 | COOKIE_VALIDITY_MS | 1h | Validity time of the authentication cookie, following [this pattern](https://github.com/vercel/ms) |
+| MONGO_NO_ADMIN_RIGHTS | false | Do not ask for admin right on the Mongo database |
 
 ## CORS
 
