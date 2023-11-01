@@ -19,3 +19,17 @@
   margin-bottom: 32px;
   color: white;
 }
+
+.versionwrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.version {
+  color: rgb(108, 108, 108);
+  font-size: 0.8em;
+  transform: translateY(-1px);
+}

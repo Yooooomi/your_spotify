@@ -1,8 +1,10 @@
-import React, { useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import clsx from 'clsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { SystemUpdateAlt as UpdateIcon } from '@mui/icons-material';
 
+import { Tooltip } from '@mui/material';
 import s from './index.module.css';
 import { useShareLink } from '../../../services/hooks/hooks';
 import { alertMessage } from '../../../services/redux/modules/message/reducer';
@@ -14,6 +16,11 @@ import SiderSearch from '../../SiderSearch';
 import { Artist, TrackWithFullAlbum } from '../../../services/types';
 import SiderCategory from './SiderCategory/SiderCategory';
 import { links } from './types';
+import {
+  selectUpdateAvailable,
+  selectVersion,
+} from '../../../services/redux/modules/settings/selector';
+import Text from '../../Text';
 
 interface SiderProps {
   className?: string;
@@ -64,6 +71,9 @@ export default function Sider({ className, isDrawer }: SiderProps) {
 
   const toCopy = useShareLink();
 
+  const version = useSelector(selectVersion);
+  const updateAvailable = useSelector(selectUpdateAvailable);
+
   if (!user) {
     return null;
   }
@@ -86,6 +96,25 @@ export default function Sider({ className, isDrawer }: SiderProps) {
           />
         ))}
       </nav>
+      <div className={s.versionwrapper}>
+        {version && (
+          <Text noStyle className={s.version}>
+            v{version}
+          </Text>
+        )}
+        {updateAvailable && (
+          <Tooltip title="An update is available">
+            <a
+              href="https://github.com/Yooooomi/your_spotify/releases"
+              target="_blank"
+              rel="noreferrer">
+              <Text onDark>
+                <UpdateIcon fontSize="small" color="info" />
+              </Text>
+            </a>
+          </Tooltip>
+        )}
+      </div>
     </div>
   );
 }
