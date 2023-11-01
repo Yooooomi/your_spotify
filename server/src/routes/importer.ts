@@ -111,9 +111,8 @@ router.post(
     const { user } = req as LoggedRequest;
     const { existingStateId } = req.body as TypedPayload<typeof retrySchema>;
 
-    const importState = await getImporterState<ImporterState['type']>(
-      existingStateId,
-    );
+    const importState =
+      await getImporterState<ImporterState['type']>(existingStateId);
     if (!importState || importState.user.toString() !== user._id.toString()) {
       return res.status(404).end();
     }
