@@ -10,7 +10,10 @@ import {
 import { setImporterStateCurrent } from '../../database/queries/importer';
 import { RecentlyPlayedTrack } from '../../database/schemas/track';
 import { User } from '../../database/schemas/user';
-import { saveMusics } from '../../spotify/dbTools';
+import {
+  getTracksAlbumsArtists,
+  storeTrackAlbumArtist,
+} from '../../spotify/dbTools';
 import { logger } from '../logger';
 import { minOfArray, retryPromise } from '../misc';
 import { SpotifyAPI } from '../apis/spotifyApi';
@@ -86,10 +89,15 @@ export class FullPrivacyImporter
   };
 
   storeItems = async (userId: string, items: RecentlyPlayedTrack[]) => {
-    await saveMusics(
+    const { tracks, albums, artists } = await getTracksAlbumsArtists(
       userId,
       items.map(it => it.track),
     );
+    await storeTrackAlbumArtist({
+      tracks,
+      albums,
+      artists,
+    });
     const finalInfos: { played_at: Date; id: string }[] = [];
     for (let i = 0; i < items.length; i += 1) {
       const item = items[i];

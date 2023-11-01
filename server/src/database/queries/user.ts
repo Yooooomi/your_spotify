@@ -122,7 +122,7 @@ export const getCloseTrackId = async (
 };
 
 export const getUserInfoCount = async (userId: string) => {
-  return InfosModel.count({ owner: new Types.ObjectId(userId) });
+  return InfosModel.countDocuments({ owner: new Types.ObjectId(userId) });
 };
 
 export const getPossibleDuplicates = async (
@@ -236,14 +236,10 @@ export const getSongs = async (
   return fullUser.tracks;
 };
 
-export const getUsersNb = () => UserModel.find().countDocuments();
-export const getUsers = (
-  nb: number,
-  offset: number,
-  condition: Partial<User>,
-) => UserModel.find(condition).limit(nb).skip(offset);
+export const getUserCount = () => UserModel.countDocuments();
+export const getUser = (nb: number) =>
+  UserModel.find().sort({ _id: 'asc' }).skip(nb).limit(1);
 
-export const getNumberOfUsers = () => UserModel.find().count();
 export const getAllUsers = () => UserModel.find({}, '-tracks');
 
 export const deleteAllInfosFromUserId = (userId: string) =>

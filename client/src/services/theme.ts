@@ -28,11 +28,6 @@ export const useTheme = () => {
             },
           },
           MuiTabs: {
-            defaultProps: {
-              disableRipple: true,
-              focusRipple: false,
-              disableTouchRipple: true,
-            },
             styleOverrides: {
               root: {
                 backgroundColor: 'var(--header-background)',

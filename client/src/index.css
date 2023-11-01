@@ -34,7 +34,7 @@ h6 {
 :root {
   --track-options: 34px;
   --radius: 6px;
-  --page-padding: 32px;
+  --page-padding: 16px;
   --accent: #FB717B;
   --header-image-size: 60px;
 }

@@ -14,12 +14,20 @@ import {
   getTracksWithoutAlbum,
   getAlbumsWithoutArtist,
 } from '../database/queries/tools';
-import { storeAlbums, storeArtists } from '../spotify/dbTools';
+import {
+  getAlbums,
+  getArtists,
+  storeTrackAlbumArtist,
+} from '../spotify/dbTools';
+import { getWithDefault } from './env';
 import { longWriteDbLock } from './lock';
 import { logger } from './logger';
 
 export class Database {
   static async detectUpgrade() {
+    if (getWithDefault('MONGO_NO_ADMIN_RIGHTS', false)) {
+      return;
+    }
     const infos = await getMongoInfos();
     const [major, minor] = infos.versionArray;
     const [compatibilityMajor, compatibilityMinor] = (
@@ -48,13 +56,15 @@ export class Database {
     if (allTracks.length > 0) {
       const albumIds = allTracks.map(t => t.album);
       logger.info(`Fixing missing albums (${albumIds.join(',')})`);
-      await storeAlbums(user._id.toString(), albumIds);
+      const albums = await getAlbums(user._id.toString(), albumIds);
+      await storeTrackAlbumArtist({ albums });
     }
     const allAlbums = await getAlbumsWithoutArtist();
     if (allAlbums.length > 0) {
       const artistIds = allAlbums.map(t => t.artists).flat(1);
       logger.info(`Fixing missing artists (${artistIds.join(',')})`);
-      await storeArtists(user._id.toString(), artistIds);
+      const artists = await getArtists(user._id.toString(), artistIds);
+      await storeTrackAlbumArtist({ artists });
     }
     if (allTracks.length > 0 || allAlbums.length > 0) {
       logger.info('Database fixed');

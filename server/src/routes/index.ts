@@ -199,9 +199,11 @@ router.get('/version', logged, async (_, res) => {
   try {
     const version = await GithubAPI.lastPackageJsonVersion();
     if (version.isNewerThan(Version.thisOne())) {
-      return res.status(200).send({ update: true });
+      return res
+        .status(200)
+        .send({ update: true, version: version.toString() });
     }
-    return res.status(200).send({ update: false });
+    return res.status(200).send({ update: false, version: version.toString() });
   } catch (e) {
     logger.error(e);
     return res.status(500).end();

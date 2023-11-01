@@ -69,7 +69,6 @@ export class GithubAPI {
     const { data: file } = await axios.get(
       'https://raw.githubusercontent.com/Yooooomi/your_spotify/master/server/package.json',
     );
-    const content = JSON.parse(file);
-    return Version.from(content.version);
+    return Version.from(file.version);
   }
 }
