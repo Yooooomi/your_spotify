@@ -48,8 +48,8 @@ export interface Release {
   name: string;
   draft: boolean;
   prerelease: boolean;
-  created_at: Date;
-  published_at: Date;
+  created_at: string;
+  published_at: string;
   tarball_url: string;
   zipball_url: string;
   body: string;
@@ -65,10 +65,14 @@ export class GithubAPI {
     return releases as Release[];
   }
 
-  static async lastPackageJsonVersion() {
-    const { data: file } = await axios.get(
-      'https://raw.githubusercontent.com/Yooooomi/your_spotify/master/server/package.json',
-    );
-    return Version.from(file.version);
+  static async lastVersion() {
+    const lastGithubTag = (await this.releases()).sort(
+      (a, b) =>
+        new Date(b.published_at).getTime() - new Date(a.published_at).getTime(),
+    )[0]?.tag_name;
+    if (!lastGithubTag) {
+      return undefined;
+    }
+    return Version.from(lastGithubTag);
   }
 }
