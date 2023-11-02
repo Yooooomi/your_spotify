@@ -14,6 +14,9 @@ COPY .prettierrc .prettierrc
 COPY .eslintrc.js .eslintrc.js
 RUN sed -i 's@"extends": "../tsconfig.json",@@g' tsconfig.json 
 
+ARG NODE_ENV
+ENV NODE_ENV ${NODE_ENV:-production}
+
 RUN yarn --frozen-lockfile
 
 COPY src/ src/
