@@ -24,6 +24,9 @@ FROM node:16-alpine AS final
 
 WORKDIR /app
 
+ARG NODE_ENV
+ENV NODE_ENV ${NODE_ENV:-production}
+
 RUN apk add python3 gcc g++ make cmake
 
 COPY --from=builder /app/scripts/ /app/scripts/
