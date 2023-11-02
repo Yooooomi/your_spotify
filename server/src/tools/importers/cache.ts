@@ -13,7 +13,7 @@ export function getFromCacheString(userId: string, str: string) {
   if (!(userId in cache)) {
     cache[userId] = {};
   }
-  return cache[userId][str];
+  return cache[userId]?.[str];
 }
 
 export function getFromCache(
@@ -30,14 +30,14 @@ export function setToCacheString(
   str: string,
   trackObject: SpotifyTrack,
 ) {
-  if (!(userId in cache)) {
-    cache[userId] = {};
+  const userCache = cache[userId] ?? {};
+  const keys = Object.keys(cache[userId] ?? {});
+  const [firstKey] = keys;
+  if (keys.length > maxCacheSize && firstKey) {
+    delete cache[userId]?.[firstKey];
   }
-  const keys = Object.keys(cache[userId]);
-  if (keys.length > maxCacheSize) {
-    delete cache[userId][keys[0]];
-  }
-  cache[userId][str] = trackObject;
+  userCache[str] = trackObject;
+  cache[userId] = userCache;
 }
 
 export function setToCache(

@@ -9,7 +9,6 @@ on:
       - server/**
     branches:
       - master
-      - release/*
 
 jobs:
   build:

@@ -56,7 +56,7 @@ const loop = async (user: User) => {
   );
   const infos: Omit<Infos, 'owner'>[] = [];
   for (let i = 0; i < items.length; i += 1) {
-    const item = items[i];
+    const item = items[i]!;
     const date = new Date(item.played_at);
     const duplicate = await getCloseTrackId(
       user._id.toString(),
@@ -66,7 +66,7 @@ const loop = async (user: User) => {
     );
     if (duplicate.length === 0) {
       const isBlacklisted = user.settings.blacklistedArtists.find(
-        a => a === item.track.artists[0].id,
+        a => a === item.track.artists[0]?.id,
       );
       infos.push({
         played_at: new Date(item.played_at),

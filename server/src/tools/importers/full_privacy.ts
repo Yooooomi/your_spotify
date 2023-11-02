@@ -100,7 +100,7 @@ export class FullPrivacyImporter
     });
     const finalInfos: { played_at: Date; id: string }[] = [];
     for (let i = 0; i < items.length; i += 1) {
-      const item = items[i];
+      const item = items[i]!;
       const date = new Date(item.played_at);
       const duplicate = await getCloseTrackId(
         this.userId.toString(),
@@ -113,7 +113,7 @@ export class FullPrivacyImporter
       );
       if (duplicate.length > 0 || currentImportDuplicate) {
         logger.info(
-          `${item.track.name} - ${item.track.artists[0].name} was duplicate`,
+          `${item.track.name} - ${item.track.artists[0]?.name} was duplicate`,
         );
         continue;
       }
@@ -126,10 +126,10 @@ export class FullPrivacyImporter
     await addTrackIdsToUser(this.userId.toString(), finalInfos);
     const min = minOfArray(finalInfos, info => info.played_at.getTime());
     if (min) {
-      await storeFirstListenedAtIfLess(
-        this.userId,
-        finalInfos[min.minIndex].played_at,
-      );
+      const minInfo = finalInfos[min.minIndex];
+      if (minInfo) {
+        await storeFirstListenedAtIfLess(this.userId, minInfo.played_at);
+      }
     }
   };
 
@@ -199,7 +199,7 @@ export class FullPrivacyImporter
         items.push({ track: searchedItem, played_at: pa });
       });
       logger.info(
-        `Adding ${searchedItem.name} - ${searchedItem.artists[0].name} from data`,
+        `Adding ${searchedItem.name} - ${searchedItem.artists[0]?.name} from data`,
       );
     });
     idsToSearch = {};
@@ -217,7 +217,7 @@ export class FullPrivacyImporter
     for (let i = this.currentItem; i < this.elements.length; i += 1) {
       this.currentItem = i;
       logger.info(`Importing... (${i}/${this.elements.length})`);
-      const content = this.elements[i];
+      const content = this.elements[i]!;
       if (
         !content.spotify_track_uri ||
         !content.master_metadata_track_name ||
@@ -239,6 +239,12 @@ export class FullPrivacyImporter
       const spotifyId = FullPrivacyImporter.idFromSpotifyURI(
         content.spotify_track_uri,
       );
+      if (!spotifyId) {
+        logger.warn(
+          `Could not get spotify id from uri: ${content.spotify_episode_uri}`,
+        );
+        continue;
+      }
       const item = getFromCacheString(this.userId.toString(), spotifyId);
       if (!item) {
         const arrayOfPlayedAt = idsToSearch[spotifyId] ?? [];

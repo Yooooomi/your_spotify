@@ -251,9 +251,9 @@ const defaultDiacriticsRemovalMap = [
 
 const diacriticsMap: Record<string, string> = {};
 for (let i = 0; i < defaultDiacriticsRemovalMap.length; i += 1) {
-  const { letters } = defaultDiacriticsRemovalMap[i];
+  const { letters } = defaultDiacriticsRemovalMap[i]!;
   for (let j = 0; j < letters.length; j += 1) {
-    diacriticsMap[letters[j]] = defaultDiacriticsRemovalMap[i].base;
+    diacriticsMap[letters[j]!] = defaultDiacriticsRemovalMap[i]!.base;
   }
 }
 
@@ -266,7 +266,7 @@ export function removeDiacritics(str: string) {
 
 export function beforeParenthesis(str: string) {
   for (let i = 0; i < str.length; i += 1) {
-    if ('()[]'.includes(str[i])) {
+    if ('()[]'.includes(str[i]!)) {
       return str.slice(0, i).replace(/'/g, ' ');
     }
   }
@@ -313,9 +313,9 @@ export const minOfArray = <T>(array: T[], fn: (item: T) => number) => {
   }
 
   let minIndex = 0;
-  let min = fn(array[0]);
+  let min = fn(array[0]!);
   for (let i = 1; i < array.length; i += 1) {
-    const value = fn(array[i]);
+    const value = fn(array[i]!);
     if (value < min) {
       min = value;
       minIndex = i;

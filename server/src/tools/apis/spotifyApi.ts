@@ -103,7 +103,7 @@ export class SpotifyAPI {
   private async internAddToPlaylist(id: string, ids: string[]) {
     const chunks = chunk(ids, 100);
     for (let i = 0; i < chunks.length; i += 1) {
-      const chk = chunks[i];
+      const chk = chunks[i]!;
       // eslint-disable-next-line no-await-in-loop
       await this.client.post(`/playlists/${id}/tracks`, {
         uris: chk.map(trackId => `spotify:track:${trackId}`),

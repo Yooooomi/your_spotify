@@ -35,7 +35,11 @@ const getIdsHandlingMax = async <
 
   // Voluntarily waiting in loop to prevent requests limit
   for (let i = 0; i < idsArray.length; i += 1) {
-    const builtUrl = `${url}?ids=${idsArray[i].join(',')}`;
+    const id = idsArray[i];
+    if (!id) {
+      continue;
+    }
+    const builtUrl = `${url}?ids=${id.join(',')}`;
     // eslint-disable-next-line no-await-in-loop
     const { data } = await retryPromise(() => spotifyApi.raw(builtUrl), 10, 30);
     datas.push(...data[arrayPath]);
@@ -62,7 +66,7 @@ const getTracksAndRelatedAlbumArtists = async (
 
   const tracks: Track[] = spotifyTracks.map<Track>(track => {
     logger.info(
-      `Storing non existing track ${track.name} by ${track.artists[0].name}`,
+      `Storing non existing track ${track.name} by ${track.artists[0]?.name}`,
     );
 
     track.artists.forEach(art => {
@@ -99,7 +103,7 @@ export const getAlbums = async (userId: string, ids: string[]) => {
 
   const albums: Album[] = spotifyAlbums.map(alb => {
     logger.info(
-      `Storing non existing album ${alb.name} by ${alb.artists[0].name}`,
+      `Storing non existing album ${alb.name} by ${alb.artists[0]?.name}`,
     );
 
     return {
@@ -227,7 +231,10 @@ export async function storeIterationOfLoop(
   const min = minOfArray(infos, item => item.played_at.getTime());
 
   if (min) {
-    await storeFirstListenedAtIfLess(userId, infos[min.minIndex].played_at);
+    const minInfo = infos[min.minIndex]?.played_at;
+    if (minInfo) {
+      await storeFirstListenedAtIfLess(userId, minInfo);
+    }
   }
 
   longWriteDbLock.unlock();

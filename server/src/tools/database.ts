@@ -33,6 +33,15 @@ export class Database {
     const [compatibilityMajor, compatibilityMinor] = (
       await getCompatibilityVersion()
     ).featureCompatibilityVersion.version.split('.');
+    if (
+      compatibilityMajor === undefined ||
+      compatibilityMinor === undefined ||
+      major === undefined ||
+      minor === undefined
+    ) {
+      logger.warn('Could not get mongo version');
+      return;
+    }
     if (+compatibilityMajor > major) {
       throw new Error('Cannot downgrade the database');
     }

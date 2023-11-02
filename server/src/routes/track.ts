@@ -53,13 +53,14 @@ router.get(
       const { user } = req as LoggedRequest;
       const { id } = req.params as TypedPayload<typeof getTrackStats>;
       const [track] = await getTracks([id]);
-      if (!track) {
+      const [trackArtist] = track?.artists ?? [];
+      if (!track || !trackArtist) {
         return res.status(404).end();
       }
       const promises = [
         getAlbums([track.album]),
         getTrackListenedCount(user, id),
-        getArtists([track.artists[0]]),
+        getArtists([trackArtist]),
         getTrackFirstAndLastListened(user, track.id),
         bestPeriodOfTrack(user, track.id),
         getTrackRecentHistory(user, track.id),
