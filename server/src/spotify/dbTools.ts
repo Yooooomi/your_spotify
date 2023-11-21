@@ -4,7 +4,7 @@ import { SpotifyAlbum, Album } from '../database/schemas/album';
 import { SpotifyArtist, Artist } from '../database/schemas/artist';
 import { SpotifyTrack, Track } from '../database/schemas/track';
 import { logger } from '../tools/logger';
-import { minOfArray, retryPromise } from '../tools/misc';
+import { minOfArray, retryPromise, uniqBy } from '../tools/misc';
 import { SpotifyAPI } from '../tools/apis/spotifyApi';
 import {
   addTrackIdsToUser,
@@ -196,13 +196,13 @@ export async function storeTrackAlbumArtist({
   artists?: Artist[];
 }) {
   if (tracks) {
-    await TrackModel.create(tracks);
+    await TrackModel.create(uniqBy(tracks, item => item.id));
   }
   if (albums) {
-    await AlbumModel.create(albums);
+    await AlbumModel.create(uniqBy(albums, item => item.id));
   }
   if (artists) {
-    await ArtistModel.create(artists);
+    await ArtistModel.create(uniqBy(artists, item => item.id));
   }
 }
 

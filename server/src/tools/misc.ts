@@ -336,3 +336,19 @@ export function chunk<T>(array: T[], chunkSize: number) {
   }
   return chunks;
 }
+
+export function uniqBy<T>(source: T[], getId: (item: T) => string): T[] {
+  const final: T[] = [];
+  const alreadyAdded = new Set<string>();
+
+  for (const item of source) {
+    const itemId = getId(item);
+    if (alreadyAdded.has(itemId)) {
+      continue;
+    }
+    alreadyAdded.add(itemId);
+    final.push(item);
+  }
+
+  return final;
+}
