@@ -137,7 +137,7 @@ router.put(
 
     try {
       const users = await getAllAdmins();
-      if (users.length <= 1) {
+      if (users.length <= 1 && status === false) {
         return res.status(400).send({ code: 'CANNOT_HAVE_ZERO_ADMIN' });
       }
       await setUserAdmin(id, status);
