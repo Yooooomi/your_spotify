@@ -110,7 +110,7 @@ You can edit the CORS for the server:
 # Creating the Spotify Application
 
 For **YourSpotify** to work you need to provide a Spotify application **public** AND **secret** to the server environment.
-To do so, you need to create a **Spotify application** [here](https://developer.spotify.com/dashboard/applications).
+To do so, you need to create a **Spotify application** [here](https://developer.spotify.com/dashboard/create).
 
 1. Click on **Create a client ID**.
 2. Fill out all the informations.
