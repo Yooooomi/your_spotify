@@ -113,7 +113,7 @@ For **YourSpotify** to work you need to provide a Spotify application **public**
 To do so, you need to create a **Spotify application** [here](https://developer.spotify.com/dashboard/applications).
 
 1. Click on **Create a client ID**.
-2. Fill out all the informations.
+2. Fill out all the information.
 3. Copy the **public** and the **secret** key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
    respectively.
 4. Add an authorized redirect URI corresponding to your **server** location on the internet adding the suffix **/oauth/spotify/callback**.
