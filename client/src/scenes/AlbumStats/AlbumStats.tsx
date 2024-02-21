@@ -34,8 +34,11 @@ export default function AlbumStats({ stats }: AlbumStatsProps) {
           />
         }
         title={stats.album.name}
-        subtitle={stats.artists.map(artist => (
-          <InlineArtist artist={artist} key={artist.id} />
+        subtitle={stats.artists.map((artist, k) => (
+          <>
+            <InlineArtist artist={artist} key={artist.id} />
+            {k < stats.artists.length - 1 && ', '}
+          </>
         ))}
         hideInterval
       />
