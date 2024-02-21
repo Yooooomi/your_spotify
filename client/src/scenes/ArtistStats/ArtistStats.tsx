@@ -23,7 +23,7 @@ interface ArtistStatsProps {
 
 export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
   const blacklisted = useSelector(selectBlacklistedArtist(artistId));
-  
+
   if (!stats) {
     return <CircularProgress />;
   }
