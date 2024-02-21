@@ -4,6 +4,9 @@ import { User } from '../schemas/user';
 export const getAlbums = (albumsId: string[]) =>
   AlbumModel.find({ id: { $in: albumsId } });
 
+export const searchAlbum = (str: string) =>
+  AlbumModel.find({ name: { $regex: new RegExp(str, 'i') } });
+
 export const getAlbumInfos = (albumId: string) => [
   {
     $lookup: {

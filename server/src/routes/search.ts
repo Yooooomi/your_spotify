@@ -4,6 +4,7 @@ import { searchArtist, searchTrack } from '../database';
 import { logger } from '../tools/logger';
 import { isLoggedOrGuest, validating } from '../tools/middleware';
 import { TypedPayload } from '../tools/types';
+import { searchAlbum } from '../database/queries/album';
 
 const router = Router();
 export default router;
@@ -20,11 +21,12 @@ router.get(
     const { query } = req.params as TypedPayload<typeof search>;
 
     try {
-      const [artists, tracks] = await Promise.all([
+      const [artists, tracks, albums] = await Promise.all([
         searchArtist(query),
         searchTrack(query),
+        searchAlbum(query)
       ]);
-      return res.status(200).send({ artists, tracks });
+      return res.status(200).send({ artists, tracks, albums });
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
