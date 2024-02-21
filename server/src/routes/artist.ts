@@ -13,6 +13,7 @@ import {
   unblacklistArtist,
   blacklistByArtist,
   unblacklistByArtist,
+  getMostListenedAlbumOfArtist,
 } from '../database';
 import { logger } from '../tools/logger';
 import { isLoggedOrGuest, logged, validating } from '../tools/middleware';
@@ -64,11 +65,12 @@ router.get(
       const promises = [
         getFirstAndLastListened(user, id),
         getMostListenedSongOfArtist(user, id),
+        getMostListenedAlbumOfArtist(user, id),
         bestPeriodOfArtist(user, id),
         getTotalListeningOfArtist(user, id),
         getDayRepartitionOfArtist(user, id),
       ];
-      const [firstLast, mostListened, bestPeriod, total, dayRepartition] =
+      const [firstLast, mostListened, albumMostListened, bestPeriod, total, dayRepartition] =
         await Promise.all(promises);
       if (!total) {
         return res.status(200).send({
@@ -79,6 +81,7 @@ router.get(
         artist,
         firstLast,
         mostListened,
+        albumMostListened,
         bestPeriod,
         total,
         dayRepartition,

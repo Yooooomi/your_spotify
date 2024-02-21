@@ -162,6 +162,38 @@ export const getTotalListeningOfArtist = async (
   return res[0];
 };
 
+export const getMostListenedAlbumOfArtist = async (
+  user: User,
+  artistId: string,
+) => {
+  const res = await InfosModel.aggregate([
+    { $match: { owner: user._id } },
+    { $lookup: {
+      from: 'tracks',
+      localField: 'id',
+      foreignField: 'id',
+      as: 'track'
+    }},
+    { $match: { 'track.artists.0': artistId } },
+    { $group: {
+      _id: '$track.album',
+      count: { $sum: 1 }
+    }},
+    { $sort: { count: -1 } },
+    {
+      $lookup: {
+        from: 'albums',
+        localField: '_id',
+        foreignField: 'id',
+        as: 'album',
+      },
+    },
+    { $unwind: '$album' },
+    { $limit: 10}
+  ]);
+  return res;
+};
+
 export const getRankOfArtist = async (user: User, artistId: string) => {
   // Non sense to compute blacklist here
   const res = await InfosModel.aggregate([
