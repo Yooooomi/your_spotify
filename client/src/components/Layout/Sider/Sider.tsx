@@ -13,7 +13,7 @@ import { useAppDispatch } from '../../../services/redux/tools';
 import { LayoutContext } from '../LayoutContext';
 import SiderTitle from './SiderTitle';
 import SiderSearch from '../../SiderSearch';
-import { Artist, TrackWithFullAlbum } from '../../../services/types';
+import { Album, Artist, TrackWithFullAlbum } from '../../../services/types';
 import SiderCategory from './SiderCategory/SiderCategory';
 import { links } from './types';
 import {
@@ -45,6 +45,14 @@ export default function Sider({ className, isDrawer }: SiderProps) {
   const goToTrack = useCallback(
     (track: TrackWithFullAlbum) => {
       navigate(`/song/${track.id}`);
+      layoutContext.closeDrawer();
+    },
+    [layoutContext, navigate],
+  );
+
+  const goToAlbum = useCallback(
+    (album: Album) => {
+      navigate(`/album/${album.id}`);
       layoutContext.closeDrawer();
     },
     [layoutContext, navigate],
@@ -83,7 +91,11 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       <div className={s.title}>
         <SiderTitle />
       </div>
-      <SiderSearch onArtistClick={goToArtist} onTrackClick={goToTrack} />
+      <SiderSearch
+        onArtistClick={goToArtist}
+        onTrackClick={goToTrack}
+        onAlbumClick={goToAlbum}
+      />
       <nav>
         {links.map(category => (
           <SiderCategory

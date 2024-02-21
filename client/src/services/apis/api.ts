@@ -358,7 +358,9 @@ export const api = {
       }[];
     }>(`/artist/${id}/rank`),
   search: (str: string) =>
-    get<{ artists: Artist[]; tracks: TrackWithFullAlbum[] }>(`/search/${str}`),
+    get<{ artists: Artist[]; tracks: TrackWithFullAlbum[]; albums: Album[] }>(
+      `/search/${str}`,
+    ),
   getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>
     get<
       {

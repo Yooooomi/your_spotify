@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useRef, useState, useCallback } from 'react';
 import { api } from '../../services/apis/api';
 import { useConditionalAPI } from '../../services/hooks/hooks';
-import { Artist, TrackWithFullAlbum } from '../../services/types';
+import { Album, Artist, TrackWithFullAlbum } from '../../services/types';
 import IdealImage from '../IdealImage';
 import Loader from '../Loader';
 import Text from '../Text';
@@ -12,12 +12,14 @@ import s from './index.module.css';
 interface ArtistSearchProps {
   onArtistClick?: (artist: Artist) => void;
   onTrackClick?: (track: TrackWithFullAlbum) => void;
+  onAlbumClick?: (album: Album) => void;
   inputClassname?: string;
 }
 
 export default function ArtistSearch({
   onArtistClick,
   onTrackClick,
+  onAlbumClick,
   inputClassname,
 }: ArtistSearchProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -44,8 +46,16 @@ export default function ArtistSearch({
     [onTrackClick],
   );
 
+  const internOnAlbumClick = useCallback(
+    (album: Album) => {
+      setSearch('');
+      onAlbumClick?.(album);
+    },
+    [onAlbumClick],
+  );
+
   const totalResults = results
-    ? results.artists.length + results.tracks.length
+    ? results.artists.length + results.tracks.length + results.albums.length
     : 0;
   const displayAll = Boolean(onArtistClick) && Boolean(onTrackClick);
 
@@ -113,6 +123,27 @@ export default function ArtistSearch({
                 <IdealImage
                   className={s.resultimage}
                   images={res.full_album.images}
+                  size={48}
+                  alt="Album"
+                />
+                <Text element="strong">{res.name}</Text>
+              </button>
+            ))}
+          {displayAll && (results?.albums.length ?? 0) > 0 && (
+            <Text element="div" className={s.section}>
+              Albums
+            </Text>
+          )}
+          {onAlbumClick &&
+            results?.albums.map(res => (
+              <button
+                type="button"
+                key={res.id}
+                className={clsx('no-button', s.result)}
+                onClick={() => internOnAlbumClick(res)}>
+                <IdealImage
+                  className={s.resultimage}
+                  images={res.images}
                   size={48}
                   alt="Album"
                 />
