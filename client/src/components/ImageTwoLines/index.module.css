@@ -7,7 +7,7 @@
   white-space: nowrap;
 }
 
-.root > img {
+.root > :first-child{
   border-radius: var(--radius);
   overflow: hidden;
   flex-shrink: 0;

@@ -8,6 +8,7 @@ import { useMobile } from '../../../../services/hooks/hooks';
 import { ColumnDescription, GridRowWrapper } from '../../../../components/Grid';
 import IdealImage from '../../../../components/IdealImage';
 import { useAlbumGrid } from './AlbumGrid';
+import InlineAlbum from '../../../../components/InlineAlbum';
 
 interface AlbumProps {
   artists: Artist[];
@@ -48,7 +49,9 @@ export default function Album({
         ...albumGrid.title,
         node: (
           <div className={s.names}>
-            <Text element="div">{album.name}</Text>
+            <div>
+              <InlineAlbum album={album} />
+            </div>
             <div className="subtitle">
               {artists.map((art, k, a) => (
                 <Fragment key={art.id}>

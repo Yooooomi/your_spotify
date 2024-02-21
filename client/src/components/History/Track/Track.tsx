@@ -15,6 +15,7 @@ import PlayButton from '../../PlayButton';
 import { useMobile } from '../../../services/hooks/hooks';
 import { trackGrid } from './TrackGrid';
 import LongClickableTrack from '../../LongClickableTrack';
+import InlineAlbum from '../../InlineAlbum';
 
 interface TrackProps {
   listenedAt?: Date;
@@ -55,7 +56,7 @@ export default function Track({
       },
       {
         ...trackGrid.album,
-        node: !isTablet && <Text className="otext">{album.name}</Text>,
+        node: !isTablet && <InlineAlbum className="otext" album={album} />,
       },
       {
         ...trackGrid.duration,
