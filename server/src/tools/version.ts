@@ -1,10 +1,10 @@
-const packageJson = require('../../package.json');
+const packageJson = require("../../package.json");
 
 export class Version {
   private constructor(private readonly parts: number[]) {}
 
   static from(version: string) {
-    return new Version(version.split('.').map(entry => Number(entry)));
+    return new Version(version.split(".").map(entry => Number(entry)));
   }
 
   static thisOne() {
@@ -12,7 +12,7 @@ export class Version {
   }
 
   toString() {
-    return this.parts.join('.');
+    return this.parts.join(".");
   }
 
   isNewerThan(version: Version) {

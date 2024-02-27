@@ -1,6 +1,6 @@
-import { Schema } from 'mongoose';
-import { Album } from './album';
-import { Artist } from './artist';
+import { Schema } from "mongoose";
+import { Album } from "./album";
+import { Artist } from "./artist";
 
 export interface Track {
   album: string;
@@ -22,7 +22,7 @@ export interface Track {
   uri: string;
 }
 
-export type SpotifyTrack = Omit<Track, 'artists' | 'album'> & {
+export type SpotifyTrack = Omit<Track, "artists" | "album"> & {
   artists: Artist[];
   album: Album;
 };
@@ -55,16 +55,16 @@ export const TrackSchema = new Schema<Track>(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
-TrackSchema.virtual('full_album', {
-  ref: 'Album',
-  localField: 'album',
-  foreignField: 'id',
+TrackSchema.virtual("full_album", {
+  ref: "Album",
+  localField: "album",
+  foreignField: "id",
   justOne: true,
 });
 
-TrackSchema.virtual('full_artist', {
-  ref: 'Artist',
-  localField: 'artists',
-  foreignField: 'id',
+TrackSchema.virtual("full_artist", {
+  ref: "Artist",
+  localField: "artists",
+  foreignField: "id",
   justOne: false,
 });

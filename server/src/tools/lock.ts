@@ -1,4 +1,4 @@
-import { logger } from './logger';
+import { logger } from "./logger";
 
 interface PromiseStore {
   res: () => void;
@@ -44,4 +44,4 @@ class Lock {
   };
 }
 
-export const longWriteDbLock = new Lock('DB_LongWriteLock');
+export const longWriteDbLock = new Lock("DB_LongWriteLock");

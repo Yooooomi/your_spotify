@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { Version } from '../version';
+import axios from "axios";
+import { Version } from "../version";
 
 interface Author {
   login: string;
@@ -25,8 +25,8 @@ interface Author {
 interface Reactions {
   url: string;
   total_count: number;
-  '+1': number;
-  '-1': number;
+  "+1": number;
+  "-1": number;
   laugh: number;
   hooray: number;
   confused: number;
@@ -60,7 +60,7 @@ export interface Release {
 export class GithubAPI {
   static async releases() {
     const { data: releases } = await axios.get(
-      'https://api.github.com/repos/yooooomi/your_spotify/releases',
+      "https://api.github.com/repos/yooooomi/your_spotify/releases",
     );
     return releases as Release[];
   }

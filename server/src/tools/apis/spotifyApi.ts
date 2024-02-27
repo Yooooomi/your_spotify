@@ -1,11 +1,11 @@
-import { AxiosError, AxiosInstance } from 'axios';
-import { Types } from 'mongoose';
-import { getUserFromField, storeInUser } from '../../database';
-import { SpotifyTrack } from '../../database/schemas/track';
-import { logger } from '../logger';
-import { chunk, wait } from '../misc';
-import { Spotify } from '../oauth/Provider';
-import { PromiseQueue } from '../queue';
+import { AxiosError, AxiosInstance } from "axios";
+import { Types } from "mongoose";
+import { getUserFromField, storeInUser } from "../../database";
+import { SpotifyTrack } from "../../database/schemas/track";
+import { logger } from "../logger";
+import { chunk, wait } from "../misc";
+import { Spotify } from "../oauth/Provider";
+import { PromiseQueue } from "../queue";
 
 export const squeue = new PromiseQueue();
 
@@ -30,30 +30,34 @@ export class SpotifyAPI {
 
   private async checkToken() {
     // Refresh the token if it expires in less than two minutes (1000ms * 120)
-    const user = await getUserFromField('_id', new Types.ObjectId(this.userId));
+    const user = await getUserFromField(
+      "_id",
+      new Types.ObjectId(this.userId),
+      true,
+    );
     let access: string | null | undefined = user?.accessToken;
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
     if (!user.spotifyId) {
-      throw new Error('User has no spotify id');
+      throw new Error("User has no spotify id");
     }
     this.spotifyId = user.spotifyId;
     if (Date.now() > user.expiresIn - 1000 * 120) {
       const token = user.refreshToken;
       if (!token) {
-        return null;
+        return;
       }
       const infos = await Spotify.refresh(token);
 
-      await storeInUser('_id', user._id, infos);
+      await storeInUser("_id", user._id, infos);
       logger.info(`Refreshed token for ${user.username}`);
       access = infos.accessToken;
     }
     if (access) {
       this.client = Spotify.getHttpClient(access);
     } else {
-      throw new Error('Could not get any access token');
+      throw new Error("Could not get any access token");
     }
   }
 
@@ -69,7 +73,7 @@ export class SpotifyAPI {
   public async playTrack(trackUri: string) {
     await squeue.queue(async () => {
       await this.checkToken();
-      return this.client.put('https://api.spotify.com/v1/me/player/play', {
+      return this.client.put("https://api.spotify.com/v1/me/player/play", {
         uris: [trackUri],
       });
     });
@@ -78,7 +82,7 @@ export class SpotifyAPI {
   public async me() {
     const res = await squeue.queue(async () => {
       await this.checkToken();
-      return this.client.get('/me');
+      return this.client.get("/me");
     });
     return res.data as SpotifyMe;
   }
@@ -86,7 +90,7 @@ export class SpotifyAPI {
   public async playlists() {
     const items: SpotifyPlaylist[] = [];
 
-    let nextUrl = '/me/playlists?limit=50';
+    let nextUrl = "/me/playlists?limit=50";
     while (nextUrl) {
       const thisUrl = nextUrl;
       // eslint-disable-next-line no-await-in-loop
@@ -132,7 +136,7 @@ export class SpotifyAPI {
           name,
           public: true,
           collaborative: false,
-          description: '',
+          description: "",
         },
       );
       return this.internAddToPlaylist(data.id, ids);
@@ -142,7 +146,7 @@ export class SpotifyAPI {
   async getTracksFromIds(spotifyIds: string[]) {
     const res = await squeue.queue(async () => {
       await this.checkToken();
-      return this.client.get(`/tracks?ids=${spotifyIds.join(',')}`);
+      return this.client.get(`/tracks?ids=${spotifyIds.join(",")}`);
     });
 
     return res.data.tracks as SpotifyTrack[];
@@ -152,10 +156,12 @@ export class SpotifyAPI {
     try {
       const res = await squeue.queue(async () => {
         await this.checkToken();
+        const limitedTrack = track.slice(0, 100);
+        const limitedArtist = artist.slice(0, 100);
         return this.client.get(
           `/search?q=track:${encodeURIComponent(
-            track,
-          )}+artist:${encodeURIComponent(artist)}&type=track&limit=10`,
+            limitedTrack,
+          )}+artist:${encodeURIComponent(limitedArtist)}&type=track&limit=10`,
         );
       });
       return res.data.tracks.items[0] as SpotifyTrack;

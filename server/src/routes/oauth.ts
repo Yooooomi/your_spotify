@@ -1,37 +1,42 @@
-import { Router } from 'express';
-import { sign } from 'jsonwebtoken';
+import { Router } from "express";
+import { sign } from "jsonwebtoken";
 import {
   createUser,
   getUserCount,
   getUserFromField,
   storeInUser,
-} from '../database';
-import { get, getWithDefault } from '../tools/env';
-import { logger } from '../tools/logger';
+} from "../database";
+import { get, getWithDefault } from "../tools/env";
+import { logger } from "../tools/logger";
 import {
   logged,
   withGlobalPreferences,
   withHttpClient,
-} from '../tools/middleware';
-import { Spotify } from '../tools/oauth/Provider';
-import { GlobalPreferencesRequest, SpotifyRequest } from '../tools/types';
+} from "../tools/middleware";
+import { Spotify } from "../tools/oauth/Provider";
+import { GlobalPreferencesRequest, SpotifyRequest } from "../tools/types";
+import { getPrivateData } from "../database/queries/privateData";
 
-const router = Router();
-export default router;
+export const router = Router();
 
-router.get('/spotify', async (req, res) => {
-  const isOffline = get('OFFLINE_DEV_ID');
+router.get("/spotify", async (_, res) => {
+  const isOffline = get("OFFLINE_DEV_ID");
   if (isOffline) {
-    const token = sign({ userId: isOffline }, 'MyPrivateKey', {
-      expiresIn: getWithDefault('COOKIE_VALIDITY_MS', '1h'),
+    const privateData = await getPrivateData();
+    if (!privateData?.jwtPrivateKey) {
+      throw new Error("No private data found, cannot sign JWT");
+    }
+    const token = sign({ userId: isOffline }, privateData.jwtPrivateKey, {
+      expiresIn: getWithDefault("COOKIE_VALIDITY_MS", "1h"),
     });
-    res.cookie('token', token);
-    return res.status(204).end();
+    res.cookie("token", token);
+    res.status(204).end();
+    return;
   }
   res.redirect(Spotify.getRedirect());
 });
 
-router.get('/spotify/callback', withGlobalPreferences, async (req, res) => {
+router.get("/spotify/callback", withGlobalPreferences, async (req, res) => {
   const { query, globalPreferences } = req as GlobalPreferencesRequest;
   const { code } = query;
 
@@ -39,11 +44,11 @@ router.get('/spotify/callback', withGlobalPreferences, async (req, res) => {
 
   try {
     const client = Spotify.getHttpClient(infos.accessToken);
-    const { data: spotifyMe } = await client.get('/me');
-    let user = await getUserFromField('spotifyId', spotifyMe.id);
+    const { data: spotifyMe } = await client.get("/me");
+    let user = await getUserFromField("spotifyId", spotifyMe.id, false);
     if (!user) {
       if (!globalPreferences.allowRegistrations) {
-        return res.redirect(`${get('CLIENT_ENDPOINT')}/registrations-disabled`);
+        return res.redirect(`${get("CLIENT_ENDPOINT")}/registrations-disabled`);
       }
       const nbUsers = await getUserCount();
       user = await createUser(
@@ -52,18 +57,26 @@ router.get('/spotify/callback', withGlobalPreferences, async (req, res) => {
         nbUsers === 0,
       );
     }
-    await storeInUser('_id', user._id, infos);
-    const token = sign({ userId: user._id.toString() }, 'MyPrivateKey', {
-      expiresIn: '1h',
-    });
-    res.cookie('token', token);
+    await storeInUser("_id", user._id, infos);
+    const privateData = await getPrivateData();
+    if (!privateData?.jwtPrivateKey) {
+      throw new Error("No private data found, cannot sign JWT");
+    }
+    const token = sign(
+      { userId: user._id.toString() },
+      privateData.jwtPrivateKey,
+      {
+        expiresIn: "1h",
+      },
+    );
+    res.cookie("token", token);
   } catch (e) {
     logger.error(e);
   }
-  return res.redirect(get('CLIENT_ENDPOINT'));
+  return res.redirect(get("CLIENT_ENDPOINT"));
 });
 
-router.get('/spotify/me', logged, withHttpClient, async (req, res) => {
+router.get("/spotify/me", logged, withHttpClient, async (req, res) => {
   const { client } = req as SpotifyRequest;
 
   try {
@@ -71,6 +84,6 @@ router.get('/spotify/me', logged, withHttpClient, async (req, res) => {
     return res.status(200).send(me);
   } catch (e) {
     logger.error(e);
-    return res.status(500).send({ code: 'SPOTIFY_ERROR' });
+    return res.status(500).send({ code: "SPOTIFY_ERROR" });
   }
 });

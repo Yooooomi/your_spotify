@@ -1,18 +1,18 @@
-import mongoose from 'mongoose';
-import { TrackModel, AlbumModel, ArtistModel } from '../database/Models';
-import { SpotifyAlbum, Album } from '../database/schemas/album';
-import { SpotifyArtist, Artist } from '../database/schemas/artist';
-import { SpotifyTrack, Track } from '../database/schemas/track';
-import { logger } from '../tools/logger';
-import { minOfArray, retryPromise, uniqBy } from '../tools/misc';
-import { SpotifyAPI } from '../tools/apis/spotifyApi';
+import mongoose from "mongoose";
+import { TrackModel, AlbumModel, ArtistModel } from "../database/Models";
+import { SpotifyAlbum, Album } from "../database/schemas/album";
+import { SpotifyArtist, Artist } from "../database/schemas/artist";
+import { SpotifyTrack, Track } from "../database/schemas/track";
+import { logger } from "../tools/logger";
+import { minOfArray, retryPromise, uniqBy } from "../tools/misc";
+import { SpotifyAPI } from "../tools/apis/spotifyApi";
 import {
   addTrackIdsToUser,
   storeInUser,
   storeFirstListenedAtIfLess,
-} from '../database';
-import { Infos } from '../database/schemas/info';
-import { longWriteDbLock } from '../tools/lock';
+} from "../database";
+import { Infos } from "../database/schemas/info";
+import { longWriteDbLock } from "../tools/lock";
 
 const getIdsHandlingMax = async <
   T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist,
@@ -39,7 +39,7 @@ const getIdsHandlingMax = async <
     if (!id) {
       continue;
     }
-    const builtUrl = `${url}?ids=${id.join(',')}`;
+    const builtUrl = `${url}?ids=${id.join(",")}`;
     // eslint-disable-next-line no-await-in-loop
     const { data } = await retryPromise(() => spotifyApi.raw(builtUrl), 10, 30);
     datas.push(...data[arrayPath]);
@@ -47,7 +47,7 @@ const getIdsHandlingMax = async <
   return datas as T[];
 };
 
-const url = 'https://api.spotify.com/v1/tracks';
+const url = "https://api.spotify.com/v1/tracks";
 
 const getTracksAndRelatedAlbumArtists = async (
   userId: string,
@@ -58,7 +58,7 @@ const getTracksAndRelatedAlbumArtists = async (
     url,
     ids,
     50,
-    'tracks',
+    "tracks",
   );
 
   const artistIds: Set<string> = new Set();
@@ -90,7 +90,7 @@ const getTracksAndRelatedAlbumArtists = async (
   };
 };
 
-const albumUrl = 'https://api.spotify.com/v1/albums';
+const albumUrl = "https://api.spotify.com/v1/albums";
 
 export const getAlbums = async (userId: string, ids: string[]) => {
   const spotifyAlbums = await getIdsHandlingMax<SpotifyAlbum>(
@@ -98,7 +98,7 @@ export const getAlbums = async (userId: string, ids: string[]) => {
     albumUrl,
     ids,
     20,
-    'albums',
+    "albums",
   );
 
   const albums: Album[] = spotifyAlbums.map(alb => {
@@ -115,7 +115,7 @@ export const getAlbums = async (userId: string, ids: string[]) => {
   return albums;
 };
 
-const artistUrl = 'https://api.spotify.com/v1/artists';
+const artistUrl = "https://api.spotify.com/v1/artists";
 
 export const getArtists = async (userId: string, ids: string[]) => {
   const artists = await getIdsHandlingMax<Artist>(
@@ -123,7 +123,7 @@ export const getArtists = async (userId: string, ids: string[]) => {
     artistUrl,
     ids,
     50,
-    'artists',
+    "artists",
   );
 
   artists.forEach(artist =>
@@ -144,7 +144,7 @@ export const getTracksAlbumsArtists = async (
   );
 
   if (missingTrackIds.length === 0) {
-    logger.info('No missing tracks, passing...');
+    logger.info("No missing tracks, passing...");
     return {
       tracks: [],
       albums: [],
@@ -212,7 +212,7 @@ export async function storeIterationOfLoop(
   tracks: Track[],
   albums: Album[],
   artists: Artist[],
-  infos: Omit<Infos, 'owner'>[],
+  infos: Omit<Infos, "owner">[],
 ) {
   await longWriteDbLock.lock();
 
@@ -224,7 +224,7 @@ export async function storeIterationOfLoop(
 
   await addTrackIdsToUser(userId, infos);
 
-  await storeInUser('_id', new mongoose.Types.ObjectId(userId), {
+  await storeInUser("_id", new mongoose.Types.ObjectId(userId), {
     lastTimestamp: iterationTimestamp,
   });
 

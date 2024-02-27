@@ -1,5 +1,5 @@
-import { Schema } from 'mongoose';
-import { ImporterState } from '../../tools/importers/types';
+import { Schema } from "mongoose";
+import { ImporterState } from "../../tools/importers/types";
 
 export const ImporterStateSchema = new Schema<ImporterState>(
   {
@@ -7,11 +7,11 @@ export const ImporterStateSchema = new Schema<ImporterState>(
     total: { type: Number, required: true },
     current: { type: Number, default: 0 },
     metadata: {},
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    user: { type: Schema.Types.ObjectId, ref: "User" },
     status: {
       type: String,
-      enum: ['progress', 'success', 'failure', 'failure-removed'],
-      default: 'progress',
+      enum: ["progress", "success", "failure", "failure-removed"],
+      default: "progress",
     },
   },
   { timestamps: true },

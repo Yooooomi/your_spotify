@@ -1,25 +1,25 @@
-import { getUserFromField } from '../../database';
+import { getUserFromField } from "../../database";
 import {
   createImporterState,
   getImporterState,
   setImporterStateStatus,
-} from '../../database/queries/importer';
-import { User } from '../../database/schemas/user';
-import { logger } from '../logger';
-import { clearCache } from './cache';
-import { FullPrivacyImporter } from './full_privacy';
-import { PrivacyImporter } from './privacy';
+} from "../../database/queries/importer";
+import { User } from "../../database/schemas/user";
+import { logger } from "../logger";
+import { clearCache } from "./cache";
+import { FullPrivacyImporter } from "./full_privacy";
+import { PrivacyImporter } from "./privacy";
 import {
   HistoryImporter,
   ImporterStateFromType,
   ImporterStateTypes,
-} from './types';
+} from "./types";
 
 const importers: {
   [typ in ImporterStateTypes]: (user: User) => HistoryImporter<typ>;
 } = {
   privacy: (user: User) => new PrivacyImporter(user),
-  'full-privacy': (user: User) => new FullPrivacyImporter(user),
+  "full-privacy": (user: User) => new FullPrivacyImporter(user),
 } as const;
 
 const userImporters: {
@@ -35,15 +35,15 @@ export async function cleanupImport(existingStateId: string) {
     return;
   }
   const { type, status } = importState;
-  if (status !== 'failure') {
+  if (status !== "failure") {
     return;
   }
-  await setImporterStateStatus(existingStateId, 'failure-removed');
+  await setImporterStateStatus(existingStateId, "failure-removed");
   const instanceClass = importers[type];
   if (!instanceClass) {
     return;
   }
-  const user = await getUserFromField('_id', importState._id);
+  const user = await getUserFromField("_id", importState._id, false);
   if (!user) {
     return;
   }
@@ -59,7 +59,7 @@ export async function runImporter<T extends ImporterStateTypes>(
   existingStateId: string | null,
   name: T,
   user: User,
-  requiredInitData: ImporterStateFromType<T>['metadata'],
+  requiredInitData: ImporterStateFromType<T>["metadata"],
   initDone: (success: boolean) => void,
 ) {
   const userId = user._id.toString();
@@ -91,7 +91,7 @@ export async function runImporter<T extends ImporterStateTypes>(
       return initDone(false);
     }
     if (existingState) {
-      await setImporterStateStatus(existingState._id.toString(), 'progress');
+      await setImporterStateStatus(existingState._id.toString(), "progress");
     }
     if (!existingState) {
       const data = {
@@ -99,7 +99,7 @@ export async function runImporter<T extends ImporterStateTypes>(
         current: 0,
         total: initedMetadata.total,
         metadata: requiredInitData,
-        status: 'progress',
+        status: "progress",
       } as ImporterStateFromType<T>;
       existingState = (await createImporterState<T>(
         userId,
@@ -109,14 +109,14 @@ export async function runImporter<T extends ImporterStateTypes>(
     initDone(true);
     await instance.run(existingState._id.toString());
     await instance.cleanup(requiredInitData);
-    await setImporterStateStatus(existingState._id.toString(), 'success');
+    await setImporterStateStatus(existingState._id.toString(), "success");
   } catch (e) {
     if (existingState) {
-      await setImporterStateStatus(existingState._id.toString(), 'failure');
+      await setImporterStateStatus(existingState._id.toString(), "failure");
     }
     logger.error(e);
     logger.error(
-      'This import failed, but metadata is kept so that you can retry it later in the settings',
+      "This import failed, but metadata is kept so that you can retry it later in the settings",
     );
   }
   clearCache(userId);

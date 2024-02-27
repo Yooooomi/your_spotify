@@ -1,14 +1,14 @@
-import { getAllUsers, getFirstInfo, storeInUser } from '../database';
-import { UserModel } from '../database/Models';
-import { User } from '../database/schemas/user';
-import { logger } from '../tools/logger';
-import { startMigration } from '../tools/migrations';
-import { SpotifyAPI } from '../tools/apis/spotifyApi';
-import { deleteUser } from '../tools/user';
+import { getAllUsers, getFirstInfo, storeInUser } from "../database";
+import { UserModel } from "../database/Models";
+import { User } from "../database/schemas/user";
+import { logger } from "../tools/logger";
+import { startMigration } from "../tools/migrations";
+import { SpotifyAPI } from "../tools/apis/spotifyApi";
+import { deleteUser } from "../tools/user";
 
 export const up = async () => {
-  startMigration('switch to spotify login');
-  let allUsers = await getAllUsers();
+  startMigration("switch to spotify login");
+  let allUsers = await getAllUsers(true);
 
   // Delete users with no spotify access token
   const toDelete: string[] = allUsers
@@ -25,7 +25,7 @@ export const up = async () => {
       try {
         const res = await spotifyApi.me();
         us.spotifyId = res.id;
-        await storeInUser('_id', us._id, { spotifyId: us.spotifyId });
+        await storeInUser("_id", us._id, { spotifyId: us.spotifyId });
       } catch (e) {
         logger.error(
           e,

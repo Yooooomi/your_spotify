@@ -3,47 +3,47 @@ import {
   getPossibleDuplicates,
   deleteInfos,
   getUserInfoCount,
-} from '../database';
+} from "../database";
 import {
   getCompatibilityVersion,
   getMongoInfos,
   setFeatureCompatibilityVersion,
-} from '../database/queries/meta';
+} from "../database/queries/meta";
 import {
   getAdminUser,
   getTracksWithoutAlbum,
   getAlbumsWithoutArtist,
-} from '../database/queries/tools';
+} from "../database/queries/tools";
 import {
   getAlbums,
   getArtists,
   storeTrackAlbumArtist,
-} from '../spotify/dbTools';
-import { getWithDefault } from './env';
-import { longWriteDbLock } from './lock';
-import { logger } from './logger';
+} from "../spotify/dbTools";
+import { getWithDefault } from "./env";
+import { longWriteDbLock } from "./lock";
+import { logger } from "./logger";
 
 export class Database {
   static async detectUpgrade() {
-    if (getWithDefault('MONGO_NO_ADMIN_RIGHTS', false)) {
+    if (getWithDefault("MONGO_NO_ADMIN_RIGHTS", false)) {
       return;
     }
     const infos = await getMongoInfos();
     const [major, minor] = infos.versionArray;
     const [compatibilityMajor, compatibilityMinor] = (
       await getCompatibilityVersion()
-    ).featureCompatibilityVersion.version.split('.');
+    ).featureCompatibilityVersion.version.split(".");
     if (
       compatibilityMajor === undefined ||
       compatibilityMinor === undefined ||
       major === undefined ||
       minor === undefined
     ) {
-      logger.warn('Could not get mongo version');
+      logger.warn("Could not get mongo version");
       return;
     }
     if (+compatibilityMajor > major) {
-      throw new Error('Cannot downgrade the database');
+      throw new Error("Cannot downgrade the database");
     }
     if (major === +compatibilityMajor && minor === +compatibilityMinor) {
       return;
@@ -54,35 +54,35 @@ export class Database {
 
   static async fixMissingTrackData() {
     await longWriteDbLock.lock();
-    logger.info('Checking database for missing track data...');
+    logger.info("Checking database for missing track data...");
     const user = await getAdminUser();
     if (!user) {
-      logger.warn('No user is admin, cannot auto fix database');
+      logger.warn("No user is admin, cannot auto fix database");
       longWriteDbLock.unlock();
       return;
     }
     const allTracks = await getTracksWithoutAlbum();
     if (allTracks.length > 0) {
       const albumIds = allTracks.map(t => t.album);
-      logger.info(`Fixing missing albums (${albumIds.join(',')})`);
+      logger.info(`Fixing missing albums (${albumIds.join(",")})`);
       const albums = await getAlbums(user._id.toString(), albumIds);
       await storeTrackAlbumArtist({ albums });
     }
     const allAlbums = await getAlbumsWithoutArtist();
     if (allAlbums.length > 0) {
       const artistIds = allAlbums.map(t => t.artists).flat(1);
-      logger.info(`Fixing missing artists (${artistIds.join(',')})`);
+      logger.info(`Fixing missing artists (${artistIds.join(",")})`);
       const artists = await getArtists(user._id.toString(), artistIds);
       await storeTrackAlbumArtist({ artists });
     }
     if (allTracks.length > 0 || allAlbums.length > 0) {
-      logger.info('Database fixed');
+      logger.info("Database fixed");
     }
     longWriteDbLock.unlock();
   }
 
   static async deletePossibleDuplicates() {
-    const users = await getAllUsers();
+    const users = await getAllUsers(false);
     const allToDelete = new Set<string>();
 
     const duplicateBatch = 50_000;

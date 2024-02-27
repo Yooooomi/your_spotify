@@ -1,8 +1,8 @@
-import { Request } from 'express';
-import { z } from 'zod';
-import { GlobalPreferences } from '../database/schemas/globalPreference';
-import { User } from '../database/schemas/user';
-import { SpotifyAPI } from './apis/spotifyApi';
+import { Request } from "express";
+import { z } from "zod";
+import { GlobalPreferences } from "../database/schemas/globalPreference";
+import { User } from "../database/schemas/user";
+import { SpotifyAPI } from "./apis/spotifyApi";
 
 export interface GlobalPreferencesRequest extends Request {
   globalPreferences: GlobalPreferences;
@@ -25,12 +25,12 @@ export interface SpotifyRequest extends Request {
 }
 
 export enum Timesplit {
-  all = 'all',
-  hour = 'hour',
-  day = 'day',
-  week = 'week',
-  month = 'month',
-  year = 'year',
+  all = "all",
+  hour = "hour",
+  day = "day",
+  week = "week",
+  month = "month",
+  year = "year",
 }
 
 export type Unpack<T> = T extends (infer U)[] ? U : T;

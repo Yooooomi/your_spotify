@@ -1,25 +1,24 @@
-import { Router } from 'express';
-import { z } from 'zod';
-import multer from 'multer';
-import { logger } from '../tools/logger';
-import { logged, notAlreadyImporting, validating } from '../tools/middleware';
-import { LoggedRequest, TypedPayload } from '../tools/types';
+import { Router } from "express";
+import { z } from "zod";
+import multer from "multer";
+import { logger } from "../tools/logger";
+import { logged, notAlreadyImporting, validating } from "../tools/middleware";
+import { LoggedRequest, TypedPayload } from "../tools/types";
 import {
   canUserImport,
   cleanupImport,
   runImporter,
-} from '../tools/importers/importer';
+} from "../tools/importers/importer";
 import {
   getImporterState,
   getUserImporterState,
-} from '../database/queries/importer';
-import { ImporterState, ImporterStateTypes } from '../tools/importers/types';
+} from "../database/queries/importer";
+import { ImporterState, ImporterStateTypes } from "../tools/importers/types";
 
-const router = Router();
-export default router;
+export const router = Router();
 
 const upload = multer({
-  dest: '/tmp/imports/',
+  dest: "/tmp/imports/",
   limits: {
     files: 50,
     fileSize: 1024 * 1024 * 20, // 20 mo
@@ -27,19 +26,21 @@ const upload = multer({
 });
 
 router.post(
-  '/import/privacy',
-  upload.array('imports', 50),
+  "/import/privacy",
+  upload.array("imports", 50),
   logged,
   notAlreadyImporting,
   async (req, res) => {
     const { files, user } = req as LoggedRequest;
 
     if (!files) {
-      return res.status(400).end();
+      res.status(400).end();
+      return;
     }
 
     if (!canUserImport(user._id.toString())) {
-      return res.status(400).send({ code: 'ALREADY_IMPORTING' });
+      res.status(400).send({ code: "ALREADY_IMPORTING" });
+      return;
     }
 
     try {
@@ -50,32 +51,36 @@ router.post(
         (files as Express.Multer.File[]).map(f => f.path),
         success => {
           if (success) {
-            return res.status(200).send({ code: 'IMPORT_STARTED' });
+            res.status(200).send({ code: "IMPORT_STARTED" });
+            return;
           }
-          return res.status(400).send({ code: 'IMPORT_INIT_FAILED' });
+          res.status(400).send({ code: "IMPORT_INIT_FAILED" });
+          return;
         },
       ).catch(logger.error);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
 
 router.post(
-  '/import/full-privacy',
-  upload.array('imports', 50),
+  "/import/full-privacy",
+  upload.array("imports", 50),
   logged,
   notAlreadyImporting,
   async (req, res) => {
     const { files, user } = req as LoggedRequest;
 
     if (!files) {
-      return res.status(400).end();
+      res.status(400).end();
+      return;
     }
 
     if (!canUserImport(user._id.toString())) {
-      return res.status(400).send({ code: 'ALREADY_IMPORTING' });
+      res.status(400).send({ code: "ALREADY_IMPORTING" });
+      return;
     }
 
     try {
@@ -86,14 +91,16 @@ router.post(
         (files as Express.Multer.File[]).map(f => f.path),
         success => {
           if (success) {
-            return res.status(200).send({ code: 'IMPORT_STARTED' });
+            res.status(200).send({ code: "IMPORT_STARTED" });
+            return;
           }
-          return res.status(400).send({ code: 'IMPORT_INIT_FAILED' });
+          res.status(400).send({ code: "IMPORT_INIT_FAILED" });
+          return;
         },
       ).catch(logger.error);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -103,7 +110,7 @@ const retrySchema = z.object({
 });
 
 router.post(
-  '/import/retry',
+  "/import/retry",
   validating(retrySchema),
   logged,
   notAlreadyImporting,
@@ -112,13 +119,15 @@ router.post(
     const { existingStateId } = req.body as TypedPayload<typeof retrySchema>;
 
     const importState =
-      await getImporterState<ImporterState['type']>(existingStateId);
+      await getImporterState<ImporterState["type"]>(existingStateId);
     if (!importState || importState.user.toString() !== user._id.toString()) {
-      return res.status(404).end();
+      res.status(404).end();
+      return;
     }
 
-    if (importState.status !== 'failure') {
-      return res.status(400).end();
+    if (importState.status !== "failure") {
+      res.status(400).end();
+      return;
     }
 
     try {
@@ -129,14 +138,16 @@ router.post(
         importState.metadata,
         success => {
           if (success) {
-            return res.status(200).send({ code: 'IMPORT_STARTED' });
+            res.status(200).send({ code: "IMPORT_STARTED" });
+            return;
           }
-          return res.status(400).send({ code: 'IMPORT_INIT_FAILED' });
+          res.status(400).send({ code: "IMPORT_INIT_FAILED" });
+          return;
         },
       ).catch(logger.error);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -146,8 +157,8 @@ const cleanupImportSchema = z.object({
 });
 
 router.delete(
-  '/import/clean/:id',
-  validating(cleanupImportSchema, 'params'),
+  "/import/clean/:id",
+  validating(cleanupImportSchema, "params"),
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -170,7 +181,7 @@ router.delete(
   },
 );
 
-router.get('/imports', logged, async (req, res) => {
+router.get("/imports", logged, async (req, res) => {
   const { user } = req as LoggedRequest;
 
   try {

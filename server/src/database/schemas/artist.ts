@@ -1,5 +1,5 @@
-import { Schema } from 'mongoose';
-import { SpotifyImage } from './types';
+import { Schema } from "mongoose";
+import { SpotifyImage } from "./types";
 
 export interface Artist {
   external_urls: any;

@@ -1,7 +1,7 @@
-import { Schema } from 'mongoose';
-import { Artist } from './artist';
-import { Track } from './track';
-import { SpotifyImage } from './types';
+import { Schema } from "mongoose";
+import { Artist } from "./artist";
+import { Track } from "./track";
+import { SpotifyImage } from "./types";
 
 export interface Album {
   album_type: string;
@@ -22,7 +22,7 @@ export interface Album {
   uri: string;
 }
 
-export type SpotifyAlbum = Omit<Album, 'artists'> & {
+export type SpotifyAlbum = Omit<Album, "artists"> & {
   artists: Artist[];
   tracks: Track[];
 };
@@ -50,9 +50,9 @@ export const AlbumSchema = new Schema<Album>(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
-AlbumSchema.virtual('artist', {
-  ref: 'Artist',
-  localField: 'artists',
-  foreignField: 'id',
+AlbumSchema.virtual("artist", {
+  ref: "Artist",
+  localField: "artists",
+  foreignField: "id",
   justOne: false,
 });

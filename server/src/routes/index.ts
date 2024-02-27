@@ -1,14 +1,14 @@
-import { Router } from 'express';
-import { Types } from 'mongoose';
-import { z } from 'zod';
-import { v4 } from 'uuid';
+import { Router } from "express";
+import { Types } from "mongoose";
+import { z } from "zod";
+import { v4 } from "uuid";
 import {
   admin,
   isLoggedOrGuest,
   logged,
   optionalLoggedOrGuest,
   validating,
-} from '../tools/middleware';
+} from "../tools/middleware";
 import {
   changeSetting,
   getAllAdmins,
@@ -17,40 +17,39 @@ import {
   setUserAdmin,
   setUserPublicToken,
   storeInUser,
-} from '../database';
-import { logger } from '../tools/logger';
+} from "../database";
+import { logger } from "../tools/logger";
 import {
   LoggedRequest,
   OptionalLoggedRequest,
   TypedPayload,
-} from '../tools/types';
-import { toBoolean, toNumber } from '../tools/zod';
-import { deleteUser } from '../tools/user';
-import { GithubAPI } from '../tools/apis/githubApi';
-import { Version } from '../tools/version';
-import { getWithDefault } from '../tools/env';
+} from "../tools/types";
+import { toBoolean, toNumber } from "../tools/zod";
+import { deleteUser } from "../tools/user";
+import { GithubAPI } from "../tools/apis/githubApi";
+import { Version } from "../tools/version";
+import { getWithDefault } from "../tools/env";
 
-const router = Router();
-export default router;
+export const router = Router();
 
-router.get('/', (_, res) => {
-  res.status(200).send('Hello !');
+router.get("/", (_, res) => {
+  res.status(200).send("Hello !");
 });
 
-router.post('/logout', async (_, res) => {
-  res.clearCookie('token');
+router.post("/logout", async (_, res) => {
+  res.clearCookie("token");
   return res.status(200).end();
 });
 
 const settingsSchema = z.object({
   historyLine: z.string().transform(toBoolean).optional(),
-  preferredStatsPeriod: z.enum(['day', 'week', 'month', 'year']).optional(),
+  preferredStatsPeriod: z.enum(["day", "week", "month", "year"]).optional(),
   nbElements: z.preprocess(
     toNumber,
     z.number().min(5).max(50).default(10).optional(),
   ),
-  metricUsed: z.enum(['number', 'duration']).optional(),
-  darkMode: z.enum(['follow', 'dark', 'light']).optional(),
+  metricUsed: z.enum(["number", "duration"]).optional(),
+  darkMode: z.enum(["follow", "dark", "light"]).optional(),
   timezone: z
     .string()
     .nullable()
@@ -59,7 +58,7 @@ const settingsSchema = z.object({
 });
 
 router.post(
-  '/settings',
+  "/settings",
   validating(settingsSchema),
   logged,
   async (req, res) => {
@@ -67,7 +66,7 @@ router.post(
 
     try {
       await changeSetting(
-        '_id',
+        "_id",
         user._id,
         req.body as TypedPayload<typeof settingsSchema>,
       );
@@ -79,7 +78,7 @@ router.post(
   },
 );
 
-router.get('/me', optionalLoggedOrGuest, async (req, res) => {
+router.get("/me", optionalLoggedOrGuest, async (req, res) => {
   const { user } = req as OptionalLoggedRequest;
   if (user) {
     return res.status(200).send({ status: true, user });
@@ -87,7 +86,7 @@ router.get('/me', optionalLoggedOrGuest, async (req, res) => {
   return res.status(200).send({ status: false });
 });
 
-router.post('/generate-public-token', logged, async (req, res) => {
+router.post("/generate-public-token", logged, async (req, res) => {
   const { user } = req as LoggedRequest;
 
   try {
@@ -100,9 +99,9 @@ router.post('/generate-public-token', logged, async (req, res) => {
   }
 });
 
-router.get('/accounts', isLoggedOrGuest, async (_, res) => {
+router.get("/accounts", isLoggedOrGuest, async (_, res) => {
   try {
-    const users = await getAllUsers();
+    const users = await getAllUsers(false);
     return res.status(200).send(
       users.map(user => ({
         id: user._id.toString(),
@@ -126,8 +125,8 @@ const setAdminBody = z.object({
 });
 
 router.put(
-  '/admin/:id',
-  validating(setAdmin, 'params'),
+  "/admin/:id",
+  validating(setAdmin, "params"),
   validating(setAdminBody),
   logged,
   admin,
@@ -138,7 +137,7 @@ router.put(
     try {
       const users = await getAllAdmins();
       if (users.length <= 1 && status === false) {
-        return res.status(400).send({ code: 'CANNOT_HAVE_ZERO_ADMIN' });
+        return res.status(400).send({ code: "CANNOT_HAVE_ZERO_ADMIN" });
       }
       await setUserAdmin(id, status);
       return res.status(204).end();
@@ -154,15 +153,15 @@ const deleteAccount = z.object({
 });
 
 router.delete(
-  '/account/:id',
-  validating(deleteAccount, 'params'),
+  "/account/:id",
+  validating(deleteAccount, "params"),
   logged,
   admin,
   async (req, res) => {
     const { id } = req.params as TypedPayload<typeof deleteAccount>;
 
     try {
-      const user = await getUserFromField('_id', new Types.ObjectId(id));
+      const user = await getUserFromField("_id", new Types.ObjectId(id), false);
       if (!user) {
         return res.status(404).end();
       }
@@ -179,12 +178,12 @@ const rename = z.object({
   newName: z.string().max(64).min(2),
 });
 
-router.put('/rename', validating(rename), logged, async (req, res) => {
+router.put("/rename", validating(rename), logged, async (req, res) => {
   const { user } = req as LoggedRequest;
   const { newName } = req.body as TypedPayload<typeof rename>;
 
   try {
-    await storeInUser('_id', user._id, { username: newName });
+    await storeInUser("_id", user._id, { username: newName });
     return res.status(204).end();
   } catch (e) {
     logger.error(e);
@@ -192,14 +191,14 @@ router.put('/rename', validating(rename), logged, async (req, res) => {
   }
 });
 
-router.get('/version', logged, async (_, res) => {
-  if (getWithDefault('NODE_ENV', 'development') === 'development') {
-    return res.status(200).send({ update: false, version: '1.0.0' });
+router.get("/version", logged, async (_, res) => {
+  if (getWithDefault("NODE_ENV", "development") === "development") {
+    return res.status(200).send({ update: false, version: "1.0.0" });
   }
   try {
     const version = await GithubAPI.lastVersion();
     if (!version) {
-      return res.status(200).send({ update: false, version: '1.0.0' });
+      return res.status(200).send({ update: false, version: "1.0.0" });
     }
     if (version.isNewerThan(Version.thisOne())) {
       return res

@@ -1,27 +1,37 @@
-import { Types } from 'mongoose';
-import { NoResult } from '../../tools/errors/Database';
+import { Types } from "mongoose";
+import { NoResult } from "../../tools/errors/Database";
 import {
   AlbumModel,
   ArtistModel,
   InfosModel,
   TrackModel,
   UserModel,
-} from '../Models';
-import { Infos } from '../schemas/info';
-import { User } from '../schemas/user';
+} from "../Models";
+import { Infos } from "../schemas/info";
+import { User } from "../schemas/user";
 
 export const getUserFromField = async <F extends keyof User>(
   field: F,
   value: User[F],
+  includeTokens: boolean,
   crash = true,
 ) => {
-  const user = UserModel.findOne({ [field]: value }, '-tracks');
+  const user = UserModel.findOne(
+    { [field]: value },
+    includeTokens ? "-tracks" : "-tracks -accessToken -refreshToken",
+  );
 
   if (!user && crash) {
     throw new NoResult();
   }
   return user;
 };
+
+export const getAllUsers = (includeTokens: boolean) =>
+  UserModel.find(
+    {},
+    includeTokens ? "-tracks" : "-tracks -accessToken -refreshToken",
+  );
 
 export const createUser = (
   username: string,
@@ -32,16 +42,16 @@ export const createUser = (
     username,
     admin,
     spotifyId,
-    accessToken: '',
-    refreshToken: '',
+    accessToken: "",
+    refreshToken: "",
     expiresIn: 0,
     // Set last timestamp to yesterday so that we already have a pull of tracks
     lastTimestamp: Date.now() - 1000 * 60 * 60 * 24,
     settings: {
       historyLine: false,
-      preferredStatsPeriod: 'month',
+      preferredStatsPeriod: "month",
       nbElements: 10,
-      metricUsed: 'number',
+      metricUsed: "number",
     },
   });
 
@@ -56,13 +66,13 @@ export const storeFirstListenedAtIfLess = async (
   playedAt: Date,
 ) => {
   const id = new Types.ObjectId(userId);
-  const user = await getUserFromField('_id', id);
+  const user = await getUserFromField("_id", id, false);
   if (
     user &&
     (!user.firstListenedAt ||
       playedAt.getTime() < user.firstListenedAt.getTime())
   ) {
-    await storeInUser('_id', id, {
+    await storeInUser("_id", id, {
       firstListenedAt: playedAt,
     });
   }
@@ -71,7 +81,7 @@ export const storeFirstListenedAtIfLess = async (
 export const changeSetting = <F extends keyof User>(
   field: F,
   value: User[F],
-  infos: Partial<User['settings']>,
+  infos: Partial<User["settings"]>,
 ) => {
   const toSet: Record<string, any> = {};
   const toUnset: Record<string, any> = {};
@@ -92,7 +102,7 @@ export const changeSetting = <F extends keyof User>(
 
 export const addTrackIdsToUser = async (
   id: string,
-  infos: Omit<Infos, 'owner'>[],
+  infos: Omit<Infos, "owner">[],
 ) => {
   const realInfos = infos.map(info => ({
     ...info,
@@ -138,32 +148,32 @@ export const getPossibleDuplicates = async (
     { $limit: count },
     {
       $group: {
-        _id: '$id',
-        infos: { $push: '$$ROOT' },
+        _id: "$id",
+        infos: { $push: "$$ROOT" },
       },
     },
     {
       $addFields: {
         a: {
           $reduce: {
-            input: '$infos',
+            input: "$infos",
             initialValue: { duplicates: [] },
             in: {
-              last: '$$this',
+              last: "$$this",
               duplicates: {
                 $concatArrays: [
-                  '$$value.duplicates',
+                  "$$value.duplicates",
                   {
                     $cond: {
                       if: {
                         $and: [
-                          { $gt: ['$$value.last.played_at', null] },
+                          { $gt: ["$$value.last.played_at", null] },
                           {
                             $lt: [
                               {
                                 $subtract: [
-                                  '$$this.played_at',
-                                  '$$value.last.played_at',
+                                  "$$this.played_at",
+                                  "$$value.last.played_at",
                                 ],
                               },
                               secondsPlusMinus * 1000,
@@ -173,12 +183,12 @@ export const getPossibleDuplicates = async (
                       },
                       then: [
                         [
-                          '$$value.last',
-                          '$$this',
+                          "$$value.last",
+                          "$$this",
                           {
                             $subtract: [
-                              '$$this.played_at',
-                              '$$value.last.played_at',
+                              "$$this.played_at",
+                              "$$value.last.played_at",
                             ],
                           },
                         ],
@@ -195,9 +205,9 @@ export const getPossibleDuplicates = async (
     },
     {
       $project: {
-        duplicates: '$a.duplicates',
+        duplicates: "$a.duplicates",
         hasDuplicates: {
-          $cond: [{ $gt: [{ $size: '$a.duplicates' }, 0] }, true, false],
+          $cond: [{ $gt: [{ $size: "$a.duplicates" }, 0] }, true, false],
         },
       },
     },
@@ -212,8 +222,8 @@ export const getSongs = async (
   inter?: { start: Date; end: Date },
 ) => {
   const fullUser = await UserModel.findById(userId).populate({
-    path: 'tracks',
-    model: 'Infos',
+    path: "tracks",
+    model: "Infos",
     match: {
       ...(inter
         ? { played_at: { $gt: inter.start, $lt: inter.end } }
@@ -222,11 +232,11 @@ export const getSongs = async (
     },
     options: { skip: offset, limit: number, sort: { played_at: -1 } },
     populate: {
-      path: 'track',
-      model: 'Track',
+      path: "track",
+      model: "Track",
       populate: [
-        { path: 'full_album', model: 'Album' },
-        { path: 'full_artist', model: 'Artist' },
+        { path: "full_album", model: "Album" },
+        { path: "full_artist", model: "Artist" },
       ],
     },
   });
@@ -238,9 +248,7 @@ export const getSongs = async (
 
 export const getUserCount = () => UserModel.countDocuments();
 export const getUser = (nb: number) =>
-  UserModel.find().sort({ _id: 'asc' }).skip(nb).limit(1);
-
-export const getAllUsers = () => UserModel.find({}, '-tracks');
+  UserModel.find().sort({ _id: "asc" }).skip(nb).limit(1);
 
 export const deleteAllInfosFromUserId = (userId: string) =>
   InfosModel.deleteMany({ owner: userId });
@@ -251,13 +259,13 @@ export const deleteAllOrphanTracks = async () => {
   const tracks = await TrackModel.aggregate([
     {
       $lookup: {
-        as: 'infos',
-        from: 'infos',
-        localField: 'id',
-        foreignField: 'id',
+        as: "infos",
+        from: "infos",
+        localField: "id",
+        foreignField: "id",
       },
     },
-    { $match: { $expr: { $eq: [{ $size: '$infos' }, 0] } } },
+    { $match: { $expr: { $eq: [{ $size: "$infos" }, 0] } } },
   ]);
 
   const tracksToDelete = tracks.map(tr => tr._id);
@@ -266,13 +274,13 @@ export const deleteAllOrphanTracks = async () => {
   const albums = await AlbumModel.aggregate([
     {
       $lookup: {
-        as: 'tracks',
-        from: 'tracks',
-        localField: 'id',
-        foreignField: 'album',
+        as: "tracks",
+        from: "tracks",
+        localField: "id",
+        foreignField: "album",
       },
     },
-    { $match: { $expr: { $eq: [{ $size: '$tracks' }, 0] } } },
+    { $match: { $expr: { $eq: [{ $size: "$tracks" }, 0] } } },
   ]);
 
   const albumsToDelete = albums.map(alb => alb._id);
@@ -281,26 +289,26 @@ export const deleteAllOrphanTracks = async () => {
   const artists = await ArtistModel.aggregate([
     {
       $lookup: {
-        as: 'albums',
-        from: 'albums',
-        localField: 'id',
-        foreignField: 'artists',
+        as: "albums",
+        from: "albums",
+        localField: "id",
+        foreignField: "artists",
       },
     },
     {
       $lookup: {
-        as: 'tracks',
-        from: 'tracks',
-        localField: 'id',
-        foreignField: 'artists',
+        as: "tracks",
+        from: "tracks",
+        localField: "id",
+        foreignField: "artists",
       },
     },
     {
       $match: {
         $expr: {
           $and: [
-            { $eq: [{ $size: '$albums' }, 0] },
-            { $eq: [{ $size: '$tracks' }, 0] },
+            { $eq: [{ $size: "$albums" }, 0] },
+            { $eq: [{ $size: "$tracks" }, 0] },
           ],
         },
       },
@@ -315,7 +323,7 @@ export const deleteAllOrphanTracks = async () => {
 
 export const getFirstInfo = async (userId: string) => {
   const infos = await InfosModel.find({ owner: userId })
-    .sort({ played_at: 'asc' })
+    .sort({ played_at: "asc" })
     .limit(1);
   return infos[0];
 };
@@ -330,12 +338,12 @@ export const setUserPublicToken = (userId: string, token: string | null) =>
 
 export const blacklistArtist = (userId: string, artistId: string) =>
   UserModel.findByIdAndUpdate(userId, {
-    $push: { 'settings.blacklistedArtists': artistId },
+    $push: { "settings.blacklistedArtists": artistId },
   });
 
 export const unblacklistArtist = (userId: string, artistId: string) =>
   UserModel.findByIdAndUpdate(userId, {
-    $pull: { 'settings.blacklistedArtists': artistId },
+    $pull: { "settings.blacklistedArtists": artistId },
   });
 
 export const deleteInfos = (infoIds: string[]) =>

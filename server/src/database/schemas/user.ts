@@ -1,6 +1,6 @@
-import { Schema, Types } from 'mongoose';
+import { Schema, Types } from "mongoose";
 
-export type DarkModeType = 'follow' | 'dark' | 'light';
+export type DarkModeType = "follow" | "dark" | "light";
 
 export interface User {
   _id: Types.ObjectId;
@@ -16,7 +16,7 @@ export interface User {
     historyLine: boolean;
     preferredStatsPeriod: string;
     nbElements: number;
-    metricUsed: 'number' | 'duration';
+    metricUsed: "number" | "duration";
     darkMode: DarkModeType;
     timezone: string | undefined;
     blacklistedArtists: string[];
@@ -37,23 +37,23 @@ export const UserSchema = new Schema<User>(
     lastTimestamp: { type: Number, default: 0 },
     tracks: {
       type: [Schema.Types.ObjectId],
-      ref: 'Infos',
+      ref: "Infos",
       select: false,
       default: [],
     },
     settings: {
       historyLine: { type: Boolean, default: true },
-      preferredStatsPeriod: { type: String, default: 'day' },
+      preferredStatsPeriod: { type: String, default: "day" },
       nbElements: { type: Number, default: 10 },
       metricUsed: {
         type: String,
-        enum: ['number', 'duration'],
-        default: 'number',
+        enum: ["number", "duration"],
+        default: "number",
       },
       darkMode: {
         type: String,
-        enum: ['follow', 'dark', 'light'],
-        default: 'follow',
+        enum: ["follow", "dark", "light"],
+        default: "follow",
       },
       blacklistedArtists: [{ type: String }],
       timezone: { type: String, default: undefined, required: false },

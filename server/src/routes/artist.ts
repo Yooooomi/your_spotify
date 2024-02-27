@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { z } from 'zod';
+import { Router } from "express";
+import { z } from "zod";
 import {
   getArtists,
   getFirstAndLastListened,
@@ -13,26 +13,25 @@ import {
   unblacklistArtist,
   blacklistByArtist,
   unblacklistByArtist,
-} from '../database';
-import { logger } from '../tools/logger';
-import { isLoggedOrGuest, logged, validating } from '../tools/middleware';
-import { LoggedRequest, TypedPayload } from '../tools/types';
+} from "../database";
+import { logger } from "../tools/logger";
+import { isLoggedOrGuest, logged, validating } from "../tools/middleware";
+import { LoggedRequest, TypedPayload } from "../tools/types";
 
-const router = Router();
-export default router;
+export const router = Router();
 
 const getArtistsSchema = z.object({
   ids: z.string(),
 });
 
 router.get(
-  '/:ids',
-  validating(getArtistsSchema, 'params'),
+  "/:ids",
+  validating(getArtistsSchema, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     try {
       const { ids } = req.params as TypedPayload<typeof getArtistsSchema>;
-      const artists = await getArtists(ids.split(','));
+      const artists = await getArtists(ids.split(","));
       if (!artists || artists.length === 0) {
         return res.status(404).end();
       }
@@ -49,8 +48,8 @@ const getArtistStats = z.object({
 });
 
 router.get(
-  '/:id/stats',
-  validating(getArtistStats, 'params'),
+  "/:id/stats",
+  validating(getArtistStats, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     try {
@@ -72,7 +71,7 @@ router.get(
         await Promise.all(promises);
       if (!total) {
         return res.status(200).send({
-          code: 'NEVER_LISTENED',
+          code: "NEVER_LISTENED",
         });
       }
       return res.status(200).send({
@@ -91,8 +90,8 @@ router.get(
 );
 
 router.get(
-  '/:id/rank',
-  validating(getArtistStats, 'params'),
+  "/:id/rank",
+  validating(getArtistStats, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -117,8 +116,8 @@ const search = z.object({
 });
 
 router.get(
-  '/search/:query',
-  validating(search, 'params'),
+  "/search/:query",
+  validating(search, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     const { query } = req.params as TypedPayload<typeof search>;
@@ -138,8 +137,8 @@ const blacklist = z.object({
 });
 
 router.post(
-  '/blacklist/:id',
-  validating(blacklist, 'params'),
+  "/blacklist/:id",
+  validating(blacklist, "params"),
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -157,8 +156,8 @@ router.post(
 );
 
 router.post(
-  '/unblacklist/:id',
-  validating(blacklist, 'params'),
+  "/unblacklist/:id",
+  validating(blacklist, "params"),
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;

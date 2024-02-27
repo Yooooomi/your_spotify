@@ -1,20 +1,19 @@
-import { Router } from 'express';
-import { z } from 'zod';
-import { searchArtist, searchTrack } from '../database';
-import { logger } from '../tools/logger';
-import { isLoggedOrGuest, validating } from '../tools/middleware';
-import { TypedPayload } from '../tools/types';
+import { Router } from "express";
+import { z } from "zod";
+import { searchArtist, searchTrack } from "../database";
+import { logger } from "../tools/logger";
+import { isLoggedOrGuest, validating } from "../tools/middleware";
+import { TypedPayload } from "../tools/types";
 
-const router = Router();
-export default router;
+export const router = Router();
 
 const search = z.object({
   query: z.string().min(3).max(64),
 });
 
 router.get(
-  '/:query',
-  validating(search, 'params'),
+  "/:query",
+  validating(search, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     const { query } = req.params as TypedPayload<typeof search>;

@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
-import { InfosModel } from '../Models';
+import mongoose from "mongoose";
+import { InfosModel } from "../Models";
 import {
   basicMatchUsers,
   lightAlbumLookupPipeline,
   lightArtistLookupPipeline,
   lightTrackLookupPipeline,
-} from './statsTools';
+} from "./statsTools";
 
 function fromPairs<K extends string, V>(pairs: [K, V][]) {
   return pairs.reduce<Record<K, V>>(
@@ -18,8 +18,8 @@ function fromPairs<K extends string, V>(pairs: [K, V][]) {
 }
 
 export enum CollaborativeMode {
-  AVERAGE = 'average',
-  MINIMA = 'minima',
+  AVERAGE = "average",
+  MINIMA = "minima",
 }
 
 export const getCollaborativeBestSongs = (
@@ -38,14 +38,14 @@ export const getCollaborativeBestSongs = (
       $addFields: fromPairs(
         users.map(user => [
           user.toString(),
-          { $cond: [{ $eq: ['$owner', user] }, 1, 0] },
+          { $cond: [{ $eq: ["$owner", user] }, 1, 0] },
         ]),
       ),
     },
     {
       $group: {
         _id: null,
-        data: { $push: '$$ROOT' },
+        data: { $push: "$$ROOT" },
         ...fromPairs(
           users.map(user => [
             `total_${user.toString()}`,
@@ -54,10 +54,10 @@ export const getCollaborativeBestSongs = (
         ),
       },
     },
-    { $unwind: '$data' },
+    { $unwind: "$data" },
     {
       $group: {
-        _id: '$data.id',
+        _id: "$data.id",
         ...fromPairs(
           users.map(user => [
             user.toString(),
@@ -95,17 +95,17 @@ export const getCollaborativeBestSongs = (
     },
     {
       $sort: {
-        [mode === CollaborativeMode.AVERAGE ? 'average_percents' : 'minima']:
+        [mode === CollaborativeMode.AVERAGE ? "average_percents" : "minima"]:
           -1,
       },
     },
     { $limit: limit },
-    { $lookup: lightTrackLookupPipeline('_id') },
-    { $unwind: '$track' },
+    { $lookup: lightTrackLookupPipeline("_id") },
+    { $unwind: "$track" },
     { $lookup: lightAlbumLookupPipeline() },
-    { $unwind: '$album' },
+    { $unwind: "$album" },
     { $lookup: lightArtistLookupPipeline() },
-    { $unwind: '$artist' },
+    { $unwind: "$artist" },
   ]);
 };
 
@@ -124,14 +124,14 @@ export const getCollaborativeBestAlbums = (
       $addFields: fromPairs(
         users.map(user => [
           user.toString(),
-          { $cond: [{ $eq: ['$owner', user] }, 1, 0] },
+          { $cond: [{ $eq: ["$owner", user] }, 1, 0] },
         ]),
       ),
     },
     {
       $group: {
         _id: null,
-        data: { $push: '$$ROOT' },
+        data: { $push: "$$ROOT" },
         ...fromPairs(
           users.map(user => [
             `total_${user.toString()}`,
@@ -140,12 +140,12 @@ export const getCollaborativeBestAlbums = (
         ),
       },
     },
-    { $unwind: '$data' },
-    { $lookup: lightTrackLookupPipeline('data.id') },
-    { $unwind: '$track' },
+    { $unwind: "$data" },
+    { $lookup: lightTrackLookupPipeline("data.id") },
+    { $unwind: "$track" },
     {
       $group: {
-        _id: '$track.album',
+        _id: "$track.album",
         ...fromPairs(
           users.map(user => [
             user.toString(),
@@ -183,15 +183,15 @@ export const getCollaborativeBestAlbums = (
     },
     {
       $sort: {
-        [mode === CollaborativeMode.AVERAGE ? 'average_percents' : 'minima']:
+        [mode === CollaborativeMode.AVERAGE ? "average_percents" : "minima"]:
           -1,
       },
     },
     { $limit: 50 },
-    { $lookup: lightAlbumLookupPipeline('_id') },
-    { $unwind: '$album' },
-    { $lookup: lightArtistLookupPipeline('album.artists') },
-    { $unwind: '$artist' },
+    { $lookup: lightAlbumLookupPipeline("_id") },
+    { $unwind: "$album" },
+    { $lookup: lightArtistLookupPipeline("album.artists") },
+    { $unwind: "$artist" },
   ]);
 };
 
@@ -210,14 +210,14 @@ export const getCollaborativeBestArtists = (
       $addFields: fromPairs(
         users.map(user => [
           user.toString(),
-          { $cond: [{ $eq: ['$owner', user] }, 1, 0] },
+          { $cond: [{ $eq: ["$owner", user] }, 1, 0] },
         ]),
       ),
     },
     {
       $group: {
         _id: null,
-        data: { $push: '$$ROOT' },
+        data: { $push: "$$ROOT" },
         ...fromPairs(
           users.map(user => [
             `total_${user.toString()}`,
@@ -226,13 +226,13 @@ export const getCollaborativeBestArtists = (
         ),
       },
     },
-    { $unwind: '$data' },
-    { $lookup: lightTrackLookupPipeline('data.id') },
-    { $unwind: '$track' },
-    { $addFields: { 'track.artist': { $first: '$track.artists' } } },
+    { $unwind: "$data" },
+    { $lookup: lightTrackLookupPipeline("data.id") },
+    { $unwind: "$track" },
+    { $addFields: { "track.artist": { $first: "$track.artists" } } },
     {
       $group: {
-        _id: '$track.artist',
+        _id: "$track.artist",
         ...fromPairs(
           users.map(user => [
             user.toString(),
@@ -270,12 +270,12 @@ export const getCollaborativeBestArtists = (
     },
     {
       $sort: {
-        [mode === CollaborativeMode.AVERAGE ? 'average_percents' : 'minima']:
+        [mode === CollaborativeMode.AVERAGE ? "average_percents" : "minima"]:
           -1,
       },
     },
     { $limit: 50 },
-    { $lookup: lightArtistLookupPipeline('_id', false) },
-    { $unwind: '$artist' },
+    { $lookup: lightArtistLookupPipeline("_id", false) },
+    { $unwind: "$artist" },
   ]);
 };

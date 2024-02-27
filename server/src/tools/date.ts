@@ -1,4 +1,4 @@
-export const pad = (value: number) => value.toString().padStart(2, '0');
+export const pad = (value: number) => value.toString().padStart(2, "0");
 
 export function dateToDaysMonthsYear(date: Date) {
   return `${pad(date.getDate())}/${pad(

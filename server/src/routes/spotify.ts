@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { z } from 'zod';
+import { Router } from "express";
+import { z } from "zod";
 import {
   getTrackBySpotifyId,
   getSongs,
@@ -20,38 +20,37 @@ import {
   getBestAlbumsOfHour,
   getBestArtistsOfHour,
   getLongestListeningSession,
-} from '../database';
+} from "../database";
 import {
   CollaborativeMode,
   getCollaborativeBestAlbums,
   getCollaborativeBestArtists,
   getCollaborativeBestSongs,
-} from '../database/queries/collaborative';
-import { dateToDaysMonthsYear, intervalToDisplay } from '../tools/date';
-import { logger } from '../tools/logger';
+} from "../database/queries/collaborative";
+import { dateToDaysMonthsYear, intervalToDisplay } from "../tools/date";
+import { logger } from "../tools/logger";
 import {
   isLoggedOrGuest,
   logged,
   validating,
   withHttpClient,
-} from '../tools/middleware';
+} from "../tools/middleware";
 import {
   SpotifyRequest,
   LoggedRequest,
   Timesplit,
   TypedPayload,
-} from '../tools/types';
-import { toDate, toNumber } from '../tools/zod';
+} from "../tools/types";
+import { toDate, toNumber } from "../tools/zod";
 
-const router = Router();
-export default router;
+export const router = Router();
 
 const playSchema = z.object({
   id: z.string(),
 });
 
 router.post(
-  '/play',
+  "/play",
   validating(playSchema),
   logged,
   withHttpClient,
@@ -84,8 +83,8 @@ const gethistorySchema = z.object({
 });
 
 router.get(
-  '/gethistory',
-  validating(gethistorySchema, 'query'),
+  "/gethistory",
+  validating(gethistorySchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -121,8 +120,8 @@ const intervalPerSchema = z.object({
 });
 
 router.get(
-  '/listened_to',
-  validating(interval, 'query'),
+  "/listened_to",
+  validating(interval, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -142,8 +141,8 @@ router.get(
 );
 
 router.get(
-  '/most_listened',
-  validating(intervalPerSchema, 'query'),
+  "/most_listened",
+  validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -162,8 +161,8 @@ router.get(
 );
 
 router.get(
-  '/most_listened_artist',
-  validating(intervalPerSchema, 'query'),
+  "/most_listened_artist",
+  validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -182,8 +181,8 @@ router.get(
 );
 
 router.get(
-  '/songs_per',
-  validating(intervalPerSchema, 'query'),
+  "/songs_per",
+  validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -202,8 +201,8 @@ router.get(
 );
 
 router.get(
-  '/time_per',
-  validating(intervalPerSchema, 'query'),
+  "/time_per",
+  validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -222,8 +221,8 @@ router.get(
 );
 
 router.get(
-  '/album_date_ratio',
-  validating(intervalPerSchema, 'query'),
+  "/album_date_ratio",
+  validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -242,8 +241,8 @@ router.get(
 );
 
 router.get(
-  '/feat_ratio',
-  validating(intervalPerSchema, 'query'),
+  "/feat_ratio",
+  validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -262,8 +261,8 @@ router.get(
 );
 
 router.get(
-  '/popularity_per',
-  validating(intervalPerSchema, 'query'),
+  "/popularity_per",
+  validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -282,8 +281,8 @@ router.get(
 );
 
 router.get(
-  '/different_artists_per',
-  validating(intervalPerSchema, 'query'),
+  "/different_artists_per",
+  validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -302,8 +301,8 @@ router.get(
 );
 
 router.get(
-  '/time_per_hour_of_day',
-  validating(interval, 'query'),
+  "/time_per_hour_of_day",
+  validating(interval, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -320,8 +319,8 @@ router.get(
 );
 
 router.get(
-  '/best_artists_per',
-  validating(intervalPerSchema, 'query'),
+  "/best_artists_per",
+  validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -350,8 +349,8 @@ const intervalPerSchemaNbOffset = z.object({
 });
 
 router.get(
-  '/top/songs',
-  validating(intervalPerSchemaNbOffset, 'query'),
+  "/top/songs",
+  validating(intervalPerSchemaNbOffset, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -370,8 +369,8 @@ router.get(
 );
 
 router.get(
-  '/top/artists',
-  validating(intervalPerSchemaNbOffset, 'query'),
+  "/top/artists",
+  validating(intervalPerSchemaNbOffset, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -396,8 +395,8 @@ router.get(
 );
 
 router.get(
-  '/top/albums',
-  validating(intervalPerSchemaNbOffset, 'query'),
+  "/top/albums",
+  validating(intervalPerSchemaNbOffset, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -429,8 +428,8 @@ const collaborativeSchema = intervalPerSchema.merge(
 );
 
 router.get(
-  '/collaborative/top/songs',
-  validating(collaborativeSchema, 'query'),
+  "/collaborative/top/songs",
+  validating(collaborativeSchema, "query"),
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -455,8 +454,8 @@ router.get(
 );
 
 router.get(
-  '/collaborative/top/albums',
-  validating(collaborativeSchema, 'query'),
+  "/collaborative/top/albums",
+  validating(collaborativeSchema, "query"),
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -480,8 +479,8 @@ router.get(
 );
 
 router.get(
-  '/collaborative/top/artists',
-  validating(collaborativeSchema, 'query'),
+  "/collaborative/top/artists",
+  validating(collaborativeSchema, "query"),
   logged,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -505,8 +504,8 @@ router.get(
 );
 
 router.get(
-  '/top/hour-repartition/songs',
-  validating(interval, 'query'),
+  "/top/hour-repartition/songs",
+  validating(interval, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -523,8 +522,8 @@ router.get(
 );
 
 router.get(
-  '/top/hour-repartition/albums',
-  validating(interval, 'query'),
+  "/top/hour-repartition/albums",
+  validating(interval, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -541,8 +540,8 @@ router.get(
 );
 
 router.get(
-  '/top/hour-repartition/artists',
-  validating(interval, 'query'),
+  "/top/hour-repartition/artists",
+  validating(interval, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -559,8 +558,8 @@ router.get(
 );
 
 router.get(
-  '/top/sessions',
-  validating(interval, 'query'),
+  "/top/sessions",
+  validating(interval, "query"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
@@ -580,7 +579,7 @@ router.get(
   },
 );
 
-router.get('/playlists', logged, withHttpClient, async (req, res) => {
+router.get("/playlists", logged, withHttpClient, async (req, res) => {
   const { client, user } = req as LoggedRequest & SpotifyRequest;
 
   try {
@@ -600,7 +599,7 @@ const createPlaylistBase = z.object({
 });
 
 const createPlaylistFromTop = z.object({
-  type: z.literal('top'),
+  type: z.literal("top"),
   interval: z.object({
     start: z.preprocess(toDate, z.date()),
     end: z.preprocess(
@@ -612,7 +611,7 @@ const createPlaylistFromTop = z.object({
 });
 
 const createPlaylistFromAffinity = z.object({
-  type: z.literal('affinity'),
+  type: z.literal("affinity"),
   interval: z.object({
     start: z.preprocess(toDate, z.date()),
     end: z.preprocess(
@@ -626,18 +625,18 @@ const createPlaylistFromAffinity = z.object({
 });
 
 const createPlaylistFromSingle = z.object({
-  type: z.literal('single'),
+  type: z.literal("single"),
   songId: z.string(),
 });
 
-const createPlaylist = z.discriminatedUnion('type', [
+const createPlaylist = z.discriminatedUnion("type", [
   createPlaylistBase.merge(createPlaylistFromTop),
   createPlaylistBase.merge(createPlaylistFromSingle),
   createPlaylistBase.merge(createPlaylistFromAffinity),
 ]);
 
 router.post(
-  '/playlist/create',
+  "/playlist/create",
   validating(createPlaylist),
   logged,
   withHttpClient,
@@ -652,7 +651,7 @@ router.post(
     try {
       let playlistName = body.name;
       let spotifyIds: string[];
-      if (body.type === 'top') {
+      if (body.type === "top") {
         const { interval: intervalData, nb } = body;
         const items = await getBestSongsNbOffseted(
           user,
@@ -668,7 +667,7 @@ router.post(
             intervalData.end,
           )}`;
         }
-      } else if (body.type === 'affinity') {
+      } else if (body.type === "affinity") {
         if (!playlistName) {
           playlistName = `Your Spotify Playlist • ${dateToDaysMonthsYear(
             new Date(),

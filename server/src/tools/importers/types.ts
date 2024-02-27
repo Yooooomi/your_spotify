@@ -1,21 +1,21 @@
-import { Types } from 'mongoose';
+import { Types } from "mongoose";
 
-export interface HistoryImporter<T extends ImporterState['type']> {
+export interface HistoryImporter<T extends ImporterState["type"]> {
   init: (
     existingState: ImporterStateFromType<T> | null,
-    requiredData: ImporterStateFromType<T>['metadata'],
+    requiredData: ImporterStateFromType<T>["metadata"],
   ) => Promise<{ total: number } | null>;
   run: (id: string) => Promise<boolean>;
   cleanup: (
-    requiredData: ImporterStateFromType<T>['metadata'],
+    requiredData: ImporterStateFromType<T>["metadata"],
   ) => Promise<void>;
 }
 
 export type ImporterStateStatus =
-  | 'progress'
-  | 'success'
-  | 'failure'
-  | 'failure-removed';
+  | "progress"
+  | "success"
+  | "failure"
+  | "failure-removed";
 
 export interface BaseImporterState {
   _id: Types.ObjectId;
@@ -27,8 +27,8 @@ export interface BaseImporterState {
 }
 
 export enum ImporterStateTypes {
-  privacy = 'privacy',
-  fullPrivacy = 'full-privacy',
+  privacy = "privacy",
+  fullPrivacy = "full-privacy",
 }
 export const importerStateTypes = Object.values(ImporterStateTypes);
 

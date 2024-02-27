@@ -1,30 +1,31 @@
-import { NextFunction, Request, Response } from 'express';
-import { z } from 'zod';
-import { verify } from 'jsonwebtoken';
-import { Types } from 'mongoose';
-import { getUserFromField, getGlobalPreferences } from '../database';
-import { logger } from './logger';
+import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
+import { verify } from "jsonwebtoken";
+import { Types } from "mongoose";
+import { getUserFromField, getGlobalPreferences } from "../database";
+import { getUserImporterState } from "../database/queries/importer";
+import { getPrivateData } from "../database/queries/privateData";
+import { logger } from "./logger";
 import {
   GlobalPreferencesRequest,
   LoggedRequest,
   OptionalLoggedRequest,
   SpotifyRequest,
-} from './types';
-import { getUserImporterState } from '../database/queries/importer';
-import { SpotifyAPI } from './apis/spotifyApi';
+} from "./types";
+import { SpotifyAPI } from "./apis/spotifyApi";
 
-type Location = 'body' | 'params' | 'query';
+type Location = "body" | "params" | "query";
 
 export const validating =
   (
     schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
-    location: Location = 'body',
+    location: Location = "body",
   ) =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
       const tokenObject = z.object({ token: z.string().optional() });
       let value;
-      if ('merge' in schema) {
+      if ("merge" in schema) {
         value = schema.merge(tokenObject).parse(req[location]);
       } else {
         value = schema.and(tokenObject).parse(req[location]);
@@ -42,10 +43,10 @@ const baselogged = async (req: Request, useQueryToken = false) => {
 
   if (!auth && useQueryToken) {
     const { token } = req.query;
-    if (!token) {
+    if (!token || typeof token !== "string") {
       return null;
     }
-    const user = await getUserFromField('publicToken', token, false);
+    const user = await getUserFromField("publicToken", token, false);
     if (!user) {
       return null;
     }
@@ -55,11 +56,21 @@ const baselogged = async (req: Request, useQueryToken = false) => {
 
   if (auth) {
     try {
-      const userId = verify(auth, 'MyPrivateKey') as { userId: string };
+      const privateData = await getPrivateData();
+      if (!privateData?.jwtPrivateKey) {
+        throw new Error("No private data found, cannot sign JWT");
+      }
+      const jwtUser = verify(auth, privateData.jwtPrivateKey) as {
+        userId: string;
+      };
+
+      if (typeof jwtUser.userId !== "string") {
+        return null;
+      }
 
       const user = await getUserFromField(
-        '_id',
-        new Types.ObjectId(userId.userId),
+        "_id",
+        new Types.ObjectId(jwtUser.userId),
         false,
       );
 
@@ -150,7 +161,7 @@ export const withGlobalPreferences = async (
     const pref = await getGlobalPreferences();
     if (!pref) {
       logger.error(
-        'No global preferences, this is critical, try restarting the app',
+        "No global preferences, this is critical, try restarting the app",
       );
       return;
     }
@@ -168,8 +179,8 @@ export const notAlreadyImporting = async (
 ) => {
   const { user } = req as LoggedRequest;
   const imports = await getUserImporterState(user._id.toString());
-  if (imports.some(imp => imp.status === 'progress')) {
-    return res.status(400).send({ code: 'ALREADY_IMPORTING' });
+  if (imports.some(imp => imp.status === "progress")) {
+    return res.status(400).send({ code: "ALREADY_IMPORTING" });
   }
   return next();
 };

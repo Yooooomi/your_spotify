@@ -1,11 +1,9 @@
-/* eslint-disable class-methods-use-this */
-// @ts-ignore
-import { load, CallbackError, MigrationSet } from 'migrate';
-import path from 'path';
-import { connect } from './database';
-import { MigrationModel } from './database/Models';
-import { logger } from './tools/logger';
-import { Database } from './tools/database';
+import path from "path";
+import { load, MigrationSet, Callback as CallbackError } from "migrate";
+import { connect } from "./database";
+import { MigrationModel } from "./database/Models";
+import { logger } from "./tools/logger";
+import { Database } from "./tools/database";
 
 type Callback = (err: any, data: any) => void;
 export class MongoDbStore {
@@ -14,7 +12,7 @@ export class MongoDbStore {
     const data = await MigrationModel.findOne({});
     if (!data) {
       logger.info(
-        'Cannot read migrations from database. If this is the first time you run migrations, then this is normal.',
+        "Cannot read migrations from database. If this is the first time you run migrations, then this is normal.",
       );
       return fn(null, {});
     }
@@ -40,12 +38,12 @@ export class MongoDbStore {
 
 load(
   {
-    migrationsDirectory: path.join(__dirname, 'migrations'),
+    migrationsDirectory: path.join(__dirname, "migrations"),
     stateStore: new MongoDbStore(),
   },
   async (err: any, set: MigrationSet) => {
     await Database.startup();
-    logger.info('Starting migrations');
+    logger.info("Starting migrations");
     if (err) {
       logger.error(`Error ${err}`);
       process.exit(1);
@@ -55,7 +53,7 @@ load(
         logger.error(`Error ${seterr}`);
         process.exit(1);
       }
-      logger.info('Migrations successfully ran');
+      logger.info("Migrations successfully ran");
       process.exit(0);
     });
   },

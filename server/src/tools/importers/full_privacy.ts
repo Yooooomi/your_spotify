@@ -1,29 +1,29 @@
 /* eslint-disable @typescript-eslint/no-loop-func */
 /* eslint-disable no-await-in-loop */
-import { readFile, unlink } from 'fs/promises';
-import { z } from 'zod';
+import { readFile, unlink } from "fs/promises";
+import { z } from "zod";
 import {
   addTrackIdsToUser,
   getCloseTrackId,
   storeFirstListenedAtIfLess,
-} from '../../database';
-import { setImporterStateCurrent } from '../../database/queries/importer';
-import { RecentlyPlayedTrack } from '../../database/schemas/track';
-import { User } from '../../database/schemas/user';
+} from "../../database";
+import { setImporterStateCurrent } from "../../database/queries/importer";
+import { RecentlyPlayedTrack } from "../../database/schemas/track";
+import { User } from "../../database/schemas/user";
 import {
   getTracksAlbumsArtists,
   storeTrackAlbumArtist,
-} from '../../spotify/dbTools';
-import { logger } from '../logger';
-import { minOfArray, retryPromise } from '../misc';
-import { SpotifyAPI } from '../apis/spotifyApi';
-import { Unpack } from '../types';
-import { getFromCacheString, setToCacheString } from './cache';
+} from "../../spotify/dbTools";
+import { logger } from "../logger";
+import { minOfArray, retryPromise } from "../misc";
+import { SpotifyAPI } from "../apis/spotifyApi";
+import { Unpack } from "../types";
+import { getFromCacheString, setToCacheString } from "./cache";
 import {
   FullPrivacyImporterState,
   HistoryImporter,
   ImporterStateTypes,
-} from './types';
+} from "./types";
 
 const fullPrivacyFileSchema = z.array(
   z.object({
@@ -67,14 +67,14 @@ export class FullPrivacyImporter
   private spotifyApi: SpotifyAPI;
 
   constructor(user: User) {
-    this.id = '';
+    this.id = "";
     this.userId = user._id.toString();
     this.elements = null;
     this.currentItem = 0;
     this.spotifyApi = new SpotifyAPI(this.userId);
   }
 
-  static idFromSpotifyURI = (uri: string) => uri.split(':')[2];
+  static idFromSpotifyURI = (uri: string) => uri.split(":")[2];
 
   search = async (spotifyIds: string[]) => {
     if (spotifyIds.length === 0) {
@@ -140,8 +140,8 @@ export class FullPrivacyImporter
       return content;
     }
     logger.error(
-      'If you submitted the right files and this error comes up, please open an issue with the following logs at https://github.com/Yooooomi/your_spotify',
-      JSON.stringify(value.error.issues, null, ' '),
+      "If you submitted the right files and this error comes up, please open an issue with the following logs at https://github.com/Yooooomi/your_spotify",
+      JSON.stringify(value.error.issues, null, " "),
     );
     return null;
   };
@@ -191,7 +191,7 @@ export class FullPrivacyImporter
     searchedItems.forEach(searchedItem => {
       const playedAt = idsToSearch[searchedItem.id];
       if (!playedAt) {
-        logger.error('Cannot add item', searchedItem.id, 'no played_at found');
+        logger.error("Cannot add item", searchedItem.id, "no played_at found");
         return;
       }
       setToCacheString(this.userId.toString(), searchedItem.id, searchedItem);

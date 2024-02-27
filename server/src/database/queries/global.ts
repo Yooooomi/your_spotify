@@ -1,4 +1,4 @@
-import { GlobalPreferencesModel } from '../Models';
+import { GlobalPreferencesModel } from "../Models";
 
 export const getGlobalPreferences = () => GlobalPreferencesModel.findOne();
 

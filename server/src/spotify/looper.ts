@@ -1,14 +1,14 @@
 /* eslint-disable no-await-in-loop */
-import { MongoServerSelectionError } from 'mongodb';
-import { AxiosError } from 'axios';
-import { getCloseTrackId, getUser, getUserCount } from '../database';
-import { RecentlyPlayedTrack } from '../database/schemas/track';
-import { User } from '../database/schemas/user';
-import { logger } from '../tools/logger';
-import { retryPromise, wait } from '../tools/misc';
-import { SpotifyAPI } from '../tools/apis/spotifyApi';
-import { getTracksAlbumsArtists, storeIterationOfLoop } from './dbTools';
-import { Infos } from '../database/schemas/info';
+import { MongoServerSelectionError } from "mongodb";
+import { AxiosError } from "axios";
+import { getCloseTrackId, getUser, getUserCount } from "../database";
+import { RecentlyPlayedTrack } from "../database/schemas/track";
+import { User } from "../database/schemas/user";
+import { logger } from "../tools/logger";
+import { retryPromise, wait } from "../tools/misc";
+import { SpotifyAPI } from "../tools/apis/spotifyApi";
+import { Infos } from "../database/schemas/info";
+import { getTracksAlbumsArtists, storeIterationOfLoop } from "./dbTools";
 
 const RETRY = 10;
 
@@ -54,7 +54,7 @@ const loop = async (user: User) => {
     user._id.toString(),
     spotifyTracks,
   );
-  const infos: Omit<Infos, 'owner'>[] = [];
+  const infos: Omit<Infos, "owner">[] = [];
   for (let i = 0; i < items.length; i += 1) {
     const item = items[i]!;
     const date = new Date(item.played_at);
@@ -71,7 +71,7 @@ const loop = async (user: User) => {
       infos.push({
         played_at: new Date(item.played_at),
         id: item.track.id,
-        ...(isBlacklisted ? { blacklistedBy: 'artist' } : {}),
+        ...(isBlacklisted ? { blacklistedBy: "artist" } : {}),
       });
     }
   }
@@ -108,15 +108,15 @@ export const dbLoop = async () => {
     } catch (error) {
       logger.error(error);
       if (error instanceof MongoServerSelectionError) {
-        logger.error('Exiting because mongo is unreachable');
+        logger.error("Exiting because mongo is unreachable");
         process.exit(1);
       }
       if (error instanceof AxiosError) {
         if (error.response?.data) {
-          logger.info('Response of failed request', error.response.data);
+          logger.info("Response of failed request", error.response.data);
         }
         logger.info(
-          'There appears to be issues with either your internet connection or Spotify',
+          "There appears to be issues with either your internet connection or Spotify",
         );
       }
     }

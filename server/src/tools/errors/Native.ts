@@ -7,6 +7,6 @@ export class YSError extends Error {
 
 export class NotImplemented extends YSError {
   constructor() {
-    super('Not implemented');
+    super("Not implemented");
   }
 }

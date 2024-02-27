@@ -3,12 +3,12 @@ import {
   ImporterStateFromType,
   ImporterStateStatus,
   ImporterStateTypes,
-} from '../../tools/importers/types';
-import { ImporterStateModel } from '../Models';
+} from "../../tools/importers/types";
+import { ImporterStateModel } from "../Models";
 
 export const createImporterState = <T extends ImporterStateTypes>(
   userId: string,
-  state: Omit<ImporterStateFromType<T>, '_id' | 'user'>,
+  state: Omit<ImporterStateFromType<T>, "_id" | "user">,
 ) => ImporterStateModel.create({ user: userId, ...state });
 
 export const setImporterStateStatus = (
@@ -19,7 +19,7 @@ export const setImporterStateStatus = (
 export const getImporterState = <T extends ImporterStateTypes>(id: string) =>
   ImporterStateModel.findById<ImporterStateFromType<T>>(id);
 
-export const setImporterStateMetadata = <T extends ImporterState['metadata']>(
+export const setImporterStateMetadata = <T extends ImporterState["metadata"]>(
   id: string,
   metadata: T,
 ) => ImporterStateModel.findByIdAndUpdate(id, { metadata }, { new: true });
@@ -31,4 +31,4 @@ export const getUserImporterState = async (userId: string) =>
   ImporterStateModel.find({ user: userId }).sort({ createdAt: -1 });
 
 export const fixRunningImportsAtStart = () =>
-  ImporterStateModel.updateMany({ status: 'progress' }, { status: 'failure' });
+  ImporterStateModel.updateMany({ status: "progress" }, { status: "failure" });

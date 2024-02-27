@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { logger } from './logger';
-import { toBoolean, toNumber } from './zod';
+import { z } from "zod";
+import { logger } from "./logger";
+import { toBoolean, toNumber } from "./zod";
 
 const validators = {
   CLIENT_ENDPOINT: z.string(),
@@ -12,14 +12,14 @@ const validators = {
   API_ENDPOINT: z.string(),
   PORT: z.preprocess(toNumber, z.number().optional()),
   TIMEZONE: z.string().optional(),
-  LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).optional(),
-  NODE_ENV: z.enum(['production', 'development']).optional(),
+  LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).optional(),
+  NODE_ENV: z.enum(["production", "development"]).optional(),
   OFFLINE_DEV_ID: z.string().optional(),
   COOKIE_VALIDITY_MS: z.string().optional(),
   MONGO_NO_ADMIN_RIGHTS: z.preprocess(toBoolean, z.boolean().optional()),
 } as const;
 
-const env: Record<string, any> = {};
+const validatedEnv: Record<string, any> = {};
 
 type EnvVariable = keyof typeof validators;
 
@@ -27,20 +27,20 @@ export function getWithDefault<E extends EnvVariable>(
   variable: E,
   defaultValue: NonNullable<z.infer<(typeof validators)[E]>>,
 ): NonNullable<z.infer<(typeof validators)[E]>> {
-  return env[variable] ?? defaultValue;
+  return validatedEnv[variable] ?? defaultValue;
 }
 
 export function get<E extends EnvVariable>(
   variable: E,
 ): z.infer<(typeof validators)[E]> {
-  return env[variable];
+  return validatedEnv[variable];
 }
 
 Object.entries(validators).forEach(([key, value]) => {
   const v = process.env[key];
   try {
     const output = value.parse(v);
-    env[key] = output;
+    validatedEnv[key] = output;
   } catch (e) {
     logger.error(`${key} env variable is missing`);
     if (e instanceof z.ZodError) {
@@ -50,3 +50,5 @@ Object.entries(validators).forEach(([key, value]) => {
     }
   }
 });
+
+export const logLevel = getWithDefault("LOG_LEVEL", "info");

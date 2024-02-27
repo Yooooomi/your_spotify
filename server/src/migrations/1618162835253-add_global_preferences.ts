@@ -1,8 +1,8 @@
-import { GlobalPreferencesModel } from '../database/Models';
-import { startMigration } from '../tools/migrations';
+import { GlobalPreferencesModel } from "../database/Models";
+import { startMigration } from "../tools/migrations";
 
 export const up = async () => {
-  startMigration('Global preferences');
+  startMigration("Global preferences");
   await GlobalPreferencesModel.create({});
 };
 

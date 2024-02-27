@@ -1,33 +1,33 @@
 /* eslint-disable no-await-in-loop */
-import { readFile, unlink } from 'fs/promises';
-import { z } from 'zod';
+import { readFile, unlink } from "fs/promises";
+import { z } from "zod";
 import {
   addTrackIdsToUser,
   getCloseTrackId,
   storeFirstListenedAtIfLess,
-} from '../../database';
-import { setImporterStateCurrent } from '../../database/queries/importer';
-import { RecentlyPlayedTrack } from '../../database/schemas/track';
-import { User } from '../../database/schemas/user';
+} from "../../database";
+import { setImporterStateCurrent } from "../../database/queries/importer";
+import { RecentlyPlayedTrack } from "../../database/schemas/track";
+import { User } from "../../database/schemas/user";
 import {
   getTracksAlbumsArtists,
   storeTrackAlbumArtist,
-} from '../../spotify/dbTools';
-import { logger } from '../logger';
+} from "../../spotify/dbTools";
+import { logger } from "../logger";
 import {
   beforeParenthesis,
   minOfArray,
   removeDiacritics,
   retryPromise,
-} from '../misc';
-import { SpotifyAPI } from '../apis/spotifyApi';
-import { Unpack } from '../types';
-import { getFromCache, setToCache } from './cache';
+} from "../misc";
+import { SpotifyAPI } from "../apis/spotifyApi";
+import { Unpack } from "../types";
+import { getFromCache, setToCache } from "./cache";
 import {
   HistoryImporter,
   ImporterStateTypes,
   PrivacyImporterState,
-} from './types';
+} from "./types";
 
 const privacyFileSchema = z.array(
   z.object({
@@ -54,7 +54,7 @@ export class PrivacyImporter
   private spotifyApi: SpotifyAPI;
 
   constructor(user: User) {
-    this.id = '';
+    this.id = "";
     this.userId = user._id.toString();
     this.elements = null;
     this.currentItem = 0;
@@ -118,8 +118,8 @@ export class PrivacyImporter
       return content;
     }
     logger.error(
-      'If you submitted the right files and this error comes up, please open an issue with the following logs at https://github.com/Yooooomi/your_spotify',
-      JSON.stringify(value.error.issues, null, ' '),
+      "If you submitted the right files and this error comes up, please open an issue with the following logs at https://github.com/Yooooomi/your_spotify",
+      JSON.stringify(value.error.issues, null, " "),
     );
     return null;
   };

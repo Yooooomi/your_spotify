@@ -1,38 +1,48 @@
 module.exports = {
-  env: {
-    browser: true,
-    es2021: true,
-  },
   extends: [
-    'airbnb-base',
-    'airbnb-typescript/base',
-    'plugin:prettier/recommended',
+    "plugin:import/recommended",
+    "plugin:import/typescript",
+    "plugin:prettier/recommended",
   ],
-  parser: '@typescript-eslint/parser',
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaVersion: 12,
-    sourceType: 'module',
-    project: './tsconfig.json',
+    project: "./tsconfig.json",
   },
-  ignorePatterns: ['.eslintrc.js'],
-  plugins: ['@typescript-eslint'],
+  plugins: ["@typescript-eslint"],
   rules: {
-    'no-restricted-globals': 'off',
-    'max-classes-per-file': 'off',
-    'consistent-return': 'off',
-    'no-continue': 'off',
-    'no-console': 'off',
-    'react/require-default-props': 'off',
-    'no-underscore-dangle': 'off',
-    'react/destructuring-assignment': 'off',
-    'no-restricted-exports': 'off',
-    'react/react-in-jsx-scope': 'off',
-    'import/no-cycle': 'off',
-    'react/jsx-filename-extension': 'off',
-    camelcase: 'off',
-    'no-unused-vars': 'off',
-    'import/prefer-default-export': 'off',
-    'no-param-reassign': 'off',
-    'no-restricted-syntax': 'off',
+    "@typescript-eslint/no-shadow": ["error"],
+    "no-shadow": "off",
+    "no-undef": "off",
+    "import/no-unresolved": "off",
+    "import/no-default-export": ["error"],
+    "import/no-useless-path-segments": [
+      "error",
+      {
+        noUselessIndex: true,
+      },
+    ],
+    "import/order": ["error"],
+    "import/no-named-as-default-member": "off",
+    "import/no-named-as-default": "off",
+    "import/no-extraneous-dependencies": "error",
+    "@typescript-eslint/no-floating-promises": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        trailingComma: "all",
+        tabWidth: 2,
+        semi: true,
+        singleQuote: false,
+      },
+    ],
+  },
+  ignorePatterns: ["lib"],
+  settings: {
+    "import/resolver": {
+      typescript: true,
+      node: {
+        extensions: [".js", ".ts", ".tsx", ".web.ts", ".native.ts"]
+      },
+    },
   },
 };

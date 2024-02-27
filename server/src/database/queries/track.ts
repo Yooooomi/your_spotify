@@ -1,14 +1,14 @@
-import { InfosModel, TrackModel } from '../Models';
-import { User } from '../schemas/user';
-import { getGroupByDateProjection, getGroupingByTimeSplit } from './statsTools';
-import { Timesplit } from '../../tools/types';
+import { InfosModel, TrackModel } from "../Models";
+import { User } from "../schemas/user";
+import { Timesplit } from "../../tools/types";
+import { getGroupByDateProjection, getGroupingByTimeSplit } from "./statsTools";
 
 export const getTracks = (tracksId: string[]) =>
   TrackModel.find({ id: { $in: tracksId } });
 
 export const searchTrack = (str: string) =>
-  TrackModel.find({ name: { $regex: new RegExp(str, 'i') } }).populate(
-    'full_album',
+  TrackModel.find({ name: { $regex: new RegExp(str, "i") } }).populate(
+    "full_album",
   );
 
 export const getRankOfTrack = async (user: User, trackId: string) => {
@@ -16,19 +16,19 @@ export const getRankOfTrack = async (user: User, trackId: string) => {
     { $match: { owner: user._id } },
     {
       $lookup: {
-        from: 'tracks',
-        localField: 'id',
-        foreignField: 'id',
-        as: 'track',
+        from: "tracks",
+        localField: "id",
+        foreignField: "id",
+        as: "track",
       },
     },
-    { $unwind: '$track' },
-    { $group: { _id: '$id', count: { $sum: 1 } } },
+    { $unwind: "$track" },
+    { $group: { _id: "$id", count: { $sum: 1 } } },
     { $sort: { count: -1, _id: 1 } },
-    { $group: { _id: 1, array: { $push: { id: '$_id', count: '$count' } } } },
+    { $group: { _id: 1, array: { $push: { id: "$_id", count: "$count" } } } },
     {
       $project: {
-        index: { $indexOfArray: ['$array.id', trackId] },
+        index: { $indexOfArray: ["$array.id", trackId] },
         array: 1,
       },
     },
@@ -36,17 +36,17 @@ export const getRankOfTrack = async (user: User, trackId: string) => {
       $project: {
         index: 1,
         isMax: {
-          $cond: { if: { $eq: ['$index', 0] }, then: true, else: false },
+          $cond: { if: { $eq: ["$index", 0] }, then: true, else: false },
         },
         isMin: {
           $cond: {
-            if: { $eq: ['$index', { $subtract: [{ $size: '$array' }, 1] }] },
+            if: { $eq: ["$index", { $subtract: [{ $size: "$array" }, 1] }] },
             then: true,
             else: false,
           },
         },
         results: {
-          $slice: ['$array', { $max: [{ $subtract: ['$index', 1] }, 0] }, 3],
+          $slice: ["$array", { $max: [{ $subtract: ["$index", 1] }, 0] }, 3],
         },
       },
     },
@@ -55,7 +55,7 @@ export const getRankOfTrack = async (user: User, trackId: string) => {
 };
 
 export const getTrackListenedCount = (user: User, trackId: string) =>
-  InfosModel.where({ owner: user._id, id: trackId }).count();
+  InfosModel.where({ owner: user._id, id: trackId }).countDocuments();
 
 export const getTrackFirstAndLastListened = async (
   user: User,
@@ -67,8 +67,8 @@ export const getTrackFirstAndLastListened = async (
     {
       $group: {
         _id: null,
-        first: { $first: '$$ROOT' },
-        last: { $last: '$$ROOT' },
+        first: { $first: "$$ROOT" },
+        last: { $last: "$$ROOT" },
       },
     },
   ]);
@@ -85,14 +85,14 @@ export const bestPeriodOfTrack = async (user: User, trackId: string) => {
       },
     },
     {
-      $group: { _id: null, items: { $push: '$$CURRENT' }, total: { $sum: 1 } },
+      $group: { _id: null, items: { $push: "$$CURRENT" }, total: { $sum: 1 } },
     },
-    { $unwind: '$items' },
+    { $unwind: "$items" },
     {
       $group: {
-        _id: getGroupingByTimeSplit(Timesplit.month, 'items'),
+        _id: getGroupingByTimeSplit(Timesplit.month, "items"),
         count: { $sum: 1 },
-        total: { $last: '$total' },
+        total: { $last: "$total" },
       },
     },
     { $sort: { count: -1 } },
@@ -120,15 +120,15 @@ export const checkBlacklistConsistency = () =>
   );
 
 export const unblacklistByArtist = async (userId: string, artistId: string) => {
-  const tracks = await TrackModel.find({ 'artists.0': artistId });
+  const tracks = await TrackModel.find({ "artists.0": artistId });
   const trackIds = tracks.map(t => t.id);
   await InfosModel.updateMany(
     {
       owner: userId,
       id: { $in: trackIds },
-      blacklistedBy: { $elemMatch: { $eq: 'artist' } },
+      blacklistedBy: { $elemMatch: { $eq: "artist" } },
     },
-    { $pull: { blacklistedBy: 'artist' } },
+    { $pull: { blacklistedBy: "artist" } },
   );
   await InfosModel.updateMany(
     {
@@ -142,13 +142,13 @@ export const unblacklistByArtist = async (userId: string, artistId: string) => {
 };
 
 export const blacklistByArtist = async (userId: string, artistId: string) => {
-  const tracks = await TrackModel.find({ 'artists.0': artistId });
+  const tracks = await TrackModel.find({ "artists.0": artistId });
   const trackIds = tracks.map(t => t.id);
   return InfosModel.updateMany(
     {
       owner: userId,
       id: { $in: trackIds },
     },
-    { $addToSet: { blacklistedBy: 'artist' } },
+    { $addToSet: { blacklistedBy: "artist" } },
   );
 };

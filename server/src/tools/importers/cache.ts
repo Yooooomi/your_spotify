@@ -1,7 +1,7 @@
-import { SpotifyTrack } from '../../database/schemas/track';
-import { getWithDefault } from '../env';
+import { SpotifyTrack } from "../../database/schemas/track";
+import { getWithDefault } from "../env";
 
-const maxCacheSize = getWithDefault('MAX_IMPORT_CACHE_SIZE', 100000);
+const maxCacheSize = getWithDefault("MAX_IMPORT_CACHE_SIZE", 100000);
 
 const cache: Record<string, Record<string, SpotifyTrack>> = {};
 

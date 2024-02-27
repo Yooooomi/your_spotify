@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { z } from 'zod';
+import { Router } from "express";
+import { z } from "zod";
 import {
   getArtists,
   getRankOfTrack,
@@ -8,27 +8,26 @@ import {
   getTrackFirstAndLastListened,
   bestPeriodOfTrack,
   getTrackRecentHistory,
-} from '../database';
-import { getAlbums } from '../database/queries/album';
-import { logger } from '../tools/logger';
-import { isLoggedOrGuest, validating } from '../tools/middleware';
-import { LoggedRequest, TypedPayload } from '../tools/types';
+} from "../database";
+import { getAlbums } from "../database/queries/album";
+import { logger } from "../tools/logger";
+import { isLoggedOrGuest, validating } from "../tools/middleware";
+import { LoggedRequest, TypedPayload } from "../tools/types";
 
-const router = Router();
-export default router;
+export const router = Router();
 
 const getTracksSchema = z.object({
   ids: z.string(),
 });
 
 router.get(
-  '/:ids',
-  validating(getTracksSchema, 'params'),
+  "/:ids",
+  validating(getTracksSchema, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     try {
       const { ids } = req.params as TypedPayload<typeof getTracksSchema>;
-      const tracks = await getTracks(ids.split(','));
+      const tracks = await getTracks(ids.split(","));
       if (!tracks || tracks.length === 0) {
         return res.status(404).end();
       }
@@ -45,8 +44,8 @@ const getTrackStats = z.object({
 });
 
 router.get(
-  '/:id/stats',
-  validating(getTrackStats, 'params'),
+  "/:id/stats",
+  validating(getTrackStats, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     try {
@@ -68,7 +67,7 @@ router.get(
       const [[album], count, [artist], firstLast, bestPeriod, recentHistory] =
         await Promise.all(promises);
       if (!count) {
-        return res.status(200).send({ code: 'NEVER_LISTENED' });
+        return res.status(200).send({ code: "NEVER_LISTENED" });
       }
       return res.status(200).send({
         track,
@@ -89,8 +88,8 @@ router.get(
 );
 
 router.get(
-  '/:id/rank',
-  validating(getTrackStats, 'params'),
+  "/:id/rank",
+  validating(getTrackStats, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;

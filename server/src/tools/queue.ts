@@ -1,5 +1,4 @@
-/* eslint-disable no-await-in-loop */
-import { wait } from './misc';
+import { wait } from "./misc";
 
 interface QueueItem<T> {
   fn: () => Promise<T>;
@@ -35,7 +34,7 @@ export class PromiseQueue {
         onError: rej,
       });
       if (this.q.length === 1) {
-        this.execQueue();
+        this.execQueue().catch(console.error);
       }
     });
   };

@@ -1,4 +1,4 @@
-FROM node:16-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ COPY public/ public/
 
 RUN sh scripts/build/*.sh
 
-FROM node:16-alpine AS final
+FROM node:20-alpine AS final
 
 WORKDIR /app
 

@@ -44,7 +44,7 @@ export default function CountChooser({ value, setValue }: CountChooserProps) {
           labelId="number"
           label="Number of items"
           displayEmpty
-          value={inputType === 'default' ? value : 'custom'}
+          value={inputType === 'default' ? value.toString() : 'custom'}
           onChange={ev => internSetValue(ev.target.value, true)}>
           {DEFAULT_CHOICES.map(choice => (
             <MenuItem key={choice} value={choice}>

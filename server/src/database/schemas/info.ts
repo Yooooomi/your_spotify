@@ -1,20 +1,20 @@
-import { Schema, Types } from 'mongoose';
+import { Schema, Types } from "mongoose";
 
 export interface Infos {
   owner: Types.ObjectId;
   id: string;
   played_at: Date;
-  blacklistedBy?: 'artist';
+  blacklistedBy?: "artist";
 }
 
 export const InfosSchema = new Schema<Infos>(
   {
-    owner: { type: Schema.Types.ObjectId, ref: 'User' },
+    owner: { type: Schema.Types.ObjectId, ref: "User" },
     id: { type: String, index: true },
     played_at: Date,
     blacklistedBy: {
       type: [String],
-      enum: ['artist'],
+      enum: ["artist"],
       required: false,
       default: undefined,
     },
@@ -22,9 +22,9 @@ export const InfosSchema = new Schema<Infos>(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
-InfosSchema.virtual('track', {
-  ref: 'Track',
-  localField: 'id',
-  foreignField: 'id',
+InfosSchema.virtual("track", {
+  ref: "Track",
+  localField: "id",
+  foreignField: "id",
   justOne: true,
 });

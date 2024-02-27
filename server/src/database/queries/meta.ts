@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { MongoInfos } from './meta.types';
+import mongoose from "mongoose";
+import { MongoInfos } from "./meta.types";
 
 export async function getMongoInfos(): Promise<MongoInfos> {
   const admin = mongoose.connection.db.admin();
