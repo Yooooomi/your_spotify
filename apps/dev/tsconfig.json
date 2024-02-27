@@ -1,0 +1,23 @@
+{
+  "ts-node": {
+    "files": true
+  },
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES6",
+    // Rules
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    "strict": true,
+    "useUnknownInCatchVariables": false,
+    // build
+    "sourceMap": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "declaration": false
+  },
+}

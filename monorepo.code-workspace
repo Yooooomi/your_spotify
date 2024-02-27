@@ -1,14 +1,7 @@
 {
   "folders": [
     {
-      "path": "server"
-    },
-    {
-      "path": "client"
-    },
-    {
-      "path": ".",
-      "name": "root"
+      "path": "."
     }
   ],
   "settings": {
@@ -20,7 +13,7 @@
     "eslint.enable": true,
     "eslint.format.enable": true,
     "eslint.workingDirectories": [
-      "."
+      {"mode": "auto"}
     ],
     "[typescript]": {
       "editor.defaultFormatter": "dbaeumer.vscode-eslint"

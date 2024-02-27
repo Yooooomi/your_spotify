@@ -5,13 +5,12 @@ services:
     container_name: server
     restart: always
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.server
       args:
         NODE_ENV: development
-    entrypoint: "/app/scripts/run/run_dev.sh"
     volumes:
-      - ./server/src/:/app/src/
+      - ./apps/server/src/:/app/apps/server/src/
     links:
       - mongo
     depends_on:
@@ -37,14 +36,13 @@ services:
     container_name: web
     restart: always
     build:
-      context: ./client
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.client
       args:
         NODE_ENV: development
-    entrypoint: "/app/scripts/run/run_dev.sh"
     volumes:
-      - ./client/src:/app/src/
-      - ./client/public:/app/public/
+      - ./apps/client/src:/app/apps/client/src/
+      - ./apps/client/public:/app/apps/client/public/
     ports:
       - "3000:3000"
     environment:
