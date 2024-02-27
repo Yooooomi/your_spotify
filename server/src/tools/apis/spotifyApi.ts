@@ -143,7 +143,7 @@ export class SpotifyAPI {
     });
   }
 
-  async getTracksFromIds(spotifyIds: string[]) {
+  async getTracks(spotifyIds: string[]) {
     const res = await squeue.queue(async () => {
       await this.checkToken();
       return this.client.get(`/tracks?ids=${spotifyIds.join(",")}`);

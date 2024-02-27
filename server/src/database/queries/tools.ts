@@ -1,8 +1,23 @@
-import { AlbumModel, TrackModel, UserModel } from "../Models";
+import { AlbumModel, InfosModel, TrackModel, UserModel } from "../Models";
 import { Album } from "../schemas/album";
+import { Infos } from "../schemas/info";
 import { Track } from "../schemas/track";
 
 export const getAdminUser = () => UserModel.findOne({ admin: true });
+
+export const getInfosWithoutTracks = () =>
+  InfosModel.aggregate<Infos>([
+    {
+      $lookup: {
+        from: "tracks",
+        as: "full_track",
+        localField: "id",
+        foreignField: "id",
+      },
+    },
+    { $unwind: { path: "$full_track", preserveNullAndEmptyArrays: true } },
+    { $match: { full_track: null } },
+  ]);
 
 export const getTracksWithoutAlbum = () =>
   TrackModel.aggregate<Track>([

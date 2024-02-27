@@ -47,47 +47,29 @@ const getIdsHandlingMax = async <
   return datas as T[];
 };
 
-const url = "https://api.spotify.com/v1/tracks";
+const trackUrl = "https://api.spotify.com/v1/tracks";
 
-const getTracksAndRelatedAlbumArtists = async (
-  userId: string,
-  ids: string[],
-) => {
+export const getTracks = async (userId: string, ids: string[]) => {
   const spotifyTracks = await getIdsHandlingMax<SpotifyTrack>(
     userId,
-    url,
+    trackUrl,
     ids,
-    50,
+    20,
     "tracks",
   );
 
-  const artistIds: Set<string> = new Set();
-  const albumIds: Set<string> = new Set();
-
-  const tracks: Track[] = spotifyTracks.map<Track>(track => {
+  const tracks = spotifyTracks.map<Track>(track => {
     logger.info(
       `Storing non existing track ${track.name} by ${track.artists[0]?.name}`,
     );
-
-    track.artists.forEach(art => {
-      artistIds.add(art.id);
-    });
-    albumIds.add(track.album.id);
-
     return {
       ...track,
       album: track.album.id,
-      artists: track.artists.map(art => art.id),
+      artists: track.artists.map(e => e.id),
     };
   });
 
-  // await TrackModel.create(tracks).catch(() => {});
-
-  return {
-    tracks,
-    artists: [...artistIds.values()],
-    albums: [...albumIds.values()],
-  };
+  return tracks;
 };
 
 const albumUrl = "https://api.spotify.com/v1/albums";
@@ -131,6 +113,19 @@ export const getArtists = async (userId: string, ids: string[]) => {
   );
 
   return artists;
+};
+
+const getTracksAndRelatedAlbumArtists = async (
+  userId: string,
+  ids: string[],
+) => {
+  const tracks = await getTracks(userId, ids);
+
+  return {
+    tracks,
+    artists: [...new Set(tracks.flatMap(e => e.artists)).values()],
+    albums: [...new Set(tracks.map(e => e.album)).values()],
+  };
 };
 
 export const getTracksAlbumsArtists = async (

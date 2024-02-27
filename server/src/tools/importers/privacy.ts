@@ -22,6 +22,7 @@ import {
 } from "../misc";
 import { SpotifyAPI } from "../apis/spotifyApi";
 import { Unpack } from "../types";
+import { Infos } from "../../database/schemas/info";
 import { getFromCache, setToCache } from "./cache";
 import {
   HistoryImporter,
@@ -76,7 +77,7 @@ export class PrivacyImporter
       items.map(it => it.track),
     );
     await storeTrackAlbumArtist({ tracks, albums, artists });
-    const finalInfos: { played_at: Date; id: string }[] = [];
+    const finalInfos: Omit<Infos, "owner">[] = [];
     for (let i = 0; i < items.length; i += 1) {
       const item = items[i]!;
       const date = new Date(`${item.played_at}Z`);
@@ -95,9 +96,17 @@ export class PrivacyImporter
         );
         continue;
       }
+      const [primaryArtist] = item.track.artists;
+      if (!primaryArtist) {
+        continue;
+      }
       finalInfos.push({
         played_at: date,
         id: item.track.id,
+        primaryArtistId: primaryArtist.id,
+        albumId: item.track.album.id,
+        artistIds: item.track.artists.map(e => e.id),
+        durationMs: item.track.duration_ms,
       });
     }
     await setImporterStateCurrent(this.id, this.currentItem + 1);

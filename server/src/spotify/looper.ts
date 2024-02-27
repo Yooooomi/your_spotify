@@ -68,8 +68,16 @@ const loop = async (user: User) => {
       const isBlacklisted = user.settings.blacklistedArtists.find(
         a => a === item.track.artists[0]?.id,
       );
+      const [primaryArtist] = item.track.artists;
+      if (!primaryArtist) {
+        continue;
+      }
       infos.push({
         played_at: new Date(item.played_at),
+        durationMs: item.track.duration_ms,
+        albumId: item.track.album.id,
+        primaryArtistId: primaryArtist.id,
+        artistIds: item.track.artists.map(e => e.id),
         id: item.track.id,
         ...(isBlacklisted ? { blacklistedBy: "artist" } : {}),
       });

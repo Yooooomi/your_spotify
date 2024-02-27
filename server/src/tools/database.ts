@@ -13,10 +13,12 @@ import {
   getAdminUser,
   getTracksWithoutAlbum,
   getAlbumsWithoutArtist,
+  getInfosWithoutTracks,
 } from "../database/queries/tools";
 import {
   getAlbums,
   getArtists,
+  getTracks,
   storeTrackAlbumArtist,
 } from "../spotify/dbTools";
 import { getWithDefault } from "./env";
@@ -60,6 +62,13 @@ export class Database {
       logger.warn("No user is admin, cannot auto fix database");
       longWriteDbLock.unlock();
       return;
+    }
+    const allInfos = await getInfosWithoutTracks();
+    if (allInfos.length > 0) {
+      const trackIds = allInfos.map(e => e.id);
+      logger.info(`Fixing missing tracks (${trackIds.join(",")})`);
+      const tracks = await getTracks(user._id.toString(), trackIds);
+      await storeTrackAlbumArtist({ tracks });
     }
     const allTracks = await getTracksWithoutAlbum();
     if (allTracks.length > 0) {
