@@ -30,7 +30,7 @@ export const useTheme = () => {
           MuiTabs: {
             styleOverrides: {
               root: {
-                backgroundColor: "var(--header-background)",
+                backgroundColor: "var(--content-background)",
               },
             },
           },

@@ -15,17 +15,6 @@
   margin-bottom: 16px;
 }
 
-.root > div > h3::before {
-  content: '';
-  position: relative;
-  display: inline-block;
-  width: 16px;
-  height: 32px;
-  background-color: var(--text-on-light);
-  margin-right: 16px;
-  border-radius: 6px;
-}
-
 .title {
   display: flex;
   flex-direction: row;

@@ -30,7 +30,11 @@ export default function ButtonsHeader({ items }: ButtonsHeaderProps) {
   );
 
   return (
-    <Tabs value={tab} onChange={(_, v) => goto(v)} textColor="secondary">
+    <Tabs
+      value={tab}
+      onChange={(_, v) => goto(v)}
+      textColor="secondary"
+      className={s.tabs}>
       {items.map((item, k) => (
         <Tab
           className={s.item}
