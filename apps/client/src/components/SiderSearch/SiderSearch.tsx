@@ -3,25 +3,25 @@ import clsx from "clsx";
 import { useRef, useState, useCallback } from "react";
 import { api } from "../../services/apis/api";
 import { useConditionalAPI } from "../../services/hooks/hooks";
-import { Artist, TrackWithFullAlbum } from "../../services/types";
+import { Album, Artist, TrackWithFullAlbum } from "../../services/types";
 import IdealImage from "../IdealImage";
 import Loader from "../Loader";
 import Text from "../Text";
 import s from "./index.module.css";
 
-interface SideSearchProps {
+interface SiderSearchProps {
   onTrackClick?: (track: TrackWithFullAlbum) => void;
   onArtistClick?: (artist: Artist) => void;
   onAlbumClick?: (album: Album) => void;
   inputClassname?: string;
 }
 
-export default function SideSearch({
+export default function SiderSearch({
   onTrackClick,
   onArtistClick,
   onAlbumClick,
   inputClassname,
-}: SideSearchProps) {
+}: SiderSearchProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [search, setSearch] = useState("");
   const [results, loading] = useConditionalAPI(
