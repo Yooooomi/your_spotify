@@ -26,7 +26,6 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "9.1.0",
     "react-router-dom": "6.22.2",
-    "react-scripts": "^5.0.1",
     "recharts": "2.12.1",
     "redux": "5.0.1",
     "web-vitals": "3.5.2"
@@ -36,7 +35,8 @@
     "@types/react-copy-to-clipboard": "5.0.7",
     "@types/react-date-range": "1.4.9",
     "@types/react-dom": "18.2.19",
-    "@your_spotify/dev": "*"
+    "@your_spotify/dev": "*",
+    "react-scripts": "^5.0.1"
   },
   "browserslist": {
     "production": [
