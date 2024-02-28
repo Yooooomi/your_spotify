@@ -23,7 +23,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "uuid": "9.0.1",
-    "zod": "3.22.4"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
