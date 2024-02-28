@@ -3,6 +3,7 @@ import { InfosModel } from "../Models";
 import { User } from "../schemas/user";
 import {
   basicMatch,
+  getBestInfos,
   getGroupByDateProjection,
   getGroupingByTimeSplit,
   getTrackSumType,
@@ -557,50 +558,7 @@ export const getBestSongsNbOffseted = (
   end: Date,
   nb: number,
   offset: number,
-) =>
-  InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
-    {
-      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
-    },
-    {
-      $lookup: lightTrackLookupPipeline(),
-    },
-    { $unwind: "$track" },
-
-    // Adding the sum of the duration of all musics
-    {
-      $group: {
-        _id: null,
-        track: { $push: "$track" },
-        total_duration_ms: { $sum: "$track.duration_ms" },
-        total_count: { $sum: 1 },
-      },
-    },
-    { $unwind: "$track" },
-    {
-      $group: {
-        _id: "$track.id",
-        track: { $last: "$track" },
-        total_count: { $last: "$total_count" },
-        total_duration_ms: { $last: "$total_duration_ms" },
-        duration_ms: { $sum: "$track.duration_ms" },
-        count: { $sum: 1 },
-      },
-    },
-    { $sort: { count: -1, "track.name": 1 } },
-    { $skip: offset },
-    { $limit: nb },
-    { $addFields: { "track.artist": { $first: "$track.artists" } } },
-    {
-      $lookup: lightAlbumLookupPipeline(),
-    },
-    { $unwind: "$album" },
-    {
-      $lookup: lightArtistLookupPipeline(),
-    },
-    { $unwind: "$artist" },
-  ]);
+) => getBestInfos("id", user, start, end, nb, offset);
 
 export const getBestArtistsNbOffseted = (
   user: User,
@@ -608,52 +566,7 @@ export const getBestArtistsNbOffseted = (
   end: Date,
   nb: number,
   offset: number,
-) =>
-  InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
-    {
-      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
-    },
-    {
-      $lookup: lightTrackLookupPipeline(),
-    },
-    { $unwind: "$track" },
-
-    // Adding the sum of the duration of all musics
-    {
-      $group: {
-        _id: null,
-        track: { $push: "$track" },
-        total_duration_ms: { $sum: "$track.duration_ms" },
-        total_count: { $sum: 1 },
-      },
-    },
-    { $unwind: "$track" },
-    { $addFields: { "track.artist": { $first: "$track.artists" } } },
-    {
-      $group: {
-        _id: "$track.artist",
-        track: { $last: "$track" },
-        total_count: { $last: "$total_count" },
-        total_duration_ms: { $last: "$total_duration_ms" },
-        duration_ms: { $sum: "$track.duration_ms" },
-        count: { $sum: 1 },
-        differents: { $addToSet: "$track.id" },
-      },
-    },
-    { $addFields: { differents: { $size: "$differents" } } },
-    { $sort: { count: -1, _id: 1 } },
-    { $skip: offset },
-    { $limit: nb },
-    {
-      $lookup: lightAlbumLookupPipeline(),
-    },
-    { $unwind: "$album" },
-    {
-      $lookup: lightArtistLookupPipeline(),
-    },
-    { $unwind: "$artist" },
-  ]);
+) => getBestInfos("primaryArtistId", user, start, end, nb, offset);
 
 export const getBestAlbumsNbOffseted = (
   user: User,
@@ -661,52 +574,7 @@ export const getBestAlbumsNbOffseted = (
   end: Date,
   nb: number,
   offset: number,
-) =>
-  InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
-    {
-      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
-    },
-    {
-      $lookup: lightTrackLookupPipeline(),
-    },
-    { $unwind: "$track" },
-
-    // Adding the sum of the duration of all musics
-    {
-      $group: {
-        _id: null,
-        track: { $push: "$track" },
-        total_duration_ms: { $sum: "$track.duration_ms" },
-        total_count: { $sum: 1 },
-      },
-    },
-    { $unwind: "$track" },
-    { $addFields: { "track.artist": { $first: "$track.artists" } } },
-    {
-      $group: {
-        _id: "$track.album",
-        track: { $last: "$track" },
-        total_count: { $last: "$total_count" },
-        total_duration_ms: { $last: "$total_duration_ms" },
-        duration_ms: { $sum: "$track.duration_ms" },
-        count: { $sum: 1 },
-        differents: { $addToSet: "$track.id" },
-      },
-    },
-    { $addFields: { differents: { $size: "$differents" } } },
-    { $sort: { count: -1, _id: 1 } },
-    { $skip: offset },
-    { $limit: nb },
-    {
-      $lookup: lightAlbumLookupPipeline(),
-    },
-    { $unwind: "$album" },
-    {
-      $lookup: lightArtistLookupPipeline(),
-    },
-    { $unwind: "$artist" },
-  ]);
+) => getBestInfos("albumId", user, start, end, nb, offset);
 
 export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
