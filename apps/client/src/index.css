@@ -34,7 +34,7 @@ h6 {
 :root {
   --track-options: 34px;
   --radius: 6px;
-  --page-padding: 16px;
+  --page-padding: 0 16px 16px 16px;
   --accent: #FB717B;
   --header-image-size: 60px;
 }
@@ -51,7 +51,6 @@ h6 {
   --hover: rgb(65, 65, 65);
 
   --background: black;
-  --header-background: black;
   --content-background: black;
 
   --text-on-light: white;
@@ -73,8 +72,7 @@ h6 {
   --hover: #eaeaea;
 
   --background: white;
-  --header-background: white;
-  --content-background: #f7f7f7;
+  --content-background: #f2f3f6;
 
   --text-on-light: black;
   --text-on-dark: white;
@@ -91,7 +89,7 @@ h6 {
 
 @media screen and (max-width: 960px) {
   :root {
-    --page-padding: 8px;
+    --page-padding: 0px 8px 8px 8px;
     --header-image-size: 40px;
   }
 }

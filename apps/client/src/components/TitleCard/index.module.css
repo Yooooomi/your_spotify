@@ -10,7 +10,7 @@
 }
 
 .container {
-  padding: 16px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -28,17 +28,6 @@
 
 .title > :last-child {
   margin-left: auto;
-}
-
-.title::before {
-  content: '';
-  position: relative;
-  display: inline-block;
-  width: 16px;
-  height: 32px;
-  background-color: var(--primary);
-  margin-right: 16px;
-  border-radius: 6px;
 }
 
 .content {
