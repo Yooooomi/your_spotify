@@ -9,19 +9,19 @@ import Loader from '../Loader';
 import Text from '../Text';
 import s from './index.module.css';
 
-interface ArtistSearchProps {
-  onArtistClick?: (artist: Artist) => void;
+interface SideSearchProps {
   onTrackClick?: (track: TrackWithFullAlbum) => void;
+  onArtistClick?: (artist: Artist) => void;
   onAlbumClick?: (album: Album) => void;
   inputClassname?: string;
 }
 
-export default function ArtistSearch({
-  onArtistClick,
+export default function SideSearch({
   onTrackClick,
+  onArtistClick,
   onAlbumClick,
   inputClassname,
-}: ArtistSearchProps) {
+}: SideSearchProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [search, setSearch] = useState('');
   const [results, loading] = useConditionalAPI(
@@ -30,20 +30,20 @@ export default function ArtistSearch({
     search,
   );
 
-  const internOnArtistClick = useCallback(
-    (artist: Artist) => {
-      setSearch('');
-      onArtistClick?.(artist);
-    },
-    [onArtistClick],
-  );
-
   const internOnTrackClick = useCallback(
     (track: TrackWithFullAlbum) => {
       setSearch('');
       onTrackClick?.(track);
     },
     [onTrackClick],
+  );
+
+  const internOnArtistClick = useCallback(
+    (artist: Artist) => {
+      setSearch('');
+      onArtistClick?.(artist);
+    },
+    [onArtistClick],
   );
 
   const internOnAlbumClick = useCallback(

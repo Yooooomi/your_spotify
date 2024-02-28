@@ -92,9 +92,9 @@ export default function Sider({ className, isDrawer }: SiderProps) {
         <SiderTitle />
       </div>
       <SiderSearch
-        onArtistClick={goToArtist}
         onTrackClick={goToTrack}
         onAlbumClick={goToAlbum}
+        onArtistClick={goToArtist}
       />
       <nav>
         {links.map(category => (

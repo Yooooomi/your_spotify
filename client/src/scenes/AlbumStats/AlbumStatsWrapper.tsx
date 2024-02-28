@@ -25,7 +25,7 @@ export default function AlbumStatsWrapper() {
     return (
       <FullscreenCentered>
         <Text element="h3">
-          You never listened to this song, might be someone else registered
+          You never listened to this album, might be someone else registered
         </Text>
       </FullscreenCentered>
     );

@@ -7,6 +7,8 @@ export * from './queries/user';
 export * from './queries/global';
 export * from './queries/artist';
 export * from './queries/track';
+export * from './queries/album';
+export * from './queries/playlist';
 
 export const connect = async () => {
   const fallbackConnection = 'mongodb://mongo:27017/your_spotify';

@@ -6,10 +6,10 @@ import { useAPI } from '../../services/hooks/hooks';
 import FullscreenCentered from '../../components/FullscreenCentered';
 import Text from '../../components/Text';
 
-export default function ArtistStatsWrapper() {
+export default function TrackStatsWrapper() {
   const params = useParams();
   const stats = useAPI(api.getTrackStats, params.id || '');
-  console.log(stats);
+
   if (stats === null) {
     return (
       <FullscreenCentered>
