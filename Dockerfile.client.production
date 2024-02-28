@@ -1,0 +1,44 @@
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+ENV MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
+
+RUN apk add python3 gcc g++ make cmake
+
+COPY yarn.lock yarn.lock
+COPY package.json package.json
+
+COPY apps/dev/package.json apps/dev/package.json
+COPY apps/dev/tsconfig.json apps/dev/tsconfig.json
+
+COPY apps/client/package.json apps/client/package.json
+COPY apps/client/tsconfig.json apps/client/tsconfig.json
+
+RUN yarn --frozen-lockfile
+
+COPY apps/client/public apps/client/public
+COPY apps/client/src apps/client/src
+COPY apps/client/scripts apps/client/scripts
+WORKDIR /app/apps/client
+RUN yarn build
+
+ARG NODE_ENV
+ENV NODE_ENV ${NODE_ENV:-production}
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+RUN apk add python3 gcc g++ make cmake
+
+RUN npm install -g serve
+
+COPY --from=builder /app/node_modules node_modules
+COPY --from=builder /app/package.json package.json
+COPY --from=builder /app/apps/client/package.json apps/client/package.json
+COPY --from=builder /app/apps/client/scripts/ apps/client/scripts/
+COPY --from=builder /app/apps/client/package.json apps/client/package.json
+COPY --from=builder /app/apps/client/build/ apps/client/build/
+
+ENTRYPOINT [ "sh", "/app/apps/client/scripts/run/run.sh" ]
