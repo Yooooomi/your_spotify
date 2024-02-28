@@ -10,7 +10,7 @@
     "lint": "eslint src/ --ext .tsx,.ts"
   },
   "dependencies": {
-    "@emotion/react": "11.11.3",
+    "@emotion/react": "11.11.4",
     "@emotion/styled": "11.11.0",
     "@mui/icons-material": "5.15.11",
     "@mui/material": "5.15.11",
@@ -25,18 +25,18 @@
     "react-dom": "^18.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "9.1.0",
-    "react-router-dom": "6.22.1",
+    "react-router-dom": "6.22.2",
     "react-scripts": "^5.0.1",
     "recharts": "2.12.1",
     "redux": "5.0.1",
     "web-vitals": "3.5.2"
   },
   "devDependencies": {
-    "@your_spotify/dev": "*",
-    "@types/node": "20.11.20",
+    "@types/node": "20.11.22",
     "@types/react-copy-to-clipboard": "5.0.7",
     "@types/react-date-range": "1.4.9",
-    "@types/react-dom": "18.2.19"
+    "@types/react-dom": "18.2.19",
+    "@your_spotify/dev": "*"
   },
   "browserslist": {
     "production": [
