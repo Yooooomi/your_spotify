@@ -127,6 +127,11 @@ export type ArtistStatsResponse = {
     count: number;
     track: TrackWithAlbum;
   }[];
+  albumMostListened: {
+    _id: string;
+    count: number;
+    album: Album;
+  }[];
   total: {
     count: number;
   };
@@ -149,6 +154,32 @@ export type TrackStatsResponse = {
   firstLast: {
     first: TrackInfo;
     last: TrackInfo;
+  };
+  recentHistory: TrackInfo[];
+  total: {
+    count: number;
+  };
+};
+
+export type AlbumStatsResponse = {
+  album: Album;
+  artists: Artist[];
+  tracks: {
+    track: Track;
+    count: number;
+  }[];
+  bestPeriod: {
+    _id: DateId;
+    count: number;
+    total: number;
+  }[];
+  firstLast: {
+    first: TrackInfo & {
+      track: TrackWithAlbum;
+    };
+    last: TrackInfo & {
+      track: TrackWithAlbum;
+    };
   };
   recentHistory: TrackInfo[];
   total: {
@@ -298,8 +329,20 @@ export const api = {
       start,
       end,
     }),
-  getAlbums: (ids: string[]) => get<Album[]>(`/album/${ids.join(",")}`),
-  getArtists: (ids: string[]) => get<Artist[]>(`/artist/${ids.join(",")}`),
+  getAlbums: (ids: string[]) => get<Album[]>(`/album/${ids.join(',')}`),
+  getAlbumStats: (id: string) =>
+    get<AlbumStatsResponse | { code: 'NEVER_LISTENED' }>(`/album/${id}/stats`),
+  getAlbumRank: (id: string) =>
+    get<{
+      index: number;
+      isMax: boolean;
+      isMin: boolean;
+      results: {
+        id: string;
+        count: number;
+      }[];
+    }>(`/album/${id}/rank`),
+  getArtists: (ids: string[]) => get<Artist[]>(`/artist/${ids.join(',')}`),
   getArtistStats: (id: string) =>
     get<ArtistStatsResponse | { code: "NEVER_LISTENED" }>(
       `/artist/${id}/stats`,
@@ -315,7 +358,9 @@ export const api = {
       }[];
     }>(`/artist/${id}/rank`),
   search: (str: string) =>
-    get<{ artists: Artist[]; tracks: TrackWithFullAlbum[] }>(`/search/${str}`),
+    get<{ artists: Artist[]; tracks: TrackWithFullAlbum[]; albums: Album[] }>(
+      `/search/${str}`,
+    ),
   getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>
     get<
       {

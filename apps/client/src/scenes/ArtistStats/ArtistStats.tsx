@@ -1,19 +1,20 @@
-import { CircularProgress, Grid } from "@mui/material";
-import { useSelector } from "react-redux";
-import Header from "../../components/Header";
-import TitleCard from "../../components/TitleCard";
-import { ArtistStatsResponse } from "../../services/apis/api";
-import { buildFromDateId, dateToMonthAndYear } from "../../services/stats";
-import Text from "../../components/Text";
-import InlineTrack from "../../components/InlineTrack";
-import { selectBlacklistedArtist } from "../../services/redux/modules/user/selector";
-import IdealImage from "../../components/IdealImage";
-import ImageTwoLines from "../../components/ImageTwoLines";
-import s from "./index.module.css";
-import DayRepartition from "./DayRepartition";
-import ArtistRank from "./ArtistRank/ArtistRank";
-import FirstAndLast from "./FirstAndLast";
-import ArtistContextMenu from "./ArtistContextMenu";
+import { CircularProgress, Grid } from '@mui/material';
+import { useSelector } from 'react-redux';
+import Header from '../../components/Header';
+import TitleCard from '../../components/TitleCard';
+import { ArtistStatsResponse } from '../../services/apis/api';
+import { buildFromDateId, dateToMonthAndYear } from '../../services/stats';
+import s from './index.module.css';
+import DayRepartition from './DayRepartition';
+import Text from '../../components/Text';
+import ArtistRank from './ArtistRank/ArtistRank';
+import InlineTrack from '../../components/InlineTrack';
+import FirstAndLast from './FirstAndLast';
+import ArtistContextMenu from './ArtistContextMenu';
+import { selectBlacklistedArtist } from '../../services/redux/modules/user/selector';
+import IdealImage from '../../components/IdealImage';
+import ImageTwoLines from '../../components/ImageTwoLines';
+import InlineAlbum from '../../components/InlineAlbum';
 
 interface ArtistStatsProps {
   artistId: string;
@@ -128,28 +129,53 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
               />
             </Grid>
           </Grid>
-          <Grid item xs={12} lg={6}>
-            <TitleCard title="Most listened tracks">
-              {stats.mostListened.map((ml, k) => (
-                <div key={ml.track.id} className={s.ml}>
-                  <Text element="strong" className={s.mlrank}>
-                    #{k + 1}
-                  </Text>
-                  <ImageTwoLines
-                    image={
-                      <IdealImage
-                        className={s.cardimg}
-                        images={ml.track.album.images}
-                        size={48}
-                        alt="album cover"
-                      />
-                    }
-                    first={<InlineTrack track={ml.track} />}
-                    second={`${ml.count} times`}
-                  />
-                </div>
-              ))}
-            </TitleCard>
+          <Grid container item xs={12} lg={6} spacing={2}>
+            <Grid item xs={12}>
+              <TitleCard title="Most listened tracks">
+                {stats.mostListened.map((ml, k) => (
+                  <div key={ml.track.id} className={s.ml}>
+                    <Text element="strong" className={s.mlrank}>
+                      #{k + 1}
+                    </Text>
+                    <ImageTwoLines
+                      image={
+                        <IdealImage
+                          className={s.cardimg}
+                          images={ml.track.album.images}
+                          size={48}
+                          alt="album cover"
+                        />
+                      }
+                      first={<InlineTrack track={ml.track} />}
+                      second={`${ml.count} times`}
+                    />
+                  </div>
+                ))}
+              </TitleCard>
+            </Grid>
+            <Grid item xs={12}>
+              <TitleCard title="Most listened albums">
+                {stats.albumMostListened.map((ml, k) => (
+                  <div key={ml.album.id} className={s.ml}>
+                    <Text element="strong" className={s.mlrank}>
+                      #{k + 1}
+                    </Text>
+                    <ImageTwoLines
+                      image={
+                        <IdealImage
+                          className={s.cardimg}
+                          images={ml.album.images}
+                          size={48}
+                          alt="album cover"
+                        />
+                      }
+                      first={<InlineAlbum album={ml.album} />}
+                      second={`${ml.count} times`}
+                    />
+                  </div>
+                ))}
+              </TitleCard>
+            </Grid>
           </Grid>
         </Grid>
       </div>

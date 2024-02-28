@@ -19,7 +19,6 @@ import Songs from "./scenes/Tops/Songs";
 import CollaborativeSongs from "./scenes/Collaborative/Affinity/Songs";
 import CollaborativeAlbums from "./scenes/Collaborative/Affinity/Albums";
 import CollaborativeArtists from "./scenes/Collaborative/Affinity/Artists";
-
 import "./App.css";
 import RegistrationsDisabled from "./scenes/RegistrationsDisabled";
 import Affinity from "./scenes/Collaborative/Affinity";

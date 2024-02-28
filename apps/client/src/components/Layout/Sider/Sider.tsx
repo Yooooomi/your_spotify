@@ -4,23 +4,23 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { SystemUpdateAlt as UpdateIcon } from "@mui/icons-material";
 
-import { Tooltip } from "@mui/material";
-import { useShareLink } from "../../../services/hooks/hooks";
-import { alertMessage } from "../../../services/redux/modules/message/reducer";
-import { selectUser } from "../../../services/redux/modules/user/selector";
-import { useAppDispatch } from "../../../services/redux/tools";
-import { LayoutContext } from "../LayoutContext";
-import SiderSearch from "../../SiderSearch";
-import { Artist, TrackWithFullAlbum } from "../../../services/types";
+import { Tooltip } from '@mui/material';
+import s from './index.module.css';
+import { useShareLink } from '../../../services/hooks/hooks';
+import { alertMessage } from '../../../services/redux/modules/message/reducer';
+import { selectUser } from '../../../services/redux/modules/user/selector';
+import { useAppDispatch } from '../../../services/redux/tools';
+import { LayoutContext } from '../LayoutContext';
+import SiderTitle from './SiderTitle';
+import SiderSearch from '../../SiderSearch';
+import { Album, Artist, TrackWithFullAlbum } from '../../../services/types';
+import SiderCategory from './SiderCategory/SiderCategory';
+import { links } from './types';
 import {
   selectUpdateAvailable,
   selectVersion,
 } from "../../../services/redux/modules/settings/selector";
 import Text from "../../Text";
-import SiderCategory from "./SiderCategory/SiderCategory";
-import { links } from "./types";
-import SiderTitle from "./SiderTitle";
-import s from "./index.module.css";
 
 interface SiderProps {
   className?: string;
@@ -45,6 +45,14 @@ export default function Sider({ className, isDrawer }: SiderProps) {
   const goToTrack = useCallback(
     (track: TrackWithFullAlbum) => {
       navigate(`/song/${track.id}`);
+      layoutContext.closeDrawer();
+    },
+    [layoutContext, navigate],
+  );
+
+  const goToAlbum = useCallback(
+    (album: Album) => {
+      navigate(`/album/${album.id}`);
       layoutContext.closeDrawer();
     },
     [layoutContext, navigate],
@@ -83,7 +91,11 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       <div className={s.title}>
         <SiderTitle />
       </div>
-      <SiderSearch onArtistClick={goToArtist} onTrackClick={goToTrack} />
+      <SiderSearch
+        onTrackClick={goToTrack}
+        onAlbumClick={goToAlbum}
+        onArtistClick={goToArtist}
+      />
       <nav>
         {links.map(category => (
           <SiderCategory

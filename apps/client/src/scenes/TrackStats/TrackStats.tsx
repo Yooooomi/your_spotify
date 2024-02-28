@@ -6,14 +6,15 @@ import {
   buildFromDateId,
   dateToMonthAndYear,
   formatDateTime,
-} from "../../services/stats";
-import Text from "../../components/Text";
-import InlineArtist from "../../components/InlineArtist";
-import ImageTwoLines from "../../components/ImageTwoLines";
-import IdealImage from "../../components/IdealImage";
-import TrackRank from "./TrackRank/TrackRank";
-import FirstAndLast from "./FirstAndLast";
-import s from "./index.module.css";
+} from '../../services/stats';
+import s from './index.module.css';
+import Text from '../../components/Text';
+import InlineArtist from '../../components/InlineArtist';
+import TrackRank from './TrackRank/TrackRank';
+import FirstAndLast from './FirstAndLast';
+import ImageTwoLines from '../../components/ImageTwoLines';
+import IdealImage from '../../components/IdealImage';
+import InlineAlbum from '../../components/InlineAlbum';
 
 interface TrackStatsProps {
   trackId: string;
@@ -69,7 +70,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
                 />
                 <ImageTwoLines
                   image={<IdealImage images={stats.album.images} size={48} />}
-                  first={stats.album.name}
+                  first={<InlineAlbum album={stats.album} />}
                   second="Album"
                 />
               </TitleCard>

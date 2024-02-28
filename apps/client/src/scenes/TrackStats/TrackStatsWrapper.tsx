@@ -6,10 +6,10 @@ import FullscreenCentered from "../../components/FullscreenCentered";
 import Text from "../../components/Text";
 import SongStats from "./TrackStats";
 
-export default function ArtistStatsWrapper() {
+export default function TrackStatsWrapper() {
   const params = useParams();
-  const stats = useAPI(api.getTrackStats, params.id || "");
-  console.log(stats);
+  const stats = useAPI(api.getTrackStats, params.id || '');
+
   if (stats === null) {
     return (
       <FullscreenCentered>

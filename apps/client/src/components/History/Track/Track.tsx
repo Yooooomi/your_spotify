@@ -3,18 +3,19 @@ import clsx from "clsx";
 import {
   dateToListenedAt,
   msToMinutesAndSeconds,
-} from "../../../services/stats";
-import { Album, Artist, Track as TrackType } from "../../../services/types";
-import InlineArtist from "../../InlineArtist";
-import Text from "../../Text";
-import TrackOptions from "../../TrackOptions";
-import InlineTrack from "../../InlineTrack";
-import { ColumnDescription, GridRowWrapper } from "../../Grid";
-import PlayButton from "../../PlayButton";
-import { useMobile } from "../../../services/hooks/hooks";
-import LongClickableTrack from "../../LongClickableTrack";
-import { trackGrid } from "./TrackGrid";
-import s from "./index.module.css";
+} from '../../../services/stats';
+import { Album, Artist, Track as TrackType } from '../../../services/types';
+import s from './index.module.css';
+import InlineArtist from '../../InlineArtist';
+import Text from '../../Text';
+import TrackOptions from '../../TrackOptions';
+import InlineTrack from '../../InlineTrack';
+import { ColumnDescription, GridRowWrapper } from '../../Grid';
+import PlayButton from '../../PlayButton';
+import { useMobile } from '../../../services/hooks/hooks';
+import { trackGrid } from './TrackGrid';
+import LongClickableTrack from '../../LongClickableTrack';
+import InlineAlbum from '../../InlineAlbum';
 
 interface TrackProps {
   listenedAt?: Date;
@@ -55,7 +56,7 @@ export default function Track({
       },
       {
         ...trackGrid.album,
-        node: !isTablet && <Text className="otext">{album.name}</Text>,
+        node: !isTablet && <InlineAlbum className="otext" album={album} />,
       },
       {
         ...trackGrid.duration,
