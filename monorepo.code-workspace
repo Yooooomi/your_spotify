@@ -1,22 +1,27 @@
 {
   "folders": [
     {
-      "path": "server"
-    },
-    {
-      "path": "client"
-    },
-    {
-      "path": ".",
-      "name": "root"
+      "path": "."
     }
   ],
   "settings": {
-    "jest.disabledWorkspaceFolders": ["root"],
+    "jest.disabledWorkspaceFolders": [
+      "root"
+    ],
     "typescript.tsdk": "server/node_modules/typescript/lib",
-    "editor.formatOnSave": true
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "eslint.enable": true,
+    "eslint.format.enable": true,
+    "eslint.workingDirectories": [
+      {"mode": "auto"}
+    ],
+    "[typescript]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    }
   },
   "extensions": {
-    "recommendations": ["dbaeumer.vscode-eslint"]
+    "recommendations": [
+      "dbaeumer.vscode-eslint"
+    ]
   }
 }

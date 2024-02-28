@@ -35,8 +35,8 @@ jobs:
       - name: Build and push client release
         uses: docker/build-push-action@v4
         with:
-          context: ./client
-          file: ./client/Dockerfile.production
+          context: .
+          file: ./Dockerfile.client.production
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
@@ -46,8 +46,8 @@ jobs:
       - name: Build and push server release
         uses: docker/build-push-action@v4
         with:
-          context: ./server
-          file: ./server/Dockerfile.production
+          context: .
+          file: ./Dockerfile.server.production
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |

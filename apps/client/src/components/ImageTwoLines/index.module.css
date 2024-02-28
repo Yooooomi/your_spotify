@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.root > :first-child{
+  border-radius: var(--radius);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+}
+
+.content > :last-child {
+  color: var(--text-grey);
+}
+
+.first {
+  font-weight: 400;
+  margin-bottom: 4px;
+}

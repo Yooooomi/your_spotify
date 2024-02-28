@@ -1,0 +1,36 @@
+.root {
+  background-color: var(--background);
+  box-shadow: var(--shadow) !important;
+  border-radius: 6px;
+  border: var(--content-border);
+}
+
+.noborder {
+  border: unset;
+}
+
+.container {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.nopadding {
+  padding: 0px !important;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.title > :last-child {
+  margin-left: auto;
+}
+
+.content {
+  position: relative;
+  flex-grow: 1;
+}

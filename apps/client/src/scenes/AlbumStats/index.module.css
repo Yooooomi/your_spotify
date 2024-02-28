@@ -1,0 +1,78 @@
+.headerimage {
+  height: var(--header-image-size);
+  width: var(--header-image-size);
+  border-radius: var(--radius);
+  margin-right: 16px;
+}
+
+.content {
+  padding: var(--page-padding);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+@media screen and (max-width: 900px) {
+  .header {
+    margin: 16px 0px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .headerimage {
+    margin-right: 8px;
+  }
+}
+
+.songslistened {
+  font-size: 1.4em;
+}
+
+.bestperiod {
+  display: flex;
+  flex-direction: column;
+}
+
+.bestperiod:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+.bestperiod > strong {
+  font-size: 1.4em;
+}
+
+.bestperiod > span {
+  color: var(--text-grey);
+}
+
+.context {
+  display: flex;
+  flex-direction: row;
+}
+
+.context > * {
+  flex: 1;
+}
+
+.recentitem:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.ml {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ml:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.mlrank {
+  font-size: 1.4em;
+  width: 48px;
+}

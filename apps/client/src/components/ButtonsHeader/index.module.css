@@ -1,0 +1,14 @@
+.tabs {
+  border-bottom: 1px solid var(--divider);
+  margin-bottom: 16px;
+}
+
+@media screen and (max-width: 960px) {
+    .tabs {
+        margin-bottom: 8px;
+    }
+}
+
+.item {
+  border-radius: var(--radius) !important;
+}

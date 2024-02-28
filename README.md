@@ -112,20 +112,19 @@ You can edit the CORS for the server:
 For **YourSpotify** to work you need to provide a Spotify application **public** AND **secret** to the server environment.
 To do so, you need to create a **Spotify application** [here](https://developer.spotify.com/dashboard/applications).
 
-1. Click on **Create a client ID**.
-2. Fill out all the informations.
-3. Copy the **public** and the **secret** key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
+1. Click on **Create app**.
+2. Fill out all the information.
+3. Set the redirect URI, corresponding to your **server** location on the internet (or your local network) adding the suffix **/oauth/spotify/callback** (**/api/oauth/spotify/callback** if using the [linuxserver](https://github.com/linuxserver/docker-your_spotify) image).
+- i.e: `http://localhost:8080/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
+4. Check **Web API**
+5. Check **I understand and agree**
+6. Hit **Settings** at the top right corner
+7. Copy the **public** and the **secret** key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
    respectively.
-4. Add an authorized redirect URI corresponding to your **server** location on the internet adding the suffix **/oauth/spotify/callback**.
-   1. use the `EDIT SETTINGS` button on the top right corner of the page.
-   2. add your URI under the `Redirect URIs` section.
-   - i.e: `http://localhost:8080/oauth/spotify/callback` or `http://home.mydomain.com/your_spotify_backend/oauth/spotify/callback`
-   3. Do not forget to hit the save button at the bottom of the popup.
-5. Once you have created your application, Spotify wants you to register the users that will be able to access the application. (You don't need to do that for the account that created the application)
-   1. Click the **Users and access** button
-   2. Click the **Add new user** button
-   3. Enter the required information, a name and the email the user's spotify account has been created with.
-   4. (Optional) You can **Request extension** if you do not want to register the users by hand.
+8. Once you have created your application, Spotify wants you to register the users that will be able to access the application. (You don't need to do that for the account that created the application)
+   1. Click the **User Management** button
+   2. Enter the required information, a name and the email the user's Spotify account has been created with.
+   3. (Optional) You can **Request extension** if you do not want to register the users by hand.
 
 # Importing past history
 
@@ -145,7 +144,7 @@ The import process uses cache to limit requests to the Spotify API. By default, 
 - Input your files starting with `StreamingHistoryX.json`.
 - Start your import.
 
-### Full privacy data
+### Full privacy data (recommended)
 
 > Takes a maximum of 30 days.
 > Gets you the whole history since the creation of your account.

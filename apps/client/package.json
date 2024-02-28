@@ -1,0 +1,53 @@
+{
+  "name": "@your_spotify/client",
+  "version": "1.8.0",
+  "private": true,
+  "scripts": {
+    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src/ --ext .tsx,.ts"
+  },
+  "dependencies": {
+    "@emotion/react": "11.11.4",
+    "@emotion/styled": "11.11.0",
+    "@mui/icons-material": "5.15.11",
+    "@mui/material": "5.15.11",
+    "@mui/system": "5.15.11",
+    "@mui/x-date-pickers": "6.19.5",
+    "@reduxjs/toolkit": "2.2.1",
+    "axios": "1.6.7",
+    "clsx": "2.1.0",
+    "date-fns": "3.3.1",
+    "react": "^18.2.0",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-dom": "^18.2.0",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-redux": "9.1.0",
+    "react-router-dom": "6.22.2",
+    "react-scripts": "^5.0.1",
+    "recharts": "2.12.1",
+    "redux": "5.0.1",
+    "web-vitals": "3.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.22",
+    "@types/react-copy-to-clipboard": "5.0.7",
+    "@types/react-date-range": "1.4.9",
+    "@types/react-dom": "18.2.19",
+    "@your_spotify/dev": "*"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

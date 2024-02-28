@@ -1,0 +1,29 @@
+.root {
+  padding: 16px;
+  box-shadow: var(--shadow) !important;
+  background-color: var(--background) !important;
+  border: var(--content-border) !important;
+}
+
+.noborder {
+  border: none;
+}
+
+.root > div > h3 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.content {
+  position: relative;
+  height: 92%;
+  padding-bottom: 16px;
+}

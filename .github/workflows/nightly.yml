@@ -5,8 +5,8 @@ on:
   push:
     paths:
       - .github/workflows/nightly.yml
-      - client/**
-      - server/**
+      - apps/client/**
+      - apps/server/**
     branches:
       - master
 
@@ -34,8 +34,8 @@ jobs:
       - name: Build and push client nightly
         uses: docker/build-push-action@v4
         with:
-          context: ./client
-          file: ./client/Dockerfile.production
+          context: .
+          file: ./Dockerfile.client.production
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
@@ -45,8 +45,8 @@ jobs:
       - name: Build and push server nightly
         uses: docker/build-push-action@v4
         with:
-          context: ./server
-          file: ./server/Dockerfile.production
+          context: .
+          file: ./Dockerfile.server.production
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
