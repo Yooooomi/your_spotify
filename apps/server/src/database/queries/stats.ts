@@ -407,32 +407,25 @@ export const differentArtistsPer = async (
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
+        primaryArtistId: 1,
+        durationMs: 1,
         id: 1,
       },
     },
     {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
-    {
       $group: {
         _id: {
           ...getGroupingByTimeSplit(timeSplit),
-          artId: { $arrayElemAt: ["$track.artists", 0] },
+          artistId: `$primaryArtistId`,
         },
         count: { $sum: 1 },
       },
     },
-    { $sort: { count: -1, "_id.artId": 1 } },
+    { $sort: { count: -1, "_id.artistId": 1 } },
     {
       $lookup: {
         from: "artists",
-        localField: "_id.artId",
+        localField: "_id.artistId",
         foreignField: "id",
         as: "artist",
       },
