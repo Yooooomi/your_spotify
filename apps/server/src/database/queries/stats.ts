@@ -152,7 +152,10 @@ export const getSongsPer = async (
   const res = await InfosModel.aggregate([
     { $match: basicMatch(user._id, start, end) },
     {
-      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+      $project: {
+        ...getGroupByDateProjection(user.settings.timezone),
+        id: 1,
+      },
     },
     {
       $group: {
@@ -185,22 +188,14 @@ export const getTimePer = async (
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
+        durationMs: 1,
         id: 1,
       },
     },
     {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
-    {
       $group: {
         _id: getGroupingByTimeSplit(timeSplit),
-        count: { $sum: "$track.duration_ms" },
+        count: { $sum: "$durationMs" },
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
