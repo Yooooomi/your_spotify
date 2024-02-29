@@ -86,31 +86,26 @@ export const getMostListenedArtist = async (
   const res = await InfosModel.aggregate([
     { $match: basicMatch(user._id, start, end) },
     {
-      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
-    },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
+      $project: {
+        ...getGroupByDateProjection(user.settings.timezone),
+        primaryArtistId: 1,
+        id: 1,
       },
     },
-    { $unwind: "$track" },
     {
       $group: {
         _id: {
           ...getGroupingByTimeSplit(timeSplit),
-          art: { $arrayElemAt: ["$track.artists", 0] },
+          artistId: "$primaryArtistId",
         },
-        count: { $sum: getTrackSumType(user) },
+        count: { $sum: getTrackSumType(user, "$durationMs") },
       },
     },
-    { $sort: { count: -1, "_id.art": 1 } },
+    { $sort: { count: -1, "_id.artistId": 1 } },
     {
       $group: {
         _id: getGroupingByTimeSplit(timeSplit, "_id"),
-        artists: { $push: "$_id.art" },
+        artists: { $push: "$_id.artistId" },
         counts: { $push: "$count" },
       },
     },
