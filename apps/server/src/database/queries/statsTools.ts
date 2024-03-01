@@ -8,11 +8,16 @@ export const basicMatch = (
   userId: string | Types.ObjectId,
   start: Date,
   end: Date,
-) => ({
-  owner: userId instanceof Types.ObjectId ? userId : new Types.ObjectId(userId),
-  blacklistedBy: { $exists: 0 },
-  played_at: { $gt: start, $lt: end },
-});
+) => [
+  {
+    $match: {
+      owner:
+        userId instanceof Types.ObjectId ? userId : new Types.ObjectId(userId),
+      blacklistedBy: { $exists: 0 },
+      played_at: { $gt: start, $lt: end },
+    },
+  },
+];
 
 export const basicMatchUsers = (
   userIds: string[] | Types.ObjectId[],
@@ -193,7 +198,7 @@ export const getBestInfos = (
   offset: number,
 ) =>
   InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $group: {
         _id: `$${idField}`,
