@@ -11,49 +11,6 @@ export const searchTrack = (str: string) =>
     "full_album",
   );
 
-export const getRankOfTrack = async (user: User, trackId: string) => {
-  const res = await InfosModel.aggregate([
-    { $match: { owner: user._id } },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
-    { $group: { _id: "$id", count: { $sum: 1 } } },
-    { $sort: { count: -1, _id: 1 } },
-    { $group: { _id: 1, array: { $push: { id: "$_id", count: "$count" } } } },
-    {
-      $project: {
-        index: { $indexOfArray: ["$array.id", trackId] },
-        array: 1,
-      },
-    },
-    {
-      $project: {
-        index: 1,
-        isMax: {
-          $cond: { if: { $eq: ["$index", 0] }, then: true, else: false },
-        },
-        isMin: {
-          $cond: {
-            if: { $eq: ["$index", { $subtract: [{ $size: "$array" }, 1] }] },
-            then: true,
-            else: false,
-          },
-        },
-        results: {
-          $slice: ["$array", { $max: [{ $subtract: ["$index", 1] }, 0] }, 3],
-        },
-      },
-    },
-  ]);
-  return res[0];
-};
-
 export const getTrackListenedCount = (user: User, trackId: string) =>
   InfosModel.where({ owner: user._id, id: trackId }).countDocuments();
 

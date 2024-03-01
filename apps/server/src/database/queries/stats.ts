@@ -789,3 +789,59 @@ export const getLongestListeningSession = (
     { $limit: 5 },
   ]);
 };
+
+export type ItemType = {
+  field: string;
+};
+
+export const itemTypes: {
+  [key in "track" | "album" | "artist"]: ItemType;
+} = {
+  track: {
+    field: "$id",
+  },
+  album: {
+    field: "$albumId",
+  },
+  artist: {
+    field: "$primaryArtistId",
+  },
+};
+
+export const getRankOf = async (
+  itemType: ItemType,
+  user: User,
+  itemId: string,
+) => {
+  const res = await InfosModel.aggregate([
+    { $match: { owner: user._id } },
+    { $group: { _id: itemType.field, count: { $sum: 1 } } },
+    { $sort: { count: -1, _id: 1 } },
+    { $group: { _id: 1, array: { $push: { id: "$_id", count: "$count" } } } },
+    {
+      $project: {
+        index: { $indexOfArray: ["$array.id", itemId] },
+        array: 1,
+      },
+    },
+    {
+      $project: {
+        index: 1,
+        isMax: {
+          $cond: { if: { $eq: ["$index", 0] }, then: true, else: false },
+        },
+        isMin: {
+          $cond: {
+            if: { $eq: ["$index", { $subtract: [{ $size: "$array" }, 1] }] },
+            then: true,
+            else: false,
+          },
+        },
+        results: {
+          $slice: ["$array", { $max: [{ $subtract: ["$index", 1] }, 0] }, 3],
+        },
+      },
+    },
+  ]);
+  return res[0];
+};

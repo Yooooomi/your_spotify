@@ -168,36 +168,6 @@ export const getMostListenedAlbumOfArtist = async (
 ) => {
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id } },
-    { $lookup: {
-      from: 'tracks',
-      localField: 'id',
-      foreignField: 'id',
-      as: 'track'
-    }},
-    { $match: { 'track.artists.0': artistId } },
-    { $group: {
-      _id: '$track.album',
-      count: { $sum: 1 }
-    }},
-    { $sort: { count: -1 } },
-    {
-      $lookup: {
-        from: 'albums',
-        localField: '_id',
-        foreignField: 'id',
-        as: 'album',
-      },
-    },
-    { $unwind: '$album' },
-    { $limit: 10}
-  ]);
-  return res;
-};
-
-export const getRankOfArtist = async (user: User, artistId: string) => {
-  // Non sense to compute blacklist here
-  const res = await InfosModel.aggregate([
-    { $match: { owner: user._id } },
     {
       $lookup: {
         from: "tracks",
@@ -206,41 +176,26 @@ export const getRankOfArtist = async (user: User, artistId: string) => {
         as: "track",
       },
     },
-    { $unwind: "$track" },
+    { $match: { "track.artists.0": artistId } },
     {
       $group: {
-        _id: { $arrayElemAt: ["$track.artists", 0] },
+        _id: "$track.album",
         count: { $sum: 1 },
       },
     },
-    { $sort: { count: -1, _id: 1 } },
-    { $group: { _id: 1, array: { $push: { id: "$_id", count: "$count" } } } },
+    { $sort: { count: -1 } },
     {
-      $project: {
-        index: { $indexOfArray: ["$array.id", artistId] },
-        array: 1,
+      $lookup: {
+        from: "albums",
+        localField: "_id",
+        foreignField: "id",
+        as: "album",
       },
     },
-    {
-      $project: {
-        index: 1,
-        isMax: {
-          $cond: { if: { $eq: ["$index", 0] }, then: true, else: false },
-        },
-        isMin: {
-          $cond: {
-            if: { $eq: ["$index", { $subtract: [{ $size: "$array" }, 1] }] },
-            then: true,
-            else: false,
-          },
-        },
-        results: {
-          $slice: ["$array", { $max: [{ $subtract: ["$index", 1] }, 0] }, 3],
-        },
-      },
-    },
+    { $unwind: "$album" },
+    { $limit: 10 },
   ]);
-  return res[0];
+  return res;
 };
 
 export const getDayRepartitionOfArtist = (user: User, artistId: string) =>
