@@ -37,7 +37,7 @@ export const getFirstAndLastListenedAlbum = async (
   albumId: string,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id } },
+    { $match: { owner: user._id, albumId: albumId } },
     ...getAlbumInfos(albumId),
     { $sort: { played_at: 1 } },
     {
@@ -66,7 +66,7 @@ export const getFirstAndLastListenedAlbum = async (
 
 export const getAlbumSongs = async (user: User, albumId: string) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id } },
+    { $match: { owner: user._id, albumId: albumId } },
     ...getAlbumInfos(albumId),
     { $group: { _id: "$id", count: { $sum: 1 } } },
     { $sort: { count: -1 } },

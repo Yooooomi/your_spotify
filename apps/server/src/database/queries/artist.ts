@@ -37,7 +37,7 @@ export const getArtistInfos = (artistId: string) => [
 export const getFirstAndLastListened = async (user: User, artistId: string) => {
   // Non sense to compute blacklist here
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id } },
+    { $match: { owner: user._id, primaryArtistId: artistId } },
     ...getArtistInfos(artistId),
     { $sort: { played_at: 1 } },
     {
@@ -79,7 +79,7 @@ export const getMostListenedSongOfArtist = async (
 ) => {
   const res = await InfosModel.aggregate([
     // Non sense to compute blacklist here
-    { $match: { owner: user._id } },
+    { $match: { owner: user._id, primaryArtistId: artistId } },
     ...getArtistInfos(artistId),
     { $group: { _id: "$id", count: { $sum: 1 } } },
     { $sort: { count: -1 } },
@@ -109,7 +109,7 @@ export const getMostListenedSongOfArtist = async (
 export const bestPeriodOfArtist = async (user: User, artistId: string) => {
   // Non sense to compute blacklist here
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id } },
+    { $match: { owner: user._id, primaryArtistId: artistId } },
     ...getArtistInfos(artistId),
     {
       $project: {
@@ -141,7 +141,7 @@ export const getTotalListeningOfArtist = async (
 ) => {
   // Non sense to compute blacklist here
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id } },
+    { $match: { owner: user._id, primaryArtistId: artistId } },
     ...getArtistInfos(artistId),
     {
       $group: {
@@ -167,7 +167,7 @@ export const getMostListenedAlbumOfArtist = async (
   artistId: string,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: { owner: user._id } },
+    { $match: { owner: user._id, primaryArtistId: artistId } },
     {
       $lookup: {
         from: "tracks",
@@ -176,7 +176,6 @@ export const getMostListenedAlbumOfArtist = async (
         as: "track",
       },
     },
-    { $match: { "track.artists.0": artistId } },
     {
       $group: {
         _id: "$track.album",
@@ -201,7 +200,7 @@ export const getMostListenedAlbumOfArtist = async (
 export const getDayRepartitionOfArtist = (user: User, artistId: string) =>
   // Non sense to compute blacklist here
   InfosModel.aggregate([
-    { $match: { owner: user._id } },
+    { $match: { owner: user._id, primaryArtistId: artistId } },
     { $addFields: getGroupByDateProjection(user.settings.timezone) },
     ...getArtistInfos(artistId),
     {
