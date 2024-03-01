@@ -609,30 +609,6 @@ export const getBest = (
     { $unwind: "$artist" },
   ]);
 
-export const getBestSongsNbOffseted = (
-  user: User,
-  start: Date,
-  end: Date,
-  nb: number,
-  offset: number,
-) => getBest(itemTypes.track, user, start, end, nb, offset);
-
-export const getBestArtistsNbOffseted = (
-  user: User,
-  start: Date,
-  end: Date,
-  nb: number,
-  offset: number,
-) => getBest(itemTypes.artist, user, start, end, nb, offset);
-
-export const getBestAlbumsNbOffseted = (
-  user: User,
-  start: Date,
-  end: Date,
-  nb: number,
-  offset: number,
-) => getBest(itemTypes.album, user, start, end, nb, offset);
-
 export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
     ...basicMatch(user._id, start, end),

@@ -13,13 +13,12 @@ import {
   differentArtistsPer,
   getDayRepartition,
   getBestArtistsPer,
-  getBestSongsNbOffseted,
-  getBestArtistsNbOffseted,
-  getBestAlbumsNbOffseted,
   getBestSongsOfHour,
   getBestAlbumsOfHour,
   getBestArtistsOfHour,
   getLongestListeningSession,
+  getBest,
+  itemTypes,
 } from "../database";
 import {
   CollaborativeMode,
@@ -359,7 +358,14 @@ router.get(
     >;
 
     try {
-      const result = await getBestSongsNbOffseted(user, start, end, nb, offset);
+      const result = await getBest(
+        itemTypes.track,
+        user,
+        start,
+        end,
+        nb,
+        offset,
+      );
       return res.status(200).send(result);
     } catch (e) {
       logger.error(e);
@@ -379,7 +385,8 @@ router.get(
     >;
 
     try {
-      const result = await getBestArtistsNbOffseted(
+      const result = await getBest(
+        itemTypes.artist,
         user,
         start,
         end,
@@ -405,7 +412,8 @@ router.get(
     >;
 
     try {
-      const result = await getBestAlbumsNbOffseted(
+      const result = await getBest(
+        itemTypes.album,
         user,
         start,
         end,
@@ -653,7 +661,8 @@ router.post(
       let spotifyIds: string[];
       if (body.type === "top") {
         const { interval: intervalData, nb } = body;
-        const items = await getBestSongsNbOffseted(
+        const items = await getBest(
+          itemTypes.track,
           user,
           intervalData.start,
           intervalData.end,
