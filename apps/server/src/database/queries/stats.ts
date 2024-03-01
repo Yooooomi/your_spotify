@@ -3,7 +3,6 @@ import { InfosModel } from "../Models";
 import { User } from "../schemas/user";
 import {
   basicMatch,
-  getBestInfos,
   getGroupByDateProjection,
   getGroupingByTimeSplit,
   getTrackSumType,
@@ -12,6 +11,24 @@ import {
   lightTrackLookupPipeline,
   sortByTimeSplit,
 } from "./statsTools";
+
+export type ItemType = {
+  field: string;
+};
+
+export const itemTypes: {
+  [key in "track" | "album" | "artist"]: ItemType;
+} = {
+  track: {
+    field: "$id",
+  },
+  album: {
+    field: "$albumId",
+  },
+  artist: {
+    field: "$primaryArtistId",
+  },
+};
 
 export const getMostListenedSongs = async (
   user: User,
@@ -527,13 +544,78 @@ export const getBestArtistsPer = async (
   return res;
 };
 
+export const getBest = (
+  itemType: ItemType,
+  user: User,
+  start: Date,
+  end: Date,
+  nb: number,
+  offset: number,
+) =>
+  InfosModel.aggregate([
+    ...basicMatch(user._id, start, end),
+    {
+      $group: {
+        _id: itemType.field,
+        duration_ms: { $sum: "$durationMs" },
+        count: { $sum: 1 },
+        trackId: { $first: "$id" },
+        albumId: { $first: "$albumId" },
+        primaryArtistId: { $first: "$primaryArtistId" },
+        trackIds: { $addToSet: "$id" },
+      },
+    },
+    { $addFields: { differents: { $size: "$trackIds" } } },
+    {
+      $facet: {
+        infos: [
+          { $sort: { count: -1, _id: 1 } },
+          { $skip: offset },
+          { $limit: nb },
+        ],
+        computations: [
+          {
+            $group: {
+              _id: null,
+              total_duration_ms: { $sum: "$duration_ms" },
+              total_count: { $sum: "$count" },
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$infos" },
+    { $unwind: "$computations" },
+    {
+      $project: {
+        _id: "$infos._id",
+        result: {
+          $mergeObjects: ["$infos", "$computations"],
+        },
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ["$result", { _id: "$_id" }],
+        },
+      },
+    },
+    { $lookup: lightTrackLookupPipeline("trackId") },
+    { $unwind: "$track" },
+    { $lookup: lightAlbumLookupPipeline("albumId") },
+    { $unwind: "$album" },
+    { $lookup: lightArtistLookupPipeline("primaryArtistId", false) },
+    { $unwind: "$artist" },
+  ]);
+
 export const getBestSongsNbOffseted = (
   user: User,
   start: Date,
   end: Date,
   nb: number,
   offset: number,
-) => getBestInfos("id", user, start, end, nb, offset);
+) => getBest(itemTypes.track, user, start, end, nb, offset);
 
 export const getBestArtistsNbOffseted = (
   user: User,
@@ -541,7 +623,7 @@ export const getBestArtistsNbOffseted = (
   end: Date,
   nb: number,
   offset: number,
-) => getBestInfos("primaryArtistId", user, start, end, nb, offset);
+) => getBest(itemTypes.artist, user, start, end, nb, offset);
 
 export const getBestAlbumsNbOffseted = (
   user: User,
@@ -549,7 +631,7 @@ export const getBestAlbumsNbOffseted = (
   end: Date,
   nb: number,
   offset: number,
-) => getBestInfos("albumId", user, start, end, nb, offset);
+) => getBest(itemTypes.album, user, start, end, nb, offset);
 
 export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
@@ -788,24 +870,6 @@ export const getLongestListeningSession = (
     { $sort: { sessionLength: -1 } },
     { $limit: 5 },
   ]);
-};
-
-export type ItemType = {
-  field: string;
-};
-
-export const itemTypes: {
-  [key in "track" | "album" | "artist"]: ItemType;
-} = {
-  track: {
-    field: "$id",
-  },
-  album: {
-    field: "$albumId",
-  },
-  artist: {
-    field: "$primaryArtistId",
-  },
 };
 
 export const getRankOf = async (

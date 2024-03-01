@@ -2,7 +2,6 @@ import { PipelineStage, Types } from "mongoose";
 import { getWithDefault } from "../../tools/env";
 import { Timesplit } from "../../tools/types";
 import { User } from "../schemas/user";
-import { InfosModel } from "../Models";
 
 export const basicMatch = (
   userId: string | Types.ObjectId,
@@ -188,68 +187,3 @@ export const lightArtistLookupPipeline = (
   from: "artists",
   as: "artist",
 });
-
-export const getBestInfos = (
-  idField: string,
-  user: User,
-  start: Date,
-  end: Date,
-  nb: number,
-  offset: number,
-) =>
-  InfosModel.aggregate([
-    ...basicMatch(user._id, start, end),
-    {
-      $group: {
-        _id: `$${idField}`,
-        duration_ms: { $sum: "$durationMs" },
-        count: { $sum: 1 },
-        trackId: { $first: "$id" },
-        albumId: { $first: "$albumId" },
-        primaryArtistId: { $first: "$primaryArtistId" },
-        trackIds: { $addToSet: "$id" },
-      },
-    },
-    { $addFields: { differents: { $size: "$trackIds" } } },
-    {
-      $facet: {
-        infos: [
-          { $sort: { count: -1, _id: 1 } },
-          { $skip: offset },
-          { $limit: nb },
-        ],
-        computations: [
-          {
-            $group: {
-              _id: null,
-              total_duration_ms: { $sum: "$duration_ms" },
-              total_count: { $sum: "$count" },
-            },
-          },
-        ],
-      },
-    },
-    { $unwind: "$infos" },
-    { $unwind: "$computations" },
-    {
-      $project: {
-        _id: "$infos._id",
-        result: {
-          $mergeObjects: ["$infos", "$computations"],
-        },
-      },
-    },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $mergeObjects: ["$result", { _id: "$_id" }],
-        },
-      },
-    },
-    { $lookup: lightTrackLookupPipeline("trackId") },
-    { $unwind: "$track" },
-    { $lookup: lightAlbumLookupPipeline("albumId") },
-    { $unwind: "$album" },
-    { $lookup: lightArtistLookupPipeline("primaryArtistId", false) },
-    { $unwind: "$artist" },
-  ]);
