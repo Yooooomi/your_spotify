@@ -1,10 +1,14 @@
-import { Router } from 'express';
-import { z } from 'zod';
-import { getAlbumSongs, getAlbums, getFirstAndLastListenedAlbum, getRankOfAlbum } from '../database/queries/album';
-import { logger } from '../tools/logger';
-import { isLoggedOrGuest, validating } from '../tools/middleware';
-import { LoggedRequest, TypedPayload } from '../tools/types';
-import { getArtists } from '../database';
+import { Router } from "express";
+import { z } from "zod";
+import {
+  getAlbumSongs,
+  getAlbums,
+  getFirstAndLastListenedAlbum,
+} from "../database/queries/album";
+import { logger } from "../tools/logger";
+import { isLoggedOrGuest, validating } from "../tools/middleware";
+import { LoggedRequest, TypedPayload } from "../tools/types";
+import { getArtists, getRankOf, ItemType } from "../database";
 
 export const router = Router();
 
@@ -19,7 +23,7 @@ router.get(
   async (req, res) => {
     try {
       const { ids } = req.params as TypedPayload<typeof getAlbumsSchema>;
-      const albums = await getAlbums(ids.split(','));
+      const albums = await getAlbums(ids.split(","));
       if (!albums || albums.length === 0) {
         return res.status(404).end();
       }
@@ -36,8 +40,8 @@ const getAlbumStats = z.object({
 });
 
 router.get(
-  '/:id/stats',
-  validating(getAlbumStats, 'params'),
+  "/:id/stats",
+  validating(getAlbumStats, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     try {
@@ -58,18 +62,18 @@ router.get(
         album,
         artists,
         firstLast,
-        tracks
+        tracks,
       });
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
     }
-  }
-)
+  },
+);
 
 router.get(
-  '/:id/rank',
-  validating(getAlbumStats, 'params'),
+  "/:id/rank",
+  validating(getAlbumStats, "params"),
   isLoggedOrGuest,
   async (req, res) => {
     try {
@@ -79,11 +83,11 @@ router.get(
       if (!album) {
         return res.status(404).end();
       }
-      const rank = await getRankOfAlbum(user, id);
+      const rank = await getRankOf(ItemType.album, user, id);
       return res.status(200).send(rank);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
     }
-  }
-)
+  },
+);

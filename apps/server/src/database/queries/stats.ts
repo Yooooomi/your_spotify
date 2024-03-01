@@ -3,7 +3,6 @@ import { InfosModel } from "../Models";
 import { User } from "../schemas/user";
 import {
   basicMatch,
-  getBestInfos,
   getGroupByDateProjection,
   getGroupingByTimeSplit,
   getTrackSumType,
@@ -13,6 +12,22 @@ import {
   sortByTimeSplit,
 } from "./statsTools";
 
+export type ItemType = {
+  field: string;
+};
+
+export const ItemType = {
+  track: {
+    field: "$id",
+  },
+  album: {
+    field: "$albumId",
+  },
+  artist: {
+    field: "$primaryArtistId",
+  },
+} as const satisfies Record<string, ItemType>;
+
 export const getMostListenedSongs = async (
   user: User,
   start: Date,
@@ -20,7 +35,7 @@ export const getMostListenedSongs = async (
   timeSplit: Timesplit = Timesplit.hour,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
@@ -84,33 +99,28 @@ export const getMostListenedArtist = async (
   timeSplit = Timesplit.hour,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
-      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
-    },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
+      $project: {
+        ...getGroupByDateProjection(user.settings.timezone),
+        primaryArtistId: 1,
+        id: 1,
       },
     },
-    { $unwind: "$track" },
     {
       $group: {
         _id: {
           ...getGroupingByTimeSplit(timeSplit),
-          art: { $arrayElemAt: ["$track.artists", 0] },
+          artistId: "$primaryArtistId",
         },
-        count: { $sum: getTrackSumType(user) },
+        count: { $sum: getTrackSumType(user, "$durationMs") },
       },
     },
-    { $sort: { count: -1, "_id.art": 1 } },
+    { $sort: { count: -1, "_id.artistId": 1 } },
     {
       $group: {
         _id: getGroupingByTimeSplit(timeSplit, "_id"),
-        artists: { $push: "$_id.art" },
+        artists: { $push: "$_id.artistId" },
         counts: { $push: "$count" },
       },
     },
@@ -150,9 +160,12 @@ export const getSongsPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
-      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
+      $project: {
+        ...getGroupByDateProjection(user.settings.timezone),
+        id: 1,
+      },
     },
     {
       $group: {
@@ -181,26 +194,18 @@ export const getTimePer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
+        durationMs: 1,
         id: 1,
       },
     },
     {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
-    {
       $group: {
         _id: getGroupingByTimeSplit(timeSplit),
-        count: { $sum: "$track.duration_ms" },
+        count: { $sum: "$durationMs" },
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
@@ -215,7 +220,7 @@ export const albumDateRatio = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -273,7 +278,7 @@ export const featRatio = async (
   timeSplit: Timesplit,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -366,7 +371,7 @@ export const popularityPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
@@ -408,36 +413,29 @@ export const differentArtistsPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
+        primaryArtistId: 1,
+        durationMs: 1,
         id: 1,
       },
     },
     {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
-    {
       $group: {
         _id: {
           ...getGroupingByTimeSplit(timeSplit),
-          artId: { $arrayElemAt: ["$track.artists", 0] },
+          artistId: `$primaryArtistId`,
         },
         count: { $sum: 1 },
       },
     },
-    { $sort: { count: -1, "_id.artId": 1 } },
+    { $sort: { count: -1, "_id.artistId": 1 } },
     {
       $lookup: {
         from: "artists",
-        localField: "_id.artId",
+        localField: "_id.artistId",
         foreignField: "id",
         as: "artist",
       },
@@ -459,26 +457,18 @@ export const differentArtistsPer = async (
 
 export const getDayRepartition = async (user: User, start: Date, end: Date) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
+        durationMs: 1,
         id: 1,
       },
     },
     {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
-    {
       $group: {
         _id: "$hour",
-        count: { $sum: getTrackSumType(user) },
+        count: { $sum: getTrackSumType(user, "$durationMs") },
       },
     },
     { $sort: { _id: 1 } },
@@ -493,7 +483,7 @@ export const getBestArtistsPer = async (
   timeSplit = Timesplit.day,
 ) => {
   const res = await InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
@@ -552,33 +542,74 @@ export const getBestArtistsPer = async (
   return res;
 };
 
-export const getBestSongsNbOffseted = (
+export const getBest = (
+  itemType: ItemType,
   user: User,
   start: Date,
   end: Date,
   nb: number,
   offset: number,
-) => getBestInfos("id", user, start, end, nb, offset);
-
-export const getBestArtistsNbOffseted = (
-  user: User,
-  start: Date,
-  end: Date,
-  nb: number,
-  offset: number,
-) => getBestInfos("primaryArtistId", user, start, end, nb, offset);
-
-export const getBestAlbumsNbOffseted = (
-  user: User,
-  start: Date,
-  end: Date,
-  nb: number,
-  offset: number,
-) => getBestInfos("albumId", user, start, end, nb, offset);
+) =>
+  InfosModel.aggregate([
+    ...basicMatch(user._id, start, end),
+    {
+      $group: {
+        _id: itemType.field,
+        duration_ms: { $sum: "$durationMs" },
+        count: { $sum: 1 },
+        trackId: { $first: "$id" },
+        albumId: { $first: "$albumId" },
+        primaryArtistId: { $first: "$primaryArtistId" },
+        trackIds: { $addToSet: "$id" },
+      },
+    },
+    { $addFields: { differents: { $size: "$trackIds" } } },
+    {
+      $facet: {
+        infos: [
+          { $sort: { count: -1, _id: 1 } },
+          { $skip: offset },
+          { $limit: nb },
+        ],
+        computations: [
+          {
+            $group: {
+              _id: null,
+              total_duration_ms: { $sum: "$duration_ms" },
+              total_count: { $sum: "$count" },
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$infos" },
+    { $unwind: "$computations" },
+    {
+      $project: {
+        _id: "$infos._id",
+        result: {
+          $mergeObjects: ["$infos", "$computations"],
+        },
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ["$result", { _id: "$_id" }],
+        },
+      },
+    },
+    { $lookup: lightTrackLookupPipeline("trackId") },
+    { $unwind: "$track" },
+    { $lookup: lightAlbumLookupPipeline("albumId") },
+    { $unwind: "$album" },
+    { $lookup: lightArtistLookupPipeline("primaryArtistId", false) },
+    { $unwind: "$artist" },
+  ]);
 
 export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $addFields: {
         hour: getGroupByDateProjection(user.settings.timezone).hour,
@@ -622,7 +653,7 @@ export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
 
 export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $addFields: {
         hour: getGroupByDateProjection(user.settings.timezone).hour,
@@ -670,7 +701,7 @@ export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
 
 export const getBestArtistsOfHour = (user: User, start: Date, end: Date) => {
   return InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
+    ...basicMatch(user._id, start, end),
     {
       $addFields: {
         hour: getGroupByDateProjection(user.settings.timezone).hour,
@@ -735,7 +766,7 @@ export const getLongestListeningSession = (
   const item = { subtract, info: "$$this" };
 
   return InfosModel.aggregate([
-    { $match: basicMatch(userId, start, end) },
+    ...basicMatch(userId, start, end),
     { $sort: { played_at: 1 } },
     { $lookup: lightTrackLookupPipeline() },
     { $unwind: "$track" },
@@ -813,4 +844,42 @@ export const getLongestListeningSession = (
     { $sort: { sessionLength: -1 } },
     { $limit: 5 },
   ]);
+};
+
+export const getRankOf = async (
+  itemType: ItemType,
+  user: User,
+  itemId: string,
+) => {
+  const res = await InfosModel.aggregate([
+    { $match: { owner: user._id } },
+    { $group: { _id: itemType.field, count: { $sum: 1 } } },
+    { $sort: { count: -1, _id: 1 } },
+    { $group: { _id: 1, array: { $push: { id: "$_id", count: "$count" } } } },
+    {
+      $project: {
+        index: { $indexOfArray: ["$array.id", itemId] },
+        array: 1,
+      },
+    },
+    {
+      $project: {
+        index: 1,
+        isMax: {
+          $cond: { if: { $eq: ["$index", 0] }, then: true, else: false },
+        },
+        isMin: {
+          $cond: {
+            if: { $eq: ["$index", { $subtract: [{ $size: "$array" }, 1] }] },
+            then: true,
+            else: false,
+          },
+        },
+        results: {
+          $slice: ["$array", { $max: [{ $subtract: ["$index", 1] }, 0] }, 3],
+        },
+      },
+    },
+  ]);
+  return res[0];
 };

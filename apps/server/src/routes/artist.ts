@@ -6,7 +6,6 @@ import {
   getMostListenedSongOfArtist,
   bestPeriodOfArtist,
   getTotalListeningOfArtist,
-  getRankOfArtist,
   searchArtist,
   getDayRepartitionOfArtist,
   blacklistArtist,
@@ -14,10 +13,12 @@ import {
   blacklistByArtist,
   unblacklistByArtist,
   getMostListenedAlbumOfArtist,
-} from '../database';
-import { logger } from '../tools/logger';
-import { isLoggedOrGuest, logged, validating } from '../tools/middleware';
-import { LoggedRequest, TypedPayload } from '../tools/types';
+  getRankOf,
+  ItemType,
+} from "../database";
+import { logger } from "../tools/logger";
+import { isLoggedOrGuest, logged, validating } from "../tools/middleware";
+import { LoggedRequest, TypedPayload } from "../tools/types";
 
 export const router = Router();
 
@@ -69,8 +70,14 @@ router.get(
         getTotalListeningOfArtist(user, id),
         getDayRepartitionOfArtist(user, id),
       ];
-      const [firstLast, mostListened, albumMostListened, bestPeriod, total, dayRepartition] =
-        await Promise.all(promises);
+      const [
+        firstLast,
+        mostListened,
+        albumMostListened,
+        bestPeriod,
+        total,
+        dayRepartition,
+      ] = await Promise.all(promises);
       if (!total) {
         return res.status(200).send({
           code: "NEVER_LISTENED",
@@ -105,7 +112,7 @@ router.get(
       if (!artist) {
         return res.status(404).end();
       }
-      const rank = await getRankOfArtist(user, id);
+      const rank = await getRankOf(ItemType.artist, user, id);
       return res.status(200).send(rank);
     } catch (e) {
       logger.error(e);

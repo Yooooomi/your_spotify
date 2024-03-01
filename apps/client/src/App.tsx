@@ -28,6 +28,7 @@ import PlaylistDialog from "./components/PlaylistDialog";
 import TrackStats from "./scenes/TrackStats";
 import LongestSessions from "./scenes/LongestSessions";
 import AlbumStats from "./scenes/AlbumStats";
+import Benchmarks from "./scenes/Benchmarks";
 
 function App() {
   const dark = useSelector(selectDarkMode);
@@ -166,6 +167,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Settings />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/benchmarks"
+                element={
+                  <PrivateRoute>
+                    <Benchmarks />
                   </PrivateRoute>
                 }
               />
