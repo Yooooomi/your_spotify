@@ -14,17 +14,21 @@ import {
 
 export type ItemType = {
   field: string;
+  collection: string;
 };
 
 export const ItemType = {
   track: {
     field: "$id",
+    collection: "tracks",
   },
   album: {
     field: "$albumId",
+    collection: "albums",
   },
   artist: {
     field: "$primaryArtistId",
+    collection: "artists",
   },
 } as const satisfies Record<string, ItemType>;
 
@@ -607,139 +611,56 @@ export const getBest = (
     { $unwind: "$artist" },
   ]);
 
-export const getBestSongsOfHour = (user: User, start: Date, end: Date) => {
-  return InfosModel.aggregate([
+export const getBestOfHour = async (
+  itemType: ItemType,
+  user: User,
+  start: Date,
+  end: Date,
+) => {
+  const bestOfHour = await InfosModel.aggregate([
     ...basicMatch(user._id, start, end),
     {
-      $addFields: {
-        hour: getGroupByDateProjection(user.settings.timezone).hour,
-      },
-    },
-    { $group: { _id: "$hour", songs: { $push: "$id" }, total: { $sum: 1 } } },
-    { $unwind: "$songs" },
-    {
       $group: {
-        _id: { _id: "$_id", song: "$songs" },
-        count: { $sum: 1 },
-        total: { $first: "$total" },
-      },
-    },
-    { $sort: { count: -1 } },
-    {
-      $group: {
-        _id: "$_id._id",
-        songs: { $push: { song: "$_id.song", count: "$count" } },
-        total: { $first: "$total" },
-      },
-    },
-    { $addFields: { songs: { $slice: ["$songs", 20] } } },
-    { $unwind: "$songs" },
-    { $lookup: lightTrackLookupPipeline("songs.song") },
-    { $unwind: "$track" },
-    { $lookup: lightArtistLookupPipeline("track.artists", true) },
-    { $unwind: "$artist" },
-    {
-      $group: {
-        _id: "$_id",
-        tracks: {
-          $push: { track: "$track", artist: "$artist", count: "$songs.count" },
+        _id: {
+          hour: getGroupByDateProjection(user.settings.timezone).hour,
+          itemId: itemType.field,
         },
-        total: { $first: "$total" },
+        total: { $sum: 1 },
       },
     },
-    { $sort: { _id: 1 } },
-  ]);
-};
-
-export const getBestAlbumsOfHour = (user: User, start: Date, end: Date) => {
-  return InfosModel.aggregate([
-    ...basicMatch(user._id, start, end),
-    {
-      $addFields: {
-        hour: getGroupByDateProjection(user.settings.timezone).hour,
-      },
-    },
-    { $group: { _id: "$hour", songs: { $push: "$id" }, total: { $sum: 1 } } },
-    { $unwind: "$songs" },
-    { $lookup: lightTrackLookupPipeline("songs") },
-    { $unwind: "$track" },
+    { $sort: { total: -1 } },
     {
       $group: {
-        _id: { _id: "$_id", album: "$track.album" },
-        count: { $sum: 1 },
-
-        total: { $first: "$total" },
-      },
-    },
-    { $sort: { count: -1 } },
-    {
-      $group: {
-        _id: "$_id._id",
-        albums: { $push: { album: "$_id.album", count: "$count" } },
-
-        total: { $first: "$total" },
-      },
-    },
-    { $addFields: { albums: { $slice: ["$albums", 20] } } },
-    { $unwind: "$albums" },
-    { $lookup: lightAlbumLookupPipeline("albums.album") },
-    { $unwind: "$album" },
-    { $lookup: lightArtistLookupPipeline("album.artists", true) },
-    { $unwind: "$artist" },
-    {
-      $group: {
-        _id: "$_id",
-        albums: {
-          $push: { album: "$album", artist: "$artist", count: "$albums.count" },
+        _id: "$_id.hour",
+        items: {
+          $push: { itemId: "$_id.itemId", total: "$total" },
         },
-        total: { $first: "$total" },
+        total: { $sum: "$total" },
+      },
+    },
+    {
+      $project: {
+        hour: "$_id",
+        total: "$total",
+        items: { $slice: ["$items", 20] },
+      },
+    },
+    {
+      $lookup: {
+        from: itemType.collection,
+        localField: "items.itemId",
+        foreignField: "id",
+        as: "full_items",
       },
     },
     { $sort: { _id: 1 } },
   ]);
-};
-
-export const getBestArtistsOfHour = (user: User, start: Date, end: Date) => {
-  return InfosModel.aggregate([
-    ...basicMatch(user._id, start, end),
-    {
-      $addFields: {
-        hour: getGroupByDateProjection(user.settings.timezone).hour,
-      },
-    },
-    { $group: { _id: "$hour", songs: { $push: "$id" }, total: { $sum: 1 } } },
-    { $unwind: "$songs" },
-    { $lookup: lightTrackLookupPipeline("songs") },
-    { $unwind: "$track" },
-    {
-      $group: {
-        _id: { _id: "$_id", artist: { $first: "$track.artists" } },
-        count: { $sum: 1 },
-
-        total: { $first: "$total" },
-      },
-    },
-    { $sort: { count: -1 } },
-    {
-      $group: {
-        _id: "$_id._id",
-        artists: { $push: { artist: "$_id.artist", count: "$count" } },
-        total: { $first: "$total" },
-      },
-    },
-    { $addFields: { artists: { $slice: ["$artists", 20] } } },
-    { $unwind: "$artists" },
-    { $lookup: lightArtistLookupPipeline("artists.artist", false) },
-    { $unwind: "$artist" },
-    {
-      $group: {
-        _id: "$_id",
-        artists: { $push: { artist: "$artist", count: "$artists.count" } },
-        total: { $first: "$total" },
-      },
-    },
-    { $sort: { _id: 1 } },
-  ]);
+  bestOfHour.forEach((hour: any) => {
+    hour.full_items = Object.fromEntries(
+      hour.full_items.map((e: any) => [e.id, e]),
+    );
+  });
+  return bestOfHour;
 };
 
 export const getLongestListeningSession = (

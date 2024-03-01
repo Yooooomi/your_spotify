@@ -13,12 +13,10 @@ import {
   differentArtistsPer,
   getDayRepartition,
   getBestArtistsPer,
-  getBestSongsOfHour,
-  getBestAlbumsOfHour,
-  getBestArtistsOfHour,
   getLongestListeningSession,
   getBest,
   ItemType,
+  getBestOfHour,
 } from "../database";
 import {
   CollaborativeMode,
@@ -520,8 +518,8 @@ router.get(
     const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
-      const result = await getBestSongsOfHour(user, start, end);
-      return res.status(200).send(result);
+      const tracks = await getBestOfHour(ItemType.track, user, start, end);
+      return res.status(200).send(tracks);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
@@ -538,8 +536,8 @@ router.get(
     const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
-      const result = await getBestAlbumsOfHour(user, start, end);
-      return res.status(200).send(result);
+      const albums = await getBestOfHour(ItemType.album, user, start, end);
+      return res.status(200).send(albums);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
@@ -556,8 +554,8 @@ router.get(
     const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
-      const result = await getBestArtistsOfHour(user, start, end);
-      return res.status(200).send(result);
+      const artists = await getBestOfHour(ItemType.artist, user, start, end);
+      return res.status(200).send(artists);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();

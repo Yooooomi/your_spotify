@@ -329,9 +329,9 @@ export const api = {
       start,
       end,
     }),
-  getAlbums: (ids: string[]) => get<Album[]>(`/album/${ids.join(',')}`),
+  getAlbums: (ids: string[]) => get<Album[]>(`/album/${ids.join(",")}`),
   getAlbumStats: (id: string) =>
-    get<AlbumStatsResponse | { code: 'NEVER_LISTENED' }>(`/album/${id}/stats`),
+    get<AlbumStatsResponse | { code: "NEVER_LISTENED" }>(`/album/${id}/stats`),
   getAlbumRank: (id: string) =>
     get<{
       index: number;
@@ -342,7 +342,7 @@ export const api = {
         count: number;
       }[];
     }>(`/album/${id}/rank`),
-  getArtists: (ids: string[]) => get<Artist[]>(`/artist/${ids.join(',')}`),
+  getArtists: (ids: string[]) => get<Artist[]>(`/artist/${ids.join(",")}`),
   getArtistStats: (id: string) =>
     get<ArtistStatsResponse | { code: "NEVER_LISTENED" }>(
       `/artist/${id}/stats`,
@@ -489,25 +489,28 @@ export const api = {
   getBestSongsOfHour: (start: Date, end: Date) =>
     get<
       {
-        _id: number;
+        hour: number;
         total: number;
-        tracks: { count: number; track: Track; artist: Artist }[];
+        items: { itemId: string; total: number }[];
+        full_items: Record<string, Track>;
       }[]
     >("/spotify/top/hour-repartition/songs", { start, end }),
   getBestAlbumsOfHour: (start: Date, end: Date) =>
     get<
       {
-        _id: number;
+        hour: number;
         total: number;
-        albums: { count: number; album: Album; artist: Artist }[];
+        items: { itemId: string; total: number }[];
+        full_items: Record<string, Album>;
       }[]
     >("/spotify/top/hour-repartition/albums", { start, end }),
   getBestArtistsOfHour: (start: Date, end: Date) =>
     get<
       {
-        _id: number;
+        hour: number;
         total: number;
-        artists: { count: number; artist: Artist }[];
+        items: { itemId: string; total: number }[];
+        full_items: Record<string, Artist>;
       }[]
     >("/spotify/top/hour-repartition/artists", { start, end }),
   getPlaylists: () => get<Playlist[]>("/spotify/playlists"),
