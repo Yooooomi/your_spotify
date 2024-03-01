@@ -21,8 +21,11 @@ import Text from "../../components/Text";
 
 type Request = {
   title: string;
-  request: () => Promise<any>;
+  request: (startTimer: () => void) => Promise<any>;
 };
+
+const NOT_FINISHED_REQUEST = -1;
+const FAILED_REQUEST = -2;
 
 export default function Benchmarks() {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -41,87 +44,196 @@ export default function Benchmarks() {
   const requests: Request[] = [
     {
       title: "Get tracks",
-      request: () => api.getTracks(interval.start, interval.end, 20, OFFSET),
+      request: startTimer => {
+        startTimer();
+        return api.getTracks(interval.start, interval.end, 20, OFFSET);
+      },
     },
     {
       title: "Get most listened",
-      request: () =>
-        api.mostListened(interval.start, interval.end, Timesplit.all),
+      request: startTimer => {
+        startTimer();
+        return api.mostListened(interval.start, interval.end, Timesplit.all);
+      },
     },
     {
       title: "Get most listened artists",
-      request: () =>
-        api.mostListenedArtist(interval.start, interval.end, Timesplit.all),
+      request: startTimer => {
+        startTimer();
+        return api.mostListenedArtist(
+          interval.start,
+          interval.end,
+          Timesplit.all,
+        );
+      },
     },
     {
       title: "Get songs per",
-      request: () => api.songsPer(interval.start, interval.end, Timesplit.all),
+      request: startTimer => {
+        startTimer();
+        return api.songsPer(interval.start, interval.end, Timesplit.all);
+      },
     },
     {
       title: "Get time per",
-      request: () => api.timePer(interval.start, interval.end, Timesplit.all),
+      request: startTimer => {
+        startTimer();
+        return api.timePer(interval.start, interval.end, Timesplit.all);
+      },
     },
     {
       title: "Get feat ratio",
-      request: () => api.featRatio(interval.start, interval.end, Timesplit.all),
+      request: startTimer => {
+        startTimer();
+        return api.featRatio(interval.start, interval.end, Timesplit.all);
+      },
     },
     {
       title: "Get album date ratio",
-      request: () =>
-        api.albumDateRatio(interval.start, interval.end, Timesplit.all),
+      request: startTimer => {
+        startTimer();
+        return api.albumDateRatio(interval.start, interval.end, Timesplit.all);
+      },
     },
     {
       title: "Get popularity per",
-      request: () =>
-        api.popularityPer(interval.start, interval.end, Timesplit.all),
+      request: startTimer => {
+        startTimer();
+        return api.popularityPer(interval.start, interval.end, Timesplit.all);
+      },
     },
     {
       title: "Get different artists per",
-      request: () =>
-        api.differentArtistsPer(interval.start, interval.end, Timesplit.all),
+      request: startTimer => {
+        startTimer();
+        return api.differentArtistsPer(
+          interval.start,
+          interval.end,
+          Timesplit.all,
+        );
+      },
     },
     {
       title: "Get time per hour of day",
-      request: () => api.timePerHourOfDay(interval.start, interval.end),
+      request: startTimer => {
+        startTimer();
+        return api.timePerHourOfDay(interval.start, interval.end);
+      },
     },
     {
       title: "Get best songs",
-      request: () => api.getBestSongs(interval.start, interval.end, NB, OFFSET),
+      request: startTimer => {
+        startTimer();
+        return api.getBestSongs(interval.start, interval.end, NB, OFFSET);
+      },
     },
     {
       title: "Get best artists",
-      request: () =>
-        api.getBestArtists(interval.start, interval.end, NB, OFFSET),
+      request: startTimer => {
+        startTimer();
+        return api.getBestArtists(interval.start, interval.end, NB, OFFSET);
+      },
     },
     {
       title: "Get best albums",
-      request: () =>
-        api.getBestAlbums(interval.start, interval.end, NB, OFFSET),
+      request: startTimer => {
+        startTimer();
+        return api.getBestAlbums(interval.start, interval.end, NB, OFFSET);
+      },
     },
     {
       title: "Get best songs of hour",
-      request: () => api.getBestSongsOfHour(interval.start, interval.end),
+      request: startTimer => {
+        startTimer();
+        return api.getBestSongsOfHour(interval.start, interval.end);
+      },
     },
     {
       title: "Get best albums of hour",
-      request: () => api.getBestAlbumsOfHour(interval.start, interval.end),
+      request: startTimer => {
+        startTimer();
+        return api.getBestAlbumsOfHour(interval.start, interval.end);
+      },
     },
     {
       title: "Get best artists of hour",
-      request: () => api.getBestArtistsOfHour(interval.start, interval.end),
+      request: startTimer => {
+        startTimer();
+        return api.getBestArtistsOfHour(interval.start, interval.end);
+      },
     },
     {
       title: "Get longest sessions",
-      request: () => api.getLongestSessions(interval.start, interval.end),
+      request: startTimer => {
+        startTimer();
+        return api.getLongestSessions(interval.start, interval.end);
+      },
+    },
+    {
+      title: "Get artist page",
+      request: async startTimer => {
+        const { data: bestArtists } = await api.getBestArtists(
+          interval.start,
+          interval.end,
+          1,
+          0,
+        );
+        const [bestArtist] = bestArtists;
+        if (!bestArtist) {
+          return;
+        }
+        startTimer();
+        return api.getArtistStats(bestArtist.artist.id);
+      },
+    },
+    {
+      title: "Get album page",
+      request: async startTimer => {
+        const { data: bestAlbums } = await api.getBestAlbums(
+          interval.start,
+          interval.end,
+          1,
+          0,
+        );
+        const [bestAlbum] = bestAlbums;
+        if (!bestAlbum) {
+          return;
+        }
+        startTimer();
+        return api.getAlbumStats(bestAlbum.album.id);
+      },
+    },
+    {
+      title: "Get track page",
+      request: async startTimer => {
+        const { data: bestTracks } = await api.getBestSongs(
+          interval.start,
+          interval.end,
+          1,
+          0,
+        );
+        const [bestTrack] = bestTracks;
+        if (!bestTrack) {
+          return;
+        }
+        startTimer();
+        return api.getTrackStats(bestTrack.track.id);
+      },
     },
   ];
 
   const run = async (req: Request) => {
     setElapsedTime(prev => ({ ...prev, [req.title]: -1 }));
-    const start = Date.now();
-    const { data: result } = await req.request();
-    const end = Date.now();
+    let start = -1;
+    const { data: result } = await req.request(() => {
+      start = Date.now();
+    });
     console.log("Result", result);
+    if (start === -1) {
+      setElapsedTime(prev => ({ ...prev, [req.title]: FAILED_REQUEST }));
+      return;
+    }
+    const end = Date.now();
     setElapsedTime(prev => ({ ...prev, [req.title]: end - start }));
   };
 
@@ -138,7 +250,11 @@ export default function Benchmarks() {
       <Header title="Benchmarks" subtitle="Analyze server queries time" />
       <TitleCard
         title="Benchmarks"
-        right={<Button onClick={runAll}>Run All</Button>}>
+        right={
+          <Button variant="contained" onClick={runAll}>
+            Run All
+          </Button>
+        }>
         <Table>
           <TableHead>
             <TableCell>Request</TableCell>
@@ -152,10 +268,13 @@ export default function Benchmarks() {
           </TableHead>
           {requests.map(req => {
             let elapsed;
-            if (elapsedTime[req.title] === -1) {
+            const requestTimeElapsed = elapsedTime[req.title];
+            if (requestTimeElapsed === NOT_FINISHED_REQUEST) {
               elapsed = <i>Loading...</i>;
-            } else if (elapsedTime[req.title]) {
-              elapsed = `${elapsedTime[req.title]}ms`;
+            } else if (requestTimeElapsed === FAILED_REQUEST) {
+              elapsed = <i>Failed</i>;
+            } else if (requestTimeElapsed) {
+              elapsed = `${requestTimeElapsed}ms`;
             }
 
             return (
