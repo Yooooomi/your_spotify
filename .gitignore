@@ -105,3 +105,4 @@ dist
 docker-compose-personal.yml
 client/public/index.html
 client/public/variables.js
+db_data

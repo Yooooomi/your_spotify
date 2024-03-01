@@ -13,7 +13,6 @@ export default function InlineArtist<T extends HTMLTag = "div">({
   ...other
 }: InlineArtistProps<T>) {
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
     <Text title={artist.name} {...other}>
       <Link to={`/artist/${artist.id}`} className={s.root}>
         {artist.name}

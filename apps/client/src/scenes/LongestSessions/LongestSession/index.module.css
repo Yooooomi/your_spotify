@@ -16,3 +16,7 @@
   margin-right: 8px;
   width: 32px;
 }
+
+.artist {
+  color: var(--text-grey);
+}

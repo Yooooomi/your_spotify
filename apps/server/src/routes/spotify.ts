@@ -13,13 +13,10 @@ import {
   differentArtistsPer,
   getDayRepartition,
   getBestArtistsPer,
-  getBestSongsNbOffseted,
-  getBestArtistsNbOffseted,
-  getBestAlbumsNbOffseted,
-  getBestSongsOfHour,
-  getBestAlbumsOfHour,
-  getBestArtistsOfHour,
   getLongestListeningSession,
+  getBest,
+  ItemType,
+  getBestOfHour,
 } from "../database";
 import {
   CollaborativeMode,
@@ -359,7 +356,14 @@ router.get(
     >;
 
     try {
-      const result = await getBestSongsNbOffseted(user, start, end, nb, offset);
+      const result = await getBest(
+        ItemType.track,
+        user,
+        start,
+        end,
+        nb,
+        offset,
+      );
       return res.status(200).send(result);
     } catch (e) {
       logger.error(e);
@@ -379,7 +383,8 @@ router.get(
     >;
 
     try {
-      const result = await getBestArtistsNbOffseted(
+      const result = await getBest(
+        ItemType.artist,
         user,
         start,
         end,
@@ -405,7 +410,8 @@ router.get(
     >;
 
     try {
-      const result = await getBestAlbumsNbOffseted(
+      const result = await getBest(
+        ItemType.album,
         user,
         start,
         end,
@@ -512,8 +518,8 @@ router.get(
     const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
-      const result = await getBestSongsOfHour(user, start, end);
-      return res.status(200).send(result);
+      const tracks = await getBestOfHour(ItemType.track, user, start, end);
+      return res.status(200).send(tracks);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
@@ -530,8 +536,8 @@ router.get(
     const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
-      const result = await getBestAlbumsOfHour(user, start, end);
-      return res.status(200).send(result);
+      const albums = await getBestOfHour(ItemType.album, user, start, end);
+      return res.status(200).send(albums);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
@@ -548,8 +554,8 @@ router.get(
     const { start, end } = req.query as TypedPayload<typeof interval>;
 
     try {
-      const result = await getBestArtistsOfHour(user, start, end);
-      return res.status(200).send(result);
+      const artists = await getBestOfHour(ItemType.artist, user, start, end);
+      return res.status(200).send(artists);
     } catch (e) {
       logger.error(e);
       return res.status(500).end();
@@ -653,7 +659,8 @@ router.post(
       let spotifyIds: string[];
       if (body.type === "top") {
         const { interval: intervalData, nb } = body;
-        const items = await getBestSongsNbOffseted(
+        const items = await getBest(
+          ItemType.track,
           user,
           intervalData.start,
           intervalData.end,

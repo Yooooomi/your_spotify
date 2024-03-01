@@ -2,17 +2,21 @@ import { PipelineStage, Types } from "mongoose";
 import { getWithDefault } from "../../tools/env";
 import { Timesplit } from "../../tools/types";
 import { User } from "../schemas/user";
-import { InfosModel } from "../Models";
 
 export const basicMatch = (
   userId: string | Types.ObjectId,
   start: Date,
   end: Date,
-) => ({
-  owner: userId instanceof Types.ObjectId ? userId : new Types.ObjectId(userId),
-  blacklistedBy: { $exists: 0 },
-  played_at: { $gt: start, $lt: end },
-});
+) => [
+  {
+    $match: {
+      owner:
+        userId instanceof Types.ObjectId ? userId : new Types.ObjectId(userId),
+      blacklistedBy: { $exists: 0 },
+      played_at: { $gt: start, $lt: end },
+    },
+  },
+];
 
 export const basicMatchUsers = (
   userIds: string[] | Types.ObjectId[],
@@ -131,12 +135,12 @@ export const getGroupByDateProjection = (userTimezone: string | undefined) => ({
   },
 });
 
-export const getTrackSumType = (user: User) => {
+export const getTrackSumType = (user: User, idField = "$track.duration_ms") => {
   if (user.settings.metricUsed === "number") {
     return 1;
   }
   if (user.settings.metricUsed === "duration") {
-    return "$track.duration_ms";
+    return idField;
   }
   return 1;
 };
@@ -183,68 +187,3 @@ export const lightArtistLookupPipeline = (
   from: "artists",
   as: "artist",
 });
-
-export const getBestInfos = (
-  idField: string,
-  user: User,
-  start: Date,
-  end: Date,
-  nb: number,
-  offset: number,
-) =>
-  InfosModel.aggregate([
-    { $match: basicMatch(user._id, start, end) },
-    {
-      $group: {
-        _id: `$${idField}`,
-        duration_ms: { $sum: "$durationMs" },
-        count: { $sum: 1 },
-        trackId: { $first: "$id" },
-        albumId: { $first: "$albumId" },
-        primaryArtistId: { $first: "$primaryArtistId" },
-        trackIds: { $addToSet: "$id" },
-      },
-    },
-    { $addFields: { differents: { $size: "$trackIds" } } },
-    {
-      $facet: {
-        infos: [
-          { $sort: { count: -1, _id: 1 } },
-          { $skip: offset },
-          { $limit: nb },
-        ],
-        computations: [
-          {
-            $group: {
-              _id: null,
-              total_duration_ms: { $sum: "$duration_ms" },
-              total_count: { $sum: "$count" },
-            },
-          },
-        ],
-      },
-    },
-    { $unwind: "$infos" },
-    { $unwind: "$computations" },
-    {
-      $project: {
-        _id: "$infos._id",
-        result: {
-          $mergeObjects: ["$infos", "$computations"],
-        },
-      },
-    },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $mergeObjects: ["$result", { _id: "$_id" }],
-        },
-      },
-    },
-    { $lookup: lightTrackLookupPipeline("trackId") },
-    { $unwind: "$track" },
-    { $lookup: lightAlbumLookupPipeline("albumId") },
-    { $unwind: "$album" },
-    { $lookup: lightArtistLookupPipeline("primaryArtistId", false) },
-    { $unwind: "$artist" },
-  ]);

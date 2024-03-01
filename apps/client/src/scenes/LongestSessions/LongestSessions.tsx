@@ -18,6 +18,7 @@ export default function LongestSessions() {
   );
 
   const hasValidSessions = validResults && validResults.length > 0;
+  console.log(validResults);
 
   return (
     <div>
@@ -39,6 +40,7 @@ export default function LongestSessions() {
               <LongestSession
                 key={r.distanceToLast.distance.map(e => e.info._id).join(",")}
                 tracks={r.distanceToLast.distance.map(e => e.info)}
+                fullTracks={r.full_tracks}
               />
             ))}
           </TitleCard>
