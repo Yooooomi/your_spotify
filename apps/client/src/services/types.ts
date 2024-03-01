@@ -105,6 +105,10 @@ export interface TrackInfo {
   owner: string;
   id: string;
   played_at: string;
+  durationMs: number;
+  albumId: string;
+  primaryArtistId: string;
+  artists: string[];
 }
 
 export type TrackInfoWithFullTrack = TrackInfo & {
@@ -112,10 +116,6 @@ export type TrackInfoWithFullTrack = TrackInfo & {
     full_album: Album;
     full_artist: Artist[];
   };
-};
-
-export type TrackInfoWithTrack = TrackInfo & {
-  track: Track;
 };
 
 export interface DateId {

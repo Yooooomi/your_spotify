@@ -28,7 +28,7 @@ services:
     logging:
       driver: none
     volumes:
-      - db_data:/data/db
+      - ./db_data:/data/db
     ports:
       - "27017:27017"
 
@@ -48,6 +48,3 @@ services:
     environment:
       NODE_ENV: development
       API_ENDPOINT: http://localhost:8080
-
-volumes:
-  db_data:
