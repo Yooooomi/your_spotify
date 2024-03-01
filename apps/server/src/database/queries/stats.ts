@@ -663,7 +663,7 @@ export const getBestOfHour = async (
   return bestOfHour;
 };
 
-export const getLongestListeningSession = (
+export const getLongestListeningSession = async (
   userId: string,
   start: Date,
   end: Date,
@@ -676,7 +676,7 @@ export const getLongestListeningSession = (
         $subtract: [
           "$$this.played_at",
           {
-            $add: ["$$value.last.played_at", "$$value.last.track.duration_ms"],
+            $add: ["$$value.last.played_at", "$$value.last.durationMs"],
           },
         ],
       },
@@ -686,11 +686,9 @@ export const getLongestListeningSession = (
 
   const item = { subtract, info: "$$this" };
 
-  return InfosModel.aggregate([
+  const longestSessions = await InfosModel.aggregate([
     ...basicMatch(userId, start, end),
     { $sort: { played_at: 1 } },
-    { $lookup: lightTrackLookupPipeline() },
-    { $unwind: "$track" },
     {
       $group: {
         _id: "$owner",
@@ -764,7 +762,23 @@ export const getLongestListeningSession = (
     },
     { $sort: { sessionLength: -1 } },
     { $limit: 5 },
+    {
+      $lookup: {
+        from: "tracks",
+        localField: "distanceToLast.distance.info.id",
+        foreignField: "id",
+        as: "full_tracks",
+      },
+    },
   ]);
+
+  longestSessions.forEach(longestSession => {
+    longestSession.full_tracks = Object.fromEntries(
+      longestSession.full_tracks.map((track: any) => [track.id, track]),
+    );
+  });
+
+  return longestSessions;
 };
 
 export const getRankOf = async (

@@ -539,10 +539,11 @@ export const api = {
     get<
       {
         sessionLength: number;
+        full_tracks: Record<string, Track>;
         distanceToLast: {
           distance: {
             subtract: number;
-            info: TrackInfo & { track: Track };
+            info: TrackInfo;
           }[];
         };
       }[]

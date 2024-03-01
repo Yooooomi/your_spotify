@@ -10,22 +10,22 @@ import Text from "../../../components/Text";
 import { intervalToHoursAndMinutes } from "../../../services/date";
 import { useLoadArtists } from "../../../services/hooks/artist";
 import { dateToListenedAt } from "../../../services/stats";
-import { TrackInfoWithTrack } from "../../../services/types";
+import { Track, TrackInfo } from "../../../services/types";
 import s from "./index.module.css";
 
 interface LongestSessionProps {
-  tracks: TrackInfoWithTrack[];
+  tracks: TrackInfo[];
+  fullTracks: Record<string, Track>;
 }
 
-export default function LongestSession({ tracks }: LongestSessionProps) {
+export default function LongestSession({
+  tracks,
+  fullTracks,
+}: LongestSessionProps) {
   const artistIds = useMemo(
     () => [
       ...tracks.reduce((acc, track) => {
-        const artist = track.track.artists[0];
-        if (!artist) {
-          return acc;
-        }
-        acc.add(artist);
+        acc.add(track.primaryArtistId);
         return acc;
       }, new Set<string>()),
     ],
@@ -42,7 +42,7 @@ export default function LongestSession({ tracks }: LongestSessionProps) {
     }
     return intervalToHoursAndMinutes(
       new Date(first.played_at),
-      new Date(new Date(last.played_at).getTime() + last.track.duration_ms),
+      new Date(new Date(last.played_at).getTime() + last.durationMs),
     );
   }, [tracks]);
 
@@ -66,7 +66,8 @@ export default function LongestSession({ tracks }: LongestSessionProps) {
       </AccordionSummary>
       <AccordionDetails>
         {tracks.map((track, index) => {
-          const artist = artists[track.track.artists[0] ?? ""];
+          const artist = artists[track.primaryArtistId];
+          const fullTrack = fullTracks[track.id];
           return (
             <div key={track._id} className={clsx("play-button-holder", s.line)}>
               <Text>#{index + 1}</Text>
@@ -74,11 +75,15 @@ export default function LongestSession({ tracks }: LongestSessionProps) {
                 image={
                   <PlayButton
                     id={track.id}
-                    covers={artists[track.track.artists[0] ?? ""]?.images ?? []}
+                    covers={artists[track.primaryArtistId]?.images ?? []}
                   />
                 }
-                first={<InlineTrack track={track.track} />}
-                second={artist ? <InlineArtist artist={artist} /> : null}
+                first={fullTrack ? <InlineTrack track={fullTrack} /> : null}
+                second={
+                  artist ? (
+                    <InlineArtist className={s.artist} artist={artist} />
+                  ) : null
+                }
               />
             </div>
           );
