@@ -18,7 +18,7 @@ import {
   getBestArtistsOfHour,
   getLongestListeningSession,
   getBest,
-  itemTypes,
+  ItemType,
 } from "../database";
 import {
   CollaborativeMode,
@@ -359,7 +359,7 @@ router.get(
 
     try {
       const result = await getBest(
-        itemTypes.track,
+        ItemType.track,
         user,
         start,
         end,
@@ -386,7 +386,7 @@ router.get(
 
     try {
       const result = await getBest(
-        itemTypes.artist,
+        ItemType.artist,
         user,
         start,
         end,
@@ -413,7 +413,7 @@ router.get(
 
     try {
       const result = await getBest(
-        itemTypes.album,
+        ItemType.album,
         user,
         start,
         end,
@@ -662,7 +662,7 @@ router.post(
       if (body.type === "top") {
         const { interval: intervalData, nb } = body;
         const items = await getBest(
-          itemTypes.track,
+          ItemType.track,
           user,
           intervalData.start,
           intervalData.end,

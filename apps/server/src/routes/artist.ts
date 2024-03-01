@@ -14,7 +14,7 @@ import {
   unblacklistByArtist,
   getMostListenedAlbumOfArtist,
   getRankOf,
-  itemTypes,
+  ItemType,
 } from "../database";
 import { logger } from "../tools/logger";
 import { isLoggedOrGuest, logged, validating } from "../tools/middleware";
@@ -112,7 +112,7 @@ router.get(
       if (!artist) {
         return res.status(404).end();
       }
-      const rank = await getRankOf(itemTypes.artist, user, id);
+      const rank = await getRankOf(ItemType.artist, user, id);
       return res.status(200).send(rank);
     } catch (e) {
       logger.error(e);

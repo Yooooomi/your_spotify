@@ -8,7 +8,7 @@ import {
   bestPeriodOfTrack,
   getTrackRecentHistory,
   getRankOf,
-  itemTypes,
+  ItemType,
 } from "../database";
 import { getAlbums } from "../database/queries/album";
 import { logger } from "../tools/logger";
@@ -101,7 +101,7 @@ router.get(
       if (!track) {
         return res.status(404).end();
       }
-      const rank = await getRankOf(itemTypes.track, user, id);
+      const rank = await getRankOf(ItemType.track, user, id);
       return res.status(200).send(rank);
     } catch (e) {
       logger.error(e);

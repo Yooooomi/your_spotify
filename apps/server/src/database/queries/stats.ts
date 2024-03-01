@@ -16,9 +16,7 @@ export type ItemType = {
   field: string;
 };
 
-export const itemTypes: {
-  [key in "track" | "album" | "artist"]: ItemType;
-} = {
+export const ItemType = {
   track: {
     field: "$id",
   },
@@ -28,7 +26,7 @@ export const itemTypes: {
   artist: {
     field: "$primaryArtistId",
   },
-};
+} as const satisfies Record<string, ItemType>;
 
 export const getMostListenedSongs = async (
   user: User,

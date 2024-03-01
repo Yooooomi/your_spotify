@@ -8,7 +8,7 @@ import {
 import { logger } from "../tools/logger";
 import { isLoggedOrGuest, validating } from "../tools/middleware";
 import { LoggedRequest, TypedPayload } from "../tools/types";
-import { getArtists, getRankOf, itemTypes } from "../database";
+import { getArtists, getRankOf, ItemType } from "../database";
 
 export const router = Router();
 
@@ -83,7 +83,7 @@ router.get(
       if (!album) {
         return res.status(404).end();
       }
-      const rank = await getRankOf(itemTypes.album, user, id);
+      const rank = await getRankOf(ItemType.album, user, id);
       return res.status(200).send(rank);
     } catch (e) {
       logger.error(e);
