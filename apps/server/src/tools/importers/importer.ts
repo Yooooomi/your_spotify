@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { getUserFromField } from "../../database";
 import {
   createImporterState,
@@ -58,11 +59,15 @@ export async function cleanupImport(existingStateId: string) {
 export async function runImporter<T extends ImporterStateTypes>(
   existingStateId: string | null,
   name: T,
-  user: User,
+  userId: string,
   requiredInitData: ImporterStateFromType<T>["metadata"],
   initDone: (success: boolean) => void,
 ) {
-  const userId = user._id.toString();
+  const user = await getUserFromField("_id", new Types.ObjectId(userId), true);
+  if (!user) {
+    logger.error(`User with id ${userId} was not found`);
+    return initDone(false);
+  }
   const importerClass = importers[name];
   if (!importerClass) {
     logger.error(`${name} importer was not found`);

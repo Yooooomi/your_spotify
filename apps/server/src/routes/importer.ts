@@ -47,7 +47,7 @@ router.post(
       runImporter(
         null,
         ImporterStateTypes.privacy,
-        user,
+        user._id.toString(),
         (files as Express.Multer.File[]).map(f => f.path),
         success => {
           if (success) {
@@ -87,7 +87,7 @@ router.post(
       runImporter(
         null,
         ImporterStateTypes.fullPrivacy,
-        user,
+        user._id.toString(),
         (files as Express.Multer.File[]).map(f => f.path),
         success => {
           if (success) {
@@ -134,7 +134,7 @@ router.post(
       runImporter(
         importState._id.toString(),
         importState.type,
-        user,
+        user._id.toString(),
         importState.metadata,
         success => {
           if (success) {
