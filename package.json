@@ -1,6 +1,6 @@
 {
   "name": "@your_spotify/root",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "repository": "git@github.com:Yooooomi/your_spotify.git",
   "author": "Timothee <timothee.boussus@gmail.com>",
   "private": true,
