@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 import { Album } from "./album";
 import { Artist } from "./artist";
-
+import { AudioFeatures } from "./audioFeatures";
 export interface Track {
   album: string;
   artists: string[];
@@ -20,11 +20,14 @@ export interface Track {
   track_number: number;
   type: string;
   uri: string;
+  audio_features: AudioFeatures | undefined;
 }
 
-export type SpotifyTrack = Omit<Track, "artists" | "album"> & {
+
+export type SpotifyTrack = Omit<Track, "artists" | "album" | "audio_features"> & {
   artists: Artist[];
   album: Album;
+  audio_features: AudioFeatures;
 };
 
 export interface RecentlyPlayedTrack {
@@ -51,6 +54,7 @@ export const TrackSchema = new Schema<Track>(
     track_number: Number,
     type: String,
     uri: String,
+    audio_features: Object,
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
