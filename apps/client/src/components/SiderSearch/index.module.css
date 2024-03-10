@@ -2,12 +2,16 @@
   border: none;
   font-size: unset;
   outline: none;
-  background: white;
+  background-color: var(--secondary-dark);
+  color: white;
   border-radius: var(--radius);
   padding: 8px;
-  transition: all 250ms;
   margin-bottom: 32px;
   width: 100%;
+}
+
+.input:hover {
+  background-color: var(--secondary-dark-hover);
 }
 
 .popper {
@@ -17,26 +21,28 @@
 .alert {
   display: block;
   text-align: center;
-  padding: 16px 0px;
+  padding: 16px 0;
 }
 
 .results {
-  padding: 8px;
-  padding-top: 16px;
+  margin-top: 4px;
+  padding: 4px;
   max-height: 50vh;
+  overflow-x: hidden;
   overflow-y: scroll;
   border-radius: var(--radius) !important;
-  overflow: auto;
 }
 
 .result {
   padding: 8px;
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
+  text-align: left;
   color: inherit;
   text-decoration: none;
   width: 100%;
+  border-radius: var(--radius);
 }
 
 .result:hover {
@@ -52,27 +58,22 @@
 
 .section {
   position: relative;
-  text-align: center;
+  text-align: left;
   font-weight: bold;
-  margin-bottom: 16px;
+  padding: 8px;
 }
 
-.section::before {
-  content: "";
-  position: absolute;
-  left: 0px;
-  top: 50%;
-  width: 40px;
-  height: 1px;
-  background-color: var(--primary);
+.section:not(:first-child) {
+  margin-top: 16px;
+  padding-top: 12px;
 }
 
-.section::after {
+.section:not(:first-child)::before {
   content: "";
+  background: var(--divider);
   position: absolute;
-  right: 0px;
-  top: 50%;
-  width: 40px;
+  top: 0;
+  left: -8px;
+  right: -8px;
   height: 1px;
-  background-color: var(--primary);
 }
