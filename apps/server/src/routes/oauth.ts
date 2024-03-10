@@ -66,7 +66,7 @@ router.get("/spotify/callback", withGlobalPreferences, async (req, res) => {
       { userId: user._id.toString() },
       privateData.jwtPrivateKey,
       {
-        expiresIn: "1h",
+        expiresIn: getWithDefault("COOKIE_VALIDITY_MS", "1h"),
       },
     );
     res.cookie("token", token);
