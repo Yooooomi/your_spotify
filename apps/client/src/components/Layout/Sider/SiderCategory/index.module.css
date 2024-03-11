@@ -3,13 +3,16 @@
 }
 
 .categoryname {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+  margin-left: 8px;
+  font-size: 0.9em;
+  opacity: 0.8;
 }
 
 .link {
   display: flex;
-  margin-bottom: 8px;
-  padding: 4px;
+  margin-bottom: 2px;
+  padding: 8px;
   color: white;
   text-decoration: none;
   border-radius: 6px;
@@ -26,15 +29,19 @@
 
 .linkcontent > :first-child {
   margin-right: 8px;
+  font-size: 1.25em;
 }
 
 .link > span {
   margin-right: 8px;
 }
 
+.link:has(.active) {
+    background-color: var(--secondary-dark);
+}
+
 .link:hover {
-  background: grey;
-  text-decoration: underline;
+  background-color: var(--secondary-dark-hover);
 }
 
 .active {
