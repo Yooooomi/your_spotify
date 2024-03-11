@@ -15,7 +15,7 @@ import {
 import { Infos } from "../database/schemas/info";
 import { longWriteDbLock } from "../tools/lock";
 
-const getIdsHandlingMax = async <
+export const getIdsHandlingMax = async <
   T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist | AudioFeatures,
 >(
   userId: string,
@@ -69,10 +69,15 @@ export const getTracks = async (userId: string, ids: string[]) => {
     logger.info(
       `Storing non existing track ${track.name} by ${track.artists[0]?.name}`,
     );
-    const trackAudioFeatures = AudioFeatures.find(feature => feature.id === track.id) || {} as AudioFeatures;
+    const trackAudioFeatures = AudioFeatures.find(feature => feature && feature.id === track.id) || {} as AudioFeatures;
     //remove id from audio features
-    const { id, uri, type, track_href, analysis_url, ...trackAudioFeaturesSmall } = trackAudioFeatures;
-    track.audio_features = trackAudioFeaturesSmall
+    if (trackAudioFeatures) {
+      const { id, uri, type, track_href, analysis_url, ...trackAudioFeaturesSmall } = trackAudioFeatures;
+      track.audio_features = trackAudioFeaturesSmall
+    }
+    else {
+      logger.error(`No audio features found for track ${track.id}`);
+    }
 
     return {
       ...track,
