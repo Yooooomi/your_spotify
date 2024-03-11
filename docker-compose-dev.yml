@@ -22,8 +22,6 @@ services:
       API_ENDPOINT: http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
       CLIENT_ENDPOINT: http://localhost:3000
       # OFFLINE_DEV_ID: true
-    env_file:
-      - .env
 
   mongo:
     image: mongo:6
