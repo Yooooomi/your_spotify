@@ -37,6 +37,8 @@ h6 {
   --page-padding: 0 16px 16px 16px;
   --accent: #FB717B;
   --header-image-size: 60px;
+  --secondary-dark: rgba(255, 255, 255, 0.15);
+  --secondary-dark-hover: rgba(255, 255, 255, 0.25);
 }
 
 .dark-vars {
