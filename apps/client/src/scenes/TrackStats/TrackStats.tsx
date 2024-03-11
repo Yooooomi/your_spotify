@@ -135,6 +135,53 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
               ))}
             </TitleCard>
           </Grid>
+          <Grid item lg={6} xs={12}>
+            // If the track has audio features, display them
+            {stats.track.audio_features ? (
+              <TitleCard title="Audio features">
+                <div className="stats-item">
+                  <Text element="strong">Danceability: </Text>
+                  <Text>{stats.track.audio_features.danceability}</Text>
+                </div>
+                <div className="stats-item">
+                  <Text element="strong">Energy: </Text>
+                  <Text>{stats.track.audio_features.energy}</Text>
+                </div>
+                <div className="stats-item">
+                  <Text element="strong">Loudness: </Text>
+                  <Text>{stats.track.audio_features.loudness}</Text>
+                </div>
+                <div className="stats-item">
+                  <Text element="strong">Speechiness: </Text>
+                  <Text>{stats.track.audio_features.speechiness}</Text>
+                </div>
+                <div className="stats-item">
+                  <Text element="strong">Acousticness: </Text>
+                  <Text>{stats.track.audio_features.acousticness}</Text>
+                </div>
+                <div className="stats-item">
+                  <Text element="strong">Instrumentalness: </Text>
+                  <Text>{stats.track.audio_features.instrumentalness}</Text>
+                </div>
+                <div className="stats-item">
+                  <Text element="strong">Liveness: </Text>
+                  <Text>{stats.track.audio_features.liveness}</Text>
+                </div>
+                <div className="stats-item">
+                  <Text element="strong">Valence: </Text>
+                  <Text>{stats.track.audio_features.valence}</Text>
+                </div>
+                <div className="stats-item">
+                  <Text element="strong">Tempo: </Text>
+                  <Text>{stats.track.audio_features.tempo}</Text>
+                </div>
+              </TitleCard>
+            ) : (
+              <TitleCard title="Audio features">
+                <Text>No audio features available</Text>
+              </TitleCard>
+            )}
+          </Grid>
         </Grid>
       </div>
     </div>

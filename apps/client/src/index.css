@@ -126,3 +126,6 @@ h6 {
 .center {
   text-align: center;
 }
+.stats-item {
+  margin-bottom: 10px;
+}

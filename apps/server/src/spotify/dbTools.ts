@@ -69,7 +69,7 @@ export const getTracks = async (userId: string, ids: string[]) => {
     logger.info(
       `Storing non existing track ${track.name} by ${track.artists[0]?.name}`,
     );
-    const trackAudioFeatures = AudioFeatures.find(feature => feature && feature.id === track.id) || {} as AudioFeatures;
+    const trackAudioFeatures = AudioFeatures.find(feature => feature && feature.id === track.id);
     //remove id from audio features
     if (trackAudioFeatures) {
       const { id, uri, type, track_href, analysis_url, ...trackAudioFeaturesSmall } = trackAudioFeatures;

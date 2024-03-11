@@ -21,7 +21,7 @@ export async function up() {
             const tracks = await getTracks(ids);
             const AudioFeatures = await getIdsHandlingMax<AudioFeatures>(user.id, AudioFeaturesUrl, ids, 100, "audio_features");
             for (const track of tracks) {
-                const trackAudioFeatures = AudioFeatures.find(feature => feature && feature.id === track.id) || {} as AudioFeatures;
+                const trackAudioFeatures = AudioFeatures.find(feature => feature && feature.id === track.id);
                 if (!trackAudioFeatures) {
                     logger.error(`No audio features found for track ${track.id}`);
                     continue;
