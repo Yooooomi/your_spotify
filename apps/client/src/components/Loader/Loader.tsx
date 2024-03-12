@@ -10,7 +10,6 @@ interface LoaderProps extends HTMLProps<"div"> {
 
 export default function Loader({ text, className, ...other }: LoaderProps) {
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
     <div className={clsx(s.root, className)} {...other}>
       <CircularProgress size={24} />
       {text && (

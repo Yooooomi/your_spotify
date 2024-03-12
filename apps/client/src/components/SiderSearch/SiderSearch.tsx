@@ -40,7 +40,7 @@ export default function SiderSearch({
 
   const internOnArtistClick = useCallback(
     (artist: Artist) => {
-      setSearch('');
+      setSearch("");
       onArtistClick?.(artist);
     },
     [onArtistClick],
@@ -48,7 +48,7 @@ export default function SiderSearch({
 
   const internOnAlbumClick = useCallback(
     (album: Album) => {
-      setSearch('');
+      setSearch("");
       onAlbumClick?.(album);
     },
     [onAlbumClick],
@@ -76,7 +76,7 @@ export default function SiderSearch({
         <Paper
           className={s.results}
           style={{ width: inputRef.current?.clientWidth }}>
-          {loading && results === null && <Loader />}
+          {loading && results === null && <Loader className={s.alert} />}
           {!loading && search.length < 3 && (
             <Text className={s.alert} element="strong">
               At least 3 characters
@@ -139,7 +139,7 @@ export default function SiderSearch({
               <button
                 type="button"
                 key={res.id}
-                className={clsx('no-button', s.result)}
+                className={clsx("no-button", s.result)}
                 onClick={() => internOnAlbumClick(res)}>
                 <IdealImage
                   className={s.resultimage}
