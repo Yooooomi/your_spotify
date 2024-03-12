@@ -4,4 +4,4 @@
 # -l 0.0.0.0 means that it's hosted on all the interfaces
 # build/ is the output of the package built at build-time
 
-serve -s -l tcp://0.0.0.0:3000 /app/apps/client/build/
+serve -c /app/apps/client/scripts/run/serve.json -s -l tcp://0.0.0.0:3000 /app/apps/client/build/

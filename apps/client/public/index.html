@@ -1,33 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <script src="%PUBLIC_URL%/variables.js"></script>
 
-    <title>Your Spotify</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+<head>
+  <meta charset="utf-8" />
 
-    <meta name="title" content="Your Spotify">
-    <meta name="description" content="Keep track of your Spotify listening habits with Your Spotify.">
+  <!--
+    While setting the CSP in HTTP headers is preferred, there does not seem to
+    be a good way to do this in the react dev environment, so it is set here as
+    a meta tag. Note that frame-ancestors CANNOT be set in the meta tag and
+    MUST be set as a HTTP header in production!
 
-    <meta property="og:type" content="image/png">
-    <meta property="og:title" content="Your Spotify">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="628">
-    <meta property="og:description" content="Keep track of your Spotify listening habits with Your Spotify.">
-    <meta property="og:image" content="http://localhost:8080/static/your_spotify_1200.png">
+    Restricting connect-src is done at start of the client server.
+    -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://i.scdn.co; connect-src *;" />
 
-    <meta property="twitter:card" content="summary">
-    <meta property="twitter:title" content="Your Spotify">
-    <meta property="twitter:description" content="Keep track of your Spotify listening habits with Your Spotify.">
-    <meta property="twitter:image" content="http://localhost:8080/static/your_spotify_1200.png">
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <script src="%PUBLIC_URL%/variables.js"></script>
+
+  <title>Your Spotify</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+
+  <meta name="title" content="Your Spotify">
+  <meta name="description" content="Keep track of your Spotify listening habits with Your Spotify.">
+
+  <meta property="og:type" content="image/png">
+  <meta property="og:title" content="Your Spotify">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="628">
+  <meta property="og:description" content="Keep track of your Spotify listening habits with Your Spotify.">
+  <meta property="og:image" content="http://localhost:8080/static/your_spotify_1200.png">
+
+  <meta property="twitter:card" content="summary">
+  <meta property="twitter:title" content="Your Spotify">
+  <meta property="twitter:description" content="Keep track of your Spotify listening habits with Your Spotify.">
+  <meta property="twitter:image" content="http://localhost:8080/static/your_spotify_1200.png">
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
 </html>

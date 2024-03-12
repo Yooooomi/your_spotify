@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { logger } from "./logger";
 import { toBoolean, toNumber } from "./zod";
 
 const validators = {

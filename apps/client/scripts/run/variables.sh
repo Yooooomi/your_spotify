@@ -18,6 +18,14 @@ then
 
     # Editing meta image urls
     sed -i "s;image\" content=\"\(.[^\"]*\);image\" content=\"$API_ENDPOINT/static/your_spotify_1200.png;g" "$VAR_PATH/index.html"
+
+    # Restricting connect-src to API_ENDPOINT with a trailing /
+    API_ENDPOINT_ENDING_WITH_SLASH=$API_ENDPOINT
+    if [[ "$API_ENDPOINT_ENDING_WITH_SLASH" != */ ]]
+    then
+        API_ENDPOINT_ENDING_WITH_SLASH="$API_ENDPOINT_ENDING_WITH_SLASH/"
+    fi
+    sed -i "s#connect-src \(.*\);#connect-src $API_ENDPOINT_ENDING_WITH_SLASH;#g" "$VAR_PATH/index.html"
 else
     echo "API_ENDPOINT is not defined, web app won't work"
     exit 1

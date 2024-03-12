@@ -91,7 +91,7 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | API_ENDPOINT          | REQUIRED | The endpoint of your server |
 | SPOTIFY_PUBLIC        | REQUIRED | The public key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
 | SPOTIFY_SECRET        | REQUIRED | The secret key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
-| CORS                  | _not defined_ | List of comma-separated origin allowed, or _nothing_ to allow any origin |
+| CORS                  | _not defined_ | List of comma-separated origin allowed |
 | MAX_IMPORT_CACHE_SIZE | Infinite | The maximum element in the cache when importing data from an outside source, more cache means less requests to Spotify, resulting in faster imports |
 | MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database, where **mongo** is the name of your service in the compose file |
 | PORT                  | 8080 | The port of the server, do not modify if you're using docker |
@@ -102,10 +102,9 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 
 ## CORS
 
-You can edit the CORS for the server:
-
-- `all` will allow every source.
+- Not defining it will default to authorize only the `CLIENT_ENDPOINT` origin.
 - `origin1,origin2` will allow `origin1` and `origin2`.
+> If you really want to allow every origin no matter what, you can set the `CORS` value to `i-want-a-security-vulnerability-and-want-to-allow-all-origins`.
 
 # Creating the Spotify Application
 
