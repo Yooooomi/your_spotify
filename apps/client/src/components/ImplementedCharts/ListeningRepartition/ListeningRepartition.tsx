@@ -9,10 +9,9 @@ import LoadingImplementedChart from "../LoadingImplementedChart";
 import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import Tooltip from "../../Tooltip";
 import { TitleFormatter, ValueFormatter } from "../../Tooltip/Tooltip";
+import { DateFormatter } from "../../../services/date";
 
 interface ListeningRepartitionProps extends ImplementedChartProps {}
-
-const formatXAxis = (value: any) => `${value}:00`;
 
 const formatYAxis = (value: any) => `${value}%`;
 
@@ -72,7 +71,7 @@ export default function ListeningRepartition({
     <ChartCard className={className} title="Listening distribution over day">
       <Bar
         data={data}
-        xFormat={formatXAxis}
+        xFormat={DateFormatter.fromNumberToHour}
         yFormat={formatYAxis}
         customTooltip={<Tooltip title={tooltipTitle} value={tooltipValue} />}
       />

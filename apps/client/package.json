@@ -7,7 +7,8 @@
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src/ --ext .tsx,.ts"
+    "lint": "eslint src/ --ext .tsx,.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@emotion/react": "11.11.4",

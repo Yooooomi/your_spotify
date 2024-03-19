@@ -12,6 +12,7 @@ import Tooltip from "../../Tooltip";
 import { TitleFormatter, ValueFormatter } from "../../Tooltip/Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
+import { DateFormatter } from "../../../services/date";
 
 interface BestOfHourProps extends ImplementedChartProps {}
 
@@ -61,10 +62,6 @@ function getElementData(
   );
 }
 
-function formatX(value: any) {
-  return `${value}:00`;
-}
-
 export default function BestOfHour({ className }: BestOfHourProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
   const [element, setElement] = useState<Element>(Element.ARTIST);
@@ -80,7 +77,8 @@ export default function BestOfHour({ className }: BestOfHourProps) {
   }, [result]);
 
   const tooltipTitle = useCallback<TitleFormatter<typeof data>>(
-    ({ x }) => `20 most listened ${element} at ${x}:00`,
+    ({ x }) =>
+      `20 most listened ${element} at ${DateFormatter.fromNumberToHour(x)}`,
     [element],
   );
 
@@ -130,7 +128,7 @@ export default function BestOfHour({ className }: BestOfHourProps) {
       className={className}>
       <StackedBar
         data={data}
-        xFormat={formatX}
+        xFormat={DateFormatter.fromNumberToHour}
         customTooltip={<Tooltip title={tooltipTitle} value={tooltipValue} />}
       />
     </ChartCard>

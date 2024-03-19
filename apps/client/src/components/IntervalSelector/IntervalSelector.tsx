@@ -10,11 +10,8 @@ import {
   Select,
 } from "@mui/material";
 import React, { useState, useCallback, useMemo } from "react";
-import {
-  startOfDay,
-  getAppropriateTimesplitFromRange,
-  endOfDay,
-} from "../../services/date";
+import { endOfDay, startOfDay } from "date-fns";
+import { getAppropriateTimesplitFromRange } from "../../services/date";
 import { useMobile } from "../../services/hooks/hooks";
 import {
   allIntervals,
@@ -34,7 +31,7 @@ interface IntervalSelectorProps {
   forceTiny?: boolean;
 }
 
-export default function IntervalSelector({
+export function IntervalSelector({
   value,
   onChange,
   selectType,

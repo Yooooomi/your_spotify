@@ -1,27 +1,7 @@
-import { pad } from "./stats";
 import { Timesplit } from "./types";
 
 export function cloneDate(date: Date) {
   return new Date(date.getTime());
-}
-
-export function startOfDay(date: Date) {
-  const d = cloneDate(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
-
-export function endOfDay(date: Date) {
-  const d = cloneDate(date);
-  d.setHours(23, 59, 59);
-  return d;
-}
-
-export function nextDay(date: Date) {
-  const d = cloneDate(date);
-  d.setDate(d.getDate() + 1);
-  d.setHours(0, 0, 0, 0);
-  return d;
 }
 
 export function getAppropriateTimesplitFromRange(start: Date, end: Date) {
@@ -39,24 +19,99 @@ export function getAppropriateTimesplitFromRange(start: Date, end: Date) {
   return Timesplit.year;
 }
 
-export function dateToDaysMonthsYear(date: Date) {
-  return `${pad(date.getDate())}/${pad(
-    date.getMonth() + 1,
-  )}/${date.getFullYear()}`;
-}
-
-export function dateToMonthsYear(date: Date) {
-  return `${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
-}
+export const DateFormatter = {
+  fromNumberToHour(hour: number) {
+    const d = new Date();
+    d.setHours(hour);
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+    }).format(d);
+  },
+  toMonthStringYear(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  },
+  toHour(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+    }).format(date);
+  },
+  toYear(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+    }).format(date);
+  },
+  toDaysMonth(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+    }).format(date);
+  },
+  toMonthsYear(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "2-digit",
+      year: "numeric",
+    }).format(date);
+  },
+  toDaysMonthsYear(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(date);
+  },
+  toHourDaysMonthsYear(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(date);
+  },
+  toMinuteHourDaysMonthsYear(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+      minute: "2-digit",
+      hour: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(date);
+  },
+  toMonthString(date: Date) {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "long",
+    }).format(date);
+  },
+  listenedAt(date: Date) {
+    const now = new Date();
+    const day = 1000 * 60 * 60 * 24;
+    const diff = now.getTime() - date.getTime();
+    if (diff < day) {
+      return new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(date);
+    }
+    return new Intl.DateTimeFormat("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  },
+};
 
 export function intervalToDisplay(start: Date, end: Date) {
   const diff = end.getTime() - start.getTime();
   const days = diff / (1000 * 60 * 60 * 24);
 
   if (days < 60) {
-    return `${dateToDaysMonthsYear(start)} to ${dateToDaysMonthsYear(end)}`;
+    return `${DateFormatter.toDaysMonthsYear(start)} to ${DateFormatter.toDaysMonthsYear(end)}`;
   }
-  return `${dateToMonthsYear(start)} to ${dateToMonthsYear(end)}`;
+  return `${DateFormatter.toMonthsYear(start)} to ${DateFormatter.toMonthsYear(end)}`;
 }
 
 export function intervalToHoursAndMinutes(start: Date, end: Date) {
