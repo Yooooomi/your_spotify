@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
-import { dateToListenedAt } from "../../../services/stats";
 import { SpotifyImage } from "../../../services/types";
 import TitleCard from "../../../components/TitleCard";
 import IdealImage from "../../../components/IdealImage";
 import ImageTwoLines from "../../../components/ImageTwoLines";
+import { DateFormatter } from "../../../services/date";
 import s from "./index.module.css";
 
 interface FirstAndLastProps {
@@ -36,7 +36,7 @@ export default function FirstAndLast({
             />
           }
           first={lastElement}
-          second={`Last listened on ${dateToListenedAt(new Date(lastDate))}`}
+          second={`Last listened on ${DateFormatter.listenedAt(new Date(lastDate))}`}
         />
       </div>
       <div className={s.item}>
@@ -50,7 +50,7 @@ export default function FirstAndLast({
             />
           }
           first={firstElement}
-          second={`First listened on ${dateToListenedAt(new Date(firstDate))}`}
+          second={`First listened on ${DateFormatter.listenedAt(new Date(firstDate))}`}
         />
       </div>
     </TitleCard>

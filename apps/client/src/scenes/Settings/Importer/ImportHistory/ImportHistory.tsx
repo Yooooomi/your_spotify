@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { CircularProgress } from "@mui/material";
-import { dateToListenedAt } from "../../../../services/stats";
 import SettingLine from "../../SettingLine";
 import { selectImportStates } from "../../../../services/redux/modules/import/selector";
 import {
@@ -13,6 +12,7 @@ import { compact } from "../../../../services/tools";
 import { ImporterStateStatus } from "../../../../services/redux/modules/import/types";
 import Text from "../../../../components/Text";
 import { useAppDispatch } from "../../../../services/redux/tools";
+import { DateFormatter } from "../../../../services/date";
 import s from "./index.module.css";
 
 const statusToString: Record<ImporterStateStatus, string> = {
@@ -28,7 +28,7 @@ export default function ImportHistory() {
 
   const cleanImport = useCallback(
     async (id: string) => {
-      dispatch(cleanupImport(id));
+      dispatch(cleanupImport(id)).catch(console.error);
     },
     [dispatch],
   );
@@ -52,7 +52,7 @@ export default function ImportHistory() {
           key={st._id}
           left={
             <Text>
-              Import of {dateToListenedAt(new Date(st.createdAt))}
+              Import of {DateFormatter.listenedAt(new Date(st.createdAt))}
               <Text className={s.importertype}>from {st.type}</Text>
             </Text>
           }

@@ -52,6 +52,10 @@ export const selectTimezone = createSelector(
   selectUser,
   user => user?.settings.timezone ?? "follow",
 );
+export const selectDateFormat = createSelector(
+  selectUser,
+  user => user?.settings.dateFormat ?? "default",
+);
 export const selectBlacklistedArtist = (artistId: string) =>
   createSelector(selectUser, user =>
     Boolean(user?.settings.blacklistedArtists?.find(art => art === artistId)),

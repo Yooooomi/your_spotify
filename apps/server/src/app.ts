@@ -45,7 +45,7 @@ app.use((_, res, next) => {
   // back to default-src and nobody has legitimate business framing the backend.
   res.header(
     "Content-Security-Policy",
-    "default-src 'none'; object-src 'none'; frame-ancestors 'none';"
+    "default-src 'none'; object-src 'none'; frame-ancestors 'none';",
   );
 
   // Prevent MIME sniffing in browsers

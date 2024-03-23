@@ -55,6 +55,11 @@ const settingsSchema = z.object({
     .nullable()
     .transform(e => e ?? undefined)
     .optional(),
+  dateFormat: z
+    .string()
+    .nullable()
+    .transform(e => e ?? undefined)
+    .optional(),
 });
 
 router.post(

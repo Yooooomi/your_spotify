@@ -26,6 +26,7 @@ import RelogToSpotify from "./RelogToSpotify";
 import SetAdmin from "./SetAdmin";
 import SpotifyAccountInfos from "./SpotifyAccountInfos";
 import Timezone from "./Timezone";
+import DateFormat from "./DateFormat";
 
 export default function Settings() {
   const settings = useSelector(selectSettings);
@@ -107,6 +108,7 @@ export default function Settings() {
               <Masonry>
                 {!isPublic && <BlacklistArtist />}
                 {!isPublic && <Timezone />}
+                {!isPublic && <DateFormat />}
               </Masonry>
             }
           />

@@ -35,3 +35,18 @@ then
 fi
 
 sed -i "s#connect-src \(.*\);#connect-src 'self' $CSP_CONNECT_SRC;#g" "$VAR_PATH/index.html"
+
+# Handling frame-ancestors preferences
+SERVE_CONFIG_PATH="/app/apps/client/scripts/run/serve.json"
+
+if [[ -z "$FRAME_ANCESTORS" ]]
+then
+    FRAME_ANCESTORS="'none'"
+elif [[ "$FRAME_ANCESTORS" == "i-want-a-security-vulnerability-and-want-to-allow-all-frame-ancestors" ]]
+then
+    FRAME_ANCESTORS="*"
+else
+    FRAME_ANCESTORS=${FRAME_ANCESTORS//,/ }
+fi
+
+sed -i "s#frame-ancestors \(.*\);#frame-ancestors $FRAME_ANCESTORS;#g" "$SERVE_CONFIG_PATH"

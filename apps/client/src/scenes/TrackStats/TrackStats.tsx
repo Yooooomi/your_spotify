@@ -2,19 +2,16 @@ import { CircularProgress, Grid } from "@mui/material";
 import Header from "../../components/Header";
 import TitleCard from "../../components/TitleCard";
 import { TrackStatsResponse } from "../../services/apis/api";
-import {
-  buildFromDateId,
-  dateToMonthAndYear,
-  formatDateTime,
-} from '../../services/stats';
-import s from './index.module.css';
-import Text from '../../components/Text';
-import InlineArtist from '../../components/InlineArtist';
-import TrackRank from './TrackRank/TrackRank';
-import FirstAndLast from './FirstAndLast';
-import ImageTwoLines from '../../components/ImageTwoLines';
-import IdealImage from '../../components/IdealImage';
-import InlineAlbum from '../../components/InlineAlbum';
+import { buildFromDateId } from "../../services/stats";
+import Text from "../../components/Text";
+import InlineArtist from "../../components/InlineArtist";
+import ImageTwoLines from "../../components/ImageTwoLines";
+import IdealImage from "../../components/IdealImage";
+import InlineAlbum from "../../components/InlineAlbum";
+import { DateFormatter } from "../../services/date";
+import FirstAndLast from "./FirstAndLast";
+import TrackRank from "./TrackRank/TrackRank";
+import s from "./index.module.css";
 
 interface TrackStatsProps {
   trackId: string;
@@ -94,7 +91,9 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
                 {bestPeriod && (
                   <div className={s.bestperiod}>
                     <Text element="strong">
-                      {dateToMonthAndYear(buildFromDateId(bestPeriod._id))}
+                      {DateFormatter.toMonthStringYear(
+                        buildFromDateId(bestPeriod._id),
+                      )}
                     </Text>
                     <Text>
                       {bestPeriod.count} times (
@@ -106,7 +105,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
                 {secondBestPeriod && (
                   <div className={s.bestperiod}>
                     <Text element="strong">
-                      {dateToMonthAndYear(
+                      {DateFormatter.toMonthStringYear(
                         buildFromDateId(secondBestPeriod._id),
                       )}
                     </Text>
@@ -130,7 +129,9 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
                   key={info.id}
                   image={<IdealImage images={stats.album.images} size={48} />}
                   first={stats.track.name}
-                  second={formatDateTime(new Date(info.played_at))}
+                  second={DateFormatter.toMinuteHourDayMonthYear(
+                    new Date(info.played_at),
+                  )}
                 />
               ))}
             </TitleCard>

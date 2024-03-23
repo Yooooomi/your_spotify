@@ -7,9 +7,11 @@ import InlineArtist from "../../../components/InlineArtist";
 import InlineTrack from "../../../components/InlineTrack";
 import PlayButton from "../../../components/PlayButton";
 import Text from "../../../components/Text";
-import { intervalToHoursAndMinutes } from "../../../services/date";
+import {
+  DateFormatter,
+  intervalToHoursAndMinutes,
+} from "../../../services/date";
 import { useLoadArtists } from "../../../services/hooks/artist";
-import { dateToListenedAt } from "../../../services/stats";
 import { Track, TrackInfo } from "../../../services/types";
 import s from "./index.module.css";
 
@@ -60,8 +62,8 @@ export default function LongestSession({
       onChange={(_, value) => setExpanded(value)}>
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Text>
-          {dateToListenedAt(new Date(firstTrack.played_at))} for {totalDuration}{" "}
-          ({tracks.length} songs)
+          {DateFormatter.listenedAt(new Date(firstTrack.played_at))} for{" "}
+          {totalDuration} ({tracks.length} songs)
         </Text>
       </AccordionSummary>
       <AccordionDetails>
