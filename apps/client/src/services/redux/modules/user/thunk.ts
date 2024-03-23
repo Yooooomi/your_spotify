@@ -1,4 +1,5 @@
 import { api } from "../../../apis/api";
+import { DateFormatter } from "../../../date";
 import { myAsyncThunk } from "../../tools";
 import { alertMessage } from "../message/reducer";
 import { selectIsPublic } from "./selector";
@@ -9,7 +10,16 @@ export const checkLogged = myAsyncThunk<User | null, void>(
   async () => {
     try {
       const { data } = await api.me();
-      return data.status ? data.user : null;
+      if (data.status) {
+        if (data.user.isGuest) {
+          DateFormatter.setCurrentUsedDateFormat("default");
+        } else {
+          DateFormatter.setCurrentUsedDateFormat(data.user.settings.dateFormat);
+        }
+        return data.user;
+      } else {
+        return null;
+      }
     } catch (e) {
       console.error(e);
     }
@@ -122,7 +132,7 @@ export const blacklistArtist = myAsyncThunk<void, string>(
   async (payload, tapi) => {
     try {
       await api.blacklistArtist(payload);
-      tapi.dispatch(checkLogged());
+      await tapi.dispatch(checkLogged());
     } catch (e) {
       console.error(e);
       tapi.dispatch(
@@ -140,7 +150,7 @@ export const unblacklistArtist = myAsyncThunk<void, string>(
   async (payload, tapi) => {
     try {
       await api.unblacklistArtist(payload);
-      tapi.dispatch(checkLogged());
+      await tapi.dispatch(checkLogged());
     } catch (e) {
       console.error(e);
       tapi.dispatch(

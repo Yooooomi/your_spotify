@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { api } from "../../../services/apis/api";
 import { useAPI } from "../../../services/hooks/hooks";
@@ -15,7 +15,8 @@ interface ListeningRepartitionProps extends ImplementedChartProps {}
 
 const formatYAxis = (value: any) => `${value}%`;
 
-const tooltipTitle: TitleFormatter<unknown[]> = ({ x }) => `${x}:00`;
+const tooltipTitle: TitleFormatter<unknown[]> = ({ x }) =>
+  DateFormatter.fromNumberToHour(x);
 
 export default function ListeningRepartition({
   className,

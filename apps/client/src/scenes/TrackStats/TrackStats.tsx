@@ -129,7 +129,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
                   key={info.id}
                   image={<IdealImage images={stats.album.images} size={48} />}
                   first={stats.track.name}
-                  second={DateFormatter.toMinuteHourDaysMonthsYear(
+                  second={DateFormatter.toMinuteHourDayMonthYear(
                     new Date(info.played_at),
                   )}
                 />

@@ -12,14 +12,14 @@ import s from "./index.module.css";
 
 export default function Timezone() {
   const dispatch = useAppDispatch();
-  const dark = useSelector(selectTimezone);
+  const currentTimezone = useSelector(selectTimezone);
 
   const handleChangeTimezone = useCallback(
     (newTimezone: string | null | undefined) => {
       if (newTimezone === "follow") {
         newTimezone = null;
       }
-      dispatch(changeTimezone(newTimezone));
+      dispatch(changeTimezone(newTimezone)).catch(console.error);
     },
     [dispatch],
   );
@@ -35,7 +35,7 @@ export default function Timezone() {
         right={
           <Select
             variant="standard"
-            value={dark}
+            value={currentTimezone}
             onChange={ev => handleChangeTimezone(ev.target.value)}>
             <MenuItem value="follow">Default timezone</MenuItem>
             {timezones.map(timezone => (

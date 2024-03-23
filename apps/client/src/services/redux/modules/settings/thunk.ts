@@ -69,7 +69,7 @@ export const changeTimezone = myAsyncThunk<void, User["settings"]["timezone"]>(
   async (newTimezone, tapi) => {
     try {
       await api.setSetting("timezone", newTimezone);
-      tapi.dispatch(checkLogged());
+      await tapi.dispatch(checkLogged());
       tapi.dispatch(
         alertMessage({
           level: "success",
@@ -83,10 +83,35 @@ export const changeTimezone = myAsyncThunk<void, User["settings"]["timezone"]>(
       tapi.dispatch(
         alertMessage({
           level: "error",
-          message: `Could not update registration status to ${newTimezone}`,
+          message: `Could not update timezone to ${newTimezone}`,
         }),
       );
       throw e;
     }
   },
 );
+
+export const changeDateFormat = myAsyncThunk<
+  void,
+  User["settings"]["dateFormat"]
+>("@settings/change-date-format", async (newDateFormat, tapi) => {
+  try {
+    await api.setSetting("dateFormat", newDateFormat);
+    await tapi.dispatch(checkLogged());
+    tapi.dispatch(
+      alertMessage({
+        level: "success",
+        message: `Updated date format to ${newDateFormat}`,
+      }),
+    );
+  } catch (e) {
+    console.error(e);
+    tapi.dispatch(
+      alertMessage({
+        level: "error",
+        message: `Could not update date format to ${newDateFormat}`,
+      }),
+    );
+    throw e;
+  }
+});

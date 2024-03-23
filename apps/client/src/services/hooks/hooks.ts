@@ -41,7 +41,7 @@ export function useAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
 
     ref.current = null;
     setValue(null);
-    fetch();
+    fetch().catch(console.error);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...args, call]);
 
@@ -71,7 +71,7 @@ export function useConditionalAPI<
     setValue(null);
     if (condition) {
       loading.current = true;
-      fetch();
+      fetch().catch(console.error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...args, condition, call]);

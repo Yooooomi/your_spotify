@@ -225,10 +225,10 @@ export const formatDateWithPrecisionToSimpleString = ({
     return DateFormatter.toHour(date);
   }
   if (precision === Precision.day) {
-    return DateFormatter.toDaysMonth(date);
+    return DateFormatter.toDayMonth(date);
   }
   if (precision === Precision.week) {
-    return DateFormatter.toDaysMonth(date);
+    return DateFormatter.toDayMonth(date);
   }
   if (precision === Precision.month) {
     return DateFormatter.toMonthString(date);
@@ -244,13 +244,13 @@ export const formatDateWithPrecisionToString = ({
   precision,
 }: DateWithPrecision) => {
   if (precision === Precision.hour) {
-    return DateFormatter.toHourDaysMonthsYear(date);
+    return DateFormatter.toHourDayMonthYear(date);
   }
   if (precision === Precision.day) {
-    return DateFormatter.toDaysMonthsYear(date);
+    return DateFormatter.toDayMonthYear(date);
   }
   if (precision === Precision.week) {
-    return DateFormatter.toDaysMonthsYear(date);
+    return DateFormatter.toDayMonthYear(date);
   }
   if (precision === Precision.month) {
     return DateFormatter.toMonthStringYear(date);
