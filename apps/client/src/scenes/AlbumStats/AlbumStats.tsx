@@ -1,17 +1,17 @@
-import { CircularProgress, Grid } from '@mui/material';
-import { TimelapseOutlined } from '@mui/icons-material';
-import Header from '../../components/Header';
-import { AlbumStatsResponse } from '../../services/apis/api';
-import s from './index.module.css';
-import InlineArtist from '../../components/InlineArtist';
-import IdealImage from '../../components/IdealImage';
-import FirstAndLast from '../ArtistStats/FirstAndLast';
-import InlineTrack from '../../components/InlineTrack';
-import TitleCard from '../../components/TitleCard';
-import Text from '../../components/Text';
-import ImageTwoLines from '../../components/ImageTwoLines';
-import { msToMinutesAndSeconds } from '../../services/stats';
-import AlbumRank from './AlbumRank';
+import { CircularProgress, Grid } from "@mui/material";
+import { TimelapseOutlined } from "@mui/icons-material";
+import Header from "../../components/Header";
+import { AlbumStatsResponse } from "../../services/apis/api";
+import InlineArtist from "../../components/InlineArtist";
+import IdealImage from "../../components/IdealImage";
+import FirstAndLast from "../ArtistStats/FirstAndLast";
+import InlineTrack from "../../components/InlineTrack";
+import TitleCard from "../../components/TitleCard";
+import Text from "../../components/Text";
+import ImageTwoLines from "../../components/ImageTwoLines";
+import { msToMinutesAndSeconds } from "../../services/stats";
+import s from "./index.module.css";
+import AlbumRank from "./AlbumRank";
 
 interface AlbumStatsProps {
   stats: AlbumStatsResponse;
@@ -37,7 +37,7 @@ export default function AlbumStats({ stats }: AlbumStatsProps) {
         subtitle={stats.artists.map((artist, k) => (
           <>
             <InlineArtist artist={artist} key={artist.id} />
-            {k < stats.artists.length - 1 && ', '}
+            {k < stats.artists.length - 1 && ", "}
           </>
         ))}
         hideInterval

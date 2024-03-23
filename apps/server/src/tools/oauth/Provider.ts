@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Axios from "axios";
+import { generateRandomString, sha256 } from "../crypto";
 import { credentials } from "./credentials";
 
 export class Provider {
   static getRedirect = () => {};
 
   // @ts-ignore
-  static exchangeCode = code => {};
+  static exchangeCode = (code: string, state: string) => {};
 
   // @ts-ignore
   static refresh = refreshToken => {};
@@ -19,18 +20,26 @@ export class Provider {
 }
 
 export class Spotify extends Provider {
-  static getRedirect = () => {
+  static getRedirect = async () => {
     const { scopes } = credentials.spotify;
     const { redirectUri } = credentials.spotify;
 
-    return `https://accounts.spotify.com/authorize?response_type=code&client_id=${
-      credentials.spotify.public
-    }${
-      scopes ? `&scope=${encodeURIComponent(scopes)}` : ""
-    }&redirect_uri=${encodeURIComponent(redirectUri)}`;
+    const authorizeUrl = new URL("https://accounts.spotify.com/authorize");
+    const state = generateRandomString(32);
+
+    authorizeUrl.searchParams.append("client_id", credentials.spotify.public);
+    authorizeUrl.searchParams.append("response_type", "code");
+    authorizeUrl.searchParams.append("redirect_uri", redirectUri);
+    authorizeUrl.searchParams.append("state", state);
+    authorizeUrl.searchParams.append("scope", scopes);
+
+    return {
+      url: authorizeUrl.toString(),
+      state,
+    };
   };
 
-  static exchangeCode = async (code: string) => {
+  static exchangeCode = async (code: string, state: string) => {
     const { data } = await Axios.post(
       "https://accounts.spotify.com/api/token",
       null,
@@ -41,6 +50,7 @@ export class Spotify extends Provider {
           redirect_uri: credentials.spotify.redirectUri,
           client_id: credentials.spotify.public,
           client_secret: credentials.spotify.secret,
+          state,
         },
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

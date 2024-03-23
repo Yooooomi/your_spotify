@@ -1,20 +1,21 @@
-import { CircularProgress, Grid } from '@mui/material';
-import { useSelector } from 'react-redux';
-import Header from '../../components/Header';
-import TitleCard from '../../components/TitleCard';
-import { ArtistStatsResponse } from '../../services/apis/api';
-import { buildFromDateId, dateToMonthAndYear } from '../../services/stats';
-import s from './index.module.css';
-import DayRepartition from './DayRepartition';
-import Text from '../../components/Text';
-import ArtistRank from './ArtistRank/ArtistRank';
-import InlineTrack from '../../components/InlineTrack';
-import FirstAndLast from './FirstAndLast';
-import ArtistContextMenu from './ArtistContextMenu';
-import { selectBlacklistedArtist } from '../../services/redux/modules/user/selector';
-import IdealImage from '../../components/IdealImage';
-import ImageTwoLines from '../../components/ImageTwoLines';
-import InlineAlbum from '../../components/InlineAlbum';
+import { CircularProgress, Grid } from "@mui/material";
+import { useSelector } from "react-redux";
+import Header from "../../components/Header";
+import TitleCard from "../../components/TitleCard";
+import { ArtistStatsResponse } from "../../services/apis/api";
+import { buildFromDateId } from "../../services/stats";
+import Text from "../../components/Text";
+import InlineTrack from "../../components/InlineTrack";
+import { selectBlacklistedArtist } from "../../services/redux/modules/user/selector";
+import IdealImage from "../../components/IdealImage";
+import ImageTwoLines from "../../components/ImageTwoLines";
+import InlineAlbum from "../../components/InlineAlbum";
+import { DateFormatter } from "../../services/date";
+import ArtistContextMenu from "./ArtistContextMenu";
+import FirstAndLast from "./FirstAndLast";
+import ArtistRank from "./ArtistRank/ArtistRank";
+import DayRepartition from "./DayRepartition";
+import s from "./index.module.css";
 
 interface ArtistStatsProps {
   artistId: string;
@@ -95,7 +96,9 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
                 {bestPeriod && (
                   <div className={s.bestperiod}>
                     <Text element="strong">
-                      {dateToMonthAndYear(buildFromDateId(bestPeriod._id))}
+                      {DateFormatter.toMonthStringYear(
+                        buildFromDateId(bestPeriod._id),
+                      )}
                     </Text>
                     <Text>
                       {bestPeriod.count} times (
@@ -107,7 +110,7 @@ export default function ArtistStats({ artistId, stats }: ArtistStatsProps) {
                 {secondBestPeriod && (
                   <div className={s.bestperiod}>
                     <Text element="strong">
-                      {dateToMonthAndYear(
+                      {DateFormatter.toMonthStringYear(
                         buildFromDateId(secondBestPeriod._id),
                       )}
                     </Text>

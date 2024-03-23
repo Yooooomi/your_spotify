@@ -6,7 +6,7 @@ import { AdminAccount } from "../../../services/redux/modules/admin/reducer";
 import { selectAccounts } from "../../../services/redux/modules/admin/selector";
 import { CollaborativeMode } from "../../../services/types";
 import { selectUser } from "../../../services/redux/modules/user/selector";
-import IntervalSelector from "../../../components/IntervalSelector";
+import { IntervalSelector } from "../../../components/IntervalSelector";
 import Text from "../../../components/Text";
 import {
   detailIntervalToQuery,

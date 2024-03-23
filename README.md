@@ -91,21 +91,21 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | API_ENDPOINT          | REQUIRED | The endpoint of your server |
 | SPOTIFY_PUBLIC        | REQUIRED | The public key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
 | SPOTIFY_SECRET        | REQUIRED | The secret key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
-| CORS                  | _not defined_ | List of comma-separated origin allowed, or _nothing_ to allow any origin |
-| MAX_IMPORT_CACHE_SIZE | Infinite | The maximum element in the cache when importing data from an outside source, more cache means less requests to Spotify, resulting in faster imports |
-| MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database, where **mongo** is the name of your service in the compose file |
-| PORT                  | 8080 | The port of the server, do not modify if you're using docker |
 | TIMEZONE              | Europe/Paris | The timezone of your stats, only affects read requests since data is saved with UTC time |
+| MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database, where **mongo** is the name of your service in the compose file |
 | LOG_LEVEL             | info | The log level, debug is useful if you encouter any bugs |
-| COOKIE_VALIDITY_MS | 1h | Validity time of the authentication cookie, following [this pattern](https://github.com/vercel/ms) |
+| CORS                  | _not defined_ | List of comma-separated origin allowed |
+| COOKIE_VALIDITY_MS    | 1h | Validity time of the authentication cookie, following [this pattern](https://github.com/vercel/ms) |
+| MAX_IMPORT_CACHE_SIZE | Infinite | The maximum element in the cache when importing data from an outside source, more cache means less requests to Spotify, resulting in faster imports |
 | MONGO_NO_ADMIN_RIGHTS | false | Do not ask for admin right on the Mongo database |
+| PORT                  | 8080 | The port of the server, **do not** modify if you're using docker |
+| FRAME_ANCESTORS       | _not defined_ | Sites allowed to frame the website, comma separated list of URLs (`i-want-a-security-vulnerability-and-want-to-allow-all-frame-ancestors` to allow every website) |
 
 ## CORS
 
-You can edit the CORS for the server:
-
-- `all` will allow every source.
+- Not defining it will default to authorize only the `CLIENT_ENDPOINT` origin.
 - `origin1,origin2` will allow `origin1` and `origin2`.
+> If you really want to allow every origin no matter what, you can set the `CORS` value to `i-want-a-security-vulnerability-and-want-to-allow-all-origins`.
 
 # Creating the Spotify Application
 

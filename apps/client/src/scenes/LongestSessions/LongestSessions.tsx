@@ -18,7 +18,6 @@ export default function LongestSessions() {
   );
 
   const hasValidSessions = validResults && validResults.length > 0;
-  console.log(validResults);
 
   return (
     <div>

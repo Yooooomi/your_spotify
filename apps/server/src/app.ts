@@ -17,9 +17,13 @@ import { get } from "./tools/env";
 import { LogLevelAccepts } from "./tools/logger";
 
 const app = express();
+const ALLOW_ALL_CORS =
+  "i-want-a-security-vulnerability-and-want-to-allow-all-origins";
 
-let corsValue = get("CORS")?.split(",");
-if (corsValue?.[0] === "all") {
+let corsValue: string[] | undefined = get("CORS")?.split(",") ?? [
+  new URL(get("CLIENT_ENDPOINT")).origin,
+];
+if (corsValue?.[0] === ALLOW_ALL_CORS) {
   corsValue = undefined;
 }
 
@@ -30,6 +34,24 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use((_, res, next) => {
+  // Apply security headers for the whole backend here
+
+  // Apply a restrictive CSP for the server API just in case. As there isn't any
+  // HTML content here, "default-src 'none'" is a good deny-all default in case
+  // an attacker tries something funny.
+  // "frame-ancestors 'none'" is required because frame-ancestors doesn't fall
+  // back to default-src and nobody has legitimate business framing the backend.
+  res.header(
+    "Content-Security-Policy",
+    "default-src 'none'; object-src 'none'; frame-ancestors 'none';",
+  );
+
+  // Prevent MIME sniffing in browsers
+  res.header("X-Content-Type-Options", "nosniff");
+  next();
+});
 
 if (LogLevelAccepts("info")) {
   app.use(morgan("dev"));

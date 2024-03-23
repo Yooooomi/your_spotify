@@ -1,21 +1,19 @@
 import { Fragment, useMemo } from "react";
 import clsx from "clsx";
-import {
-  dateToListenedAt,
-  msToMinutesAndSeconds,
-} from '../../../services/stats';
-import { Album, Artist, Track as TrackType } from '../../../services/types';
-import s from './index.module.css';
-import InlineArtist from '../../InlineArtist';
-import Text from '../../Text';
-import TrackOptions from '../../TrackOptions';
-import InlineTrack from '../../InlineTrack';
-import { ColumnDescription, GridRowWrapper } from '../../Grid';
-import PlayButton from '../../PlayButton';
-import { useMobile } from '../../../services/hooks/hooks';
-import { trackGrid } from './TrackGrid';
-import LongClickableTrack from '../../LongClickableTrack';
-import InlineAlbum from '../../InlineAlbum';
+import { msToMinutesAndSeconds } from "../../../services/stats";
+import { Album, Artist, Track as TrackType } from "../../../services/types";
+import InlineArtist from "../../InlineArtist";
+import Text from "../../Text";
+import TrackOptions from "../../TrackOptions";
+import InlineTrack from "../../InlineTrack";
+import { ColumnDescription, GridRowWrapper } from "../../Grid";
+import PlayButton from "../../PlayButton";
+import { useMobile } from "../../../services/hooks/hooks";
+import LongClickableTrack from "../../LongClickableTrack";
+import InlineAlbum from "../../InlineAlbum";
+import { DateFormatter } from "../../../services/date";
+import { trackGrid } from "./TrackGrid";
+import s from "./index.module.css";
 
 interface TrackProps {
   listenedAt?: Date;
@@ -67,7 +65,7 @@ export default function Track({
       {
         ...trackGrid.listened,
         node: listenedAt && !isMobile && (
-          <Text>{dateToListenedAt(listenedAt)}</Text>
+          <Text>{DateFormatter.listenedAt(listenedAt)}</Text>
         ),
       },
       {
@@ -75,7 +73,7 @@ export default function Track({
         node: !isMobile && <TrackOptions track={track} />,
       },
     ],
-    [album.images, album.name, artists, isMobile, isTablet, listenedAt, track],
+    [album, artists, isMobile, isTablet, listenedAt, track],
   );
 
   return (

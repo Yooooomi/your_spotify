@@ -1,6 +1,6 @@
-import { dateToListenedAt } from "../../../services/stats";
 import Text from "../../../components/Text";
 import TitleCard from "../../../components/TitleCard";
+import { DateFormatter } from "../../../services/date";
 import s from "./index.module.css";
 
 interface FirstAndLastProps {
@@ -19,7 +19,7 @@ export default function FirstAndLast({
           <div className={s.stat}>
             <Text>
               <Text element="strong">Last listened</Text> on{" "}
-              {dateToListenedAt(lastDate)}
+              {DateFormatter.listenedAt(lastDate)}
             </Text>
           </div>
         </div>
@@ -28,7 +28,7 @@ export default function FirstAndLast({
         <div className={s.stat}>
           <Text>
             <Text element="strong">First listened</Text> on{" "}
-            {dateToListenedAt(firstDate)}
+            {DateFormatter.listenedAt(firstDate)}
           </Text>
         </div>
       </div>

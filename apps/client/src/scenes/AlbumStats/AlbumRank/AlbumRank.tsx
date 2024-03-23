@@ -1,12 +1,12 @@
-import { CircularProgress } from '@mui/material';
-import clsx from 'clsx';
-import { useCallback, useMemo } from 'react';
-import InlineAlbum from '../../../components/InlineAlbum';
-import Text from '../../../components/Text';
-import { api } from '../../../services/apis/api';
-import { useLoadAlbums } from '../../../services/hooks/artist';
-import { useAPI } from '../../../services/hooks/hooks';
-import s from './index.module.css';
+import { CircularProgress } from "@mui/material";
+import clsx from "clsx";
+import { useCallback, useMemo } from "react";
+import InlineAlbum from "../../../components/InlineAlbum";
+import Text from "../../../components/Text";
+import { api } from "../../../services/apis/api";
+import { useLoadAlbums } from "../../../services/hooks/artist";
+import { useAPI } from "../../../services/hooks/hooks";
+import s from "./index.module.css";
 
 interface AlbumRankProps {
   albumId: string;
@@ -22,7 +22,6 @@ export default function AlbumRank({ albumId }: AlbumRankProps) {
   const { albums, loaded } = useLoadAlbums(ids);
 
   const getArtist = useCallback((id: string) => albums[id], [albums]);
-  console.log(albumRank, loaded);
   if (!albumRank || !loaded) {
     return (
       <div className={s.loading}>
@@ -53,7 +52,7 @@ export default function AlbumRank({ albumId }: AlbumRankProps) {
           {albumRank.index +
             k +
             (albumRank.isMax ? 1 : 0) +
-            (albumRank.isMin ? -1 : 0)}{' '}
+            (albumRank.isMin ? -1 : 0)}{" "}
           <InlineAlbum album={getArtist(rank.id)!} noStyle />
         </div>
       ))}
