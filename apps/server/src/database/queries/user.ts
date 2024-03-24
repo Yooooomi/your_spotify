@@ -52,6 +52,7 @@ export const createUser = (
       preferredStatsPeriod: "month",
       nbElements: 10,
       metricUsed: "number",
+      dateFormat: "default",
     },
   });
 
