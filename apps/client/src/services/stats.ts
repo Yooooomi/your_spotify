@@ -304,7 +304,20 @@ export const msToMinutesAndSeconds = (ms: number) =>
   `${msToMinutes(ms)}:${pad(
     Math.floor((ms - msToMinutes(ms) * 1000 * 60) / 1000),
   )}`;
-
+export const msToHoursAndMinutesAndSeconds = (ms: number) => {
+  const hours = Math.floor(ms / 1000 / 60 / 60);
+  const minutes = Math.floor((ms - hours * 1000 * 60 * 60) / 1000 / 60);
+  const seconds = Math.floor(
+    (ms - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000,
+  );
+  return `${hours}:${pad(minutes)}:${pad(seconds)}`;
+}
+export const msToDuration = (ms: number) => {
+  if (ms < 1000 * 60 * 60) {
+    return msToMinutesAndSeconds(ms);
+  }
+  return msToHoursAndMinutesAndSeconds(ms);
+}
 export const getLastPeriod = (start: Date, end: Date) => {
   const diff = end.getTime() - start.getTime();
   const oldStart = new Date(start.getTime() - diff);

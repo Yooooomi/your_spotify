@@ -1,4 +1,4 @@
-import { CircularProgress, Grid } from "@mui/material";
+import { CircularProgress, Grid, LinearProgress } from "@mui/material";
 import Header from "../../components/Header";
 import TitleCard from "../../components/TitleCard";
 import { TrackStatsResponse } from "../../services/apis/api";
@@ -12,6 +12,8 @@ import { DateFormatter } from "../../services/date";
 import FirstAndLast from "./FirstAndLast";
 import TrackRank from "./TrackRank/TrackRank";
 import s from "./index.module.css";
+import {getKey} from "../../services/key";
+import { msToDuration } from "../../services/stats";
 
 interface TrackStatsProps {
   trackId: string;
@@ -136,50 +138,61 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
               ))}
             </TitleCard>
           </Grid>
+          
+          
           <Grid item lg={6} xs={12}>
-            // If the track has audio features, display them
             {stats.track.audio_features ? (
               <TitleCard title="Audio features">
-                <div className="stats-item">
-                  <Text element="strong">Danceability: </Text>
-                  <Text>{stats.track.audio_features.danceability}</Text>
-                </div>
-                <div className="stats-item">
-                  <Text element="strong">Energy: </Text>
-                  <Text>{stats.track.audio_features.energy}</Text>
-                </div>
-                <div className="stats-item">
-                  <Text element="strong">Loudness: </Text>
-                  <Text>{stats.track.audio_features.loudness}</Text>
-                </div>
-                <div className="stats-item">
-                  <Text element="strong">Speechiness: </Text>
-                  <Text>{stats.track.audio_features.speechiness}</Text>
-                </div>
-                <div className="stats-item">
-                  <Text element="strong">Acousticness: </Text>
-                  <Text>{stats.track.audio_features.acousticness}</Text>
-                </div>
-                <div className="stats-item">
-                  <Text element="strong">Instrumentalness: </Text>
-                  <Text>{stats.track.audio_features.instrumentalness}</Text>
-                </div>
-                <div className="stats-item">
-                  <Text element="strong">Liveness: </Text>
-                  <Text>{stats.track.audio_features.liveness}</Text>
-                </div>
-                <div className="stats-item">
-                  <Text element="strong">Valence: </Text>
-                  <Text>{stats.track.audio_features.valence}</Text>
-                </div>
-                <div className="stats-item">
-                  <Text element="strong">Tempo: </Text>
-                  <Text>{stats.track.audio_features.tempo}</Text>
-                </div>
+                  <div className={s.item}>
+                    <div className={s.stat}>
+                      <Text>
+                        <Text element="strong">Tempo:</Text> {" "}{stats.track.audio_features.tempo}
+                      </Text>
+                    </div>
+                  </div>
+                  <div className={s.item}>
+                    <div className={s.stat}>
+                      <Text>
+                        <Text element="strong">Duration:</Text> {" "}{msToDuration(stats.track.audio_features.duration_ms)}
+                      </Text>
+                    </div>
+                  </div>
+                  <div className={s.item}>
+                    <div className={s.stat}>
+                      <Text>
+                        <Text element="strong">Key:</Text> {" "}{getKey(stats.track.audio_features.key)}
+                      </Text>
+                    </div>
+                  </div>
+                  <div className={s.item}>
+                    <div className={s.stat}>
+                      <Text>
+                        <Text element="strong">Signature:</Text> {" "}{stats.track.audio_features.time_signature}/4
+                      </Text>
+                    </div>
+                  </div>
+                  <div className={s.item}>
+                    <div className={s.stat}>
+                      <Text element="strong">Danceability: </Text>
+                      <LinearProgress variant="determinate" value={stats.track.audio_features.danceability * 100} />
+                    </div>
+                  </div>
+                  <div className={s.item}>
+                    <div className={s.stat}>
+                      <Text element="strong">Energy: </Text>
+                      <LinearProgress variant="determinate" value={stats.track.audio_features.energy * 100} />
+                    </div>
+                  </div>
+                  <div className={s.item}>
+                    <div className={s.stat}>
+                      <Text element="strong">Instrumentalness vs Speechiness: </Text>
+                      <LinearProgress variant="determinate" value={(stats.track.audio_features.speechiness/(stats.track.audio_features.instrumentalness + stats.track.audio_features.speechiness))*100 } />
+                    </div>
+                  </div>
               </TitleCard>
             ) : (
               <TitleCard title="Audio features">
-                <Text>No audio features available</Text>
+                <Text element="strong">Audio features are not available for this track</Text>
               </TitleCard>
             )}
           </Grid>
@@ -188,3 +201,6 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
     </div>
   );
 }
+
+
+
