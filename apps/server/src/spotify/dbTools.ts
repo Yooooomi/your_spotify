@@ -3,6 +3,7 @@ import { TrackModel, AlbumModel, ArtistModel } from "../database/Models";
 import { SpotifyAlbum, Album } from "../database/schemas/album";
 import { SpotifyArtist, Artist } from "../database/schemas/artist";
 import { SpotifyTrack, Track } from "../database/schemas/track";
+import { AudioFeatures } from "../database/schemas/audioFeatures";
 import { logger } from "../tools/logger";
 import { minOfArray, retryPromise, uniqBy } from "../tools/misc";
 import { SpotifyAPI } from "../tools/apis/spotifyApi";
@@ -14,8 +15,8 @@ import {
 import { Infos } from "../database/schemas/info";
 import { longWriteDbLock } from "../tools/lock";
 
-const getIdsHandlingMax = async <
-  T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist,
+export const getIdsHandlingMax = async <
+  T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist | AudioFeatures,
 >(
   userId: string,
   url: string,
@@ -48,7 +49,7 @@ const getIdsHandlingMax = async <
 };
 
 const trackUrl = "https://api.spotify.com/v1/tracks";
-
+const AudioFeaturesUrl = "https://api.spotify.com/v1/audio-features";
 export const getTracks = async (userId: string, ids: string[]) => {
   const spotifyTracks = await getIdsHandlingMax<SpotifyTrack>(
     userId,
@@ -57,15 +58,31 @@ export const getTracks = async (userId: string, ids: string[]) => {
     20,
     "tracks",
   );
-
+  const AudioFeatures = await getIdsHandlingMax<AudioFeatures>(
+    userId,
+    AudioFeaturesUrl,
+    ids,
+    20,
+    "audio_features",
+  );
   const tracks = spotifyTracks.map<Track>(track => {
     logger.info(
       `Storing non existing track ${track.name} by ${track.artists[0]?.name}`,
     );
+    const trackAudioFeatures = AudioFeatures.find(feature => feature && feature.id === track.id);
+    //remove id from audio features
+    if (trackAudioFeatures) {
+      const { id, uri, type, track_href, analysis_url, ...trackAudioFeaturesSmall } = trackAudioFeatures;
+      track.audio_features = trackAudioFeaturesSmall
+    }
+    else {
+      logger.error(`No audio features found for track ${track.id}`);
+    }
+
     return {
       ...track,
       album: track.album.id,
-      artists: track.artists.map(e => e.id),
+      artists: track.artists.map(e => e.id)
     };
   });
 
