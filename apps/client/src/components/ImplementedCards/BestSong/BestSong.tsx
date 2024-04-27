@@ -16,7 +16,7 @@ interface BestSongProps extends ImplementedCardProps {}
 
 export default function BestSong({ className }: BestSongProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
-  const result = useAPI(api.getBestSongs, interval.start, interval.end, 1, 0);
+  const result = useAPI(api.getBestSongs, interval.start, interval.end, 1, 0, "count");
 
   if (!result) {
     return (

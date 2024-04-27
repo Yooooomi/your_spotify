@@ -41,6 +41,7 @@ export default function Benchmarks() {
 
   const NB = 30;
   const OFFSET = 0;
+  const SORT_KEY = "count";
 
   const requests = [
     {
@@ -90,17 +91,17 @@ export default function Benchmarks() {
     },
     {
       title: "Get best songs",
-      request: () => api.getBestSongs(interval.start, interval.end, NB, OFFSET),
+      request: () => api.getBestSongs(interval.start, interval.end, NB, OFFSET, SORT_KEY),
     },
     {
       title: "Get best artists",
       request: () =>
-        api.getBestArtists(interval.start, interval.end, NB, OFFSET),
+        api.getBestArtists(interval.start, interval.end, NB, OFFSET, SORT_KEY),
     },
     {
       title: "Get best albums",
       request: () =>
-        api.getBestAlbums(interval.start, interval.end, NB, OFFSET),
+        api.getBestAlbums(interval.start, interval.end, NB, OFFSET, SORT_KEY),
     },
     {
       title: "Get best songs of hour",
@@ -126,6 +127,7 @@ export default function Benchmarks() {
           interval.end,
           1,
           0,
+          SORT_KEY,
         );
         const [bestArtist] = bestArtists;
         return bestArtist?.artist.id;
@@ -140,6 +142,7 @@ export default function Benchmarks() {
           interval.end,
           1,
           0,
+          SORT_KEY,
         );
         const [bestAlbum] = bestAlbums;
         return bestAlbum?.album.id;
@@ -154,6 +157,7 @@ export default function Benchmarks() {
           interval.end,
           1,
           0,
+          SORT_KEY,
         );
         const [bestTrack] = bestTracks;
         return bestTrack?.track.id;

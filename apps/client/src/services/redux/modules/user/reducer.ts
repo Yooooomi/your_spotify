@@ -30,6 +30,9 @@ export const setDataInterval =
 export const setPublicToken = createAction<string | null>(
   "@user/set-public-token",
 );
+export const setSortKey = createAction<string | null>(
+  "@user/set-sort-key",
+);
 
 export default createReducer(initialState, builder => {
   builder.addCase(logout, state => {
@@ -66,6 +69,14 @@ export default createReducer(initialState, builder => {
 
   builder.addCase(setDataInterval, (state, { payload }) => {
     state.intervalDetail = payload;
+  });
+
+  builder.addCase(setSortKey, (state, { payload }) => {
+    if(!state.user){
+      return;
+    }
+    state.user.settings.sortKey = payload ?? "count";
+    return state;
   });
 
   builder.addCase(setDarkMode.pending, (state, { meta: { arg } }) => {
