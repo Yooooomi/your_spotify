@@ -343,6 +343,7 @@ const intervalPerSchemaNbOffset = z.object({
   ),
   nb: z.preprocess(toNumber, z.number().min(1).max(30)),
   offset: z.preprocess(toNumber, z.number().min(0).default(0)),
+  sortKey: z.string().default("count"),
 });
 
 router.get(
@@ -351,7 +352,7 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, nb, offset } = req.query as TypedPayload<
+    const { start, end, nb, offset, sortKey } = req.query as TypedPayload<
       typeof intervalPerSchemaNbOffset
     >;
 
@@ -363,6 +364,7 @@ router.get(
         end,
         nb,
         offset,
+        sortKey
       );
       return res.status(200).send(result);
     } catch (e) {
@@ -378,7 +380,7 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, nb, offset } = req.query as TypedPayload<
+    const { start, end, nb, offset, sortKey } = req.query as TypedPayload<
       typeof intervalPerSchemaNbOffset
     >;
 
@@ -390,6 +392,7 @@ router.get(
         end,
         nb,
         offset,
+        sortKey,
       );
       return res.status(200).send(result);
     } catch (e) {
@@ -405,7 +408,7 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     const { user } = req as LoggedRequest;
-    const { start, end, nb, offset } = req.query as TypedPayload<
+    const { start, end, nb, offset, sortKey } = req.query as TypedPayload<
       typeof intervalPerSchemaNbOffset
     >;
 
@@ -417,6 +420,7 @@ router.get(
         end,
         nb,
         offset,
+        sortKey
       );
       return res.status(200).send(result);
     } catch (e) {
@@ -602,6 +606,7 @@ router.get("/playlists", logged, withHttpClient, async (req, res) => {
 const createPlaylistBase = z.object({
   playlistId: z.string().optional(),
   name: z.string().optional(),
+  sortKey: z.string().default("count"),
 });
 
 const createPlaylistFromTop = z.object({
@@ -658,7 +663,7 @@ router.post(
       let playlistName = body.name;
       let spotifyIds: string[];
       if (body.type === "top") {
-        const { interval: intervalData, nb } = body;
+        const { interval: intervalData, nb, sortKey } = body;
         const items = await getBest(
           ItemType.track,
           user,
@@ -666,6 +671,7 @@ router.post(
           intervalData.end,
           nb,
           0,
+          sortKey,
         );
         spotifyIds = items.map(item => item.track.id);
         if (!playlistName) {

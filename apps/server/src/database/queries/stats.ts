@@ -553,6 +553,7 @@ export const getBest = (
   end: Date,
   nb: number,
   offset: number,
+  sortKey: string,
 ) =>
   InfosModel.aggregate([
     ...basicMatch(user._id, start, end),
@@ -571,7 +572,7 @@ export const getBest = (
     {
       $facet: {
         infos: [
-          { $sort: { count: -1, _id: 1 } },
+          { $sort: { [sortKey]: -1, _id: 1 } },
           { $skip: offset },
           { $limit: nb },
         ],
