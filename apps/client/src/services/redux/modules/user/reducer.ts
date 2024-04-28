@@ -30,7 +30,7 @@ export const setDataInterval =
 export const setPublicToken = createAction<string | null>(
   "@user/set-public-token",
 );
-export const setSortKey = createAction<string | null>(
+export const setSortKey = createAction<string>(
   "@user/set-sort-key",
 );
 
@@ -75,8 +75,7 @@ export default createReducer(initialState, builder => {
     if(!state.user){
       return;
     }
-    state.user.settings.sortKey = payload ?? "count";
-    return state;
+    state.user.settings.sortKey = payload;
   });
 
   builder.addCase(setDarkMode.pending, (state, { meta: { arg } }) => {

@@ -12,6 +12,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { detailIntervalToQuery } from "../intervals";
 import {
   selectIntervalDetail,
+  selectSortKey,
   selectUser,
 } from "../redux/modules/user/selector";
 import { UnboxPromise } from "../types";
@@ -156,6 +157,14 @@ export function useMobile(): [boolean, boolean] {
   return [
     useMediaQuery("(max-width: 960px)"),
     useMediaQuery("(max-width: 1250px)"),
+  ];
+}
+
+export function useSortKey(): [boolean, boolean] {
+  const sortKey = useSelector(selectSortKey);
+  return [
+    sortKey == "count",
+    sortKey == "duration_ms",
   ];
 }
 

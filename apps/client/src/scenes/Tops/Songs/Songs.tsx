@@ -18,6 +18,7 @@ import s from "./index.module.css";
 export default function Songs() {
   const { interval } = useSelector(selectRawIntervalDetail);
   const sortKey = useSelector(selectSortKey);
+  
   const { items, hasMore, onNext } = useInfiniteScroll(
     interval,
     api.getBestSongs,
@@ -33,7 +34,7 @@ export default function Songs() {
       },
       sortKey,
     }),
-    [interval.end, interval.start],
+    [interval.end, interval.start, sortKey],
   );
 
   return (

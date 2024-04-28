@@ -1,20 +1,26 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import Text from "../../../../components/Text";
-import { useMobile } from "../../../../services/hooks/hooks";
+import { useMobile, useSortKey } from "../../../../services/hooks/hooks";
 import { ColumnDescription, GridRowWrapper } from "../../../../components/Grid";
 import s from "./index.module.css";
 import { useTrackGrid } from "./TrackGrid";
 import { useDispatch } from "react-redux";
 import { setSortKey } from "../../../../services/redux/modules/user/reducer";
+import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 
 export default function TrackHeader() {
   const [isMobile, isTablet] = useMobile();
+  const [isCount, isTotal] = useSortKey();
+
   const trackGrid = useTrackGrid();
   const dispatch = useDispatch();
-  
-  const handleClick = (value: string) =>{
-    dispatch(setSortKey(value));
-  }
+
+  const handleClick = useCallback(
+    (value: string) => {
+      dispatch(setSortKey(value));
+    },
+    [dispatch],
+  );
 
   const columns = useMemo<ColumnDescription[]>(
     () => [
@@ -36,14 +42,22 @@ export default function TrackHeader() {
       },
       {
         ...trackGrid.count,
-        node: <Text element="div" onClick={() => {handleClick("count")}}>Count</Text>,
+        node: (
+          <div  className={s.count}>
+            <Text element="div" onClick={() => {handleClick("count")}}>Count</Text>
+            { isCount && <KeyboardArrowDownOutlinedIcon color="primary"/>}
+          </div>
+        ),
       },
       {
         ...trackGrid.total,
         node: (
-          <Text element="div" className="center" onClick={() => {handleClick("duration_ms")}}>
-            Total
-          </Text>
+          <div className={s.total}>
+            <Text element="div" onClick={() => {handleClick("duration_ms")}}>
+                Total
+            </Text>
+            { isTotal && <KeyboardArrowDownOutlinedIcon color="primary"/>}
+          </div>
         ),
       },
       {
