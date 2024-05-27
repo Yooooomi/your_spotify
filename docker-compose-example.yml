@@ -1,5 +1,4 @@
-version: "3"
-
+---
 services:
   server:
     image: yooooomi/your_spotify_server
@@ -15,7 +14,7 @@ services:
       CLIENT_ENDPOINT: http://localhost:3000
       SPOTIFY_PUBLIC: __your_spotify_client_id__
       SPOTIFY_SECRET: __your_spotify_secret__
-      CORS: http://localhost:3000,http://localhost:3001 # "all" if you want to allow every origin
+      CORS: http://localhost:3000,http://localhost:3001 # "i-want-a-security-vulnerability-and-want-to-allow-all-origins" if you want to allow every origin
 
   mongo:
     container_name: mongo
