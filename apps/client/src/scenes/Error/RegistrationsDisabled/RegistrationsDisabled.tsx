@@ -1,5 +1,5 @@
-import Text from "../../components/Text";
-import s from "./index.module.css";
+import Text from "../../../components/Text";
+import s from "../index.module.css";
 
 export default function RegistrationsDisabled() {
   return (

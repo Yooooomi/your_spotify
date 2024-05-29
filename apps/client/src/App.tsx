@@ -20,7 +20,7 @@ import CollaborativeSongs from "./scenes/Collaborative/Affinity/Songs";
 import CollaborativeAlbums from "./scenes/Collaborative/Affinity/Albums";
 import CollaborativeArtists from "./scenes/Collaborative/Affinity/Artists";
 import "./App.css";
-import RegistrationsDisabled from "./scenes/RegistrationsDisabled";
+import RegistrationsDisabled from "./scenes/Error/RegistrationsDisabled";
 import Affinity from "./scenes/Collaborative/Affinity";
 import { useTheme } from "./services/theme";
 import { selectDarkMode } from "./services/redux/modules/user/selector";
