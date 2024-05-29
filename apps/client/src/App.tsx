@@ -29,6 +29,7 @@ import TrackStats from "./scenes/TrackStats";
 import LongestSessions from "./scenes/LongestSessions";
 import AlbumStats from "./scenes/AlbumStats";
 import Benchmarks from "./scenes/Benchmarks";
+import ApiEndpointSetToFronted from "./scenes/Error/ApiEndpointSetToFronted";
 
 function App() {
   const dark = useSelector(selectDarkMode);
@@ -81,6 +82,10 @@ function App() {
               <Route
                 path="/registrations-disabled"
                 element={<RegistrationsDisabled />}
+              />
+              <Route
+                path="/oauth/spotify" // Error page when someone accidentally configures their API_ENDPOINT to point to the frontend instead of the backend
+                element={<ApiEndpointSetToFronted />}
               />
               <Route
                 path="/top/songs"
