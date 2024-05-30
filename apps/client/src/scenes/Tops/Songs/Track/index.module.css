@@ -7,6 +7,18 @@
   margin-bottom: 16px;
 }
 
+.count {
+  display: flex;
+  align-items: center;
+  justify-content:left;
+}
+
+.total {
+  display: flex;
+  align-items: center;
+  justify-content:center;
+}
+
 .names > :first-child {
   margin-bottom: 4px;
 }

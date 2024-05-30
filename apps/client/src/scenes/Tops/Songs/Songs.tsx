@@ -17,6 +17,7 @@ import s from "./index.module.css";
 
 export default function Songs() {
   const { interval } = useSelector(selectRawIntervalDetail);
+
   const { items, hasMore, onNext } = useInfiniteScroll(
     interval,
     api.getBestSongs,
@@ -55,7 +56,6 @@ export default function Songs() {
               {items.map(item => (
                 <Track
                   playable
-                  // eslint-disable-next-line react/no-array-index-key
                   key={item.track.id}
                   track={item.track}
                   album={item.album}

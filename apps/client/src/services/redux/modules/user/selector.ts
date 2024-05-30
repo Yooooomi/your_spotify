@@ -56,6 +56,10 @@ export const selectDateFormat = createSelector(
   selectUser,
   user => user?.settings.dateFormat ?? "default",
 );
+export const selectStatMeasurement = createSelector(
+  selectUser,
+  user => user?.settings.metricUsed ?? "number",
+);
 export const selectBlacklistedArtist = (artistId: string) =>
   createSelector(selectUser, user =>
     Boolean(user?.settings.blacklistedArtists?.find(art => art === artistId)),

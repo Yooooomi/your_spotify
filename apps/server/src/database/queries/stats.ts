@@ -5,6 +5,7 @@ import {
   basicMatch,
   getGroupByDateProjection,
   getGroupingByTimeSplit,
+  getTrackSortType,
   getTrackSumType,
   lightAlbumLookupPipeline,
   lightArtistLookupPipeline,
@@ -571,7 +572,7 @@ export const getBest = (
     {
       $facet: {
         infos: [
-          { $sort: { count: -1, _id: 1 } },
+          { $sort: { [getTrackSortType(user)]: -1, _id: 1 } },
           { $skip: offset },
           { $limit: nb },
         ],
