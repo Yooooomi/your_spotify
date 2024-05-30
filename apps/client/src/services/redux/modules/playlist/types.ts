@@ -10,7 +10,6 @@ export interface PlaylistTopSongsContext {
   type: "top";
   nb: number;
   interval: { start: number; end: number };
-  sortKey: string;
 }
 
 export interface PlaylistAffinityContext {

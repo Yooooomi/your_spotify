@@ -361,7 +361,7 @@ export const api = {
     get<{ artists: Artist[]; tracks: TrackWithFullAlbum[]; albums: Album[] }>(
       `/search/${str}`,
     ),
-  getBestSongs: (start: Date, end: Date, nb: number, offset: number, sortKey: string) =>
+  getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>
     get<
       {
         count: number;
@@ -377,9 +377,8 @@ export const api = {
       end,
       nb,
       offset,
-      sortKey,
     }),
-  getBestArtists: (start: Date, end: Date, nb: number, offset: number, sortKey: string) =>
+  getBestArtists: (start: Date, end: Date, nb: number, offset: number) =>
     get<
       {
         count: number;
@@ -394,9 +393,8 @@ export const api = {
       end,
       nb,
       offset,
-      sortKey,      
     }),
-  getBestAlbums: (start: Date, end: Date, nb: number, offset: number, sortKey: string) =>
+  getBestAlbums: (start: Date, end: Date, nb: number, offset: number) =>
     get<
       {
         count: number;
@@ -411,7 +409,6 @@ export const api = {
       end,
       nb,
       offset,
-      sortKey,
     }),
   getImports: () => get<ImporterState[]>("/imports"),
   doImportPrivacy: (files: File[]) => {

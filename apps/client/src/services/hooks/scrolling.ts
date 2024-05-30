@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { DEFAULT_ITEMS_TO_LOAD } from "../apis/api";
 import { Interval } from "../intervals";
-import { useSelector } from "react-redux";
-import { selectSortKey } from "../redux/modules/user/selector";
 
 export function useInfiniteScroll<T>(
   interval: Interval,
@@ -11,13 +9,10 @@ export function useInfiniteScroll<T>(
     end: Date,
     nb: number,
     offset: number,
-    sortKey: string,
   ) => Promise<{ data: T[] }>,
 ) {
   const [items, setItems] = useState<T[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  
-  const sortKey = useSelector(selectSortKey);
 
   const ref = useRef<(force?: boolean) => void>();
 
@@ -29,7 +24,6 @@ export function useInfiniteScroll<T>(
         interval.end,
         DEFAULT_ITEMS_TO_LOAD,
         isNew ? 0 : items.length,
-        sortKey,
       );
       if (isNew) {
         setItems([...result.data] as T[]);
@@ -46,7 +40,7 @@ export function useInfiniteScroll<T>(
     setHasMore(true);
     setItems([]);
     setTimeout(() => ref.current?.(true), 0);
-  }, [interval, sortKey]);
+  }, [interval]);
 
   return { items, hasMore, onNext: ref.current };
 }

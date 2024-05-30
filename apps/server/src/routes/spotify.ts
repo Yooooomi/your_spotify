@@ -364,7 +364,6 @@ router.get(
         end,
         nb,
         offset,
-        sortKey
       );
       return res.status(200).send(result);
     } catch (e) {
@@ -392,7 +391,6 @@ router.get(
         end,
         nb,
         offset,
-        sortKey,
       );
       return res.status(200).send(result);
     } catch (e) {
@@ -420,7 +418,6 @@ router.get(
         end,
         nb,
         offset,
-        sortKey
       );
       return res.status(200).send(result);
     } catch (e) {
@@ -671,7 +668,6 @@ router.post(
           intervalData.end,
           nb,
           0,
-          sortKey,
         );
         spotifyIds = items.map(item => item.track.id);
         if (!playlistName) {

@@ -16,7 +16,7 @@ interface BestArtistProps extends ImplementedCardProps {}
 
 export default function BestArtist({ className }: BestArtistProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
-  const result = useAPI(api.getBestArtists, interval.start, interval.end, 1, 0, "count");
+  const result = useAPI(api.getBestArtists, interval.start, interval.end, 1, 0);
 
   if (!result) {
     return (

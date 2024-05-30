@@ -5,6 +5,7 @@ import {
   basicMatch,
   getGroupByDateProjection,
   getGroupingByTimeSplit,
+  getTrackSortType,
   getTrackSumType,
   lightAlbumLookupPipeline,
   lightArtistLookupPipeline,
@@ -553,7 +554,6 @@ export const getBest = (
   end: Date,
   nb: number,
   offset: number,
-  sortKey: string,
 ) =>
   InfosModel.aggregate([
     ...basicMatch(user._id, start, end),
@@ -572,7 +572,7 @@ export const getBest = (
     {
       $facet: {
         infos: [
-          { $sort: { [sortKey]: -1, _id: 1 } },
+          { $sort: { [getTrackSortType(user)]: -1, _id: 1 } },
           { $skip: offset },
           { $limit: nb },
         ],

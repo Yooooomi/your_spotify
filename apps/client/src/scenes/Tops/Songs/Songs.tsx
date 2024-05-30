@@ -9,7 +9,7 @@ import { DEFAULT_PLAYLIST_NB } from "../../../components/PlaylistDialog/Playlist
 import TitleCard from "../../../components/TitleCard";
 import { api } from "../../../services/apis/api";
 import { PlaylistContext } from "../../../services/redux/modules/playlist/types";
-import { selectRawIntervalDetail, selectSortKey } from "../../../services/redux/modules/user/selector";
+import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import { useInfiniteScroll } from "../../../services/hooks/scrolling";
 import Track from "./Track";
 import TrackHeader from "./Track/TrackHeader";
@@ -17,8 +17,7 @@ import s from "./index.module.css";
 
 export default function Songs() {
   const { interval } = useSelector(selectRawIntervalDetail);
-  const sortKey = useSelector(selectSortKey);
-  
+
   const { items, hasMore, onNext } = useInfiniteScroll(
     interval,
     api.getBestSongs,
@@ -32,9 +31,8 @@ export default function Songs() {
         start: interval.start.getTime(),
         end: interval.end.getTime(),
       },
-      sortKey,
     }),
-    [interval.end, interval.start, sortKey],
+    [interval.end, interval.start],
   );
 
   return (
@@ -58,7 +56,6 @@ export default function Songs() {
               {items.map(item => (
                 <Track
                   playable
-                  // eslint-disable-next-line react/no-array-index-key
                   key={item.track.id}
                   track={item.track}
                   album={item.album}

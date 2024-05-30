@@ -20,7 +20,6 @@ export interface User {
     timezone: string | null | undefined;
     dateFormat: string;
     blacklistedArtists: string[] | undefined;
-    sortKey: string;
   };
   publicToken: string | null;
   firstListenedAt: string;
