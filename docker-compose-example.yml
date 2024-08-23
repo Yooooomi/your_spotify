@@ -20,6 +20,7 @@ services:
   mongo:
     container_name: mongo
     image: mongo:6
+    restart: always
     volumes:
       - ./your_spotify_db:/data/db
 
