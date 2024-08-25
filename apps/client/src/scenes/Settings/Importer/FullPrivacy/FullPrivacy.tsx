@@ -61,7 +61,9 @@ export default function FullPrivacy() {
       </label>
       {files &&
         Array.from(Array(files.length).keys()).map(i => (
-          <div key={i}>{files.item(i)?.name}</div>
+          <Text key={i} element="div">
+            {files.item(i)?.name}
+          </Text>
         ))}
       {wrongFiles && (
         <Text className={s.alert}>
