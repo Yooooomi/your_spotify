@@ -39,48 +39,45 @@ export const validating =
   };
 
 const baselogged = async (req: Request, useQueryToken = false) => {
-  const auth = req.cookies.token;
+  const { token: queryToken } = req.query;
 
-  if (!auth && useQueryToken) {
-    const { token } = req.query;
-    if (!token || typeof token !== "string") {
+  if (useQueryToken && queryToken && typeof queryToken === "string") {
+    const user = await getUserFromField("publicToken", queryToken, false);
+    if (user) {
+      return user;
+    }
+  }
+
+  const auth = req.cookies.token;
+  if (!auth) {
+    return null;
+  }
+
+  try {
+    const privateData = await getPrivateData();
+    if (!privateData?.jwtPrivateKey) {
+      throw new Error("No private data found, cannot sign JWT");
+    }
+    const jwtUser = verify(auth, privateData.jwtPrivateKey) as {
+      userId: string;
+    };
+
+    if (typeof jwtUser.userId !== "string") {
       return null;
     }
-    const user = await getUserFromField("publicToken", token, false);
+
+    const user = await getUserFromField(
+      "_id",
+      new Types.ObjectId(jwtUser.userId),
+      false,
+    );
+
     if (!user) {
       return null;
     }
     return user;
-  }
-  if (!auth) return null;
-
-  if (auth) {
-    try {
-      const privateData = await getPrivateData();
-      if (!privateData?.jwtPrivateKey) {
-        throw new Error("No private data found, cannot sign JWT");
-      }
-      const jwtUser = verify(auth, privateData.jwtPrivateKey) as {
-        userId: string;
-      };
-
-      if (typeof jwtUser.userId !== "string") {
-        return null;
-      }
-
-      const user = await getUserFromField(
-        "_id",
-        new Types.ObjectId(jwtUser.userId),
-        false,
-      );
-
-      if (!user) {
-        return null;
-      }
-      return user;
-    } catch (e) {
-      return null;
-    }
+  } catch (e) {
+    return null;
   }
   return null;
 };
