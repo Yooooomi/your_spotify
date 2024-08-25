@@ -45,8 +45,6 @@ It's composed of a web server which polls the Spotify API every now and then and
 Follow the [docker-compose-example.yml](https://github.com/Yooooomi/your_spotify/blob/master/docker-compose-example.yml) to host your application through docker.
 
 ```yml
-version: "3"
-
 services:
   server:
     image: yooooomi/your_spotify_server
