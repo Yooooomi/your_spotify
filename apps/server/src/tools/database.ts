@@ -73,14 +73,18 @@ export class Database {
     const allTracks = await getTracksWithoutAlbum();
     if (allTracks.length > 0) {
       const albumIds = allTracks.map(t => t.album);
-      logger.info(`Fixing missing albums (${albumIds.join(",")})`);
+      logger.info(
+        `Fixing missing albums for tracks ${allTracks.map(track => track.id).join(",")} (${albumIds.join(",")})`,
+      );
       const albums = await getAlbums(user._id.toString(), albumIds);
       await storeTrackAlbumArtist({ albums });
     }
     const allAlbums = await getAlbumsWithoutArtist();
     if (allAlbums.length > 0) {
       const artistIds = allAlbums.map(t => t.artists).flat(1);
-      logger.info(`Fixing missing artists (${artistIds.join(",")})`);
+      logger.info(
+        `Fixing missing artists for albums ${allAlbums.map(track => track.id).join(",")} (${artistIds.join(",")})`,
+      );
       const artists = await getArtists(user._id.toString(), artistIds);
       await storeTrackAlbumArtist({ artists });
     }

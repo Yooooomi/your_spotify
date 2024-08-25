@@ -70,6 +70,25 @@ export const generateNewPublicToken = myAsyncThunk<string, void>(
   },
 );
 
+export const deletePublicToken = myAsyncThunk<string, void>(
+  "@user/delete-public-token",
+  async (_, tapi) => {
+    try {
+      const { data: token } = await api.deletePublicToken();
+      return token;
+    } catch (e) {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: "error",
+          message: "Could not delete the public token",
+        }),
+      );
+      throw e;
+    }
+  },
+);
+
 export const setDarkMode = myAsyncThunk<void, DarkModeType>(
   "@user/set-dark-mode",
   async (payload, tapi) => {

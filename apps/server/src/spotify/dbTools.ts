@@ -54,7 +54,7 @@ export const getTracks = async (userId: string, ids: string[]) => {
     userId,
     trackUrl,
     ids,
-    20,
+    50,
     "tracks",
   );
 

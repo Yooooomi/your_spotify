@@ -486,6 +486,7 @@ export const api = {
       },
     ),
   generatePublicToken: () => post<string>("/generate-public-token"),
+  deletePublicToken: () => post<string>("/delete-public-token"),
   getBestSongsOfHour: (start: Date, end: Date) =>
     get<
       {

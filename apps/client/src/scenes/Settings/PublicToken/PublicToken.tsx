@@ -6,7 +6,10 @@ import Text from "../../../components/Text";
 import TitleCard from "../../../components/TitleCard";
 import { alertMessage } from "../../../services/redux/modules/message/reducer";
 import { selectUser } from "../../../services/redux/modules/user/selector";
-import { generateNewPublicToken } from "../../../services/redux/modules/user/thunk";
+import {
+  deletePublicToken,
+  generateNewPublicToken,
+} from "../../../services/redux/modules/user/thunk";
 import { useAppDispatch } from "../../../services/redux/tools";
 import SettingLine from "../SettingLine";
 import s from "./index.module.css";
@@ -18,6 +21,10 @@ export default function PublicToken() {
 
   const generate = useCallback(() => {
     dispatch(generateNewPublicToken());
+  }, [dispatch]);
+
+  const deleteToken = useCallback(() => {
+    dispatch(deletePublicToken());
   }, [dispatch]);
 
   const onCopy = useCallback(() => {
@@ -60,7 +67,12 @@ export default function PublicToken() {
       />
       <SettingLine
         left="Regenerate"
-        right={<Button onClick={generate}>Generate</Button>}
+        right={
+          <div className={s.row}>
+            <Button onClick={generate}>Generate</Button>
+            <Button onClick={deleteToken}>Delete Token</Button>
+          </div>
+        }
       />
     </TitleCard>
   );
