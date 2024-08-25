@@ -15,7 +15,7 @@ COPY apps/dev/tsconfig.json apps/dev/tsconfig.json
 COPY apps/client/package.json apps/client/package.json
 COPY apps/client/tsconfig.json apps/client/tsconfig.json
 
-RUN yarn --frozen-lockfile
+RUN yarn --frozen-lockfile --network-timeout 500000
 
 COPY apps/client/public apps/client/public
 COPY apps/client/src apps/client/src
