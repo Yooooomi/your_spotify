@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button, CircularProgress } from "@mui/material";
 import { startImportPrivacy } from "../../../../services/redux/modules/import/thunk";
 import Text from "../../../../components/Text";
@@ -57,7 +57,9 @@ export default function Privacy() {
       </label>
       {files &&
         Array.from(Array(files.length).keys()).map(i => (
-          <div key={i}>{files.item(i)?.name}</div>
+          <Text key={i} element="div">
+            {files.item(i)?.name}
+          </Text>
         ))}
       {wrongFiles && (
         <Text className={s.alert}>

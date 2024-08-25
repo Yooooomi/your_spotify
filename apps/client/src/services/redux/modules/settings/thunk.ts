@@ -115,3 +115,28 @@ export const changeDateFormat = myAsyncThunk<
     throw e;
   }
 });
+
+export const changeStatUnit = myAsyncThunk<
+  void,
+  User["settings"]["metricUsed"]
+>("@settings/change-stat-measurement", async (newStatMeasurement, tapi) => {
+  try {
+    await api.setSetting("metricUsed", newStatMeasurement);
+    await tapi.dispatch(checkLogged());
+    tapi.dispatch(
+      alertMessage({
+        level: "success",
+        message: `Updated stat measurement to ${newStatMeasurement}`,
+      }),
+    );
+  } catch (e) {
+    console.error(e);
+    tapi.dispatch(
+      alertMessage({
+        level: "error",
+        message: `Could not update stat measurement to ${newStatMeasurement}`,
+      }),
+    );
+    throw e;
+  }
+});

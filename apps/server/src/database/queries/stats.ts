@@ -5,6 +5,7 @@ import {
   basicMatch,
   getGroupByDateProjection,
   getGroupingByTimeSplit,
+  getTrackSortType,
   getTrackSumType,
   lightAlbumLookupPipeline,
   lightArtistLookupPipeline,
@@ -107,6 +108,7 @@ export const getMostListenedArtist = async (
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
+        durationMs: 1,
         primaryArtistId: 1,
         id: 1,
       },
@@ -571,7 +573,7 @@ export const getBest = (
     {
       $facet: {
         infos: [
-          { $sort: { count: -1, _id: 1 } },
+          { $sort: { [getTrackSortType(user)]: -1, _id: 1 } },
           { $skip: offset },
           { $limit: nb },
         ],

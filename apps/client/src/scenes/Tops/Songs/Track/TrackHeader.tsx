@@ -7,6 +7,7 @@ import { useTrackGrid } from "./TrackGrid";
 
 export default function TrackHeader() {
   const [isMobile, isTablet] = useMobile();
+
   const trackGrid = useTrackGrid();
 
   const columns = useMemo<ColumnDescription[]>(
@@ -29,14 +30,18 @@ export default function TrackHeader() {
       },
       {
         ...trackGrid.count,
-        node: <Text element="div">Count</Text>,
+        node: (
+          <div className={s.count}>
+            <Text element="div">Count</Text>
+          </div>
+        ),
       },
       {
         ...trackGrid.total,
         node: (
-          <Text element="div" className="center">
-            Total
-          </Text>
+          <div className={s.total}>
+            <Text element="div">Total</Text>
+          </div>
         ),
       },
       {

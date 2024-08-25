@@ -4,6 +4,7 @@ import { presetIntervals } from "../../../intervals";
 import {
   changeUsername,
   checkLogged,
+  deletePublicToken,
   generateNewPublicToken,
   setDarkMode,
 } from "./thunk";
@@ -30,7 +31,6 @@ export const setDataInterval =
 export const setPublicToken = createAction<string | null>(
   "@user/set-public-token",
 );
-
 export default createReducer(initialState, builder => {
   builder.addCase(logout, state => {
     state.user = null;
@@ -62,6 +62,13 @@ export default createReducer(initialState, builder => {
       return;
     }
     state.user.publicToken = payload;
+  });
+
+  builder.addCase(deletePublicToken.fulfilled, (state, { payload }) => {
+    if (!state.user) {
+      return;
+    }
+    state.user.publicToken = null;
   });
 
   builder.addCase(setDataInterval, (state, { payload }) => {

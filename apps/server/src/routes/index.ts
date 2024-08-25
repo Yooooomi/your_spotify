@@ -104,6 +104,18 @@ router.post("/generate-public-token", logged, async (req, res) => {
   }
 });
 
+router.post("/delete-public-token", logged, async (req, res) => {
+  const { user } = req as LoggedRequest;
+
+  try {
+    await setUserPublicToken(user._id.toString(), null);
+    return res.status(200).end();
+  } catch (e) {
+    logger.error(e);
+    return res.status(500).end();
+  }
+});
+
 router.get("/accounts", isLoggedOrGuest, async (_, res) => {
   try {
     const users = await getAllUsers(false);
