@@ -5,6 +5,8 @@ on:
   push:
     paths:
       - .github/workflows/nightly.yml
+      - Dockerfile.client.production
+      - Dockerfile.server.production
       - apps/client/**
       - apps/server/**
     branches:
