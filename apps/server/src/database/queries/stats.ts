@@ -108,6 +108,7 @@ export const getMostListenedArtist = async (
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
+        durationMs: 1,
         primaryArtistId: 1,
         id: 1,
       },

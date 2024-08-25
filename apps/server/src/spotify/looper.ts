@@ -37,7 +37,6 @@ const loop = async (user: User) => {
       RETRY,
       30,
     );
-    console.log("HEADERS", JSON.stringify(response.headers, null, " "));
     const { data } = response;
     items.push(...data.items);
     nextUrl = data.next;
