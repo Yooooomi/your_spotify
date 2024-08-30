@@ -60,6 +60,9 @@ h6 {
   --code-background: rgb(133, 133, 133);
 
   --divider: rgb(65, 65, 65);
+
+  --input-background-color: var(--secondary-dark);
+  --input-background-color-hover: var(--secondary-dark-hover);
 }
 
 .light-vars {
@@ -81,6 +84,9 @@ h6 {
   --code-background: rgb(228, 228, 228);
 
   --divider: rgb(232, 232, 232);
+
+  --input-background-color: hsl(0, 0%, 85%);
+  --input-background-color-hover: hsl(0, 0%, 75%);
 }
 
 @media (hover: none) and (pointer: coarse) {

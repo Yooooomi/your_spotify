@@ -7,7 +7,12 @@
 }
 
 .search {
-  background-color: rgb(234, 234, 234);
+  color: var(--text-on-light);
+  background-color: var(--input-background-color);
+}
+
+.search:hover {
+  background-color: var(--input-background-color-hover);
 }
 
 .artist {
