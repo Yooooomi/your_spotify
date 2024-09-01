@@ -1,0 +1,21 @@
+.root {
+  margin: auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  margin-left: 25px;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.syncButton {
+  width: fit-content;
+  margin-left: 20px !important;
+}

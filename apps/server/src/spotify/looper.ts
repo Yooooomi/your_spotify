@@ -12,7 +12,7 @@ import { getTracksAlbumsArtists, storeIterationOfLoop } from "./dbTools";
 
 const RETRY = 10;
 
-const loop = async (user: User) => {
+const updateRecentlyPlayed = async (user: User) => {
   logger.info(`[${user.username}]: refreshing...`);
 
   if (!user.accessToken) {
@@ -96,22 +96,35 @@ const loop = async (user: User) => {
   );
 };
 
-const WAIT_MS = 120 * 1000;
+const WAIT_MS_DB_LOOP = 120 * 1000; // 2 minutes
+const SYNC_HOUR = 4; // 4 AM
+let lastSyncDate = new Date(0);
 
 export const dbLoop = async () => {
-  // return;
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
       const nbUsers = await getUserCount();
       logger.info(`[DbLoop] starting for ${nbUsers} users`);
 
+      const now = new Date();
+      const isSyncTime = now.getHours() === SYNC_HOUR && now.getDate() !== lastSyncDate.getDate();
+
       for (let i = 0; i < nbUsers; i += 1) {
         const users = await getUser(i);
 
-        for (const us of users) {
-          await loop(us);
+        for (const user of users) {
+          await updateRecentlyPlayed(user);
+
+          if (user.syncLikedSongs && isSyncTime) {
+            const spotifyApi = new SpotifyAPI(user._id.toString());
+            await spotifyApi.syncLikedTracks(user);
+          }
         }
+      }
+
+      if (isSyncTime) {
+        lastSyncDate = now;
       }
     } catch (error) {
       logger.error(error);
@@ -128,6 +141,6 @@ export const dbLoop = async () => {
         );
       }
     }
-    await wait(WAIT_MS);
+    await wait(WAIT_MS_DB_LOOP);
   }
 };

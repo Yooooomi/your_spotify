@@ -54,6 +54,7 @@ export const createUser = (
       metricUsed: "number",
       dateFormat: "default",
     },
+    syncLikedSongs: false,
   });
 
 export const storeInUser = <F extends keyof User>(

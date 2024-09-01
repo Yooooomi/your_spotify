@@ -17,6 +17,7 @@ import {
   getBest,
   ItemType,
   getBestOfHour,
+  storeInUser,
 } from "../database";
 import {
   CollaborativeMode,
@@ -584,6 +585,48 @@ router.get(
       return res.status(500).end();
     }
   },
+);
+
+const booleanSchema = z.object({ 
+  status: z.boolean() 
+});
+
+router.post(
+  "/sync-liked-songs",
+  validating(booleanSchema),
+  logged,
+  withHttpClient,
+  async (req, res) => {
+    const { client, user } = req as LoggedRequest & SpotifyRequest;
+    const { status } = req.body as TypedPayload<typeof booleanSchema>;
+    
+    if (status) {
+      try {
+        let likedSongsPlaylistId;
+
+        if (user.syncLikedSongs !== true) {
+          await storeInUser("_id", user._id, { syncLikedSongs: true });
+          
+          const usersPlaylist = await client.playlists();
+          likedSongsPlaylistId = usersPlaylist.find(playlist => playlist.name === "Liked songs • " + user.username)?.id;
+          if (!likedSongsPlaylistId) {
+            likedSongsPlaylistId = await client.createPlaylist("Liked songs • " + user.username, [], false);
+          }
+
+          client.syncLikedTracks(user);
+        }
+        return res.status(200).json({ success: true, playlistId: likedSongsPlaylistId });
+      } catch (e) {
+        logger.error(e);
+        return res.status(500).json({ success: false, error: e.message });
+      }
+    } else {
+      if (user.syncLikedSongs) {
+        await storeInUser("_id", user._id, { syncLikedSongs: false });
+      }
+      return res.status(200).json({ success: true });
+    }
+  }
 );
 
 router.get("/playlists", logged, withHttpClient, async (req, res) => {

@@ -24,6 +24,12 @@ export interface User {
   publicToken: string | null;
   firstListenedAt: string;
   isGuest: boolean;
+  syncLikedSongs: boolean;
+}
+
+export interface SyncLikedSongsResponse {
+  success: boolean;
+  playlistId: string;
 }
 
 export interface ReduxPresetIntervalDetail {

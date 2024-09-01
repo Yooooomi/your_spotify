@@ -32,6 +32,36 @@ export interface RecentlyPlayedTrack {
   track: SpotifyTrack;
 }
 
+export interface PlaylistTrack {
+  added_at: string;
+  added_by: AddedBy;
+  is_local: boolean;
+  track: SpotifyTrack;
+}
+
+export interface AddedBy {
+  external_urls: ExternalUrls;
+  followers: Followers;
+  href: string;
+  id: string;
+  type: string;
+  uri: string;
+}
+
+export interface ExternalUrls {
+  spotify: string;
+}
+
+export interface Followers {
+  href: string;
+  total: number;
+}
+
+export interface SavedTrack {
+  added_at: string;
+  track: SpotifyTrack;
+}
+
 export const TrackSchema = new Schema<Track>(
   {
     album: { type: String, index: true }, // Id of the album

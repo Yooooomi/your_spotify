@@ -3,7 +3,7 @@ import { DateFormatter } from "../../../date";
 import { myAsyncThunk } from "../../tools";
 import { alertMessage } from "../message/reducer";
 import { selectIsPublic } from "./selector";
-import { DarkModeType, User } from "./types";
+import { DarkModeType, SyncLikedSongsResponse, User } from "./types";
 
 export const checkLogged = myAsyncThunk<User | null, void>(
   "@user/checklogged",
@@ -178,6 +178,26 @@ export const unblacklistArtist = myAsyncThunk<void, string>(
           message: "Could not unblacklist this artist",
         }),
       );
+    }
+  },
+);
+
+export const setSyncLikedSongs = myAsyncThunk<SyncLikedSongsResponse, boolean>(
+  "@user/set-sync-liked-songs",
+  async (status, tapi) => {
+    try {
+      const resp: SyncLikedSongsResponse = (await api.setSyncLikedSongs(status)).data;
+      await tapi.dispatch(checkLogged());
+      return resp;
+    } catch (e) {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: "error",
+          message: `Could not update sync liked songs to ${status}`,
+        }),
+      );
+      return { success: false, playlistId: "" } as SyncLikedSongsResponse;
     }
   },
 );

@@ -25,6 +25,7 @@ export interface User {
   lastImport: string | null;
   publicToken: string | null;
   firstListenedAt?: Date;
+  syncLikedSongs: boolean;
 }
 
 export const UserSchema = new Schema<User>(
@@ -63,6 +64,7 @@ export const UserSchema = new Schema<User>(
     lastImport: { type: String, default: null },
     publicToken: { type: String, default: null, index: true },
     firstListenedAt: { type: Date },
+    syncLikedSongs: { type: Boolean, default: false },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
