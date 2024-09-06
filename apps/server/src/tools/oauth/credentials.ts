@@ -13,6 +13,7 @@ export const credentials = {
       "playlist-modify-private",
       "playlist-modify-public",
       "playlist-read-private",
+      "ugc-image-upload",
     ].join(" "),
     redirectUri: `${get("API_ENDPOINT")}/oauth/spotify/callback`,
   },

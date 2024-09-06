@@ -1,26 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "../../../components/Header";
 import Text from "../../../components/Text";
 import s from "./index.module.css";
 import { Button } from "@mui/material";
 import { useAppDispatch } from "../../../services/redux/tools";
-import { setSyncLikedSongs } from "../../../services/redux/modules/user/thunk";
+import { syncLikedSongsStatus, setSyncLikedSongs } from "../../../services/redux/modules/user/thunk";
 import { alertMessage } from "../../../services/redux/modules/message/reducer";
 import { selectUser } from "../../../services/redux/modules/user/selector";
 import { useSelector } from "react-redux";
-import { SyncLikedSongsResponse } from "../../../services/redux/modules/user/types";
-import { useAPI } from "../../../services/hooks/hooks";
-import { api } from "../../../services/apis/api";
+import { SyncLikedSongsStatusResponse, SyncLikedSongsResponse } from "../../../services/redux/modules/user/types";
 
 export default function LikedSongs() {
     const user = useSelector(selectUser);
     const [likedSongsPlaylistId, setLikedSongsPlaylistId] = useState<string>("");
     const [syncEnabled, setSyncEnabled] = useState<boolean>(false);
     const [likedSongsLoading, setLoadingLikedSongs] = useState<boolean>(true);
-    const [playlistsLoading, setLoadingPlaylist] = useState<boolean>(true);
-    const [showPlaylistButton, setShowPlaylistButton] = useState<boolean>(false);
+    const [showPlaylistEmbed, setShowPlaylistEmbed] = useState<boolean>(false);
+    const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
     const dispatch = useAppDispatch();
-    const playlists = useAPI(api.getPlaylists)
+    const iframeRef = useRef<HTMLIFrameElement>(null);
 
     if (!user) {
         return null;
@@ -28,18 +26,13 @@ export default function LikedSongs() {
 
     useEffect(() => {
         const fetchInitialState = async () => {
-            setLoadingLikedSongs(true);
             try {
-                setSyncEnabled(user.syncLikedSongs);
-                setShowPlaylistButton(user.syncLikedSongs);
-
-                if (playlists != null) {
-                    let result = await playlists.find((playlist: any) => playlist.name === "Liked songs • " + user.username)?.id;
-                    if (result != undefined) {
-                        setLikedSongsPlaylistId(result);
-                    }
+                let enabled = user.syncLikedSongsStatus == "active" || user.syncLikedSongsStatus == "loading";
+                setSyncEnabled(enabled);
+                setShowPlaylistEmbed(enabled);
+                if (user.syncLikedSongsPlaylistId) {
+                    setLikedSongsPlaylistId(user.syncLikedSongsPlaylistId);
                 }
-                setLoadingPlaylist(false);
             } catch (error) {
                 console.error("Failed to fetch initial state:", error);
                 showRequestError();
@@ -49,7 +42,41 @@ export default function LikedSongs() {
         };
 
         fetchInitialState();
-    }, [user, playlists]);
+    }, [user]);
+
+    const startRecursiveCheck = async (playlistId: string, count = 0) => {
+        if (count < 20) {
+            let result = (await dispatch(syncLikedSongsStatus())).payload as SyncLikedSongsStatusResponse;
+            if (result.success && result.status == "active") {
+                dispatch(alertMessage({
+                    level: "success",
+                    message: "Sync complete",
+                }));
+                return;
+            } else if (result.status == "failed") {
+                dispatch(alertMessage({
+                    level: "error",
+                    message: "Sync failed. Please try again later",
+                }));
+                return;
+            }
+
+            if (iframeRef.current) {
+                iframeRef.current.src = `https://open.spotify.com/embed/playlist/${playlistId}?cache=${new Date().getTime()}`;
+                const id = setTimeout(() => startRecursiveCheck(playlistId, count + 1), 3000);
+                setTimeoutId(id);
+            }
+        } else {
+            setTimeoutId(null);
+        }
+    };
+
+    const stopRecursiveCheck = () => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            setTimeoutId(null);
+        }
+    };
 
     const toggleSync = async () => {
         if (likedSongsLoading) return;
@@ -61,13 +88,20 @@ export default function LikedSongs() {
             let result = (await dispatch(setSyncLikedSongs(newSyncEnabled))).payload as SyncLikedSongsResponse;
             if (result.success) {
                 setSyncEnabled(newSyncEnabled);
-                setShowPlaylistButton(newSyncEnabled);
+                setShowPlaylistEmbed(newSyncEnabled);
 
                 if (newSyncEnabled) {
-                    setLikedSongsPlaylistId(result.playlistId);
+                    setTimeout(()=> {
+                        setLikedSongsPlaylistId(result.playlistId);
+                        startRecursiveCheck(result.playlistId);
+                    }, 1000);
                 } else {
                     setLikedSongsPlaylistId("");
+                    stopRecursiveCheck();
                 }
+            }
+            else {
+                showRequestError("Failed to update sync status");
             }
         } catch (error) {
             console.error("Failed to update syncLikedSongs state:", error);
@@ -75,22 +109,6 @@ export default function LikedSongs() {
         } finally {
             setLoadingLikedSongs(false);
         }
-    };
-
-    const openPlaylist = async () => {
-        if (likedSongsPlaylistId === "") {
-            if (playlists != null) {
-                if (playlists.length == 0) {
-                    showRequestError("No playlists found");
-                }
-            } else {
-                showRequestError();
-            }
-            return;
-        }
-
-        const url = `https://open.spotify.com/playlist/${likedSongsPlaylistId}`;
-        window.open(url, "_blank");
     };
 
     const showRequestError = (msg: string = "The web application could not communicate with the server") => {
@@ -108,25 +126,31 @@ export default function LikedSongs() {
                 subtitle="Automatically syncs your liked songs into a shareable playlist every night"
             />
             <div className={s.content}>
-                <Text>Sync your liked songs:</Text>
-                <Button
-                    className={s.syncButton}
-                    variant="contained"
-                    onClick={toggleSync}
-                    disabled={likedSongsLoading} // Disable button while setLikedSongsLoading
-                >
-                    {syncEnabled ? "On" : "Off"}
-                </Button>
-                <br></br>
-                {showPlaylistButton && (
+                <div className={s.buttonContainer}>
+                    <Text>Sync your liked songs:</Text>
                     <Button
-                        className={s.playlistButton}
+                        className={s.syncButton}
                         variant="contained"
-                        onClick={openPlaylist}
-                        disabled={playlistsLoading}
+                        onClick={toggleSync}
+                        disabled={likedSongsLoading} // Disable button while setLikedSongsLoading
                     >
-                        Open playlist
+                        {syncEnabled ? "On" : "Off"}
                     </Button>
+                </div>
+                <br></br>
+                {showPlaylistEmbed && (
+                    <div className={s.embedContainer}>
+                        <Text>Preview (press to open)</Text>
+                        <iframe
+                            ref={iframeRef}
+                            className={s.embedPlaylist}
+                            src={`https://open.spotify.com/embed/playlist/${likedSongsPlaylistId}?cache=${new Date().getTime()}`}
+                            frameBorder="0"
+                            allowFullScreen
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                            loading="lazy"
+                        />
+                    </div>
                 )}
             </div>
         </div>

@@ -97,7 +97,7 @@ const updateRecentlyPlayed = async (user: User) => {
 };
 
 const WAIT_MS_DB_LOOP = 120 * 1000; // 2 minutes
-const SYNC_HOUR = 4; // 4 AM
+const SYNC_HOUR = 3; // 24h format
 let lastSyncDate = new Date(0);
 
 export const dbLoop = async () => {
@@ -116,7 +116,7 @@ export const dbLoop = async () => {
         for (const user of users) {
           await updateRecentlyPlayed(user);
 
-          if (user.syncLikedSongs && isSyncTime) {
+          if (user.syncLikedSongsStatus != "inactive" && isSyncTime) {
             const spotifyApi = new SpotifyAPI(user._id.toString());
             await spotifyApi.syncLikedTracks(user);
           }

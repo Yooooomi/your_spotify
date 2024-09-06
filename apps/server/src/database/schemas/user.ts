@@ -25,7 +25,8 @@ export interface User {
   lastImport: string | null;
   publicToken: string | null;
   firstListenedAt?: Date;
-  syncLikedSongs: boolean;
+  syncLikedSongsPlaylistId: string | null;
+  syncLikedSongsStatus: "inactive" | "active" | "loading" | "failed";
 }
 
 export const UserSchema = new Schema<User>(
@@ -64,7 +65,12 @@ export const UserSchema = new Schema<User>(
     lastImport: { type: String, default: null },
     publicToken: { type: String, default: null, index: true },
     firstListenedAt: { type: Date },
-    syncLikedSongs: { type: Boolean, default: false },
+    syncLikedSongsPlaylistId: { type: String, default: null },
+    syncLikedSongsStatus: {
+      type: String,
+      enum: ["inactive", "active", "loading", "failed"],
+      default: "inactive",
+    },
   },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );

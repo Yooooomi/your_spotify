@@ -3,7 +3,7 @@ import { DateFormatter } from "../../../date";
 import { myAsyncThunk } from "../../tools";
 import { alertMessage } from "../message/reducer";
 import { selectIsPublic } from "./selector";
-import { DarkModeType, SyncLikedSongsResponse, User } from "./types";
+import { DarkModeType, SyncLikedSongsResponse, SyncLikedSongsStatusResponse, User } from "./types";
 
 export const checkLogged = myAsyncThunk<User | null, void>(
   "@user/checklogged",
@@ -198,6 +198,26 @@ export const setSyncLikedSongs = myAsyncThunk<SyncLikedSongsResponse, boolean>(
         }),
       );
       return { success: false, playlistId: "" } as SyncLikedSongsResponse;
+    }
+  },
+);
+
+export const syncLikedSongsStatus = myAsyncThunk<SyncLikedSongsStatusResponse, void>(
+  "@user/sync-liked-songs-status",
+  async (_, tapi) => {
+    try {
+      const resp: SyncLikedSongsStatusResponse = (await api.syncLikedSongsStatus()).data;
+      await tapi.dispatch(checkLogged());
+      return resp;
+    } catch (e) {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: "error",
+          message: "Could not get loading state of sync",
+        }),
+      );
+      return { success: false, status: "failed", error: e } as SyncLikedSongsStatusResponse;
     }
   },
 );
