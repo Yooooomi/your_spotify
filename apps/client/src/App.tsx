@@ -22,6 +22,7 @@ import CollaborativeArtists from "./scenes/Collaborative/Affinity/Artists";
 import "./App.css";
 import RegistrationsDisabled from "./scenes/Error/RegistrationsDisabled";
 import Affinity from "./scenes/Collaborative/Affinity";
+import LikedSongs from "./scenes/Collaborative/LikedSongs";
 import { useTheme } from "./services/theme";
 import { selectDarkMode } from "./services/redux/modules/user/selector";
 import PlaylistDialog from "./components/PlaylistDialog";
@@ -116,6 +117,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Affinity />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/collaborative/liked-songs"
+                element={
+                  <PrivateRoute>
+                    <LikedSongs />
                   </PrivateRoute>
                 }
               />

@@ -1,9 +1,16 @@
-import { CollaborativeMode, SpotifyImage } from "../../../types";
+import { CollaborativeMode, SpotifyImage, Track } from "../../../types";
 
 export interface Playlist {
   id: string;
   name: string;
+  owner: {
+    id: string;
+  };
   images: SpotifyImage[];
+  tracks: {
+    total: number;
+    items: Track[];
+  };
 }
 
 export interface PlaylistTopSongsContext {
