@@ -1,8 +1,24 @@
+import { storeTrackAlbumArtist } from "../../spotify/dbTools";
 import { AlbumModel, InfosModel } from "../Models";
 import { User } from "../schemas/user";
+import { getAlbums as fetchAlbums } from "../../spotify/dbTools";
 
-export const getAlbums = (albumsId: string[]) =>
-  AlbumModel.find({ id: { $in: albumsId } });
+export const getAlbums = async (userID: string, albumIds: string[]) => {
+  const albums = await AlbumModel.find({ id: { $in: albumIds } });
+
+  const validFetchedAlbums = albums.filter(album => album.name && album.name.trim() !== '');
+  const foundAlbumIds = validFetchedAlbums.map(album => album.id);
+  const missingAlbumIds = albumIds.filter(id => !foundAlbumIds.includes(id));
+
+  if (missingAlbumIds.length > 0) {
+    const fetchedAlbums = await fetchAlbums(userID, missingAlbumIds);
+    await storeTrackAlbumArtist({ albums: fetchedAlbums });
+
+    return [...albums, ...fetchedAlbums];
+  }
+
+  return albums;
+};
 
 export const searchAlbum = (str: string) =>
   AlbumModel.find({ name: { $regex: new RegExp(str, "i") } });

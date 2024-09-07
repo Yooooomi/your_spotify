@@ -10,7 +10,7 @@ export async function up() {
 
   for await (const user of UserModel.find()) {
     for await (const info of InfosModel.find({ owner: user._id })) {
-      const [track] = await getTracks([info.id]);
+      const [track] = await getTracks(user._id.toString(), [info.id]);
       if (!track) {
         continue;
       }
