@@ -1,10 +1,26 @@
+import { storeTrackAlbumArtist } from "../../spotify/dbTools";
 import { Timesplit } from "../../tools/types";
 import { ArtistModel, InfosModel } from "../Models";
 import { User } from "../schemas/user";
 import { getGroupByDateProjection, getGroupingByTimeSplit } from "./statsTools";
+import { getArtists as fetchArtists } from "../../spotify/dbTools";
 
-export const getArtists = (artistIds: string[]) =>
-  ArtistModel.find({ id: { $in: artistIds } });
+export const getArtists = async (userID: string, artistIds: string[]) => {
+  const artists = await ArtistModel.find({ id: { $in: artistIds } });
+
+  const validFetchedArtists = artists.filter(artist => artist.name && artist.name.trim() !== '');
+  const foundArtistIds = validFetchedArtists.map(artist => artist.id);
+  const missingArtistIds = artistIds.filter(id => !foundArtistIds.includes(id));
+
+  if (missingArtistIds.length > 0) {
+    const fetchedArtists = await fetchArtists(userID, missingArtistIds);
+    await storeTrackAlbumArtist({ artists: fetchedArtists });
+
+    return [...artists, ...fetchedArtists];
+  }
+
+  return artists;
+};
 
 export const searchArtist = (str: string) =>
   ArtistModel.find({ name: { $regex: new RegExp(str, "i") } });
