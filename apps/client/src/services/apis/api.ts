@@ -26,6 +26,17 @@ const axios = Axios.create({
   withCredentials: true,
 });
 
+// Add a response interceptor
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      window.location.pathname = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Adds latency to requests without having to use chrome latency
 // const get = <T>(url: string, params: Record<string, any> = {}): Promise<{ data: T }> =>
 //   new Promise((res, rej) => {

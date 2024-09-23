@@ -5,6 +5,7 @@ import Text from "../../components/Text";
 import { api } from "../../services/apis/api";
 import { logout } from "../../services/redux/modules/user/reducer";
 import { useAppDispatch } from "../../services/redux/tools";
+import { Cookies } from "../../services/tools";
 
 export default function Logout() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function Logout() {
       } catch (e) {
         console.error(e);
       }
+      Cookies.remove('rememberMe');
       navigate("/login");
     }
     dologout();

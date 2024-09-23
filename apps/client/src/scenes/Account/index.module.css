@@ -27,6 +27,18 @@
   color: white;
   height: 40px;
   border-radius: 20px;
-  padding: 0px 24px;
+  padding: 0px 58px;
   font-weight: bold;
+}
+
+.rememberMe {
+  padding-left: 14px;
+  transition: all 250ms;
+  border-radius: 6px;
+  border: none;
+  font-size: unset;
+  background-color: transparent;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 15px;
 }
