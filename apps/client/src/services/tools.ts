@@ -49,3 +49,24 @@ export function getMinOfArray<T>(
   }
   return { minValue: min, minIndex };
 }
+
+export const Cookies = {
+  get: (name: string) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift();
+    return null;
+  },
+  set: (name: string, value: string, days: number = 30) => { // Default to 30 days
+    let expires = '';
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = `; expires=${date.toUTCString()}`;
+    const secure = '; Secure'; // Ensures the cookie is sent over HTTPS
+    const sameSite = '; SameSite=Lax'; // Helps prevent CSRF attacks
+    document.cookie = `${name}=${value || ''}${expires}; path=/${secure}${sameSite}`;
+  },
+  remove: (name: string) => {
+    document.cookie = `${name}=; Max-Age=-99999999; path=/; Secure; SameSite=Lax`;
+  }
+};
