@@ -1,6 +1,6 @@
 import { Tab, Tabs } from "@mui/material";
-import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Text from "../Text";
 import s from "./index.module.css";
 
@@ -15,7 +15,15 @@ interface ButtonsHeaderProps {
 
 export default function ButtonsHeader({ items }: ButtonsHeaderProps) {
   const navigate = useNavigate();
+  const location = useLocation(); 
   const [tab, setTab] = useState(0);
+
+  useEffect(() => {
+    const currentTab = items.findIndex(item => location.pathname.startsWith(item.url));
+    if (currentTab !== -1) {
+      setTab(currentTab);
+    }
+  }, [location.pathname, items]);
 
   const goto = useCallback(
     (value: number) => {
