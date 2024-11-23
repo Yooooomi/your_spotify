@@ -29,12 +29,10 @@ import {
 const fullPrivacyFileSchema = z.array(
   z.object({
     ts: z.string(),
-    username: z.string().nullable(),
     platform: z.string().nullable(),
     ms_played: z.number(),
     conn_country: z.string().nullable(),
-    ip_addr_decrypted: z.string().nullable(),
-    user_agent_decrypted: z.string().nullable(),
+    ip_addr: z.string().nullable(),
     master_metadata_track_name: z.string().nullable(),
     master_metadata_album_artist_name: z.string().nullable(),
     master_metadata_album_album_name: z.string().nullable(),
