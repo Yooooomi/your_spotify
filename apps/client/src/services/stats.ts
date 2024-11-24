@@ -323,5 +323,5 @@ export const getPercentMore = (old: number, now: number) => {
   if (now > old) {
     return Math.floor((now / old - 1) * 100);
   }
-  return -(1 - Math.floor(old / now));
+  return Math.floor((1 - now / old) * 100) * -1;
 };
