@@ -58,16 +58,20 @@ router.post(
     try {
       const track = await getTrackBySpotifyId(id);
 
-      if (!track) return res.status(400).end();
+      if (!track) {
+        res.status(400).end();
+        return;
+      }
       await client.playTrack(track.uri);
-      return res.status(200).end();
+      res.status(200).end();
     } catch (e) {
       if (e.response) {
         logger.error(e.response.data);
-        return res.status(400).send(e.response.data.error);
+        res.status(400).send(e.response.data.error);
+        return;
       }
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -95,7 +99,7 @@ router.get(
       number,
       start && end ? { start, end } : undefined,
     );
-    return res.status(200).send(tracks);
+    res.status(200).send(tracks);
   },
 );
 
@@ -127,12 +131,13 @@ router.get(
     try {
       const result = await getSongsPer(user, start, end);
       if (result.length > 0) {
-        return res.status(200).send({ count: result[0].count });
+        res.status(200).send({ count: result[0].count });
+        return;
       }
-      return res.status(200).send({ count: 0 });
+      res.status(200).send({ count: 0 });
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -149,10 +154,10 @@ router.get(
 
     try {
       const result = await getMostListenedSongs(user, start, end, timeSplit);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -169,10 +174,10 @@ router.get(
 
     try {
       const result = await getMostListenedArtist(user, start, end, timeSplit);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -189,10 +194,10 @@ router.get(
 
     try {
       const result = await getSongsPer(user, start, end, timeSplit);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -209,10 +214,10 @@ router.get(
 
     try {
       const result = await getTimePer(user, start, end, timeSplit);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -229,10 +234,10 @@ router.get(
 
     try {
       const result = await albumDateRatio(user, start, end, timeSplit);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -249,10 +254,10 @@ router.get(
 
     try {
       const result = await featRatio(user, start, end, timeSplit);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -269,10 +274,10 @@ router.get(
 
     try {
       const result = await popularityPer(user, start, end, timeSplit);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -289,10 +294,10 @@ router.get(
 
     try {
       const result = await differentArtistsPer(user, start, end, timeSplit);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -307,10 +312,10 @@ router.get(
 
     try {
       const result = await getDayRepartition(user, start, end);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -327,10 +332,10 @@ router.get(
 
     try {
       const result = await getBestArtistsPer(user, start, end, timeSplit);
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -365,10 +370,10 @@ router.get(
         nb,
         offset,
       );
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -392,10 +397,10 @@ router.get(
         nb,
         offset,
       );
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -419,10 +424,10 @@ router.get(
         nb,
         offset,
       );
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -452,10 +457,10 @@ router.get(
         mode,
         50,
       );
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -477,10 +482,10 @@ router.get(
         end,
         mode,
       );
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -502,10 +507,10 @@ router.get(
         end,
         mode,
       );
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -520,10 +525,10 @@ router.get(
 
     try {
       const tracks = await getBestOfHour(ItemType.track, user, start, end);
-      return res.status(200).send(tracks);
+      res.status(200).send(tracks);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -538,10 +543,10 @@ router.get(
 
     try {
       const albums = await getBestOfHour(ItemType.album, user, start, end);
-      return res.status(200).send(albums);
+      res.status(200).send(albums);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -556,10 +561,10 @@ router.get(
 
     try {
       const artists = await getBestOfHour(ItemType.artist, user, start, end);
-      return res.status(200).send(artists);
+      res.status(200).send(artists);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -578,10 +583,10 @@ router.get(
         start,
         end,
       );
-      return res.status(200).send(result);
+      res.status(200).send(result);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -591,12 +596,12 @@ router.get("/playlists", logged, withHttpClient, async (req, res) => {
 
   try {
     const playlists = await client.playlists();
-    return res
+    res
       .status(200)
       .send(playlists.filter(playlist => playlist.owner.id === user.spotifyId));
   } catch (e) {
     logger.error(e);
-    return res.status(500).end();
+    res.status(500).end();
   }
 });
 
@@ -653,7 +658,8 @@ router.post(
     const body = req.body as TypedPayload<typeof createPlaylist>;
 
     if (!body.playlistId && !body.name) {
-      return res.status(400).end();
+      res.status(400).end();
+      return;
     }
 
     try {
@@ -700,10 +706,10 @@ router.post(
       } else {
         await client.createPlaylist(playlistName, spotifyIds);
       }
-      return res.status(204).end();
+      res.status(204).end();
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
