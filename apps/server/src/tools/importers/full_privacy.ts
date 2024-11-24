@@ -29,26 +29,10 @@ import {
 const fullPrivacyFileSchema = z.array(
   z.object({
     ts: z.string(),
-    username: z.string().nullable(),
-    platform: z.string().nullable(),
     ms_played: z.number(),
-    conn_country: z.string().nullable(),
-    ip_addr_decrypted: z.string().nullable(),
-    user_agent_decrypted: z.string().nullable(),
+    spotify_track_uri: z.string().nullable(),
     master_metadata_track_name: z.string().nullable(),
     master_metadata_album_artist_name: z.string().nullable(),
-    master_metadata_album_album_name: z.string().nullable(),
-    spotify_track_uri: z.string().nullable(),
-    episode_name: z.string().nullable(),
-    episode_show_name: z.string().nullable(),
-    spotify_episode_uri: z.string().nullable(),
-    reason_start: z.string().nullable(),
-    reason_end: z.string().nullable(),
-    shuffle: z.boolean().nullable(),
-    skipped: z.boolean().nullable(),
-    offline: z.boolean().nullable(),
-    offline_timestamp: z.number().nullable(),
-    incognito_mode: z.boolean().nullable(),
   }),
 );
 
@@ -250,7 +234,7 @@ export class FullPrivacyImporter
       );
       if (!spotifyId) {
         logger.warn(
-          `Could not get spotify id from uri: ${content.spotify_episode_uri}`,
+          `Could not get spotify id from uri: ${content.spotify_track_uri}`,
         );
         continue;
       }
