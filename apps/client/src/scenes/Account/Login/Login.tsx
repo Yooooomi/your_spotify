@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Checkbox } from "@mui/material";
 import clsx from "clsx";
 import Text from "../../../components/Text";
@@ -8,6 +7,7 @@ import { selectUser } from "../../../services/redux/modules/user/selector";
 import { getSpotifyLogUrl } from "../../../services/tools";
 import s from "../index.module.css";
 import { LocalStorage, REMEMBER_ME_KEY } from "../../../services/storage";
+import { useNavigate } from "../../../services/hooks/useNavigate";
 
 export default function Login() {
   const navigate = useNavigate();

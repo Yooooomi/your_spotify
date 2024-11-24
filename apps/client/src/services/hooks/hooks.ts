@@ -8,13 +8,14 @@ import {
   useState,
 } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { detailIntervalToQuery } from "../intervals";
 import {
   selectIntervalDetail,
   selectUser,
 } from "../redux/modules/user/selector";
 import { UnboxPromise } from "../types";
+import { useNavigate } from "./useNavigate";
 
 export function useAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
   call: Fn,

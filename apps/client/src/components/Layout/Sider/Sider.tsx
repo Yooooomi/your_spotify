@@ -1,6 +1,6 @@
 import { useCallback, useContext } from "react";
 import clsx from "clsx";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { SystemUpdateAlt as UpdateIcon } from "@mui/icons-material";
 
@@ -17,6 +17,7 @@ import {
   selectVersion,
 } from "../../../services/redux/modules/settings/selector";
 import Text from "../../Text";
+import { useNavigate } from "../../../services/hooks/useNavigate";
 import SiderCategory from "./SiderCategory/SiderCategory";
 import { links } from "./types";
 import SiderTitle from "./SiderTitle";
