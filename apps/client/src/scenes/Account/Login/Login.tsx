@@ -1,34 +1,38 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Checkbox } from "@mui/material";
+import clsx from "clsx";
 import Text from "../../../components/Text";
 import { selectUser } from "../../../services/redux/modules/user/selector";
-import { getSpotifyLogUrl, Cookies } from "../../../services/tools";
-import { Checkbox } from "@mui/material";
+import { getSpotifyLogUrl } from "../../../services/tools";
 import s from "../index.module.css";
+import { LocalStorage, REMEMBER_ME_KEY } from "../../../services/storage";
 
 export default function Login() {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
-  const [rememberMe, setRememberMe] = useState(Cookies.get('rememberMe') === 'true'); // Initialize state based on cookie
+  const [rememberMe, setRememberMe] = useState(
+    LocalStorage.get(REMEMBER_ME_KEY) === "true",
+  );
 
   useEffect(() => {
     if (user) {
       navigate("/");
-    } else if (Cookies.get('rememberMe') === 'true') {
+    } else if (LocalStorage.get(REMEMBER_ME_KEY) === "true") {
       window.location.href = getSpotifyLogUrl();
     }
   }, [navigate, user]);
 
-  const handleRememberMeClick = () => {
+  const handleRememberMeClick = useCallback(async () => {
     const newRememberMe = !rememberMe;
     setRememberMe(newRememberMe);
     if (newRememberMe) {
-      Cookies.set('rememberMe', 'true');
+      LocalStorage.set(REMEMBER_ME_KEY, "true");
     } else {
-      Cookies.remove('rememberMe');
+      LocalStorage.delete(REMEMBER_ME_KEY);
     }
-  };
+  }, [rememberMe]);
 
   return (
     <div className={s.root}>
@@ -46,17 +50,16 @@ export default function Login() {
       <div>
         <button
           type="button"
-          key="Remember me"
-          className={s.rememberMe}
+          className={clsx("no-button", s.rememberMe)}
           onClick={handleRememberMeClick}>
-          <Text>Remember me</Text>
           <Checkbox
             checked={rememberMe}
-            disabled={false}
             disableRipple
             disableTouchRipple
             disableFocusRipple
+            classes={{ root: s.check }}
           />
+          <Text>Remember me</Text>
         </button>
       </div>
     </div>

@@ -32,13 +32,13 @@
 }
 
 .rememberMe {
-  padding-left: 14px;
-  transition: all 250ms;
-  border-radius: 6px;
-  border: none;
-  font-size: unset;
-  background-color: transparent;
-  width: 100%;
+  margin-top: 8px;
   cursor: pointer;
-  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.check {
+  padding: 0px !important;
 }

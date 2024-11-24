@@ -133,8 +133,13 @@ export const optionalLogged = async (
 export const admin = (req: Request, res: Response, next: NextFunction) => {
   const { user } = req as LoggedRequest;
 
-  if (!user || !user.admin) {
+  if (!user) {
     res.status(401).end();
+    return;
+  }
+
+  if (!user.admin) {
+    res.status(403).end();
     return;
   }
   next();
