@@ -22,8 +22,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     try {
+      const { user } = req as LoggedRequest;
       const { ids } = req.params as TypedPayload<typeof getAlbumsSchema>;
-      const albums = await getAlbums(ids.split(","));
+      const albums = await getAlbums(user._id.toString(), ids.split(","));
       if (!albums || albums.length === 0) {
         res.status(404).end();
         return;
@@ -48,7 +49,7 @@ router.get(
     try {
       const { user } = req as LoggedRequest;
       const { id } = req.params as TypedPayload<typeof getAlbumStats>;
-      const [album] = await getAlbums([id]);
+      const [album] = await getAlbums(user._id.toString(), [id]);
       if (!album) {
         res.status(404).end();
         return;
@@ -56,7 +57,7 @@ router.get(
       const promises = [
         getFirstAndLastListenedAlbum(user, id),
         getAlbumSongs(user, id),
-        getArtists(album.artists),
+        getArtists(user._id.toString(), album.artists),
         // getTotalListeningOfAlbum(user, id),
       ];
       const [firstLast, tracks, artists] = await Promise.all(promises);
@@ -81,7 +82,7 @@ router.get(
     try {
       const { user } = req as LoggedRequest;
       const { id } = req.params as TypedPayload<typeof getAlbumStats>;
-      const [album] = await getAlbums([id]);
+      const [album] = await getAlbums(user._id.toString(), [id]);
       if (!album) {
         res.status(404).end();
         return;

@@ -32,8 +32,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     try {
+      const { user } = req as LoggedRequest;
       const { ids } = req.params as TypedPayload<typeof getArtistsSchema>;
-      const artists = await getArtists(ids.split(","));
+      const artists = await getArtists(user._id.toString(), ids.split(","));
       if (!artists || artists.length === 0) {
         res.status(404).end();
         return;
@@ -59,7 +60,7 @@ router.get(
       const { user } = req as LoggedRequest;
       const { id } = req.params as TypedPayload<typeof getArtistStats>;
 
-      const [artist] = await getArtists([id]);
+      const [artist] = await getArtists(user._id.toString(), [id]);
       if (!artist) {
         res.status(404).end();
         return;
@@ -111,7 +112,7 @@ router.get(
     const { id } = req.params as TypedPayload<typeof getArtistStats>;
 
     try {
-      const [artist] = await getArtists([id]);
+      const [artist] = await getArtists(user._id.toString(), [id]);
       if (!artist) {
         res.status(404).end();
         return;
