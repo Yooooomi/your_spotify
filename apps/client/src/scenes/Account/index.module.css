@@ -27,6 +27,18 @@
   color: white;
   height: 40px;
   border-radius: 20px;
-  padding: 0px 24px;
+  padding: 0px 58px;
   font-weight: bold;
+}
+
+.rememberMe {
+  margin-top: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.check {
+  padding: 0px !important;
 }

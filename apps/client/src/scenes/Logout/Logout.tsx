@@ -1,10 +1,11 @@
 import { CircularProgress } from "@mui/material";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Text from "../../components/Text";
 import { api } from "../../services/apis/api";
 import { logout } from "../../services/redux/modules/user/reducer";
 import { useAppDispatch } from "../../services/redux/tools";
+import { LocalStorage, REMEMBER_ME_KEY } from "../../services/storage";
 
 export default function Logout() {
   const navigate = useNavigate();
@@ -18,9 +19,10 @@ export default function Logout() {
       } catch (e) {
         console.error(e);
       }
+      LocalStorage.delete(REMEMBER_ME_KEY);
       navigate("/login");
     }
-    dologout();
+    dologout().catch(console.error);
   }, [navigate, dispatch]);
 
   return (
