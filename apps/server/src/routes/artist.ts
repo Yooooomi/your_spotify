@@ -35,12 +35,13 @@ router.get(
       const { ids } = req.params as TypedPayload<typeof getArtistsSchema>;
       const artists = await getArtists(ids.split(","));
       if (!artists || artists.length === 0) {
-        return res.status(404).end();
+        res.status(404).end();
+        return;
       }
-      return res.status(200).send(artists);
+      res.status(200).send(artists);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -60,7 +61,8 @@ router.get(
 
       const [artist] = await getArtists([id]);
       if (!artist) {
-        return res.status(404).end();
+        res.status(404).end();
+        return;
       }
       const promises = [
         getFirstAndLastListened(user, id),
@@ -79,11 +81,12 @@ router.get(
         dayRepartition,
       ] = await Promise.all(promises);
       if (!total) {
-        return res.status(200).send({
+        res.status(200).send({
           code: "NEVER_LISTENED",
         });
+        return;
       }
-      return res.status(200).send({
+      res.status(200).send({
         artist,
         firstLast,
         mostListened,
@@ -94,7 +97,7 @@ router.get(
       });
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -110,13 +113,14 @@ router.get(
     try {
       const [artist] = await getArtists([id]);
       if (!artist) {
-        return res.status(404).end();
+        res.status(404).end();
+        return;
       }
       const rank = await getRankOf(ItemType.artist, user, id);
-      return res.status(200).send(rank);
+      res.status(200).send(rank);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -134,10 +138,10 @@ router.get(
 
     try {
       const results = await searchArtist(query);
-      return res.status(200).send(results);
+      res.status(200).send(results);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -157,10 +161,10 @@ router.post(
     try {
       await blacklistArtist(user._id.toString(), id);
       await blacklistByArtist(user._id.toString(), id);
-      return res.status(204).end();
+      res.status(204).end();
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -176,10 +180,10 @@ router.post(
     try {
       await unblacklistArtist(user._id.toString(), id);
       await unblacklistByArtist(user._id.toString(), id);
-      return res.status(204).end();
+      res.status(204).end();
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );

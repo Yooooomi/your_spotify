@@ -25,12 +25,13 @@ router.get(
       const { ids } = req.params as TypedPayload<typeof getAlbumsSchema>;
       const albums = await getAlbums(ids.split(","));
       if (!albums || albums.length === 0) {
-        return res.status(404).end();
+        res.status(404).end();
+        return;
       }
-      return res.status(200).send(albums);
+      res.status(200).send(albums);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -49,7 +50,8 @@ router.get(
       const { id } = req.params as TypedPayload<typeof getAlbumStats>;
       const [album] = await getAlbums([id]);
       if (!album) {
-        return res.status(404).end();
+        res.status(404).end();
+        return;
       }
       const promises = [
         getFirstAndLastListenedAlbum(user, id),
@@ -58,7 +60,7 @@ router.get(
         // getTotalListeningOfAlbum(user, id),
       ];
       const [firstLast, tracks, artists] = await Promise.all(promises);
-      return res.status(200).send({
+      res.status(200).send({
         album,
         artists,
         firstLast,
@@ -66,7 +68,7 @@ router.get(
       });
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -81,13 +83,14 @@ router.get(
       const { id } = req.params as TypedPayload<typeof getAlbumStats>;
       const [album] = await getAlbums([id]);
       if (!album) {
-        return res.status(404).end();
+        res.status(404).end();
+        return;
       }
       const rank = await getRankOf(ItemType.album, user, id);
-      return res.status(200).send(rank);
+      res.status(200).send(rank);
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );

@@ -167,16 +167,18 @@ router.delete(
     try {
       const importState = await getImporterState(id);
       if (!importState) {
-        return res.status(404).end();
+        res.status(404).end();
+        return;
       }
       if (importState.user.toString() !== user._id.toString()) {
-        return res.status(404).end();
+        res.status(404).end();
+        return;
       }
       await cleanupImport(importState._id.toString());
-      return res.status(204).end();
+      res.status(204).end();
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -186,9 +188,9 @@ router.get("/imports", logged, async (req, res) => {
 
   try {
     const state = await getUserImporterState(user._id.toString());
-    return res.status(200).send(state);
+    res.status(200).send(state);
   } catch (e) {
     logger.error(e);
-    return res.status(500).end();
+    res.status(500).end();
   }
 });
