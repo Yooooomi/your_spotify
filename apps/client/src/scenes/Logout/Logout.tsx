@@ -1,11 +1,11 @@
 import { CircularProgress } from "@mui/material";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Text from "../../components/Text";
 import { api } from "../../services/apis/api";
 import { logout } from "../../services/redux/modules/user/reducer";
 import { useAppDispatch } from "../../services/redux/tools";
 import { LocalStorage, REMEMBER_ME_KEY } from "../../services/storage";
+import { useNavigate } from "../../services/hooks/useNavigate";
 
 export default function Logout() {
   const navigate = useNavigate();
