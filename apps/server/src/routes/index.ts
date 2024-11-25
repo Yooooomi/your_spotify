@@ -42,7 +42,7 @@ router.get("/health", async (_, res) => {
     const dbHealth = await getDatabaseHealth();
 
     if (dbHealth.status === "DOWN") {
-      res.status(503).send({status: "DB connection error", db_health: dbHealth});
+      res.status(503).send({status: "error", db_health: dbHealth});
     } else if (dbHealth.status === "READONLY") {
       res.status(503).send({status: "warning", db_health: dbHealth});
     } else {
