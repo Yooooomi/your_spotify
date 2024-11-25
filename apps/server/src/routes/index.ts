@@ -18,6 +18,7 @@ import {
   setUserPublicToken,
   storeInUser,
 } from "../database";
+import { getDatabaseHealth } from "../database/queries/meta";
 import { logger } from "../tools/logger";
 import {
   LoggedRequest,
@@ -34,6 +35,23 @@ export const router = Router();
 
 router.get("/", (_, res) => {
   res.status(200).send("Hello !");
+});
+
+router.get("/health", async (_, res) => {
+  try {
+    const dbHealth = await getDatabaseHealth();
+
+    if (dbHealth.status === "DOWN") {
+      res.status(503).send({status: "DB connection error", db_health: dbHealth});
+    } else if (dbHealth.status === "READONLY") {
+      res.status(503).send({status: "warning", db_health: dbHealth});
+    } else {
+      res.status(200).send({status: "ok", db_health: dbHealth});
+    }
+  } catch (e) {
+    logger.error(e);
+    res.status(500).send({ status: "error", message: "Unexpected error" });
+  }
 });
 
 router.post("/logout", async (_, res) => {
