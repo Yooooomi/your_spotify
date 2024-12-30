@@ -1,6 +1,6 @@
 {
   "name": "@your_spotify/server",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "private": true,
   "scripts": {
     "start": "node lib/index.js",
@@ -12,28 +12,28 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "axios": "1.7.5",
+    "axios": "^1.7.7",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
-    "express": "4.19.2",
-    "jsonwebtoken": "9.0.2",
-    "migrate": "2.1.0",
-    "mongodb": "6.8.0",
-    "mongoose": "8.5.4",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "migrate": "^2.1.0",
+    "mongodb": "^6.11.0",
+    "mongoose": "^8.8.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "uuid": "10.0.0",
+    "uuid": "^11.0.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
-    "@types/cookie-parser": "1.4.7",
-    "@types/cors": "2.8.17",
-    "@types/jsonwebtoken": "9.0.6",
-    "@types/morgan": "1.9.9",
-    "@types/multer": "1.4.12",
-    "@types/node": "20.11.26",
-    "@types/uuid": "10.0.0",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/morgan": "^1.9.9",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.9.3",
+    "@types/uuid": "^10.0.0",
     "@your_spotify/dev": "*"
   }
 }

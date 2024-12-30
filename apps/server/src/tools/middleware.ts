@@ -31,10 +31,10 @@ export const validating =
         value = schema.and(tokenObject).parse(req[location]);
       }
       req[location] = value;
-      return next();
+      next();
     } catch (e) {
       logger.error(e);
-      return res.status(400).end();
+      res.status(400).end();
     }
   };
 
@@ -89,10 +89,11 @@ export const logged = async (
 ) => {
   const user = await baselogged(req, false);
   if (!user) {
-    return res.status(401).end();
+    res.status(401).end();
+    return;
   }
   (req as LoggedRequest).user = user;
-  return next();
+  next();
 };
 
 export const isLoggedOrGuest = async (
@@ -102,10 +103,11 @@ export const isLoggedOrGuest = async (
 ) => {
   const user = await baselogged(req, true);
   if (!user) {
-    return res.status(401).end();
+    res.status(401).end();
+    return;
   }
   (req as LoggedRequest).user = user;
-  return next();
+  next();
 };
 
 export const optionalLoggedOrGuest = async (
@@ -115,7 +117,7 @@ export const optionalLoggedOrGuest = async (
 ) => {
   const user = await baselogged(req, true);
   (req as OptionalLoggedRequest).user = user;
-  return next();
+  next();
 };
 
 export const optionalLogged = async (
@@ -125,16 +127,22 @@ export const optionalLogged = async (
 ) => {
   const user = await baselogged(req, false);
   (req as OptionalLoggedRequest).user = user;
-  return next();
+  next();
 };
 
 export const admin = (req: Request, res: Response, next: NextFunction) => {
   const { user } = req as LoggedRequest;
 
-  if (!user || !user.admin) {
-    return res.status(401).end();
+  if (!user) {
+    res.status(401).end();
+    return;
   }
-  return next();
+
+  if (!user.admin) {
+    res.status(403).end();
+    return;
+  }
+  next();
 };
 
 export const withHttpClient = async (
@@ -146,7 +154,7 @@ export const withHttpClient = async (
 
   const client = new SpotifyAPI(user._id.toString());
   (req as SpotifyRequest & LoggedRequest).client = client;
-  return next();
+  next();
 };
 
 export const withGlobalPreferences = async (
@@ -163,9 +171,9 @@ export const withGlobalPreferences = async (
       return;
     }
     (req as GlobalPreferencesRequest).globalPreferences = pref;
-    return next();
+    next();
   } catch (e) {
-    return res.status(500).end();
+    res.status(500).end();
   }
 };
 
@@ -177,7 +185,8 @@ export const notAlreadyImporting = async (
   const { user } = req as LoggedRequest;
   const imports = await getUserImporterState(user._id.toString());
   if (imports.some(imp => imp.status === "progress")) {
-    return res.status(400).send({ code: "ALREADY_IMPORTING" });
+    res.status(400).send({ code: "ALREADY_IMPORTING" });
+    return;
   }
-  return next();
+  next();
 };

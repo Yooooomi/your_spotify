@@ -25,10 +25,10 @@ router.get(
         searchTrack(query),
         searchAlbum(query),
       ]);
-      return res.status(200).send({ artists, tracks, albums });
+      res.status(200).send({ artists, tracks, albums });
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );

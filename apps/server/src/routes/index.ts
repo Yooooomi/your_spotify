@@ -38,7 +38,7 @@ router.get("/", (_, res) => {
 
 router.post("/logout", async (_, res) => {
   res.clearCookie("token");
-  return res.status(200).end();
+  res.status(200).end();
 });
 
 const settingsSchema = z.object({
@@ -75,10 +75,10 @@ router.post(
         user._id,
         req.body as TypedPayload<typeof settingsSchema>,
       );
-      return res.status(200).end();
+      res.status(200).end();
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -86,9 +86,10 @@ router.post(
 router.get("/me", optionalLoggedOrGuest, async (req, res) => {
   const { user } = req as OptionalLoggedRequest;
   if (user) {
-    return res.status(200).send({ status: true, user });
+    res.status(200).send({ status: true, user });
+    return;
   }
-  return res.status(200).send({ status: false });
+  res.status(200).send({ status: false });
 });
 
 router.post("/generate-public-token", logged, async (req, res) => {
@@ -97,10 +98,10 @@ router.post("/generate-public-token", logged, async (req, res) => {
   try {
     const token = v4();
     await setUserPublicToken(user._id.toString(), token);
-    return res.status(200).send(token);
+    res.status(200).send(token);
   } catch (e) {
     logger.error(e);
-    return res.status(500).end();
+    res.status(500).end();
   }
 });
 
@@ -109,17 +110,17 @@ router.post("/delete-public-token", logged, async (req, res) => {
 
   try {
     await setUserPublicToken(user._id.toString(), null);
-    return res.status(200).end();
+    res.status(200).end();
   } catch (e) {
     logger.error(e);
-    return res.status(500).end();
+    res.status(500).end();
   }
 });
 
 router.get("/accounts", isLoggedOrGuest, async (_, res) => {
   try {
     const users = await getAllUsers(false);
-    return res.status(200).send(
+    res.status(200).send(
       users.map(user => ({
         id: user._id.toString(),
         username: user.username,
@@ -129,7 +130,7 @@ router.get("/accounts", isLoggedOrGuest, async (_, res) => {
     );
   } catch (e) {
     logger.error(e);
-    return res.status(500).end();
+    res.status(500).end();
   }
 });
 
@@ -154,13 +155,14 @@ router.put(
     try {
       const users = await getAllAdmins();
       if (users.length <= 1 && status === false) {
-        return res.status(400).send({ code: "CANNOT_HAVE_ZERO_ADMIN" });
+        res.status(400).send({ code: "CANNOT_HAVE_ZERO_ADMIN" });
+        return;
       }
       await setUserAdmin(id, status);
-      return res.status(204).end();
+      res.status(204).end();
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -180,13 +182,14 @@ router.delete(
     try {
       const user = await getUserFromField("_id", new Types.ObjectId(id), false);
       if (!user) {
-        return res.status(404).end();
+        res.status(404).end();
+        return;
       }
       await deleteUser(id);
-      return res.status(204).end();
+      res.status(204).end();
     } catch (e) {
       logger.error(e);
-      return res.status(500).end();
+      res.status(500).end();
     }
   },
 );
@@ -201,33 +204,32 @@ router.put("/rename", validating(rename), logged, async (req, res) => {
 
   try {
     await storeInUser("_id", user._id, { username: newName });
-    return res.status(204).end();
+    res.status(204).end();
   } catch (e) {
     logger.error(e);
-    return res.status(500).end();
+    res.status(500).end();
   }
 });
 
 router.get("/version", async (_, res) => {
   if (getWithDefault("NODE_ENV", "development") === "development") {
-    return res.status(200).send({ update: false, version: "0.1.2" });
+    res.status(200).send({ update: false, version: "0.1.2" });
+    return;
   }
   try {
     const thisOne = Version.thisOne();
     const githubVersion = await GithubAPI.lastVersion();
     if (!githubVersion) {
-      return res
-        .status(200)
-        .send({ update: false, version: thisOne.toString() });
+      res.status(200).send({ update: false, version: thisOne.toString() });
+      return;
     }
     if (githubVersion.isNewerThan(thisOne)) {
-      return res
-        .status(200)
-        .send({ update: true, version: thisOne.toString() });
+      res.status(200).send({ update: true, version: thisOne.toString() });
+      return;
     }
-    return res.status(200).send({ update: false, version: thisOne.toString() });
+    res.status(200).send({ update: false, version: thisOne.toString() });
   } catch (e) {
     logger.error(e);
-    return res.status(500).end();
+    res.status(500).end();
   }
 });

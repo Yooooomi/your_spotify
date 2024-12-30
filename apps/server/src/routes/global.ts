@@ -8,7 +8,7 @@ export const router = Router();
 
 router.get("/preferences", async (req, res) => {
   const preferences = await getGlobalPreferences();
-  return res.status(200).send(preferences);
+  res.status(200).send(preferences);
 });
 
 const updateGlobalPreferencesSchema = z.object({
@@ -26,6 +26,6 @@ router.post(
     >;
 
     const newPrefs = await updateGlobalPreferences(modifications);
-    return res.status(200).send(newPrefs);
+    res.status(200).send(newPrefs);
   },
 );
