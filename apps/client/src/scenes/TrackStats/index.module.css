@@ -3,6 +3,7 @@
   width: var(--header-image-size);
   border-radius: var(--radius);
   margin-right: 16px;
+  object-fit: cover;
 }
 
 .content {

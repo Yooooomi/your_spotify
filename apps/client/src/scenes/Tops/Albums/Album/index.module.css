@@ -4,6 +4,7 @@
 
 .cover {
   border-radius: var(--radius);
+  object-fit: cover;
 }
 
 .names > :first-child {

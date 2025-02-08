@@ -15,6 +15,7 @@
   left: 0px;
   height: 48px;
   width: 48px;
+  object-fit: cover;
 }
 
 .icon {
