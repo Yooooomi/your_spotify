@@ -13,6 +13,8 @@ import {
   SpotifyRequest,
 } from "./types";
 import { SpotifyAPI } from "./apis/spotifyApi";
+import { httpRequestDurationSeconds, httpRequestsTotal } from "../metrics";
+import { hrtime } from "process";
 
 type Location = "body" | "params" | "query";
 
@@ -21,22 +23,22 @@ export const validating =
     schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
     location: Location = "body",
   ) =>
-  (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const tokenObject = z.object({ token: z.string().optional() });
-      let value;
-      if ("merge" in schema) {
-        value = schema.merge(tokenObject).parse(req[location]);
-      } else {
-        value = schema.and(tokenObject).parse(req[location]);
+    (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const tokenObject = z.object({ token: z.string().optional() });
+        let value;
+        if ("merge" in schema) {
+          value = schema.merge(tokenObject).parse(req[location]);
+        } else {
+          value = schema.and(tokenObject).parse(req[location]);
+        }
+        req[location] = value;
+        next();
+      } catch (e) {
+        logger.error(e);
+        res.status(400).end();
       }
-      req[location] = value;
-      next();
-    } catch (e) {
-      logger.error(e);
-      res.status(400).end();
-    }
-  };
+    };
 
 const baselogged = async (req: Request, useQueryToken = false) => {
   const { token: queryToken } = req.query;
@@ -190,3 +192,27 @@ export const notAlreadyImporting = async (
   }
   next();
 };
+
+export const measureRequestDuration = (endpoint: string) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const start = hrtime.bigint();
+    res.on("finish", () => {
+      const duration = Number(hrtime.bigint() - start);
+      httpRequestDurationSeconds
+        .labels(
+          req.method,
+          endpoint,
+          res.statusCode.toString(),
+        )
+        .set(duration);
+      httpRequestsTotal
+        .labels(
+          req.method,
+          endpoint,
+          res.statusCode.toString()
+        )
+        .inc();
+    });
+    next();
+  };
+}
