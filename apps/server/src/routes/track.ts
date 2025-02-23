@@ -12,7 +12,7 @@ import {
 } from "../database";
 import { getAlbums } from "../database/queries/album";
 import { logger } from "../tools/logger";
-import { isLoggedOrGuest, validating } from "../tools/middleware";
+import { isLoggedOrGuest, measureRequestDuration, validating } from "../tools/middleware";
 import { LoggedRequest, TypedPayload } from "../tools/types";
 
 export const router = Router();
@@ -25,6 +25,7 @@ router.get(
   "/:ids",
   validating(getTracksSchema, "params"),
   isLoggedOrGuest,
+  measureRequestDuration("/track/:ids"),
   async (req, res) => {
     try {
       const { ids } = req.params as TypedPayload<typeof getTracksSchema>;
@@ -49,6 +50,7 @@ router.get(
   "/:id/stats",
   validating(getTrackStats, "params"),
   isLoggedOrGuest,
+  measureRequestDuration("/track/:id/stats"),
   async (req, res) => {
     try {
       const { user } = req as LoggedRequest;
@@ -95,6 +97,7 @@ router.get(
   "/:id/rank",
   validating(getTrackStats, "params"),
   isLoggedOrGuest,
+  measureRequestDuration("/track/:id/rank"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { id } = req.params as TypedPayload<typeof getTrackStats>;
