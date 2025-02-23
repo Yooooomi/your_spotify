@@ -2,7 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import multer from "multer";
 import { logger } from "../tools/logger";
-import { logged, notAlreadyImporting, validating } from "../tools/middleware";
+import { logged, measureRequestDuration, notAlreadyImporting, validating } from "../tools/middleware";
 import { LoggedRequest, TypedPayload } from "../tools/types";
 import {
   canUserImport,
@@ -30,6 +30,7 @@ router.post(
   upload.array("imports", 50),
   logged,
   notAlreadyImporting,
+  measureRequestDuration("/import/privacy"),
   async (req, res) => {
     const { files, user } = req as LoggedRequest;
 
@@ -70,6 +71,7 @@ router.post(
   upload.array("imports", 50),
   logged,
   notAlreadyImporting,
+  measureRequestDuration("/import/full-privacy"),
   async (req, res) => {
     const { files, user } = req as LoggedRequest;
 
@@ -114,6 +116,7 @@ router.post(
   validating(retrySchema),
   logged,
   notAlreadyImporting,
+  measureRequestDuration("/import/retry"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { existingStateId } = req.body as TypedPayload<typeof retrySchema>;
@@ -160,6 +163,7 @@ router.delete(
   "/import/clean/:id",
   validating(cleanupImportSchema, "params"),
   logged,
+  measureRequestDuration("/import/clean/:id"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { id } = req.params as TypedPayload<typeof cleanupImportSchema>;
@@ -183,14 +187,19 @@ router.delete(
   },
 );
 
-router.get("/imports", logged, async (req, res) => {
-  const { user } = req as LoggedRequest;
+router.get(
+  "/imports",
+  logged,
+  measureRequestDuration("/imports"),
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
 
-  try {
-    const state = await getUserImporterState(user._id.toString());
-    res.status(200).send(state);
-  } catch (e) {
-    logger.error(e);
-    res.status(500).end();
+    try {
+      const state = await getUserImporterState(user._id.toString());
+      res.status(200).send(state);
+    } catch (e) {
+      logger.error(e);
+      res.status(500).end();
+    }
   }
-});
+);

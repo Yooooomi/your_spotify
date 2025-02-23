@@ -6,7 +6,7 @@ import {
   getFirstAndLastListenedAlbum,
 } from "../database/queries/album";
 import { logger } from "../tools/logger";
-import { isLoggedOrGuest, validating } from "../tools/middleware";
+import { isLoggedOrGuest, measureRequestDuration, validating } from "../tools/middleware";
 import { LoggedRequest, TypedPayload } from "../tools/types";
 import { getArtists, getRankOf, ItemType } from "../database";
 
@@ -20,6 +20,7 @@ router.get(
   "/:ids",
   validating(getAlbumsSchema, "params"),
   isLoggedOrGuest,
+  measureRequestDuration("/album/:ids"),
   async (req, res) => {
     try {
       const { ids } = req.params as TypedPayload<typeof getAlbumsSchema>;
@@ -44,6 +45,7 @@ router.get(
   "/:id/stats",
   validating(getAlbumStats, "params"),
   isLoggedOrGuest,
+  measureRequestDuration("/album/:id/stats"),
   async (req, res) => {
     try {
       const { user } = req as LoggedRequest;
@@ -77,6 +79,7 @@ router.get(
   "/:id/rank",
   validating(getAlbumStats, "params"),
   isLoggedOrGuest,
+  measureRequestDuration("/album/:id/rank"),
   async (req, res) => {
     try {
       const { user } = req as LoggedRequest;

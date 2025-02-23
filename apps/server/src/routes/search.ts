@@ -2,7 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { searchArtist, searchTrack } from "../database";
 import { logger } from "../tools/logger";
-import { isLoggedOrGuest, validating } from "../tools/middleware";
+import { isLoggedOrGuest, measureRequestDuration, validating } from "../tools/middleware";
 import { TypedPayload } from "../tools/types";
 import { searchAlbum } from "../database/queries/album";
 
@@ -16,6 +16,7 @@ router.get(
   "/:query",
   validating(search, "params"),
   isLoggedOrGuest,
+  measureRequestDuration("/search/:query"),
   async (req, res) => {
     const { query } = req.params as TypedPayload<typeof search>;
 
