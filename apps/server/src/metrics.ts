@@ -1,4 +1,4 @@
-import { Gauge, Counter } from "prom-client";
+import { Gauge, Counter, collectDefaultMetrics } from "prom-client";
 
 export const httpRequestsTotal = new Counter({
     name: "http_requests_total",
@@ -6,9 +6,9 @@ export const httpRequestsTotal = new Counter({
     labelNames: ["method", "endpoint", "status"] as const,
 });
 
-export const httpRequestDurationSeconds = new Gauge({
-    name: "http_request_duration_seconds",
-    help: "Duration of HTTP requests in seconds",
+export const httpRequestDurationNanoseconds = new Gauge({
+    name: "http_request_duration_nanoseconds",
+    help: "Duration of HTTP requests in nanoseconds",
     labelNames: ["method", "endpoint", "status"] as const,
 });
 
@@ -35,3 +35,5 @@ export const ingestedArtistsTotal = new Counter({
     help: "Total number of ingested artists from Spotify API",
     labelNames: ["user"] as const,
 });
+
+collectDefaultMetrics();

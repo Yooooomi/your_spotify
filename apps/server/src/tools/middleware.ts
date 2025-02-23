@@ -13,7 +13,7 @@ import {
   SpotifyRequest,
 } from "./types";
 import { SpotifyAPI } from "./apis/spotifyApi";
-import { httpRequestDurationSeconds, httpRequestsTotal } from "../metrics";
+import { httpRequestDurationNanoseconds, httpRequestsTotal } from "../metrics";
 import { hrtime } from "process";
 
 type Location = "body" | "params" | "query";
@@ -198,7 +198,7 @@ export const measureRequestDuration = (endpoint: string) => {
     const start = hrtime.bigint();
     res.on("finish", () => {
       const duration = Number(hrtime.bigint() - start);
-      httpRequestDurationSeconds
+      httpRequestDurationNanoseconds
         .labels(
           req.method,
           endpoint,
