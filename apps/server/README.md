@@ -18,7 +18,6 @@
   - [Global Preferences](#global-preferences)
   - [Account Settings](#account-settings)
 
-
 ## Prometheus
 
 You can access various prometheus metrics through `/metrics`:
