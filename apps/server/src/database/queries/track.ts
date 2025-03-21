@@ -28,7 +28,7 @@ export const getTrackFirstAndLastListened = async (
         last: { $last: "$$ROOT" },
       },
     },
-  ]);
+  ]).allowDiskUse(true);
   return res[0];
 };
 
@@ -54,7 +54,7 @@ export const bestPeriodOfTrack = async (user: User, trackId: string) => {
     },
     { $sort: { count: -1 } },
     { $limit: 2 },
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
