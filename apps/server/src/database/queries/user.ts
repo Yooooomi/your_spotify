@@ -213,7 +213,7 @@ export const getPossibleDuplicates = async (
       },
     },
     { $match: { hasDuplicates: true } },
-  ]);
+  ]).allowDiskUse(true);
 };
 
 export const getSongs = async (
@@ -282,7 +282,7 @@ export const deleteAllOrphanTracks = async () => {
       },
     },
     { $match: { $expr: { $eq: [{ $size: "$tracks" }, 0] } } },
-  ]);
+  ]).allowDiskUse(true);
 
   const albumsToDelete = albums.map(alb => alb._id);
   await AlbumModel.deleteMany({ _id: { $in: albumsToDelete } });
@@ -314,7 +314,7 @@ export const deleteAllOrphanTracks = async () => {
         },
       },
     },
-  ]);
+  ]).allowDiskUse(true);
 
   const artistsToDelete = artists.map(art => art._id);
   await ArtistModel.deleteMany({ _id: { $in: artistsToDelete } });
