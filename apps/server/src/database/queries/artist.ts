@@ -69,7 +69,7 @@ export const getFirstAndLastListened = async (user: User, artistId: string) => {
         { $unwind: `$${e}.track.album` },
       ])
       .flat(1),
-  ]);
+  ]).allowDiskUse(true);
   return res[0];
 };
 
@@ -102,7 +102,7 @@ export const getMostListenedSongOfArtist = async (
       },
     },
     { $unwind: "$track.album" },
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -131,7 +131,7 @@ export const bestPeriodOfArtist = async (user: User, artistId: string) => {
     },
     { $sort: { count: -1 } },
     { $limit: 2 },
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -158,7 +158,7 @@ export const getTotalListeningOfArtist = async (
         differents: { $sum: 1 },
       },
     },
-  ]);
+  ]).allowDiskUse(true);
   return res[0];
 };
 
@@ -193,7 +193,7 @@ export const getMostListenedAlbumOfArtist = async (
     },
     { $unwind: "$album" },
     { $limit: 10 },
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -220,4 +220,4 @@ export const getDayRepartitionOfArtist = (user: User, artistId: string) =>
       },
     },
     { $sort: { _id: 1 } },
-  ]);
+  ]).allowDiskUse(true);
