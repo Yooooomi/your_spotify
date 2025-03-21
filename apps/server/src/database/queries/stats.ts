@@ -93,7 +93,7 @@ export const getMostListenedSongs = async (
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -189,7 +189,7 @@ export const getSongsPer = async (
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -215,7 +215,7 @@ export const getTimePer = async (
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -272,7 +272,7 @@ export const albumDateRatio = async (
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
-  ]);
+  ]).allowDiskUse(true);
 
   return res;
 };
@@ -366,7 +366,7 @@ export const featRatio = async (
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -408,7 +408,7 @@ export const popularityPer = async (
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -456,7 +456,7 @@ export const differentArtistsPer = async (
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
-  ]);
+  ]).allowDiskUse(true);
 
   return res;
 };
@@ -478,7 +478,7 @@ export const getDayRepartition = async (user: User, start: Date, end: Date) => {
       },
     },
     { $sort: { _id: 1 } },
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -544,7 +544,7 @@ export const getBestArtistsPer = async (
       },
     },
     ...sortByTimeSplit(timeSplit, "_id"),
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
 
@@ -611,7 +611,7 @@ export const getBest = (
     { $unwind: "$album" },
     { $lookup: lightArtistLookupPipeline("primaryArtistId", false) },
     { $unwind: "$artist" },
-  ]);
+  ]).allowDiskUse(true);
 
 export const getBestOfHour = async (
   itemType: ItemType,
@@ -656,7 +656,7 @@ export const getBestOfHour = async (
       },
     },
     { $sort: { _id: 1 } },
-  ]);
+  ]).allowDiskUse(true);
   bestOfHour.forEach((hour: any) => {
     hour.full_items = Object.fromEntries(
       hour.full_items.map((e: any) => [e.id, e]),
@@ -772,7 +772,7 @@ export const getLongestListeningSession = async (
         as: "full_tracks",
       },
     },
-  ]);
+  ]).allowDiskUse(true);
 
   longestSessions.forEach(longestSession => {
     longestSession.full_tracks = Object.fromEntries(
@@ -817,6 +817,6 @@ export const getRankOf = async (
         },
       },
     },
-  ]);
+  ]).allowDiskUse(true);
   return res[0];
 };
