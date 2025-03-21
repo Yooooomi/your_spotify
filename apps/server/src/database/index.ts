@@ -15,7 +15,6 @@ const WAIT_MS = 30_000;
 export const connect = async () => {
   const fallbackConnection = "mongodb://mongo:27017/your_spotify";
   const endpoint = getWithDefault("MONGO_ENDPOINT", fallbackConnection);
-  Mongoose.set("allowDiskUse", true);
   logger.info(`Trying to connect to database at ${endpoint}`);
   let client: Mongoose | undefined;
   let lastError: Error | undefined;
@@ -23,6 +22,7 @@ export const connect = async () => {
     try {
       client = await connectToDb(endpoint, {
         connectTimeoutMS: 3000,
+        allowDiskUse: true
       });
     } catch (e) {
       lastError = e;
