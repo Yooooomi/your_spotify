@@ -18,7 +18,7 @@ export const connect = async () => {
   const mongoose = new Mongoose();
   mongoose.set("allowDiskUse", true);
   logger.info(`Trying to connect to database at ${endpoint}`);
-  let client: mongoose.Mongoose | undefined;
+  let client: Mongoose | undefined;
   let lastError: Error | undefined;
   for (let i = 0; i < TRIES; i += 1) {
     try {
