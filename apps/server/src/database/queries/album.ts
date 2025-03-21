@@ -60,7 +60,7 @@ export const getFirstAndLastListenedAlbum = async (
         { $unwind: `$${e}.track` },
       ])
       .flat(1),
-  ]);
+  ]).allowDiskUse(true);
   return res[0];
 };
 
@@ -79,6 +79,6 @@ export const getAlbumSongs = async (user: User, albumId: string) => {
       },
     },
     { $unwind: "$track" },
-  ]);
+  ]).allowDiskUse(true);
   return res;
 };
