@@ -1,4 +1,4 @@
-import { connect as connectToDb, Mongoose } from "mongoose";
+import { connect as connectToDb, Mongoose, mongoose } from "mongoose";
 import { getWithDefault } from "../tools/env";
 import { logger } from "../tools/logger";
 import { wait } from "../tools/misc";
@@ -32,6 +32,8 @@ export const connect = async () => {
   if (!client) {
     throw lastError;
   }
+  // https://mongoosejs.com/docs/api/mongoose.html#Mongoose.prototype.set()
+  mongoose.set({allowDiskUse, true});
   logger.info("Connected to database !");
   return client;
 };
