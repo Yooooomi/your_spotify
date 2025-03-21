@@ -4,10 +4,10 @@ import { User } from "../schemas/user";
 import { getGroupByDateProjection, getGroupingByTimeSplit } from "./statsTools";
 
 export const getArtists = (artistIds: string[]) =>
-  ArtistModel.find({ id: { $in: artistIds } });
+  ArtistModel.find({ id: { $in: artistIds } }).allowDiskUse(true);
 
 export const searchArtist = (str: string) =>
-  ArtistModel.find({ name: { $regex: new RegExp(str, "i") } });
+  ArtistModel.find({ name: { $regex: new RegExp(str, "i") } }).allowDiskUse(true);
 
 export const getArtistInfos = (artistId: string) => [
   {
