@@ -32,7 +32,6 @@ export const connect = async () => {
   if (!client) {
     throw lastError;
   }
-  
   mongoose.set("allowDiskUse", true);
   logger.info("Connected to database !");
   return client;
