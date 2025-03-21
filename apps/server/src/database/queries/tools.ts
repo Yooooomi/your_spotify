@@ -17,7 +17,7 @@ export const getInfosWithoutTracks = () =>
     },
     { $unwind: { path: "$full_track", preserveNullAndEmptyArrays: true } },
     { $match: { full_track: null } },
-  ]);
+  ]).allowDiskUse(true);
 
 export const getTracksWithoutAlbum = () =>
   TrackModel.aggregate<Track>([
@@ -31,7 +31,7 @@ export const getTracksWithoutAlbum = () =>
     },
     { $unwind: { path: "$full_album", preserveNullAndEmptyArrays: true } },
     { $match: { full_album: null } },
-  ]);
+  ]).allowDiskUse(true);
 
 export const getAlbumsWithoutArtist = () =>
   AlbumModel.aggregate<Album>([
@@ -45,4 +45,4 @@ export const getAlbumsWithoutArtist = () =>
     },
     { $unwind: "$full_artist" },
     { $match: { full_artist: null } },
-  ]);
+  ]).allowDiskUse(true);
