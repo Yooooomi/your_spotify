@@ -22,8 +22,7 @@ export const connect = async () => {
   for (let i = 0; i < TRIES; i += 1) {
     try {
       client = await mongoose.connect(endpoint, {
-        connectTimeoutMS: 3000,
-        allowDiskUse: true
+        connectTimeoutMS: 3000
       });
     } catch (e) {
       lastError = e;
