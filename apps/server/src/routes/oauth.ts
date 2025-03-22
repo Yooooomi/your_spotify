@@ -51,7 +51,7 @@ router.get("/spotify", async (req, res) => {
       throw new Error("No private data found, cannot sign JWT");
     }
     const token = sign({ userId: isOffline }, privateData.jwtPrivateKey, {
-      expiresIn: getWithDefault("COOKIE_VALIDITY_MS", "1h"),
+      expiresIn: getWithDefault("COOKIE_VALIDITY_MS", "1h") as `${number}`,
     });
     storeTokenInCookie(req, res, token);
     res.status(204).end();
@@ -120,7 +120,7 @@ router.get(
         { userId: user._id.toString() },
         privateData.jwtPrivateKey,
         {
-          expiresIn: getWithDefault("COOKIE_VALIDITY_MS", "1h"),
+          expiresIn: getWithDefault("COOKIE_VALIDITY_MS", "1h") as `${number}`,
         },
       );
       storeTokenInCookie(req, res, token);
