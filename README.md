@@ -1,5 +1,5 @@
-![Client CI](https://github.com/Yooooomi/your_spotify/workflows/Client%20CI/badge.svg)
-![Server CI](https://github.com/Yooooomi/your_spotify/workflows/Server%20CI/badge.svg)
+![Build CI](https://github.com/Yooooomi/your_spotify/workflows/Nightly%20build%20CI/badge.svg)
+![Release CI](https://github.com/Yooooomi/your_spotify/workflows/Release%20CI/badge.svg)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=BLAPT49PK9A8G)
 
 <p align='center'>
