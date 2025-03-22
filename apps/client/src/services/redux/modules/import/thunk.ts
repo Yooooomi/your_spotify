@@ -31,7 +31,7 @@ export const startImportPrivacy = myAsyncThunk<
     } else {
       await api.retryImport(id);
     }
-    tapi.dispatch(getImports(true));
+    tapi.dispatch(getImports(true)).catch(console.error);
     tapi.dispatch(
       alertMessage({
         level: "success",
@@ -75,7 +75,7 @@ export const startImportFullPrivacy = myAsyncThunk<
     } else {
       await api.retryImport(id);
     }
-    tapi.dispatch(getImports(true));
+    tapi.dispatch(getImports(true)).catch(console.error);
     tapi.dispatch(
       alertMessage({
         level: "success",
@@ -114,7 +114,7 @@ export const cleanupImport = myAsyncThunk<void, string>(
           message: "Successfully cleaned up import",
         }),
       );
-      tapi.dispatch(getImports(true));
+      tapi.dispatch(getImports(true)).catch(console.error);
     } catch (e) {
       tapi.dispatch(
         alertMessage({

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CircularProgress,
   FormControl,
@@ -27,6 +27,8 @@ const ImportTypeToComponent: Record<ImporterStateTypes, any> = {
   },
 };
 
+const REFRESH_IF_RUNNING_INTERVAL = 2000;
+
 export default function Importer() {
   const dispatch = useAppDispatch();
   const imports = useSelector(selectImportStates);
@@ -36,13 +38,13 @@ export default function Importer() {
 
   const fetch = useCallback(
     async (force = false) => {
-      dispatch(getImports(force));
+      dispatch(getImports(force)).catch(console.error);
     },
     [dispatch],
   );
 
   useEffect(() => {
-    fetch();
+    fetch().catch(console.error);
   }, [fetch]);
 
   const running = useMemo(
@@ -53,6 +55,26 @@ export default function Importer() {
     () => (importType ? ImportTypeToComponent[importType].component : null),
     [importType],
   );
+
+  const isAtLeastOneImportRunning = Boolean(running);
+
+  const timeout = useRef<NodeJS.Timeout | undefined>(undefined);
+
+  useEffect(() => {
+    if (!isAtLeastOneImportRunning) {
+      return;
+    }
+    async function refresh() {
+      await fetch(true).catch(console.error);
+      timeout.current = setTimeout(refresh, REFRESH_IF_RUNNING_INTERVAL);
+    }
+
+    timeout.current = setTimeout(async () => {
+      await refresh();
+    }, REFRESH_IF_RUNNING_INTERVAL);
+
+    return () => clearTimeout(timeout.current);
+  }, [fetch, isAtLeastOneImportRunning]);
 
   if (!imports) {
     return <CircularProgress />;
