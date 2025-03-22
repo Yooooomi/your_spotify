@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 echo "NODE_ENV is '$NODE_ENV'"
 

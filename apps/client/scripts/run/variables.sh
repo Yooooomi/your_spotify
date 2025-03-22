@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 if [[ "$NODE_ENV" == "development" ]]
 then

@@ -1,5 +1,7 @@
 #!/bin/sh
+set -e
 
 source /app/apps/client/scripts/run/variables.sh
 
-cd /app/apps/client && yarn start
+cd /app/apps/client
+exec yarn start
