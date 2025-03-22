@@ -13,8 +13,10 @@ import { router as albumRouter } from "./routes/album";
 import { router as importRouter } from "./routes/importer";
 import { router as trackRouter } from "./routes/track";
 import { router as searchRouter } from "./routes/search";
+import { router as metricsRouter } from "./routes/metrics";
 import { get } from "./tools/env";
 import { LogLevelAccepts } from "./tools/logger";
+import { measureRequestDuration } from "./tools/middleware";
 
 const app = express();
 const ALLOW_ALL_CORS =
@@ -26,6 +28,8 @@ let corsValue: string[] | undefined = get("CORS")?.split(",") ?? [
 if (corsValue?.[0] === ALLOW_ALL_CORS) {
   corsValue = undefined;
 }
+
+app.use(measureRequestDuration);
 
 app.use(
   cors({
@@ -70,5 +74,6 @@ app.use("/album", albumRouter);
 app.use("/track", trackRouter);
 app.use("/search", searchRouter);
 app.use("/", importRouter);
+app.use("/", metricsRouter);
 
 export { app };

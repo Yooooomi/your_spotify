@@ -2,12 +2,10 @@ import { Router } from "express";
 import { Types } from "mongoose";
 import { z } from "zod";
 import { v4 } from "uuid";
-import { register } from 'prom-client';
 import {
   admin,
   isLoggedOrGuest,
   logged,
-  measureRequestDuration,
   optionalLoggedOrGuest,
   validating,
 } from "../tools/middleware";
@@ -34,22 +32,14 @@ import { getWithDefault } from "../tools/env";
 
 export const router = Router();
 
-router.get(
-  "/",
-  measureRequestDuration("/"),
-  (_, res) => {
-    res.status(200).send("Hello !");
-  }
-);
+router.get("/", (_, res) => {
+  res.status(200).send("Hello !");
+});
 
-router.post(
-  "/logout",
-  measureRequestDuration("/logout"),
-  async (_, res) => {
-    res.clearCookie("token");
-    res.status(200).end();
-  }
-);
+router.post("/logout", async (_, res) => {
+  res.clearCookie("token");
+  res.status(200).end();
+});
 
 const settingsSchema = z.object({
   historyLine: z.string().transform(toBoolean).optional(),
@@ -76,7 +66,6 @@ router.post(
   "/settings",
   validating(settingsSchema),
   logged,
-  measureRequestDuration("/settings"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
 
@@ -94,76 +83,56 @@ router.post(
   },
 );
 
-router.get(
-  "/me",
-  optionalLoggedOrGuest,
-  measureRequestDuration("/me"),
-  async (req, res) => {
-    const { user } = req as OptionalLoggedRequest;
-    if (user) {
-      res.status(200).send({ status: true, user });
-      return;
-    }
-    res.status(200).send({ status: false });
+router.get("/me", optionalLoggedOrGuest, async (req, res) => {
+  const { user } = req as OptionalLoggedRequest;
+  if (user) {
+    res.status(200).send({ status: true, user });
+    return;
   }
-);
+  res.status(200).send({ status: false });
+});
 
-router.post(
-  "/generate-public-token",
-  logged,
-  measureRequestDuration("/generate-public-token"),
-  async (req, res) => {
-    const { user } = req as LoggedRequest;
+router.post("/generate-public-token", logged, async (req, res) => {
+  const { user } = req as LoggedRequest;
 
-    try {
-      const token = v4();
-      await setUserPublicToken(user._id.toString(), token);
-      res.status(200).send(token);
-    } catch (e) {
-      logger.error(e);
-      res.status(500).end();
-    }
+  try {
+    const token = v4();
+    await setUserPublicToken(user._id.toString(), token);
+    res.status(200).send(token);
+  } catch (e) {
+    logger.error(e);
+    res.status(500).end();
   }
-);
+});
 
-router.post(
-  "/delete-public-token",
-  logged,
-  measureRequestDuration("/delete-public-token"),
-  async (req, res) => {
-    const { user } = req as LoggedRequest;
+router.post("/delete-public-token", logged, async (req, res) => {
+  const { user } = req as LoggedRequest;
 
-    try {
-      await setUserPublicToken(user._id.toString(), null);
-      res.status(200).end();
-    } catch (e) {
-      logger.error(e);
-      res.status(500).end();
-    }
+  try {
+    await setUserPublicToken(user._id.toString(), null);
+    res.status(200).end();
+  } catch (e) {
+    logger.error(e);
+    res.status(500).end();
   }
-);
+});
 
-router.get(
-  "/accounts",
-  isLoggedOrGuest,
-  measureRequestDuration("/accounts"),
-  async (_, res) => {
-    try {
-      const users = await getAllUsers(false);
-      res.status(200).send(
-        users.map(user => ({
-          id: user._id.toString(),
-          username: user.username,
-          admin: user.admin,
-          firstListenedAt: user.firstListenedAt,
-        })),
-      );
-    } catch (e) {
-      logger.error(e);
-      res.status(500).end();
-    }
+router.get("/accounts", isLoggedOrGuest, async (_, res) => {
+  try {
+    const users = await getAllUsers(false);
+    res.status(200).send(
+      users.map(user => ({
+        id: user._id.toString(),
+        username: user.username,
+        admin: user.admin,
+        firstListenedAt: user.firstListenedAt,
+      })),
+    );
+  } catch (e) {
+    logger.error(e);
+    res.status(500).end();
   }
-);
+});
 
 const setAdmin = z.object({
   id: z.string(),
@@ -179,7 +148,6 @@ router.put(
   validating(setAdminBody),
   logged,
   admin,
-  measureRequestDuration("/admin/:id"),
   async (req, res) => {
     const { id } = req.params as TypedPayload<typeof setAdmin>;
     const { status } = req.body as TypedPayload<typeof setAdminBody>;
@@ -208,7 +176,6 @@ router.delete(
   validating(deleteAccount, "params"),
   logged,
   admin,
-  measureRequestDuration("/account/:id"),
   async (req, res) => {
     const { id } = req.params as TypedPayload<typeof deleteAccount>;
 
@@ -231,61 +198,38 @@ const rename = z.object({
   newName: z.string().max(64).min(2),
 });
 
-router.put(
-  "/rename",
-  validating(rename),
-  logged,
-  measureRequestDuration("/rename"),
-  async (req, res) => {
-    const { user } = req as LoggedRequest;
-    const { newName } = req.body as TypedPayload<typeof rename>;
+router.put("/rename", validating(rename), logged, async (req, res) => {
+  const { user } = req as LoggedRequest;
+  const { newName } = req.body as TypedPayload<typeof rename>;
 
-    try {
-      await storeInUser("_id", user._id, { username: newName });
-      res.status(204).end();
-    } catch (e) {
-      logger.error(e);
-      res.status(500).end();
-    }
+  try {
+    await storeInUser("_id", user._id, { username: newName });
+    res.status(204).end();
+  } catch (e) {
+    logger.error(e);
+    res.status(500).end();
   }
-);
+});
 
-router.get(
-  "/version",
-  measureRequestDuration("/version"),
-  async (_, res) => {
-    if (getWithDefault("NODE_ENV", "development") === "development") {
-      res.status(200).send({ update: false, version: "0.1.2" });
+router.get("/version", async (_, res) => {
+  if (getWithDefault("NODE_ENV", "development") === "development") {
+    res.status(200).send({ update: false, version: "0.1.2" });
+    return;
+  }
+  try {
+    const thisOne = Version.thisOne();
+    const githubVersion = await GithubAPI.lastVersion();
+    if (!githubVersion) {
+      res.status(200).send({ update: false, version: thisOne.toString() });
       return;
     }
-    try {
-      const thisOne = Version.thisOne();
-      const githubVersion = await GithubAPI.lastVersion();
-      if (!githubVersion) {
-        res.status(200).send({ update: false, version: thisOne.toString() });
-        return;
-      }
-      if (githubVersion.isNewerThan(thisOne)) {
-        res.status(200).send({ update: true, version: thisOne.toString() });
-        return;
-      }
-      res.status(200).send({ update: false, version: thisOne.toString() });
-    } catch (e) {
-      logger.error(e);
-      res.status(500).end();
+    if (githubVersion.isNewerThan(thisOne)) {
+      res.status(200).send({ update: true, version: thisOne.toString() });
+      return;
     }
+    res.status(200).send({ update: false, version: thisOne.toString() });
+  } catch (e) {
+    logger.error(e);
+    res.status(500).end();
   }
-);
-
-router.get(
-  '/metrics',
-  measureRequestDuration('/metrics'),
-  async (_, res) => {
-    try {
-      res.set('Content-Type', register.contentType);
-      res.end(await register.metrics());
-    } catch (e) {
-      res.status(500).end();
-    }
-  }
-);
+});

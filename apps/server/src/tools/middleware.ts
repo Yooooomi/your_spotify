@@ -1,3 +1,4 @@
+import { hrtime } from "process";
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { verify } from "jsonwebtoken";
@@ -13,8 +14,7 @@ import {
   SpotifyRequest,
 } from "./types";
 import { SpotifyAPI } from "./apis/spotifyApi";
-import { httpRequestDurationNanoseconds, httpRequestsTotal } from "../metrics";
-import { hrtime } from "process";
+import { Metrics } from "./metrics";
 
 type Location = "body" | "params" | "query";
 
@@ -23,22 +23,22 @@ export const validating =
     schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
     location: Location = "body",
   ) =>
-    (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const tokenObject = z.object({ token: z.string().optional() });
-        let value;
-        if ("merge" in schema) {
-          value = schema.merge(tokenObject).parse(req[location]);
-        } else {
-          value = schema.and(tokenObject).parse(req[location]);
-        }
-        req[location] = value;
-        next();
-      } catch (e) {
-        logger.error(e);
-        res.status(400).end();
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tokenObject = z.object({ token: z.string().optional() });
+      let value;
+      if ("merge" in schema) {
+        value = schema.merge(tokenObject).parse(req[location]);
+      } else {
+        value = schema.and(tokenObject).parse(req[location]);
       }
-    };
+      req[location] = value;
+      next();
+    } catch (e) {
+      logger.error(e);
+      res.status(400).end();
+    }
+  };
 
 const baselogged = async (req: Request, useQueryToken = false) => {
   const { token: queryToken } = req.query;
@@ -193,26 +193,26 @@ export const notAlreadyImporting = async (
   next();
 };
 
-export const measureRequestDuration = (endpoint: string) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const start = hrtime.bigint();
-    res.on("finish", () => {
-      const duration = Number(hrtime.bigint() - start);
-      httpRequestDurationNanoseconds
-        .labels(
-          req.method,
-          endpoint,
-          res.statusCode.toString(),
-        )
-        .set(duration);
-      httpRequestsTotal
-        .labels(
-          req.method,
-          endpoint,
-          res.statusCode.toString()
-        )
-        .inc();
-    });
-    next();
-  };
-}
+const MEASURE_METHODS = ["GET", "POST", "PATCH", "PUT", "DELETE"];
+
+export const measureRequestDuration = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!MEASURE_METHODS.includes(req.method)) {
+    return next();
+  }
+  const endpoint = req.path;
+  const start = hrtime.bigint();
+  res.on("finish", () => {
+    const duration = Number(hrtime.bigint() - start);
+    Metrics.httpRequestDurationNanoseconds
+      .labels(req.method, endpoint, res.statusCode.toString())
+      .set(duration);
+    Metrics.httpRequestsTotal
+      .labels(req.method, endpoint, res.statusCode.toString())
+      .inc();
+  });
+  next();
+};
