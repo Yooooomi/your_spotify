@@ -37,6 +37,7 @@
   height: 48px;
   width: 48px;
   border-radius: 6px;
+  /*object-fit: cover;*/
 }
 
 .songslistened {

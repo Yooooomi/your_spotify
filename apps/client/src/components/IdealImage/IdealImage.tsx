@@ -1,5 +1,6 @@
 import { getAtLeastImage } from "../../services/tools";
 import { HTMLProps, SpotifyImage } from "../../services/types";
+import s from "./index.module.css";
 
 interface IdealImageProps extends HTMLProps<"img"> {
   images: SpotifyImage[];
@@ -13,6 +14,7 @@ export default function IdealImage({
 }: IdealImageProps) {
   return (
     <img
+      className={s.image}
       alt="cover"
       src={getAtLeastImage(images, size)}
       height={size}
