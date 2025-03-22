@@ -17,7 +17,7 @@ import {
   ItemType,
 } from "../database";
 import { logger } from "../tools/logger";
-import { isLoggedOrGuest, logged, measureRequestDuration, validating } from "../tools/middleware";
+import { isLoggedOrGuest, logged, validating } from "../tools/middleware";
 import { LoggedRequest, TypedPayload } from "../tools/types";
 
 export const router = Router();
@@ -30,7 +30,6 @@ router.get(
   "/:ids",
   validating(getArtistsSchema, "params"),
   isLoggedOrGuest,
-  measureRequestDuration("/artist/:ids"),
   async (req, res) => {
     try {
       const { ids } = req.params as TypedPayload<typeof getArtistsSchema>;
@@ -55,7 +54,6 @@ router.get(
   "/:id/stats",
   validating(getArtistStats, "params"),
   isLoggedOrGuest,
-  measureRequestDuration("/artist/:id/stats"),
   async (req, res) => {
     try {
       const { user } = req as LoggedRequest;
@@ -108,7 +106,6 @@ router.get(
   "/:id/rank",
   validating(getArtistStats, "params"),
   isLoggedOrGuest,
-  measureRequestDuration("/artist/:id/rank"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { id } = req.params as TypedPayload<typeof getArtistStats>;
@@ -136,7 +133,6 @@ router.get(
   "/search/:query",
   validating(search, "params"),
   isLoggedOrGuest,
-  measureRequestDuration("/artist/search/:query"),
   async (req, res) => {
     const { query } = req.params as TypedPayload<typeof search>;
 
@@ -158,7 +154,6 @@ router.post(
   "/blacklist/:id",
   validating(blacklist, "params"),
   logged,
-  measureRequestDuration("/artist/blacklist/:id"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { id } = req.params as TypedPayload<typeof blacklist>;
@@ -178,7 +173,6 @@ router.post(
   "/unblacklist/:id",
   validating(blacklist, "params"),
   logged,
-  measureRequestDuration("/artist/unblacklist/:id"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { id } = req.params as TypedPayload<typeof blacklist>;

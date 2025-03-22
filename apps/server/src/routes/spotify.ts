@@ -29,7 +29,6 @@ import { logger } from "../tools/logger";
 import {
   isLoggedOrGuest,
   logged,
-  measureRequestDuration,
   validating,
   withHttpClient,
 } from "../tools/middleware";
@@ -52,7 +51,6 @@ router.post(
   validating(playSchema),
   logged,
   withHttpClient,
-  measureRequestDuration("/spotify/play"),
   async (req, res) => {
     const { client } = req as SpotifyRequest;
     const { id } = req.body as TypedPayload<typeof playSchema>;
@@ -89,7 +87,6 @@ router.get(
   "/gethistory",
   validating(gethistorySchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/gethistory"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { number, offset, start, end } = req.query as TypedPayload<
@@ -127,7 +124,6 @@ router.get(
   "/listened_to",
   validating(interval, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/listened_to"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end } = req.query as TypedPayload<typeof interval>;
@@ -150,7 +146,6 @@ router.get(
   "/most_listened",
   validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/most_listened"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<
@@ -171,7 +166,6 @@ router.get(
   "/most_listened_artist",
   validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/most_listened_artist"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<
@@ -192,7 +186,6 @@ router.get(
   "/songs_per",
   validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/songs_per"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<
@@ -213,7 +206,6 @@ router.get(
   "/time_per",
   validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/time_per"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<
@@ -234,7 +226,6 @@ router.get(
   "/album_date_ratio",
   validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/album_date_ratio"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<
@@ -255,7 +246,6 @@ router.get(
   "/feat_ratio",
   validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/feat_ratio"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<
@@ -276,7 +266,6 @@ router.get(
   "/popularity_per",
   validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/popularity_per"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<
@@ -297,7 +286,6 @@ router.get(
   "/different_artists_per",
   validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/different_artists_per"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<
@@ -318,7 +306,6 @@ router.get(
   "/time_per_hour_of_day",
   validating(interval, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/time_per_hour_of_day"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end } = req.query as TypedPayload<typeof interval>;
@@ -337,7 +324,6 @@ router.get(
   "/best_artists_per",
   validating(intervalPerSchema, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/best_artists_per"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, timeSplit } = req.query as TypedPayload<
@@ -369,7 +355,6 @@ router.get(
   "/top/songs",
   validating(intervalPerSchemaNbOffset, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/top/songs"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, nb, offset, sortKey } = req.query as TypedPayload<
@@ -397,7 +382,6 @@ router.get(
   "/top/artists",
   validating(intervalPerSchemaNbOffset, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/top/artists"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, nb, offset, sortKey } = req.query as TypedPayload<
@@ -425,7 +409,6 @@ router.get(
   "/top/albums",
   validating(intervalPerSchemaNbOffset, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/top/albums"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, nb, offset, sortKey } = req.query as TypedPayload<
@@ -460,7 +443,6 @@ router.get(
   "/collaborative/top/songs",
   validating(collaborativeSchema, "query"),
   logged,
-  measureRequestDuration("/spotify/collaborative/top/songs"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = req.query as TypedPayload<
@@ -487,7 +469,6 @@ router.get(
   "/collaborative/top/albums",
   validating(collaborativeSchema, "query"),
   logged,
-  measureRequestDuration("/spotify/collaborative/top/albums"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = req.query as TypedPayload<
@@ -513,7 +494,6 @@ router.get(
   "/collaborative/top/artists",
   validating(collaborativeSchema, "query"),
   logged,
-  measureRequestDuration("/spotify/collaborative/top/artists"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = req.query as TypedPayload<
@@ -539,7 +519,6 @@ router.get(
   "/top/hour-repartition/songs",
   validating(interval, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/top/hour-repartition/songs"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end } = req.query as TypedPayload<typeof interval>;
@@ -558,7 +537,6 @@ router.get(
   "/top/hour-repartition/albums",
   validating(interval, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/top/hour-repartition/albums"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end } = req.query as TypedPayload<typeof interval>;
@@ -577,7 +555,6 @@ router.get(
   "/top/hour-repartition/artists",
   validating(interval, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/top/hour-repartition/artists"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end } = req.query as TypedPayload<typeof interval>;
@@ -596,7 +573,6 @@ router.get(
   "/top/sessions",
   validating(interval, "query"),
   isLoggedOrGuest,
-  measureRequestDuration("/spotify/top/sessions"),
   async (req, res) => {
     const { user } = req as LoggedRequest;
     const { start, end } = req.query as TypedPayload<typeof interval>;
@@ -615,25 +591,19 @@ router.get(
   },
 );
 
-router.get(
-  "/playlists",
-  logged,
-  withHttpClient,
-  measureRequestDuration("/spotify/playlists"),
-  async (req, res) => {
-    const { client, user } = req as LoggedRequest & SpotifyRequest;
+router.get("/playlists", logged, withHttpClient, async (req, res) => {
+  const { client, user } = req as LoggedRequest & SpotifyRequest;
 
-    try {
-      const playlists = await client.playlists();
-      res
-        .status(200)
-        .send(playlists.filter(playlist => playlist.owner.id === user.spotifyId));
-    } catch (e) {
-      logger.error(e);
-      res.status(500).end();
-    }
+  try {
+    const playlists = await client.playlists();
+    res
+      .status(200)
+      .send(playlists.filter(playlist => playlist.owner.id === user.spotifyId));
+  } catch (e) {
+    logger.error(e);
+    res.status(500).end();
   }
-);
+});
 
 const createPlaylistBase = z.object({
   playlistId: z.string().optional(),
@@ -683,7 +653,6 @@ router.post(
   validating(createPlaylist),
   logged,
   withHttpClient,
-  measureRequestDuration("/spotify/playlist/create"),
   async (req, res) => {
     const { client, user } = req as LoggedRequest & SpotifyRequest;
     const body = req.body as TypedPayload<typeof createPlaylist>;

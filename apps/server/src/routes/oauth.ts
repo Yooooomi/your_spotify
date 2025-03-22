@@ -11,7 +11,6 @@ import { get, getWithDefault } from "../tools/env";
 import { logger } from "../tools/logger";
 import {
   logged,
-  measureRequestDuration,
   validating,
   withGlobalPreferences,
   withHttpClient,
@@ -44,37 +43,33 @@ const spotifyCallbackOAuthCookie = z.object({
 });
 type OAuthCookie = z.infer<typeof spotifyCallbackOAuthCookie>;
 
-router.get(
-  "/spotify",
-  measureRequestDuration("/oauth/spotify"),
-  async (req, res) => {
-    const isOffline = get("OFFLINE_DEV_ID");
-    if (isOffline) {
-      const privateData = await getPrivateData();
-      if (!privateData?.jwtPrivateKey) {
-        throw new Error("No private data found, cannot sign JWT");
-      }
-      const token = sign({ userId: isOffline }, privateData.jwtPrivateKey, {
-        expiresIn: getWithDefault("COOKIE_VALIDITY_MS", "1h") as `${number}`,
-      });
-      storeTokenInCookie(req, res, token);
-      res.status(204).end();
-      return;
+router.get("/spotify", async (req, res) => {
+  const isOffline = get("OFFLINE_DEV_ID");
+  if (isOffline) {
+    const privateData = await getPrivateData();
+    if (!privateData?.jwtPrivateKey) {
+      throw new Error("No private data found, cannot sign JWT");
     }
-    const { url, state } = await Spotify.getRedirect();
-    const oauthCookie: OAuthCookie = {
-      state,
-    };
-
-    res.cookie(OAUTH_COOKIE_NAME, oauthCookie, {
-      sameSite: "lax",
-      httpOnly: true,
-      secure: req.secure,
+    const token = sign({ userId: isOffline }, privateData.jwtPrivateKey, {
+      expiresIn: getWithDefault("COOKIE_VALIDITY_MS", "1h") as `${number}`,
     });
+    storeTokenInCookie(req, res, token);
+    res.status(204).end();
+    return;
+  }
+  const { url, state } = await Spotify.getRedirect();
+  const oauthCookie: OAuthCookie = {
+    state,
+  };
 
-    res.redirect(url);
-  },
-);
+  res.cookie(OAUTH_COOKIE_NAME, oauthCookie, {
+    sameSite: "lax",
+    httpOnly: true,
+    secure: req.secure,
+  });
+
+  res.redirect(url);
+});
 
 const spotifyCallback = z.object({
   code: z.string(),
@@ -85,7 +80,6 @@ router.get(
   "/spotify/callback",
   validating(spotifyCallback, "query"),
   withGlobalPreferences,
-  measureRequestDuration("/oauth/spotify/callback"),
   async (req, res) => {
     const { query, globalPreferences } = req as GlobalPreferencesRequest;
     const { code, state } = query as TypedPayload<typeof spotifyCallback>;
@@ -139,20 +133,14 @@ router.get(
   },
 );
 
-router.get(
-  "/spotify/me",
-  logged,
-  withHttpClient,
-  measureRequestDuration("/oauth/spotify/me"),
-  async (req, res) => {
-    const { client } = req as SpotifyRequest;
+router.get("/spotify/me", logged, withHttpClient, async (req, res) => {
+  const { client } = req as SpotifyRequest;
 
-    try {
-      const me = await client.me();
-      res.status(200).send(me);
-    } catch (e) {
-      logger.error(e);
-      res.status(500).send({ code: "SPOTIFY_ERROR" });
-    }
-  },
-);
+  try {
+    const me = await client.me();
+    res.status(200).send(me);
+  } catch (e) {
+    logger.error(e);
+    res.status(500).send({ code: "SPOTIFY_ERROR" });
+  }
+});

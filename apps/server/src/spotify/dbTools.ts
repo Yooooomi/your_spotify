@@ -13,7 +13,7 @@ import {
 } from "../database";
 import { Infos } from "../database/schemas/info";
 import { longWriteDbLock } from "../tools/lock";
-import { ingestedAlbumsTotal, ingestedArtistsTotal, ingestedTracksTotal } from "../metrics";
+import { Metrics } from "../tools/metrics";
 
 const getIdsHandlingMax = async <
   T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist,
@@ -69,7 +69,7 @@ export const getTracks = async (userId: string, ids: string[]) => {
       artists: track.artists.map(e => e.id),
     };
   });
-  ingestedTracksTotal.inc({ user: userId }, tracks.length);
+  Metrics.ingestedTracksTotal.inc({ user: userId }, tracks.length);
 
   return tracks;
 };
@@ -95,7 +95,7 @@ export const getAlbums = async (userId: string, ids: string[]) => {
       artists: alb.artists.map(art => art.id),
     };
   });
-  ingestedAlbumsTotal.inc({ user: userId }, albums.length);
+  Metrics.ingestedAlbumsTotal.inc({ user: userId }, albums.length);
 
   return albums;
 };
@@ -114,7 +114,7 @@ export const getArtists = async (userId: string, ids: string[]) => {
   artists.forEach(artist =>
     logger.info(`Storing non existing artist ${artist.name}`),
   );
-  ingestedArtistsTotal.inc({ user: userId }, artists.length);
+  Metrics.ingestedArtistsTotal.inc({ user: userId }, artists.length);
 
   return artists;
 };
