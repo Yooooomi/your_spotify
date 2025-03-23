@@ -149,7 +149,7 @@ export class SpotifyAPI {
       return this.client.get(`/tracks?ids=${spotifyIds.join(",")}`);
     });
 
-    return res.data.tracks as SpotifyTrack[];
+    return res.data.tracks as (SpotifyTrack | null)[];
   }
 
   public async search(track: string, artist: string) {

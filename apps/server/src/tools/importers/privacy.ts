@@ -23,7 +23,7 @@ import {
 import { SpotifyAPI } from "../apis/spotifyApi";
 import { Unpack } from "../types";
 import { Infos } from "../../database/schemas/info";
-import { getFromCache, setToCache } from "./cache";
+import { getFromCache, setToCache, SpotifyTrackCacheItem } from "./cache";
 import {
   HistoryImporter,
   ImporterStateTypes,
@@ -165,6 +165,26 @@ export class PrivacyImporter
     return null;
   };
 
+  trySearching = async (
+    artistName: string,
+    trackName: string,
+  ): Promise<SpotifyTrackCacheItem> => {
+    let found = await this.search(
+      removeDiacritics(trackName),
+      removeDiacritics(artistName),
+    );
+    if (!found) {
+      found = await this.search(
+        removeDiacritics(beforeParenthesis(trackName)),
+        removeDiacritics(beforeParenthesis(artistName)),
+      );
+    }
+    if (!found) {
+      return { exists: false };
+    }
+    return { exists: true, track: found };
+  };
+
   run = async (id: string) => {
     this.id = id;
     let items: RecentlyPlayedTrack[] = [];
@@ -191,33 +211,27 @@ export class PrivacyImporter
         content.artistName,
       );
       if (!item) {
-        item = await this.search(
-          removeDiacritics(content.trackName),
-          removeDiacritics(content.artistName),
+        item = await this.trySearching(content.artistName, content.trackName);
+        setToCache(
+          this.userId.toString(),
+          content.trackName,
+          content.artistName,
+          item,
         );
+        if (!item.exists) {
+          logger.warn(
+            `${content.trackName} by ${content.artistName} was not found by search`,
+          );
+          continue;
+        }
       }
-      if (!item) {
-        item = await this.search(
-          removeDiacritics(beforeParenthesis(content.trackName)),
-          removeDiacritics(beforeParenthesis(content.artistName)),
-        );
-      }
-      if (!item) {
-        logger.warn(
-          `${content.trackName} by ${content.artistName} was not found by search`,
-        );
+      if (!item.exists) {
         continue;
       }
-      setToCache(
-        this.userId.toString(),
-        content.trackName,
-        content.artistName,
-        item,
-      );
       logger.info(
-        `Adding ${item.name} - ${item.artists[0]?.name} from data (${i}/${this.elements.length})`,
+        `Adding ${item.track.name} - ${item.track.artists[0]?.name} from data (${i}/${this.elements.length})`,
       );
-      items.push({ track: item, played_at: content.endTime });
+      items.push({ track: item.track, played_at: content.endTime });
       if (items.length >= 20) {
         await this.storeItems(this.userId, items);
         items = [];

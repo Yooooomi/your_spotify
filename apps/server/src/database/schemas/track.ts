@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
-import { Album } from "./album";
-import { Artist } from "./artist";
+import { SpotifyAlbum } from "./album";
+import { SpotifyArtist } from "./artist";
 
 export interface Track {
   album: string;
@@ -23,8 +23,8 @@ export interface Track {
 }
 
 export type SpotifyTrack = Omit<Track, "artists" | "album"> & {
-  artists: Artist[];
-  album: Album;
+  artists: SpotifyArtist[];
+  album: SpotifyAlbum;
 };
 
 export interface RecentlyPlayedTrack {
