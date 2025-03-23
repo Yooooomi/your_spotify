@@ -9,6 +9,7 @@ on:
       - Dockerfile.server.production
       - apps/client/**
       - apps/server/**
+      - yarn.lock
     branches:
       - master
 
