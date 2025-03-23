@@ -181,20 +181,31 @@ export class FullPrivacyImporter
       return idsToSearch;
     }
     const searchedItems = await this.search(ids);
-    searchedItems.forEach(searchedItem => {
+    for (const [index, searchedItem] of searchedItems.entries()) {
+      const id = ids[index];
+      if (!id) {
+        continue;
+      }
+      if (searchedItem === null) {
+        setToCacheString(this.userId.toString(), id, { exists: false });
+        continue;
+      }
       const playedAt = idsToSearch[searchedItem.id];
       if (!playedAt) {
         logger.error("Cannot add item", searchedItem.id, "no played_at found");
-        return;
+        continue;
       }
-      setToCacheString(this.userId.toString(), searchedItem.id, searchedItem);
+      setToCacheString(this.userId.toString(), searchedItem.id, {
+        exists: true,
+        track: searchedItem,
+      });
       playedAt.forEach(pa => {
         items.push({ track: searchedItem, played_at: pa });
       });
       logger.info(
         `Adding ${searchedItem.name} - ${searchedItem.artists[0]?.name} from data`,
       );
-    });
+    }
     idsToSearch = {};
     return idsToSearch;
   };
@@ -244,8 +255,8 @@ export class FullPrivacyImporter
         arrayOfPlayedAt.push(content.ts);
         idsToSearch[spotifyId] = arrayOfPlayedAt;
         idsToSearch = await this.checkIdsToSearch(idsToSearch, items);
-      } else {
-        items.push({ track: item, played_at: content.ts });
+      } else if (item.exists) {
+        items.push({ track: item.track, played_at: content.ts });
       }
       if (items.length >= 20) {
         await this.storeItems(this.userId, items);
