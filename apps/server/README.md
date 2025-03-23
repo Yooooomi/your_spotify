@@ -4,17 +4,21 @@
 - [Prometheus](#prometheus)
 - [API](#api)
   - [Authentication](#authentication)
-    - [OAuth Routes](#oauth-routes)
+    - [OAuth](#oauth)
   - [User Management](#user-management)
-    - [Account Routes](#account-routes)
-    - [Admin Routes](#admin-routes)
+    - [Account](#account)
+    - [Admin](#admin)
   - [Spotify Integration](#spotify-integration)
-    - [Playback Routes](#playback-routes)
+    - [Playback](#playback)
+    - [Playlist Management](#playlist-management)
+  - [History & Statistics](#history--statistics)
+    - [Top Items](#top-items)
+    - [Collaborative Features](#collaborative-features)
   - [Search](#search)
-  - [Artist Routes](#artist-routes)
-  - [Album Routes](#album-routes)
-  - [Track Routes](#track-routes)
-  - [Import Routes](#import-routes)
+  - [Artist](#artist)
+  - [Album](#album)
+  - [Track](#track)
+  - [Import](#import)
   - [Global Preferences](#global-preferences)
   - [Account Settings](#account-settings)
 
@@ -50,7 +54,7 @@ scrape_configs:
 
 ## Authentication
 
-### OAuth Routes
+### OAuth
 
 #### `GET /oauth/spotify`
 Initiates Spotify OAuth flow.
@@ -78,7 +82,7 @@ Gets current user's Spotify profile.
 
 ## User Management
 
-### Account Routes
+### Account
 
 #### `GET /me`
 Get current user information.
@@ -118,7 +122,7 @@ Change username.
 - `204`: Success
 - `500`: Error
 
-### Admin Routes
+### Admin
 
 #### `PUT /admin/:id`
 Set user admin status (requires admin).
@@ -151,7 +155,7 @@ Delete user account (requires admin).
 
 ## Spotify Integration
 
-### Playback Routes
+### Playback
 
 #### `POST /spotify/play`
 Start playback of a track.
@@ -167,6 +171,306 @@ Start playback of a track.
 - `200`: Success
 - `400`: Invalid track or playback error
 - `500`: Server error
+
+### Playlist Management
+
+#### `GET /spotify/playlists`
+Get user's Spotify playlists.
+
+**Response:**
+- `200`: Array of user's Spotify playlists
+
+#### `POST /spotify/playlist/create`
+Create a new Spotify playlist or add tracks to existing playlist.
+
+**Body:**
+```json
+{
+  "playlistId": string?, // Existing playlist ID (optional)
+  "name": string?, // New playlist name (optional)
+  "sortKey": string?, // Sort key for tracks (default "count")
+  "type": "top" | "affinity" | "single", // Playlist type
+  
+  // For type "top"
+  "interval": {
+    "start": date,
+    "end": date
+  },
+  "nb": number, // Number of tracks to include
+  
+  // For type "affinity"
+  "interval": {
+    "start": date,
+    "end": date
+  },
+  "nb": number, // Number of tracks to include
+  "userIds": string[], // User IDs for collaboration
+  "mode": "intersection" | "union", // Collaboration mode
+  
+  // For type "single"
+  "songId": string // Single track ID to add
+}
+```
+
+**Response:**
+- `204`: Successfully created or updated playlist
+- `400`: Invalid request
+- `500`: Server error
+
+## History & Statistics
+
+#### `GET /spotify/gethistory`
+Get user's listening history.
+
+**Query Parameters:**
+- `number`: number - Maximum number of items to return (max 20)
+- `offset`: number - Number of items to skip
+- `start`: date (optional) - Start date
+- `end`: date (optional) - End date
+
+**Response:**
+- `200`: Array of listening history items
+
+#### `GET /spotify/listened_to`
+Get count of songs listened to in a time period.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+
+**Response:**
+- `200`: `{ count: number }`
+
+#### `GET /spotify/most_listened`
+Get most listened songs in a time period.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+
+**Response:**
+- `200`: Array of most listened songs with counts
+
+#### `GET /spotify/most_listened_artist`
+Get most listened artists in a time period.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+
+**Response:**
+- `200`: Array of most listened artists with counts
+
+#### `GET /spotify/songs_per`
+Get song count per time unit.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+
+**Response:**
+- `200`: Array of time periods with song counts
+
+#### `GET /spotify/time_per`
+Get listening time per time unit.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+
+**Response:**
+- `200`: Array of time periods with listening durations
+
+#### `GET /spotify/album_date_ratio`
+Get album release date distribution for listened tracks.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+
+**Response:**
+- `200`: Distribution of tracks by album release date
+
+#### `GET /spotify/feat_ratio`
+Get ratio of songs featuring multiple artists.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+
+**Response:**
+- `200`: Ratio data for featured vs. non-featured tracks
+
+#### `GET /spotify/popularity_per`
+Get popularity metrics of listened tracks.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+
+**Response:**
+- `200`: Popularity distribution over time
+
+#### `GET /spotify/different_artists_per`
+Get count of unique artists listened to per time unit.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+
+**Response:**
+- `200`: Count of unique artists per time unit
+
+#### `GET /spotify/time_per_hour_of_day`
+Get listening distribution by hour of day.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+
+**Response:**
+- `200`: Distribution of listening time by hour
+
+#### `GET /spotify/best_artists_per`
+Get top artists per time unit.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+
+**Response:**
+- `200`: Top artists for each time unit
+
+### Top Items
+
+#### `GET /spotify/top/songs`
+Get top songs in a time period.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `nb`: number - Number of items to return (1-30)
+- `offset`: number - Number of items to skip (default 0)
+- `sortKey`: string - Sort criteria (default "count")
+
+**Response:**
+- `200`: Array of top song objects
+
+#### `GET /spotify/top/artists`
+Get top artists in a time period.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `nb`: number - Number of items to return (1-30)
+- `offset`: number - Number of items to skip (default 0)
+- `sortKey`: string - Sort criteria (default "count")
+
+**Response:**
+- `200`: Array of top artist objects
+
+#### `GET /spotify/top/albums`
+Get top albums in a time period.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `nb`: number - Number of items to return (1-30)
+- `offset`: number - Number of items to skip (default 0)
+- `sortKey`: string - Sort criteria (default "count")
+
+**Response:**
+- `200`: Array of top album objects
+
+#### `GET /spotify/top/hour-repartition/songs`
+Get top songs by hour of day.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+
+**Response:**
+- `200`: Top songs for each hour of the day
+
+#### `GET /spotify/top/hour-repartition/albums`
+Get top albums by hour of day.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+
+**Response:**
+- `200`: Top albums for each hour of the day
+
+#### `GET /spotify/top/hour-repartition/artists`
+Get top artists by hour of day.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+
+**Response:**
+- `200`: Top artists for each hour of the day
+
+#### `GET /spotify/top/sessions`
+Get longest listening sessions.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+
+**Response:**
+- `200`: Array of listening session data
+
+### Collaborative Features
+
+#### `GET /spotify/collaborative/top/songs`
+Get shared top songs between multiple users.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+- `otherIds`: string[] - Array of other user IDs to compare with
+- `mode`: string - Collaboration mode (intersection, union)
+
+**Response:**
+- `200`: Array of shared top songs
+
+#### `GET /spotify/collaborative/top/albums`
+Get shared top albums between multiple users.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+- `otherIds`: string[] - Array of other user IDs to compare with
+- `mode`: string - Collaboration mode (intersection, union)
+
+**Response:**
+- `200`: Array of shared top albums
+
+#### `GET /spotify/collaborative/top/artists`
+Get shared top artists between multiple users.
+
+**Query Parameters:**
+- `start`: date - Start date
+- `end`: date - End date (defaults to current time)
+- `timeSplit`: string - Time unit for grouping (day, week, month, year)
+- `otherIds`: string[] - Array of other user IDs to compare with
+- `mode`: string - Collaboration mode (intersection, union)
+
+**Response:**
+- `200`: Array of shared top artists
 
 ## Search
 
@@ -185,7 +489,7 @@ Search across tracks, artists and albums.
 }
 ```
 
-## Artist Routes
+## Artist
 
 #### `GET /artist/:ids`
 Get artist details.
@@ -212,13 +516,31 @@ Get artist statistics.
 }
 ```
 
+#### `GET /artist/search/:query`
+Search for artists by name.
+
+**Parameters:**
+- `query`: Search term (3-64 characters)
+
+**Response:**
+- `200`: Array of matching artists
+
 #### `POST /artist/blacklist/:id`
 Blacklist an artist.
 
 #### `POST /artist/unblacklist/:id`
 Remove artist from blacklist.
 
-## Album Routes
+#### `GET /artist/:id/rank`
+Get artist's ranking among all artists.
+
+**Parameters:**
+- `id`: Artist ID
+
+**Response:**
+- Artist ranking information
+
+## Album
 
 #### `GET /album/:ids`
 Get album details.
@@ -242,7 +564,16 @@ Get album statistics.
 }
 ```
 
-## Track Routes
+#### `GET /album/:id/rank`
+Get album's ranking among all albums.
+
+**Parameters:**
+- `id`: Album ID
+
+**Response:**
+- Album ranking information
+
+## Track
 
 #### `GET /track/:ids`
 Get track details.
@@ -269,7 +600,16 @@ Get track statistics.
 }
 ```
 
-## Import Routes
+#### `GET /track/:id/rank`
+Get track's ranking among all tracks.
+
+**Parameters:**
+- `id`: Track ID
+
+**Response:**
+- Track ranking information
+
+## Import
 
 #### `POST /import/privacy`
 Import privacy data.
