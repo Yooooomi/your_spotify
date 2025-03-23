@@ -91,6 +91,8 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | SPOTIFY_SECRET        | REQUIRED | The secret key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
 | TIMEZONE              | Europe/Paris | The timezone of your stats, only affects read requests since data is saved with UTC time |
 | MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database, where **mongo** is the name of your service in the compose file |
+| PROMETHEUS_USERNAME             | _not defined_ | Prometheus basic auth username (see [here](https://github.com/Yooooomi/your_spotify/tree/master/apps/server#prometheus)) |
+| PROMETHEUS_PASSWORD             | _not defined_ | Prometheus basic auth password |
 | LOG_LEVEL             | info | The log level, debug is useful if you encouter any bugs |
 | CORS                  | _not defined_ | List of comma-separated origin allowed (defaults to CLIENT_ENDPOINT) |
 | COOKIE_VALIDITY_MS    | 1h | Validity time of the authentication cookie, following [this pattern](https://github.com/vercel/ms) |

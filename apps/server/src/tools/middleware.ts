@@ -1,3 +1,4 @@
+import { hrtime } from "process";
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { verify } from "jsonwebtoken";
@@ -13,6 +14,7 @@ import {
   SpotifyRequest,
 } from "./types";
 import { SpotifyAPI } from "./apis/spotifyApi";
+import { Metrics } from "./metrics";
 
 type Location = "body" | "params" | "query";
 
@@ -188,5 +190,29 @@ export const notAlreadyImporting = async (
     res.status(400).send({ code: "ALREADY_IMPORTING" });
     return;
   }
+  next();
+};
+
+const MEASURE_METHODS = ["GET", "POST", "PATCH", "PUT", "DELETE"];
+
+export const measureRequestDuration = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!MEASURE_METHODS.includes(req.method)) {
+    return next();
+  }
+  const endpoint = req.path;
+  const start = hrtime.bigint();
+  res.on("finish", () => {
+    const duration = Number(hrtime.bigint() - start);
+    Metrics.httpRequestDurationNanoseconds
+      .labels(req.method, endpoint, res.statusCode.toString())
+      .set(duration);
+    Metrics.httpRequestsTotal
+      .labels(req.method, endpoint, res.statusCode.toString())
+      .inc();
+  });
   next();
 };
