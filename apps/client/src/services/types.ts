@@ -1,4 +1,4 @@
-import { ReactHTML } from "react";
+import { HTMLElementType, HTMLProps as RNHTMLProps } from "react";
 
 export type UnboxPromise<T extends Promise<any>> =
   T extends Promise<infer U> ? U : never;
@@ -142,5 +142,5 @@ export enum CollaborativeMode {
   MINIMA = "minima",
 }
 
-export type HTMLTag = keyof ReactHTML;
-export type HTMLProps<T extends HTMLTag> = JSX.IntrinsicElements[T];
+export type HTMLTag = HTMLElementType;
+export type HTMLProps<T extends HTMLTag> = RNHTMLProps<T>;
