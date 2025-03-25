@@ -14,7 +14,7 @@ export function useInfiniteScroll<T>(
   const [items, setItems] = useState<T[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
-  const ref = useRef<(force?: boolean) => void>();
+  const ref = useRef<(force?: boolean) => void>(() => {});
 
   ref.current = async (isNew = false) => {
     if (!hasMore && !isNew) return;

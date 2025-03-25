@@ -14,15 +14,11 @@ export default function LongClickableTrack({
   track,
 }: LongClickableTrackProps) {
   const [isOpen, open, close] = useBooleanState();
-  const ref = useRef(null);
   const divProps = useLongPress(open);
 
   return (
     <>
-      {cloneElement(children, {
-        ...divProps,
-        ref,
-      })}
+      {cloneElement(children, divProps)}
       <Dialog title={track.name} onClose={close} open={isOpen} fullWidth>
         <TrackOptionsContent track={track} onClose={close} />
       </Dialog>

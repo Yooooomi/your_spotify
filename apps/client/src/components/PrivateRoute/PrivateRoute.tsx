@@ -1,5 +1,5 @@
 import { CircularProgress } from "@mui/material";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   selectLoaded,
@@ -9,12 +9,12 @@ import { selectAccounts } from "../../services/redux/modules/admin/selector";
 import { useNavigate } from "../../services/hooks/useNavigate";
 
 interface PrivateRouteProps {
-  children: JSX.Element;
+  children: ReactNode;
 }
 
 export default function PrivateRoute({
   children,
-}: PrivateRouteProps): JSX.Element {
+}: PrivateRouteProps): ReactNode {
   const user = useSelector(selectUser);
   const accounts = useSelector(selectAccounts);
   const loaded = useSelector(selectLoaded);
