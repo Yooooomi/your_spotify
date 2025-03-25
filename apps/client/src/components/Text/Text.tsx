@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { ReactHTML, ReactNode } from "react";
+import React, { HTMLElementType, JSX, ReactNode } from "react";
 import { HTMLTag, HTMLProps } from "../../services/types";
 import s from "./index.module.css";
 
@@ -11,7 +11,7 @@ export type TextProps<T extends HTMLTag> = HTMLProps<T> & {
   noStyle?: boolean;
 };
 
-export default function Text<T extends keyof ReactHTML = "span">({
+export default function Text<T extends HTMLElementType = "span">({
   className,
   children,
   element,

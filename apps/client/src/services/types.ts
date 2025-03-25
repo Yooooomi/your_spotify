@@ -1,4 +1,4 @@
-import { HTMLElementType, HTMLProps as RNHTMLProps } from "react";
+import { HTMLElementType, JSX } from "react";
 
 export type UnboxPromise<T extends Promise<any>> =
   T extends Promise<infer U> ? U : never;
@@ -143,4 +143,4 @@ export enum CollaborativeMode {
 }
 
 export type HTMLTag = HTMLElementType;
-export type HTMLProps<T extends HTMLTag> = RNHTMLProps<T>;
+export type HTMLProps<T extends HTMLTag> = JSX.IntrinsicElements[T];

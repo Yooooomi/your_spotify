@@ -1,5 +1,6 @@
 import { debounce, useMediaQuery } from "@mui/material";
 import {
+  RefObject,
   TouchEvent,
   useCallback,
   useEffect,
@@ -140,7 +141,7 @@ export function useIsGuest() {
 
 export function useResizeDebounce(
   cb: (width: number) => void,
-  ref?: React.RefObject<HTMLDivElement>,
+  ref?: RefObject<HTMLDivElement | null>,
 ) {
   useEffect(() => {
     const cbWithWidth = () => cb(ref?.current?.clientWidth ?? 0);

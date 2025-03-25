@@ -1,14 +1,14 @@
-import { Link } from 'react-router-dom';
-import { Album, HTMLTag } from '../../services/types';
-import Text from '../Text';
-import { TextProps } from '../Text/Text';
-import s from './index.module.css';
+import { Link } from "react-router-dom";
+import { Album, HTMLTag } from "../../services/types";
+import Text from "../Text";
+import { TextProps } from "../Text/Text";
+import s from "./index.module.css";
 
-type InlineAlbumProps<T extends HTMLTag> = Omit<TextProps<T>, 'children'> & {
+type InlineAlbumProps<T extends HTMLTag> = Omit<TextProps<T>, "children"> & {
   album: Album;
 };
 
-export default function InlineAlbum<T extends HTMLTag = 'div'>({
+export default function InlineAlbum<T extends HTMLTag = "div">({
   album,
   ...other
 }: InlineAlbumProps<T>) {
