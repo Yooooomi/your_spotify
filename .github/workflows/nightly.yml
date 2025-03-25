@@ -40,6 +40,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push client nightly
         uses: docker/build-push-action@v5
         with:
@@ -51,6 +58,8 @@ jobs:
           tags: |
             yooooomi/your_spotify_client:nightly
             yooooomi/your_spotify_client:${{ github.sha }}
+            ghcr.io/yooooomi/your_spotify_client:nightly
+            ghcr.io/yooooomi/your_spotify_client:${{ github.sha }}
 
       - name: Build and push server nightly
         uses: docker/build-push-action@v5
@@ -63,3 +72,5 @@ jobs:
           tags: |
             yooooomi/your_spotify_server:nightly
             yooooomi/your_spotify_server:${{ github.sha }}
+            ghcr.io/yooooomi/your_spotify_server:nightly
+            ghcr.io/yooooomi/your_spotify_server:${{ github.sha }}
