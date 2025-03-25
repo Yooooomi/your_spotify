@@ -7,10 +7,13 @@ export const credentials = {
     scopes: [
       "user-read-private",
       "user-read-email",
+      "user-library-read",
       "user-read-recently-played",
       "user-modify-playback-state",
       "playlist-modify-private",
       "playlist-modify-public",
+      "playlist-read-private",
+      "ugc-image-upload",
     ].join(" "),
     redirectUri: `${get("API_ENDPOINT")}/oauth/spotify/callback`,
   },
