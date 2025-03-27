@@ -2,9 +2,24 @@ import { InfosModel, TrackModel } from "../Models";
 import { User } from "../schemas/user";
 import { Timesplit } from "../../tools/types";
 import { getGroupByDateProjection, getGroupingByTimeSplit } from "./statsTools";
+import { getTracks as fetchTracks, storeTrackAlbumArtist } from "../../spotify/dbTools";
 
-export const getTracks = (tracksId: string[]) =>
-  TrackModel.find({ id: { $in: tracksId } });
+export const getTracks = async (userID: string, tracksId: string[]) => {
+  const tracks = await TrackModel.find({ id: { $in: tracksId } });
+
+  const validFetchedTracks = tracks.filter(track => track.name && track.name.trim() !== '');
+  const foundTrackIds = validFetchedTracks.map(track => track.id);
+  const missingTrackIds = tracksId.filter(id => !foundTrackIds.includes(id));
+
+  if (missingTrackIds.length > 0) {
+    const fetchedTracks = await fetchTracks(userID, missingTrackIds);
+    await storeTrackAlbumArtist({ tracks: fetchedTracks });
+
+    return [...tracks, ...fetchedTracks];
+  }
+
+  return tracks;
+};
 
 export const searchTrack = (str: string) =>
   TrackModel.find({ name: { $regex: new RegExp(str, "i") } }).populate(

@@ -27,8 +27,9 @@ router.get(
   isLoggedOrGuest,
   async (req, res) => {
     try {
+      const { user } = req as LoggedRequest;
       const { ids } = req.params as TypedPayload<typeof getTracksSchema>;
-      const tracks = await getTracks(ids.split(","));
+      const tracks = await getTracks(user._id.toString(), ids.split(","));
       if (!tracks || tracks.length === 0) {
         res.status(404).end();
         return;
@@ -53,16 +54,16 @@ router.get(
     try {
       const { user } = req as LoggedRequest;
       const { id } = req.params as TypedPayload<typeof getTrackStats>;
-      const [track] = await getTracks([id]);
+      const [track] = await getTracks(user._id.toString(), [id]);
       const [trackArtist] = track?.artists ?? [];
       if (!track || !trackArtist) {
         res.status(404).end();
         return;
       }
       const promises = [
-        getAlbums([track.album]),
+        getAlbums(user._id.toString(), [track.album]),
         getTrackListenedCount(user, id),
-        getArtists([trackArtist]),
+        getArtists(user._id.toString(), [trackArtist]),
         getTrackFirstAndLastListened(user, track.id),
         bestPeriodOfTrack(user, track.id),
         getTrackRecentHistory(user, track.id),
@@ -100,7 +101,7 @@ router.get(
     const { id } = req.params as TypedPayload<typeof getTrackStats>;
 
     try {
-      const [track] = await getTracks([id]);
+      const [track] = await getTracks(user._id.toString(), [id]);
       if (!track) {
         res.status(404).end();
         return;
