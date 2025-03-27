@@ -106,7 +106,7 @@ export const getCollaborativeBestSongs = (
     { $unwind: "$album" },
     { $lookup: lightArtistLookupPipeline() },
     { $unwind: "$artist" },
-  ]);
+  ]).allowDiskUse(true);
 };
 
 export const getCollaborativeBestAlbums = (
@@ -192,7 +192,7 @@ export const getCollaborativeBestAlbums = (
     { $unwind: "$album" },
     { $lookup: lightArtistLookupPipeline("album.artists") },
     { $unwind: "$artist" },
-  ]);
+  ]).allowDiskUse(true);
 };
 
 export const getCollaborativeBestArtists = (
@@ -277,5 +277,5 @@ export const getCollaborativeBestArtists = (
     { $limit: 50 },
     { $lookup: lightArtistLookupPipeline("_id", false) },
     { $unwind: "$artist" },
-  ]);
+  ]).allowDiskUse(true);
 };
