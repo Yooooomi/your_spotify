@@ -3,7 +3,7 @@ import Axios from "axios";
 import { AdminAccount } from "../redux/modules/admin/reducer";
 import { ImporterState } from "../redux/modules/import/types";
 import { Playlist, PlaylistContext } from "../redux/modules/playlist/types";
-import { User } from "../redux/modules/user/types";
+import { SyncLikedSongsResponse, SyncLikedSongsStatusResponse, User } from "../redux/modules/user/types";
 import {
   Album,
   Artist,
@@ -560,6 +560,11 @@ export const api = {
         };
       }[]
     >("/spotify/top/sessions", { start, end }),
+  setSyncLikedSongs: (status: boolean) =>
+    post<SyncLikedSongsResponse>("/spotify/sync-liked-songs", {
+      status,
+    }),
+  syncLikedSongsStatus: () => get<SyncLikedSongsStatusResponse>("/spotify/sync-liked-songs-status"),
 };
 
 export const DEFAULT_ITEMS_TO_LOAD = 20;

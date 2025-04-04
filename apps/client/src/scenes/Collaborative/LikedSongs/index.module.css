@@ -1,0 +1,61 @@
+.root {
+  margin: auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.content {
+  margin-top: 15px;
+}
+
+.syncButton {
+  width: fit-content;
+  margin-left: 20px !important;
+}
+
+.buttonContainer {  
+  margin: 15px auto 0px auto;
+  width: fit-content;
+}
+
+.embedContainer {  
+  text-align: center;
+}
+
+.embedContainer iframe {
+  margin-top: 8px;  
+  display: block;
+}
+
+.embedPlaylist {
+  border-radius: 12px;
+  width: 88vw;  
+  margin: 0px auto;
+}
+
+@media (min-width: 885px) {
+  .content {
+    margin: 15px;
+  }
+  .buttonContainer {
+    width: initial;
+  }
+  .embedContainer {
+    text-align: left;
+  }
+  .embedContainer span {
+    display: none;
+  }
+  .embedPlaylist {
+    width: 700px;
+    height: 60vh;
+    margin: 0px;
+  }
+}

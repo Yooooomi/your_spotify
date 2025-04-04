@@ -17,6 +17,8 @@ import {
   ShareOutlined,
   Speed,
   SpeedOutlined,
+  OfflineShare,
+  OfflineShareOutlined,
 } from "@mui/icons-material";
 
 export interface SiderLink {
@@ -80,13 +82,20 @@ export const links: SiderCategory[] = [
     ],
   },
   {
-    label: "With people",
+    label: "Social",
     items: [
       {
         label: "Affinity",
         link: "/collaborative/affinity",
         icon: <MusicNoteOutlined />,
         iconOn: <MusicNote />,
+        restrict: "guest",
+      },
+      {
+        label: "Share liked songs",
+        link: "/collaborative/liked-songs",
+        icon: <OfflineShareOutlined />,
+        iconOn: <OfflineShare />,
         restrict: "guest",
       },
     ],

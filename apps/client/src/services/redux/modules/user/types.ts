@@ -24,6 +24,19 @@ export interface User {
   publicToken: string | null;
   firstListenedAt: string;
   isGuest: boolean;
+  syncLikedSongsPlaylistId: string | null;
+  syncLikedSongsStatus: "inactive" | "active" | "loading" | "failed";
+}
+
+export interface SyncLikedSongsResponse {
+  success: boolean;
+  playlistId: string;
+}
+
+export interface SyncLikedSongsStatusResponse {
+  success: boolean;
+  status: "inactive" | "active" | "loading" | "failed";
+  error?: string;
 }
 
 export interface ReduxPresetIntervalDetail {
