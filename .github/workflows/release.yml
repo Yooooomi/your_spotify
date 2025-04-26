@@ -45,6 +45,15 @@ jobs:
         id: tag
         uses: "WyriHaximus/github-action-get-previous-tag@master"
 
+      - name: Verify tag matches package.json before pushing
+        run: |
+          for PKG_PATH in "./package.json" "./apps/client/package.json" "./apps/server/package.json"; do
+            if [ -f "$PKG_PATH" ] && [ "$(node -p "require('$PKG_PATH').version")" != "${{ steps.tag.outputs.tag }}" ]; then
+              echo "Error: $PKG_PATH version doesn't match tag ${{ steps.tag.outputs.tag }}"
+              exit 1
+            fi
+          done
+
       - name: Build and push client release
         uses: docker/build-push-action@v5
         with:
