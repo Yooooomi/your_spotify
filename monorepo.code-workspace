@@ -23,6 +23,9 @@
     },
     "[html]": {
       "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
     }
   },
   "extensions": {

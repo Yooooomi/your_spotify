@@ -5,6 +5,7 @@ export type UnboxPromise<T extends Promise<any>> =
 
 export interface GlobalPreferences {
   allowRegistrations: boolean;
+  allowAffinity: boolean;
 }
 
 export enum Timesplit {

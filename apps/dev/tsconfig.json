@@ -4,7 +4,7 @@
   },
   "compilerOptions": {
     "module": "commonjs",
-    "target": "ES6",
+    "target": "ES2024",
     // Rules
     "noImplicitReturns": true,
     "noImplicitAny": true,

@@ -64,6 +64,33 @@ export const changeRegistrations = myAsyncThunk<
   }
 });
 
+export const enableAffinity = myAsyncThunk<GlobalPreferences | null, boolean>(
+  "@settings/enable-affinity",
+  async (newStatus, tapi) => {
+    try {
+      const result = await api.setGlobalPreferences({
+        allowAffinity: newStatus,
+      });
+      tapi.dispatch(
+        alertMessage({
+          level: "success",
+          message: `${newStatus ? "Enabled" : "Disabled"} affinity feature`,
+        }),
+      );
+      return result.data;
+    } catch (e) {
+      console.error(e);
+      tapi.dispatch(
+        alertMessage({
+          level: "error",
+          message: `Could not ${newStatus ? "enabled" : "disable"} affinity`,
+        }),
+      );
+      throw e;
+    }
+  },
+);
+
 export const changeTimezone = myAsyncThunk<void, User["settings"]["timezone"]>(
   "@settings/change-timezone",
   async (newTimezone, tapi) => {
