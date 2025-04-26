@@ -56,8 +56,8 @@ jobs:
           tags: |
             yooooomi/your_spotify_client:latest
             yooooomi/your_spotify_client:${{ steps.tag.outputs.tag }}
-            ghcr.io/yooooomi/your_spotify_server:latest
-            ghcr.io/yooooomi/your_spotify_server:${{ steps.tag.outputs.tag }}
+            ghcr.io/yooooomi/your_spotify_client:latest
+            ghcr.io/yooooomi/your_spotify_client:${{ steps.tag.outputs.tag }}
 
       - name: Build and push server release
         uses: docker/build-push-action@v5
