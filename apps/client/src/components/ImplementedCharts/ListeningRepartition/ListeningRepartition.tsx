@@ -6,10 +6,14 @@ import Bar from "../../charts/Bar";
 import { ImplementedChartProps } from "../types";
 import ChartCard from "../../ChartCard";
 import LoadingImplementedChart from "../LoadingImplementedChart";
-import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
+import {
+  selectRawIntervalDetail,
+  selectStatMeasurement,
+} from "../../../services/redux/modules/user/selector";
 import Tooltip from "../../Tooltip";
 import { TitleFormatter, ValueFormatter } from "../../Tooltip/Tooltip";
 import { DateFormatter } from "../../../services/date";
+import { msToMinutes } from "../../../services/stats";
 
 interface ListeningRepartitionProps extends ImplementedChartProps {}
 
@@ -21,6 +25,7 @@ const tooltipTitle: TitleFormatter<unknown[]> = ({ x }) =>
 export default function ListeningRepartition({
   className,
 }: ListeningRepartitionProps) {
+  const measurement = useSelector(selectStatMeasurement);
   const { interval } = useSelector(selectRawIntervalDetail);
   const result = useAPI(api.timePerHourOfDay, interval.start, interval.end);
 
@@ -49,14 +54,25 @@ export default function ListeningRepartition({
   );
 
   const tooltipValue = useCallback<ValueFormatter<typeof data>>(
-    (payload, value) => (
-      <div>
-        {`${value}% of your daily listening`}
-        <br />
-        {`${payload.count} out of ${total} songs`}
-      </div>
-    ),
-    [total],
+    (payload, value) => {
+      if (measurement === "number") {
+        return (
+          <div>
+            {`${value}% of your daily listening`}
+            <br />
+            {`${payload.count} out of ${total} songs`}
+          </div>
+        );
+      }
+      return (
+        <div>
+          {`${value}% of your daily listening`}
+          <br />
+          {`${msToMinutes(payload.count)} out of ${msToMinutes(total)} minutes`}
+        </div>
+      );
+    },
+    [measurement, total],
   );
 
   if (!result) {
