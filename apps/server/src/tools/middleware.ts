@@ -15,30 +15,46 @@ import {
 } from "./types";
 import { SpotifyAPI } from "./apis/spotifyApi";
 import { Metrics } from "./metrics";
+import { YourSpotifyError } from "./errors/error";
 
-type Location = "body" | "params" | "query";
+export class ValidationError extends YourSpotifyError {
+  type = "MALFORMED" as const;
 
-export const validating =
-  (
-    schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
-    location: Location = "body",
-  ) =>
-  (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const tokenObject = z.object({ token: z.string().optional() });
-      let value;
-      if ("merge" in schema) {
-        value = schema.merge(tokenObject).parse(req[location]);
-      } else {
-        value = schema.and(tokenObject).parse(req[location]);
-      }
-      req[location] = value;
-      next();
-    } catch (e) {
-      logger.error(e);
-      res.status(400).end();
+  constructor(validationError: Error) {
+    super("Validation error", { cause: validationError });
+  }
+}
+
+class NotLoggedError extends YourSpotifyError {
+  type = "UNAUTHORIZED" as const;
+  code = "NOT_LOGGED";
+}
+
+class NotAdminError extends YourSpotifyError {
+  type = "FORBIDDEN" as const;
+  code = "NOT_ADMIN";
+}
+
+export const validate = <
+  Z extends z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
+>(
+  payload: any,
+  schema: Z,
+): z.infer<Z> => {
+  try {
+    const tokenObject = z.object({ token: z.string().optional() });
+    let value;
+    if ("merge" in schema) {
+      value = schema.merge(tokenObject).parse(payload);
+    } else {
+      value = schema.and(tokenObject).parse(payload);
     }
-  };
+    return value;
+  } catch (e) {
+    logger.error(e);
+    throw new ValidationError(e);
+  }
+};
 
 const baselogged = async (req: Request, useQueryToken = false) => {
   const { token: queryToken } = req.query;
@@ -91,8 +107,7 @@ export const logged = async (
 ) => {
   const user = await baselogged(req, false);
   if (!user) {
-    res.status(401).end();
-    return;
+    throw new NotLoggedError();
   }
   (req as LoggedRequest).user = user;
   next();
@@ -105,8 +120,7 @@ export const isLoggedOrGuest = async (
 ) => {
   const user = await baselogged(req, true);
   if (!user) {
-    res.status(401).end();
-    return;
+    throw new NotLoggedError();
   }
   (req as LoggedRequest).user = user;
   next();
@@ -136,13 +150,11 @@ export const admin = (req: Request, res: Response, next: NextFunction) => {
   const { user } = req as LoggedRequest;
 
   if (!user) {
-    res.status(401).end();
-    return;
+    throw new NotLoggedError();
   }
 
   if (!user.admin) {
-    res.status(403).end();
-    return;
+    throw new NotAdminError();
   }
   next();
 };
@@ -179,6 +191,11 @@ export const withGlobalPreferences = async (
   }
 };
 
+class AlreadyImportingError extends YourSpotifyError {
+  type = "CONFLICT" as const;
+  code = "ALREADY_IMPORTING";
+}
+
 export const notAlreadyImporting = async (
   req: Request,
   res: Response,
@@ -187,8 +204,7 @@ export const notAlreadyImporting = async (
   const { user } = req as LoggedRequest;
   const imports = await getUserImporterState(user._id.toString());
   if (imports.some(imp => imp.status === "progress")) {
-    res.status(400).send({ code: "ALREADY_IMPORTING" });
-    return;
+    throw new AlreadyImportingError();
   }
   next();
 };
@@ -214,5 +230,26 @@ export const measureRequestDuration = (
       .labels(req.method, endpoint, res.statusCode.toString())
       .inc();
   });
+  next();
+};
+
+class AffinityNotAllowedError extends YourSpotifyError {
+  type = "UNAUTHORIZED" as const;
+  code = "AFFINITY_NOT_ALLOWED";
+
+  constructor() {
+    super("Affinity is not allowed");
+  }
+}
+
+export const affinityAllowed = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const globalPreferences = await getGlobalPreferences();
+  if (!globalPreferences?.allowAffinity) {
+    throw new AffinityNotAllowedError();
+  }
   next();
 };

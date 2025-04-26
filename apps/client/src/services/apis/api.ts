@@ -34,7 +34,7 @@ axios.interceptors.response.use(
       window.location.pathname = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // Adds latency to requests without having to use chrome latency
@@ -215,7 +215,7 @@ export const api = {
       status,
     }),
   deleteUser: (id: string) => delet(`/account/${id}`),
-  setGlobalPreferences: (preferences: GlobalPreferences) =>
+  setGlobalPreferences: (preferences: Partial<GlobalPreferences>) =>
     post<GlobalPreferences>("/global/preferences", preferences),
   play: (id: string) =>
     axios.post("/spotify/play", {

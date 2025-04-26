@@ -17,3 +17,8 @@ export const selectUpdateAvailable = createSelector(
   selectSettingsState,
   state => state.update,
 );
+
+export const selectAffinityEnabled = createSelector(
+  selectSettingsState,
+  state => state.settings?.allowAffinity ?? false,
+);

@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { getGlobalPreferences, updateGlobalPreferences } from "../database";
-import { admin, logged, validating } from "../tools/middleware";
-import { TypedPayload } from "../tools/types";
+import { admin, logged, validate } from "../tools/middleware";
 
 export const router = Router();
 
@@ -12,20 +11,13 @@ router.get("/preferences", async (req, res) => {
 });
 
 const updateGlobalPreferencesSchema = z.object({
-  allowRegistrations: z.boolean(),
+  allowRegistrations: z.boolean().optional(),
+  allowAffinity: z.boolean().optional(),
 });
 
-router.post(
-  "/preferences",
-  validating(updateGlobalPreferencesSchema),
-  logged,
-  admin,
-  async (req, res) => {
-    const modifications = req.body as TypedPayload<
-      typeof updateGlobalPreferencesSchema
-    >;
+router.post("/preferences", logged, admin, async (req, res) => {
+  const modifications = validate(req.body, updateGlobalPreferencesSchema);
 
-    const newPrefs = await updateGlobalPreferences(modifications);
-    res.status(200).send(newPrefs);
-  },
-);
+  const newPrefs = await updateGlobalPreferences(modifications);
+  res.status(200).send(newPrefs);
+});

@@ -19,9 +19,9 @@ import {
 import Text from "../../Text";
 import { useNavigate } from "../../../services/hooks/useNavigate";
 import SiderCategory from "./SiderCategory/SiderCategory";
-import { links } from "./types";
 import SiderTitle from "./SiderTitle";
 import s from "./index.module.css";
+import { useLinks } from "./useLinks";
 
 interface SiderProps {
   className?: string;
@@ -82,6 +82,8 @@ export default function Sider({ className, isDrawer }: SiderProps) {
 
   const version = useSelector(selectVersion);
   const updateAvailable = useSelector(selectUpdateAvailable);
+
+  const links = useLinks();
 
   if (!user) {
     return null;

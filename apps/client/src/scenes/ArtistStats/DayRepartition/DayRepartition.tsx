@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import ChartCard from "../../../components/ChartCard";
 import Bar from "../../../components/charts/Bar";
 import Tooltip from "../../../components/Tooltip";
