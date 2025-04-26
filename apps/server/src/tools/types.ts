@@ -8,10 +8,6 @@ export interface GlobalPreferencesRequest extends Request {
   globalPreferences: GlobalPreferences;
 }
 
-export type TypedPayload<
-  T extends z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
-> = z.infer<T>;
-
 export interface LoggedRequest extends Request {
   user: User;
 }

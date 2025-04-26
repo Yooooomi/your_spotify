@@ -15,30 +15,36 @@ import {
 } from "./types";
 import { SpotifyAPI } from "./apis/spotifyApi";
 import { Metrics } from "./metrics";
+import { YourSpotifyError } from "./errors/error";
 
-type Location = "body" | "params" | "query";
+export class ValidationError extends YourSpotifyError {
+  type = "MALFORMED" as const;
 
-export const validating =
-  (
-    schema: z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
-    location: Location = "body",
-  ) =>
-  (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const tokenObject = z.object({ token: z.string().optional() });
-      let value;
-      if ("merge" in schema) {
-        value = schema.merge(tokenObject).parse(req[location]);
-      } else {
-        value = schema.and(tokenObject).parse(req[location]);
-      }
-      req[location] = value;
-      next();
-    } catch (e) {
-      logger.error(e);
-      res.status(400).end();
+  constructor(validationError: Error) {
+    super("Validation error", { cause: validationError });
+  }
+}
+
+export const validate = <
+  Z extends z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
+>(
+  payload: any,
+  schema: Z,
+): z.infer<Z> => {
+  try {
+    const tokenObject = z.object({ token: z.string().optional() });
+    let value;
+    if ("merge" in schema) {
+      value = schema.merge(tokenObject).parse(payload);
+    } else {
+      value = schema.and(tokenObject).parse(payload);
     }
-  };
+    return value;
+  } catch (e) {
+    logger.error(e);
+    throw new ValidationError(e);
+  }
+};
 
 const baselogged = async (req: Request, useQueryToken = false) => {
   const { token: queryToken } = req.query;
