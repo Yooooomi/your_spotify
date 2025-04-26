@@ -28,6 +28,7 @@ import SpotifyAccountInfos from "./SpotifyAccountInfos";
 import Timezone from "./Timezone";
 import DateFormat from "./DateFormat";
 import { StatMeasurement } from "./StatMeasurement";
+import EnableAffinity from "./EnableAffinity";
 
 export default function Settings() {
   const settings = useSelector(selectSettings);
@@ -99,6 +100,9 @@ export default function Settings() {
                 {user.admin && !isPublic && <DeleteUser />}
                 {user.admin && !isPublic && (
                   <AllowRegistration settings={settings} />
+                )}
+                {user.admin && !isPublic && (
+                  <EnableAffinity settings={settings} />
                 )}
               </Masonry>
             }

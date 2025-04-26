@@ -27,6 +27,7 @@ import {
 import { DateFormatter, intervalToDisplay } from "../tools/date";
 import { logger } from "../tools/logger";
 import {
+  affinityAllowed,
   isLoggedOrGuest,
   logged,
   validate,
@@ -244,54 +245,69 @@ const collaborativeSchema = intervalPerSchema.merge(
   }),
 );
 
-router.get("/collaborative/top/songs", logged, async (req, res) => {
-  const { user } = req as LoggedRequest;
-  const { start, end, otherIds, mode } = validate(
-    req.query,
-    collaborativeSchema,
-  );
+router.get(
+  "/collaborative/top/songs",
+  logged,
+  affinityAllowed,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end, otherIds, mode } = validate(
+      req.query,
+      collaborativeSchema,
+    );
 
-  const result = await getCollaborativeBestSongs(
-    [user._id.toString(), ...otherIds.filter(e => e.length > 0)],
-    start,
-    end,
-    mode,
-    50,
-  );
-  res.status(200).send(result);
-});
+    const result = await getCollaborativeBestSongs(
+      [user._id.toString(), ...otherIds.filter(e => e.length > 0)],
+      start,
+      end,
+      mode,
+      50,
+    );
+    res.status(200).send(result);
+  },
+);
 
-router.get("/collaborative/top/albums", logged, async (req, res) => {
-  const { user } = req as LoggedRequest;
-  const { start, end, otherIds, mode } = validate(
-    req.query,
-    collaborativeSchema,
-  );
+router.get(
+  "/collaborative/top/albums",
+  logged,
+  affinityAllowed,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end, otherIds, mode } = validate(
+      req.query,
+      collaborativeSchema,
+    );
 
-  const result = await getCollaborativeBestAlbums(
-    [user._id.toString(), ...otherIds],
-    start,
-    end,
-    mode,
-  );
-  res.status(200).send(result);
-});
+    const result = await getCollaborativeBestAlbums(
+      [user._id.toString(), ...otherIds],
+      start,
+      end,
+      mode,
+    );
+    res.status(200).send(result);
+  },
+);
 
-router.get("/collaborative/top/artists", logged, async (req, res) => {
-  const { user } = req as LoggedRequest;
-  const { start, end, otherIds, mode } = validate(
-    req.query,
-    collaborativeSchema,
-  );
+router.get(
+  "/collaborative/top/artists",
+  logged,
+  affinityAllowed,
+  async (req, res) => {
+    const { user } = req as LoggedRequest;
+    const { start, end, otherIds, mode } = validate(
+      req.query,
+      collaborativeSchema,
+    );
 
-  const result = await getCollaborativeBestArtists(
-    [user._id.toString(), ...otherIds],
-    start,
-    end,
-    mode,
-  );
-  res.status(200).send(result);
-});
+    const result = await getCollaborativeBestArtists(
+      [user._id.toString(), ...otherIds],
+      start,
+      end,
+      mode,
+    );
+    res.status(200).send(result);
+  },
+);
 
 router.get("/top/hour-repartition/songs", isLoggedOrGuest, async (req, res) => {
   const { user } = req as LoggedRequest;

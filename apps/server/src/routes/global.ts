@@ -11,7 +11,8 @@ router.get("/preferences", async (req, res) => {
 });
 
 const updateGlobalPreferencesSchema = z.object({
-  allowRegistrations: z.boolean(),
+  allowRegistrations: z.boolean().optional(),
+  allowAffinity: z.boolean().optional(),
 });
 
 router.post("/preferences", logged, admin, async (req, res) => {
