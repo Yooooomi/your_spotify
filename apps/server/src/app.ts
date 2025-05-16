@@ -18,6 +18,7 @@ import { get } from "./tools/env";
 import { logger, LogLevelAccepts } from "./tools/logger";
 import { measureRequestDuration } from "./tools/middleware";
 import { ErrorTypeToHTTPCode, YourSpotifyError } from "./tools/errors/error";
+import { IncomingMessage } from "http";
 
 const app = express();
 const ALLOW_ALL_CORS =
@@ -29,6 +30,26 @@ let corsValue: string[] | undefined = get("CORS")?.split(",") ?? [
 if (corsValue?.[0] === ALLOW_ALL_CORS) {
   corsValue = undefined;
 }
+
+// Mask certain search params in logs
+const maskedSearchParams: Partial<Record<string, Set<string>>> = {
+  '/oauth/spotify/callback': new Set(['code']),
+};
+morgan.token<IncomingMessage & { originalUrl?: string }>('url', req => {
+  try {
+    const url = new URL("http://your_spotify" + (req.originalUrl || req.url!));
+    for (const param of url.searchParams.keys()) {
+      if (maskedSearchParams[url.pathname]?.has(param)) {
+        url.searchParams.set(param, 'MASKED');
+      }
+    }
+    return url.pathname +
+      (url.searchParams.size > 0 ? "?" + url.searchParams.toString() : "")
+  } catch (error) {
+    // Default to the original behavior
+    return req.originalUrl || req.url;
+  }
+});
 
 app.use(measureRequestDuration);
 
