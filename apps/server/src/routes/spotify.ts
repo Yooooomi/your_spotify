@@ -245,17 +245,27 @@ const collaborativeSchema = intervalPerSchema.merge(
   }),
 );
 
+export function normalizeOtherIdsQuery(query: any) {
+  if (query['otherIds[]']) {
+    query.otherIds = Array.isArray(query['otherIds[]'])
+      ? query['otherIds[]']
+      : [query['otherIds[]']];
+    delete query['otherIds[]'];
+  }
+  return query;
+}
+
 router.get(
   "/collaborative/top/songs",
   logged,
   affinityAllowed,
   async (req, res) => {
+    const normalizedQuery = normalizeOtherIdsQuery(req.query);
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = validate(
-      req.query,
+      normalizedQuery,
       collaborativeSchema,
     );
-
     const result = await getCollaborativeBestSongs(
       [user._id.toString(), ...otherIds.filter(e => e.length > 0)],
       start,
@@ -272,9 +282,10 @@ router.get(
   logged,
   affinityAllowed,
   async (req, res) => {
+    const normalizedQuery = normalizeOtherIdsQuery(req.query);
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = validate(
-      req.query,
+      normalizedQuery,
       collaborativeSchema,
     );
 
@@ -293,9 +304,10 @@ router.get(
   logged,
   affinityAllowed,
   async (req, res) => {
+    const normalizedQuery = normalizeOtherIdsQuery(req.query);
     const { user } = req as LoggedRequest;
     const { start, end, otherIds, mode } = validate(
-      req.query,
+      normalizedQuery,
       collaborativeSchema,
     );
 
