@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from 'react';
 import s from './index.module.css';
-import { msToMinutesAndSeconds } from '../../../../services/stats';
+import { msToDuration } from '../../../../services/stats';
 import { Artist, Album as AlbumType } from '../../../../services/types';
 import InlineArtist from '../../../../components/InlineArtist';
 import Text from '../../../../components/Text';
@@ -81,7 +81,7 @@ export default function Album({
         ...albumGrid.total,
         node: (
           <Text className="center">
-            {msToMinutesAndSeconds(duration)}
+            {msToDuration(duration)}
             {!isMobile && (
               <>
                 {" "}

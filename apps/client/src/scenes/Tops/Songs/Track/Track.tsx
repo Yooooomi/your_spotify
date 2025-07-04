@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from "react";
 import clsx from "clsx";
-import { msToMinutesAndSeconds } from "../../../../services/stats";
+import { msToDuration } from "../../../../services/stats";
 import { Artist, Album, Track as TrackType } from "../../../../services/types";
 import InlineArtist from "../../../../components/InlineArtist";
 import InlineTrack from "../../../../components/InlineTrack";
@@ -71,7 +71,7 @@ export default function Track(props: TrackProps) {
       {
         ...trackGrid.duration,
         node: !isMobile && (
-          <Text element="div">{msToMinutesAndSeconds(track.duration_ms)}</Text>
+          <Text element="div">{msToDuration(track.duration_ms)}</Text>
         ),
       },
       {
@@ -92,7 +92,7 @@ export default function Track(props: TrackProps) {
         ...trackGrid.total,
         node: (
           <Text element="div" className="center">
-            {msToMinutesAndSeconds(duration)}
+            {msToDuration(duration)}
             {!isMobile && (
               <>
                 {" "}

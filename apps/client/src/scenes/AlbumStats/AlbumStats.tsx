@@ -9,7 +9,7 @@ import InlineTrack from "../../components/InlineTrack";
 import TitleCard from "../../components/TitleCard";
 import Text from "../../components/Text";
 import ImageTwoLines from "../../components/ImageTwoLines";
-import { msToMinutesAndSeconds } from "../../services/stats";
+import { msToDuration } from "../../services/stats";
 import s from "./index.module.css";
 import AlbumRank from "./AlbumRank";
 
@@ -72,7 +72,7 @@ export default function AlbumStats({ stats }: AlbumStatsProps) {
                 ))}
                 <ImageTwoLines
                   image={<TimelapseOutlined color="primary" fontSize="large" />}
-                  first={`${msToMinutesAndSeconds(
+                  first={`${msToDuration(
                     stats.tracks.reduce(
                       (acc, { track }) => track.duration_ms + acc,
                       0,
