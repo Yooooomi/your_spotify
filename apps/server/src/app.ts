@@ -31,13 +31,15 @@ if (corsValue?.[0] === ALLOW_ALL_CORS) {
   corsValue = undefined;
 }
 
-// Mask certain search params in logs
-const maskedSearchParams: Partial<Record<string, Set<string>>> = {
-  '/oauth/spotify/callback': new Set(['code']),
+// Mask certain query params in logs
+const maskedSearchParams: Record<string, Set<string>> = {
+  "/oauth/spotify/callback": new Set(["code"]),
 };
-morgan.token<IncomingMessage & { originalUrl?: string }>('url', req => {
+
+morgan.token<IncomingMessage & { originalUrl?: string }>("url", req => {
   try {
-    const url = new URL("http://your_spotify" + (req.originalUrl || req.url!));
+    const url = new URL(req.originalUrl ?? req.url!, "http://localhost");
+
     for (const param of url.searchParams.keys()) {
       if (maskedSearchParams[url.pathname]?.has(param)) {
         url.searchParams.set(param, 'MASKED');
@@ -46,8 +48,7 @@ morgan.token<IncomingMessage & { originalUrl?: string }>('url', req => {
     return url.pathname +
       (url.searchParams.size > 0 ? "?" + url.searchParams.toString() : "")
   } catch (error) {
-    // Default to the original behavior
-    return req.originalUrl || req.url;
+    return req.originalUrl ?? req.url;
   }
 });
 
