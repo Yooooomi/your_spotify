@@ -300,10 +300,26 @@ export const formatXAxisDateTooltip: TitleFormatter<
 > = (_, payload) => formatDateWithPrecisionToString(payload.dateWithPrecision);
 
 export const msToMinutes = (ms: number) => Math.floor(ms / 1000 / 60);
-export const msToMinutesAndSeconds = (ms: number) =>
-  `${msToMinutes(ms)}:${pad(
-    Math.floor((ms - msToMinutes(ms) * 1000 * 60) / 1000),
-  )}`;
+
+export const msToDuration = (ms: number) => {
+  if (ms === 0) {
+    return "0s";
+  }
+
+  const seconds = Math.floor((ms / 1000) % 60);
+  const minutes = Math.floor((ms / (1000 * 60)) % 60);
+  const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+
+  const parts: string[] = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  if (seconds > 0) parts.push(`${seconds}s`);
+
+  return parts.join(' ');
+};
+  
 
 export const getLastPeriod = (start: Date, end: Date) => {
   const diff = end.getTime() - start.getTime();

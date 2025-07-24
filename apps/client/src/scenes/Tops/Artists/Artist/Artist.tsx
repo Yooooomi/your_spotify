@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { msToMinutesAndSeconds } from "../../../../services/stats";
+import { msToDuration } from "../../../../services/stats";
 import { Artist as ArtistType } from "../../../../services/types";
 import InlineArtist from "../../../../components/InlineArtist";
 import Text from "../../../../components/Text";
@@ -78,7 +78,7 @@ export default function Artist({
         ...artistGrid.total,
         node: (
           <Text className="center">
-            {msToMinutesAndSeconds(duration)}
+            {msToDuration(duration)}
             {!isMobile && (
               <>
                 {" "}
