@@ -10,7 +10,7 @@ import { Timesplit } from "./types";
 import { getFirstListenedAt } from "./user";
 
 export const today = new Date();
-today.setHours(0);
+today.setHours(0, 0, 0, 0);
 export const lastDay = new Date();
 lastDay.setDate(lastDay.getDate() - 1);
 export const lastWeek = fresh(new Date(), true);
