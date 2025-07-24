@@ -9,6 +9,8 @@ import { getMinOfArray } from "./tools";
 import { Timesplit } from "./types";
 import { getFirstListenedAt } from "./user";
 
+export const today = new Date();
+today.setHours(0, 0, 0, 0);
 export const lastDay = new Date();
 lastDay.setDate(lastDay.getDate() - 1);
 export const lastWeek = fresh(new Date(), true);
@@ -60,6 +62,12 @@ export type RawIntervalDetail = {
 };
 
 export const presetIntervals = [
+  {
+    type: "preset",
+    name: "Today",
+    unit: "day",
+    interval: { timesplit: Timesplit.hour, start: today, end: now },
+  },
   {
     type: "preset",
     name: "Last day",
