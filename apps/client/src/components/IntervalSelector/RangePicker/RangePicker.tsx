@@ -7,6 +7,21 @@ import {
 } from "@mui/x-date-pickers";
 import { MenuItem } from "@mui/material";
 import clsx from "clsx";
+import {
+  startOfDay,
+  startOfWeek,
+  startOfMonth,
+  startOfYear,
+  subDays,
+  subWeeks,
+  subMonths,
+  subYears,
+  endOfDay,
+  endOfWeek,
+  endOfMonth,
+  endOfYear,
+  subHours,
+} from "date-fns";
 import { fresh } from "../../../services/stats";
 import s from "./index.module.css";
 
@@ -111,64 +126,65 @@ function DayWrapper({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const presets = [
+const presets: Array<{
+  label: string;
+  create: () => [start: Date, end: Date];
+}> = [
   {
-    label: "Last week",
+    label: "Previous day",
     create: () => {
-      const date = fresh(new Date(), true);
-      date.setDate(date.getDate() - 7);
-      return date;
+      const startOfLastDay = startOfDay(subDays(new Date(), 1));
+      return [startOfLastDay, endOfDay(startOfLastDay)];
     },
+  },
+  {
+    label: "Previous week",
+    create: () => {
+      const startOfLastWeek = startOfWeek(subWeeks(new Date(), 1));
+      return [startOfLastWeek, endOfWeek(startOfLastWeek)];
+    },
+  },
+  {
+    label: "Previous month",
+    create: () => {
+      const startOfLastMonth = startOfMonth(subMonths(new Date(), 1));
+      return [startOfLastMonth, endOfMonth(startOfLastMonth)];
+    },
+  },
+  {
+    label: "Previous year",
+    create: () => {
+      const startOfLastYear = startOfYear(subYears(new Date(), 1));
+      return [startOfLastYear, endOfYear(startOfLastYear)];
+    },
+  },
+  {
+    label: "Last 24 hours",
+    create: () => [subHours(new Date(), 24), new Date()],
+  },
+  {
+    label: "Last 7 days",
+    create: () => [subDays(new Date(), 7), new Date()],
   },
   {
     label: "Last month",
-    create: () => {
-      const date = fresh(new Date(), true);
-      date.setMonth(date.getMonth() - 1);
-      return date;
-    },
+    create: () => [subMonths(new Date(), 1), new Date()],
   },
   {
     label: "Last 3 months",
-    create: () => {
-      const date = fresh(new Date(), true);
-      date.setMonth(date.getMonth() - 3);
-      return date;
-    },
+    create: () => [subMonths(new Date(), 3), new Date()],
   },
   {
     label: "Last year",
-    create: () => {
-      const date = fresh(new Date(), true);
-      date.setFullYear(date.getFullYear() - 1);
-      return date;
-    },
+    create: () => [subYears(new Date(), 1), new Date()],
   },
   {
     label: "Last 2 years",
-    create: () => {
-      const date = fresh(new Date(), true);
-      date.setFullYear(date.getFullYear() - 2);
-      return date;
-    },
+    create: () => [subYears(new Date(), 2), new Date()],
   },
   {
     label: "Last 10 years",
-    create: () => {
-      const date = fresh(new Date(), true);
-      date.setFullYear(date.getFullYear() - 10);
-      return date;
-    },
-  },
-  {
-    label: "This year",
-    create: () => {
-      const date = fresh(new Date(), true);
-      date.setMonth(0);
-      date.setDate(1);
-      return date;
-    },
+    create: () => [subYears(new Date(), 10), new Date()],
   },
 ];
 
@@ -204,9 +220,7 @@ export default function RangePicker({ value, onChange }: RangePickerProps) {
           {presets.map(preset => (
             <MenuItem
               key={preset.label}
-              onClick={() =>
-                onChange([preset.create(), fresh(new Date(), true)])
-              }>
+              onClick={() => onChange(preset.create())}>
               {preset.label}
             </MenuItem>
           ))}
