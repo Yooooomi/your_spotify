@@ -1,28 +1,19 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import { startOfDay, startOfMonth, startOfWeek, startOfYear } from "date-fns";
 import { getAppropriateTimesplitFromRange } from "./date";
 import { selectAccounts } from "./redux/modules/admin/selector";
 import { selectUser } from "./redux/modules/user/selector";
-import { fresh } from "./stats";
 import { getMinOfArray } from "./tools";
 import { Timesplit } from "./types";
 import { getFirstListenedAt } from "./user";
 
-export const today = new Date();
-today.setHours(0, 0, 0, 0);
-export const lastDay = new Date();
-lastDay.setDate(lastDay.getDate() - 1);
-export const lastWeek = fresh(new Date(), true);
-lastWeek.setDate(lastWeek.getDate() - 7);
-lastWeek.setHours(0);
-export const lastMonth = fresh(new Date(), true);
-lastMonth.setMonth(lastMonth.getMonth() - 1);
-lastMonth.setHours(0);
-export const lastYear = fresh(new Date(), true);
-lastYear.setFullYear(lastYear.getFullYear() - 1);
-lastYear.setDate(1);
-export const now = new Date();
+const now = new Date();
+const startOfToday = startOfDay(now);
+const startOfThisWeek = startOfWeek(now);
+const startOfThisMonth = startOfMonth(now);
+const startOfThisYear = startOfYear(now);
 
 export interface Interval {
   timesplit: Timesplit;
@@ -66,31 +57,25 @@ export const presetIntervals = [
     type: "preset",
     name: "Today",
     unit: "day",
-    interval: { timesplit: Timesplit.hour, start: today, end: now },
+    interval: { timesplit: Timesplit.hour, start: startOfToday, end: now },
   },
   {
     type: "preset",
-    name: "Last day",
+    name: "This week",
     unit: "day",
-    interval: { timesplit: Timesplit.hour, start: lastDay, end: now },
+    interval: { timesplit: Timesplit.day, start: startOfThisWeek, end: now },
   },
   {
     type: "preset",
-    name: "Last week",
-    unit: "week",
-    interval: { timesplit: Timesplit.day, start: lastWeek, end: now },
-  },
-  {
-    type: "preset",
-    name: "Last month",
+    name: "This month",
     unit: "month",
-    interval: { timesplit: Timesplit.day, start: lastMonth, end: now },
+    interval: { timesplit: Timesplit.day, start: startOfThisMonth, end: now },
   },
   {
     type: "preset",
-    name: "Last year",
+    name: "This year",
     unit: "year",
-    interval: { timesplit: Timesplit.month, start: lastYear, end: now },
+    interval: { timesplit: Timesplit.month, start: startOfThisYear, end: now },
   },
 ] as const satisfies PresetIntervalDetail[];
 
