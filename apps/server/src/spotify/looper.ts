@@ -105,12 +105,22 @@ export const dbLoop = async () => {
     try {
       const nbUsers = await getUserCount();
       logger.info(`[DbLoop] starting for ${nbUsers} users`);
-
       for (let i = 0; i < nbUsers; i += 1) {
         const users = await getUser(i);
-
         for (const us of users) {
-          await loop(us);
+          try {
+            await loop(us);
+          } catch (error) {
+            logger.error(`[${us.username}]: Error during refresh`, error);
+            if (error instanceof AxiosError) {
+              if (error.response?.data) {
+                logger.info("Response of failed request", error.response.data);
+              }
+              logger.info(
+                "There appears to be issues with either your internet connection or Spotify",
+              );
+            }
+          }
         }
       }
     } catch (error) {
@@ -118,14 +128,6 @@ export const dbLoop = async () => {
       if (error instanceof MongoServerSelectionError) {
         logger.error("Exiting because mongo is unreachable");
         process.exit(1);
-      }
-      if (error instanceof AxiosError) {
-        if (error.response?.data) {
-          logger.info("Response of failed request", error.response.data);
-        }
-        logger.info(
-          "There appears to be issues with either your internet connection or Spotify",
-        );
       }
     }
     await wait(WAIT_MS);
