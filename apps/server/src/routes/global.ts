@@ -13,6 +13,7 @@ router.get("/preferences", async (req, res) => {
 const updateGlobalPreferencesSchema = z.object({
   allowRegistrations: z.boolean().optional(),
   allowAffinity: z.boolean().optional(),
+  weekStartsOn: z.number().int().min(0).max(6).optional(),
 });
 
 router.post("/preferences", logged, admin, async (req, res) => {

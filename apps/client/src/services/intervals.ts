@@ -10,8 +10,9 @@ import { Timesplit } from "./types";
 import { getFirstListenedAt } from "./user";
 
 const now = new Date();
+const weekStartsOn = (window as any)?.WEEK_STARTS_ON ?? 0; // 0=Sunday
 const startOfToday = startOfDay(now);
-const startOfThisWeek = startOfWeek(now);
+const startOfThisWeek = startOfWeek(now, { weekStartsOn });
 const startOfThisMonth = startOfMonth(now);
 const startOfThisYear = startOfYear(now);
 

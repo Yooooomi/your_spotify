@@ -29,6 +29,7 @@ import Timezone from "./Timezone";
 import DateFormat from "./DateFormat";
 import { StatMeasurement } from "./StatMeasurement";
 import EnableAffinity from "./EnableAffinity";
+import WeekStart from "./WeekStart/WeekStart";
 
 export default function Settings() {
   const settings = useSelector(selectSettings);
@@ -104,6 +105,7 @@ export default function Settings() {
                 {user.admin && !isPublic && (
                   <EnableAffinity settings={settings} />
                 )}
+                {user.admin && !isPublic && <WeekStart />}
               </Masonry>
             }
           />
