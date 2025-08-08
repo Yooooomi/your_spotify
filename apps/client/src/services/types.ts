@@ -6,6 +6,8 @@ export type UnboxPromise<T extends Promise<any>> =
 export interface GlobalPreferences {
   allowRegistrations: boolean;
   allowAffinity: boolean;
+  // 0 = Sunday, 1 = Monday, ... 6 = Saturday
+  weekStartsOn?: number;
 }
 
 export enum Timesplit {

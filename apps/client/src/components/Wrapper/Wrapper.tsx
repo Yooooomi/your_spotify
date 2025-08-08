@@ -15,12 +15,14 @@ import {
 import { checkLogged } from "../../services/redux/modules/user/thunk";
 import { intervalDetailToRedux } from "../../services/redux/modules/user/utils";
 import { useAppDispatch } from "../../services/redux/tools";
+import type { RootState } from "../../services/redux";
 
 const GLOBAL_PREFIX = "g";
 
 export default function Wrapper() {
   const dispatch = useAppDispatch();
   const user = useSelector(selectUser);
+  const settings = useSelector((state: RootState) => state.settings.settings);
   const publicToken = useSelector(selectPublicToken);
   const [query, setQuery] = useSearchParams();
 
@@ -55,6 +57,13 @@ export default function Wrapper() {
       init().catch(console.error);
     }
   }, [dispatch, publicToken, urlToken]);
+
+  // Expose week start preference globally for date computations
+  useEffect(() => {
+    if (settings && typeof (settings as any).weekStartsOn === "number") {
+      (window as any).WEEK_STARTS_ON = (settings as any).weekStartsOn;
+    }
+  }, [settings]);
 
   useEffect(() => {
     async function init() {
