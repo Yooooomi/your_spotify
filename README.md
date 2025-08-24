@@ -63,6 +63,7 @@ services:
   mongo:
     container_name: mongo
     image: mongo:6
+    restart: always
     volumes:
       - ./your_spotify_db:/data/db
 
@@ -195,3 +196,4 @@ If you have any issue or any idea that could make the project better, feel free 
 # Sponsoring
 
 I work on this project on my spare time and try to fix issues as soon as I can. If you feel generous and think this project and my investment are worth a few cents, you can consider sponsoring it with the button on the right, many thanks.
+
