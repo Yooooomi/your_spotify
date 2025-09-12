@@ -117,7 +117,7 @@ export const getMostListenedArtist = async (
       $group: {
         _id: {
           ...getGroupingByTimeSplit(timeSplit),
-            artistId: "$primaryArtistId",
+          artistId: "$primaryArtistId",
         },
         count: { $sum: getTrackSumType(user, "$durationMs") },
       },
@@ -613,7 +613,7 @@ export const getBest = (
     { $unwind: "$artist" },
   ]);
 
-  export const getBestOfHour = async (
+export const getBestOfHour = async (
   itemType: ItemType,
   user: User,
   start: Date,
