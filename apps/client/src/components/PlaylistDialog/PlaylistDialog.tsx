@@ -71,7 +71,7 @@ export default function PlaylistDialog() {
   useEffect(() => {
     if (open && !playlists && !requested) {
       setRequested(true);
-      dispatch(fetchPlaylists());
+      dispatch(fetchPlaylists()).catch(console.error);
     }
   }, [dispatch, open, playlists, requested]);
 

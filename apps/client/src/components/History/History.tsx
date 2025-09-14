@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { api } from "../../services/apis/api";
@@ -11,8 +11,19 @@ import {
 import { GridWrapper } from "../Grid";
 import { useInfiniteScroll } from "../../services/hooks/scrolling";
 import CheckboxWithText from "../CheckboxWithText";
+import {
+  Selectable,
+  SelectableContextProvider,
+} from "../Selectable/Selectable.context";
+import {
+  RightClickable,
+  VirtualElement,
+} from "../RightClickable/RightClickable";
+import { compact } from "../../services/tools";
+import { useSelectTracks } from "../../services/hooks/useSelectTrack";
 import TrackHeader from "./Track/TrackHeader";
 import Track from "./Track";
+import { TrackSelectionPopup } from "./Track/TrackSelectionPopup";
 
 export default function History() {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -27,34 +38,51 @@ export default function History() {
     setFollowInterval(value);
   }, []);
 
+  const { anchor, selectedTracks, setAnchor, setSelectedTracks, uniqSongIds } =
+    useSelectTracks({ tracks: items });
+
   return (
-    <TitleCard
-      title="Your history"
-      right={
-        <CheckboxWithText
-          checked={followInterval}
-          onChecked={handleSetFollowInterval}
-          text="Follow interval"
-        />
-      }>
-      <InfiniteScroll
-        dataLength={items.length}
-        next={onNext}
-        hasMore={hasMore}
-        loader={<Loader />}>
-        <GridWrapper>
-          <TrackHeader />
-          {items.map(item => (
-            <Track
-              key={item.played_at}
-              listenedAt={new Date(item.played_at)}
-              artists={item.track.full_artist}
-              album={item.track.full_album}
-              track={item.track}
-            />
-          ))}
-        </GridWrapper>
-      </InfiniteScroll>
-    </TitleCard>
+    <>
+      <TitleCard
+        title="Your history"
+        right={
+          <CheckboxWithText
+            checked={followInterval}
+            onChecked={handleSetFollowInterval}
+            text="Follow interval"
+          />
+        }>
+        <SelectableContextProvider
+          selected={selectedTracks}
+          setSelected={setSelectedTracks}>
+          <InfiniteScroll
+            dataLength={items.length}
+            next={onNext}
+            hasMore={hasMore}
+            loader={<Loader />}>
+            <GridWrapper>
+              <TrackHeader />
+              {items.map((item, index) => (
+                <Selectable key={item.played_at} index={index}>
+                  <RightClickable index={index} onRightClick={setAnchor}>
+                    <Track
+                      listenedAt={new Date(item.played_at)}
+                      artists={item.track.full_artist}
+                      album={item.track.full_album}
+                      track={item.track}
+                    />
+                  </RightClickable>
+                </Selectable>
+              ))}
+            </GridWrapper>
+          </InfiniteScroll>
+        </SelectableContextProvider>
+      </TitleCard>
+      <TrackSelectionPopup
+        anchor={anchor}
+        onClose={() => setAnchor(undefined)}
+        songIds={uniqSongIds}
+      />
+    </>
   );
 }

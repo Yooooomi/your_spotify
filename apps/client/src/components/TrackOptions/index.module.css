@@ -1,10 +1,6 @@
-.root {
-  padding: 8px;
-  text-align: center;
-  border-radius: var(--radius) !important;
-}
-
 .root > strong {
+  padding-left: 8px;
+  padding-right: 8px;
   display: block;
   margin-top: 8px;
   margin-bottom: 8px;

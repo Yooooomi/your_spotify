@@ -1,11 +1,10 @@
-import { MenuItem } from "@mui/material";
 import { useCallback } from "react";
 import { useMobile } from "../../services/hooks/hooks";
 import { setPlaylistContext } from "../../services/redux/modules/playlist/reducer";
 import { playTrack } from "../../services/redux/modules/user/thunk";
 import { useAppDispatch } from "../../services/redux/tools";
 import { Track } from "../../services/types";
-import s from "./index.module.css";
+import { MenuItem } from "../MenuItem/MenuItem";
 
 interface TrackOptionsContentProps {
   onClose: () => void;
@@ -23,26 +22,20 @@ export default function TrackOptionsContent({
     onClose();
     dispatch(
       setPlaylistContext({
-        type: "single",
-        songId: track.id,
+        type: "specific",
+        songIds: [track.id],
       }),
     );
   }, [dispatch, onClose, track.id]);
 
   const play = useCallback(() => {
-    dispatch(playTrack(track.id));
+    dispatch(playTrack(track.id)).catch(console.error);
   }, [dispatch, track.id]);
 
   return (
     <>
-      {isMobile && (
-        <MenuItem className={s.item} onClick={play}>
-          Play
-        </MenuItem>
-      )}
-      <MenuItem className={s.item} onClick={add}>
-        Add to playlist
-      </MenuItem>
+      {isMobile && <MenuItem onClick={play}>Play</MenuItem>}
+      <MenuItem onClick={add}>Add to playlist</MenuItem>
     </>
   );
 }
