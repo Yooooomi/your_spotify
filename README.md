@@ -2,9 +2,7 @@
 ![Release CI](https://github.com/Yooooomi/your_spotify/workflows/Release%20CI/badge.svg)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=BLAPT49PK9A8G)
 
-<p align='center'>
-  ![homepage](/assets/home.png)
-</p>
+![](/assets/home.png)
 
 # Your Spotify
 
@@ -197,3 +195,4 @@ If you have any issue or any idea that could make the project better, feel free 
 # Sponsoring
 
 I work on this project on my spare time and try to fix issues as soon as I can. If you feel generous and think this project and my investment are worth a few cents, you can consider sponsoring it with the button on the right, many thanks.
+
