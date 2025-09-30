@@ -8,7 +8,8 @@
   <img src="/assets/all_stats.png" width=30%> <img src="/assets/top_songs.png" width=30%> <img src="/assets/top_albums.png" width=30%>
 </p>
 
-*More [screenschots](/assets/)*
+> [!NOTE]  
+> More [screenschots](/assets/)
 
 # Your Spotify
 
@@ -201,6 +202,7 @@ If you have any issue or any idea that could make the project better, feel free 
 # Sponsoring
 
 I work on this project on my spare time and try to fix issues as soon as I can. If you feel generous and think this project and my investment are worth a few cents, you can consider sponsoring it with the button on the right, many thanks.
+
 
 
 
