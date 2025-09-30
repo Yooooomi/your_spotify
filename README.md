@@ -3,7 +3,7 @@
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=BLAPT49PK9A8G)
 
 <p align='center'>
-  <img width="100%" src="https://user-images.githubusercontent.com/17204739/154752226-c2215a51-e20e-4ade-ac63-42c5abb25240.png">
+  ![homepage](/assets/home.png)
 </p>
 
 # Your Spotify
@@ -13,17 +13,19 @@ It's composed of a web server which polls the Spotify API every now and then and
 
 # Table of contents
 
+- [Your Spotify](#your-spotify)
+- [Table of contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-  - [Using docker](#using-docker-compose)
-  - [Installing locally](#installing-locally-not-recommended)
+  - [Using `docker-compose`](#using-docker-compose)
+  - [Installing locally (not recommended)](#installing-locally-not-recommended)
   - [Environment](#environment)
   - [Advanced CORS settings](#advanced-cors-settings)
-- [Creating the Spotify application](#creating-the-spotify-application)
+- [Creating the Spotify Application](#creating-the-spotify-application)
 - [Importing past history](#importing-past-history)
   - [Supported import methods](#supported-import-methods)
     - [Privacy data](#privacy-data)
-    - [Full privacy data](#full-privacy-data)
+    - [Full privacy data (recommended)](#full-privacy-data-recommended)
   - [Troubleshoot](#troubleshoot)
 - [FAQ](#faq)
 - [External guides](#external-guides)
