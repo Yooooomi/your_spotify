@@ -4,6 +4,10 @@
 
 ![](/assets/home.png)
 
+<img src="/assets/all_stats.png" width=33%> <img src="/assets/top_songs.png" width=33%> <img src="/assets/top_albums.png" width=33%>
+
+*More [screenschots](/assets/)*
+
 # Your Spotify
 
 **YourSpotify** is a self-hosted application that tracks what you listen and offers you a dashboard to explore statistics about it!
@@ -195,4 +199,5 @@ If you have any issue or any idea that could make the project better, feel free 
 # Sponsoring
 
 I work on this project on my spare time and try to fix issues as soon as I can. If you feel generous and think this project and my investment are worth a few cents, you can consider sponsoring it with the button on the right, many thanks.
+
 
