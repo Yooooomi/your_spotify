@@ -186,6 +186,7 @@ Any user can set his proper timezone in the settings, it will be used for any co
 
 # External guides
 
+- [Arqsz](https://arqsz.net/article/spotify-wrapped-at-home/) walkthrough and installation tutorial for 2025
 - [BreadNet](https://breadnet.co.uk/your-spotify-2022) installation tutorial
 
 # Contributing
