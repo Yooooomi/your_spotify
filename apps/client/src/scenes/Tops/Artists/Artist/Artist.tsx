@@ -15,6 +15,7 @@ interface ArtistProps {
   totalCount: number;
   duration: number;
   totalDuration: number;
+  rank: number;
 }
 
 export default function Artist({
@@ -23,6 +24,7 @@ export default function Artist({
   totalDuration,
   count,
   totalCount,
+  rank
 }: ArtistProps) {
   const [isMobile, isTablet] = useMobile();
   const artistGrid = useArtistGrid();
@@ -31,6 +33,14 @@ export default function Artist({
 
   const columns = useMemo<ColumnDescription[]>(
     () => [
+      {
+        ...artistGrid.rank,
+        node: (
+          <Text element="strong" className={s.mlrank}>
+            #{rank}
+          </Text>
+        )
+      },
       {
         ...artistGrid.cover,
         node: (
@@ -92,6 +102,7 @@ export default function Artist({
       },
     ],
     [
+      artistGrid.rank,
       artist,
       artistGrid.count,
       artistGrid.cover,

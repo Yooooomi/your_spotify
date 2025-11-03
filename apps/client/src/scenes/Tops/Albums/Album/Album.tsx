@@ -17,6 +17,7 @@ interface AlbumProps {
   totalCount: number;
   duration: number;
   totalDuration: number;
+  rank: number;
 }
 
 export default function Album({
@@ -26,12 +27,21 @@ export default function Album({
   totalDuration,
   count,
   totalCount,
+  rank
 }: AlbumProps) {
   const [isMobile] = useMobile();
   const albumGrid = useAlbumGrid();
 
   const columns = useMemo<ColumnDescription[]>(
     () => [
+      {
+        ...albumGrid.rank,
+        node: (
+          <Text element="strong" className={s.mlrank}>
+            #{rank}
+          </Text>
+        )
+      },
       {
         ...albumGrid.cover,
         node: (
@@ -95,6 +105,7 @@ export default function Album({
       },
     ],
     [
+      albumGrid.rank,
       album.images,
       album.name,
       albumGrid.count,

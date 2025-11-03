@@ -1,4 +1,5 @@
 export const commonUnits = {
+  rank: "minmax(30px, 45px)",
   cover: "48px",
   options: "32px",
   duration: "120px",

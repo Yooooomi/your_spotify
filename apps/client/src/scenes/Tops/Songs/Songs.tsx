@@ -53,9 +53,10 @@ export default function Songs() {
             loader={<Loader />}>
             <GridWrapper>
               <TrackHeader />
-              {items.map(item => (
+              {items.map((item, rank) => (
                 <Track
                   playable
+                  rank={rank + 1}
                   key={item.track.id}
                   track={item.track}
                   album={item.album}
