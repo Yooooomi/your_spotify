@@ -8,6 +8,7 @@ export function useArtistGrid() {
   return useMemo(
     () =>
       ({
+        rank: { unit: commonUnits.rank, key: "rank" },
         cover: { unit: commonUnits.cover, key: "cover" },
         title: { unit: commonUnits.mainTitle, key: "title" },
         genres: { unit: "2fr", key: "genres" },

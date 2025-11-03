@@ -8,6 +8,7 @@ export function useAlbumGrid() {
   return useMemo(
     () =>
       ({
+        rank: { unit: commonUnits.rank, key: "rank" },
         cover: { unit: commonUnits.cover, key: "cover" },
         title: { unit: commonUnits.mainTitle, key: "title" },
         count: { unit: commonUnits.percentage(isMobile), key: "count" },

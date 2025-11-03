@@ -23,6 +23,7 @@ interface TrackProps {
   totalCount: number;
   duration: number;
   totalDuration: number;
+  rank: number;
 }
 
 export default function Track(props: TrackProps) {
@@ -38,10 +39,19 @@ export default function Track(props: TrackProps) {
     totalDuration,
     count,
     totalCount,
+    rank
   } = props;
 
   const columns = useMemo<ColumnDescription[]>(
     () => [
+      {
+        ...trackGrid.rank,
+        node: (
+          <Text element="strong" className={s.mlrank}>
+            #{rank}
+          </Text>
+        )
+      },
       {
         ...trackGrid.cover,
         node: playable && <PlayButton id={track.id} covers={album.images} />,
@@ -110,6 +120,7 @@ export default function Track(props: TrackProps) {
       },
     ],
     [
+      trackGrid.rank,
       album,
       artists,
       count,

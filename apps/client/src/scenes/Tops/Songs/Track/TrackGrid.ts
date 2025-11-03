@@ -8,6 +8,7 @@ export function useTrackGrid() {
   return useMemo(
     () =>
       ({
+        rank: { unit: commonUnits.rank, key: "rank" },
         cover: { unit: commonUnits.cover, key: "cover" },
         title: { unit: commonUnits.mainTitle, key: "title" },
         album: { unit: commonUnits.secondaryTitle, key: "album" },
