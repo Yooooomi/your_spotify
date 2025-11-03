@@ -17,6 +17,7 @@ interface AlbumProps {
   totalCount: number;
   duration: number;
   totalDuration: number;
+  rank: number;
 }
 
 export default function Album({
@@ -26,11 +27,20 @@ export default function Album({
   totalDuration,
   count,
   totalCount,
+  rank
 }: AlbumProps) {
   const [isMobile] = useMobile();
   const albumGrid = useAlbumGrid();
 
   const columns: ColumnDescription[] = [
+    {
+      ...albumGrid.rank,
+      node: (
+        <Text size="normal" element="strong" className={s.mlrank}>
+          #{rank}
+        </Text>
+      )
+    },
     {
       ...albumGrid.cover,
       node: (
@@ -49,12 +59,12 @@ export default function Album({
       node: (
         <div className={s.names}>
           <div>
-            <InlineAlbum album={album} size='normal' />
+            <InlineAlbum size="normal" album={album} />
           </div>
           <div className="subtitle">
             {artists.map((art, k, a) => (
               <Fragment key={art.id}>
-                <InlineArtist artist={art} noStyle size='normal' />
+                <InlineArtist size="normal" artist={art} noStyle />
                 {k !== a.length - 1 && ", "}
               </Fragment>
             ))}
@@ -79,7 +89,7 @@ export default function Album({
     {
       ...albumGrid.total,
       node: (
-        <Text className="center" size='normal'>
+        <Text size="normal" className="center">
           {msToDuration(duration)}
           {!isMobile && (
             <>
@@ -92,7 +102,7 @@ export default function Album({
         </Text>
       ),
     },
-  ]
+  ];
 
   return <GridRowWrapper columns={columns} />;
 }
