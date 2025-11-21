@@ -50,7 +50,8 @@ h6 {
   --text-grey: rgb(90, 90, 90);
   --border-color: rgb(90, 90, 90);
 
-  --hover: rgb(65, 65, 65);
+  --hover: rgb(43, 43, 43);
+  --selected: rgb(60, 60, 60);
 
   --background: black;
   --content-background: black;
@@ -75,6 +76,7 @@ h6 {
   --border-color: rgb(227, 229, 233);
 
   --hover: #eaeaea;
+  --selected: #d6d6d6;
 
   --background: white;
   --content-background: #f2f3f6;

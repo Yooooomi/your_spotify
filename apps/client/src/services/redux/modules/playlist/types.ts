@@ -3,7 +3,7 @@ import { CollaborativeMode, SpotifyImage } from "../../../types";
 export interface Playlist {
   id: string;
   name: string;
-  images: SpotifyImage[];
+  images: SpotifyImage[] | null;
 }
 
 export interface PlaylistTopSongsContext {
@@ -21,8 +21,8 @@ export interface PlaylistAffinityContext {
 }
 
 export interface PlaylistSingleSongContext {
-  type: "single";
-  songId: string;
+  type: "specific";
+  songIds: Array<string>;
 }
 
 export type PlaylistContext =

@@ -49,3 +49,17 @@ export function getMinOfArray<T>(
   }
   return { minValue: min, minIndex };
 }
+
+export function uniq<T>(array: T[]) {
+  const uniqd: T[] = [];
+  const seen = new Set<T>();
+
+  for (const item of array) {
+    if (seen.has(item)) {
+      continue;
+    }
+    uniqd.push(item);
+    seen.add(item);
+  }
+  return uniqd;
+}

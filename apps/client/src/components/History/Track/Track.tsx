@@ -58,9 +58,7 @@ export default function Track({
       },
       {
         ...trackGrid.duration,
-        node: !isMobile && (
-          <Text>{msToDuration(track.duration_ms)}</Text>
-        ),
+        node: !isMobile && <Text>{msToDuration(track.duration_ms)}</Text>,
       },
       {
         ...trackGrid.listened,
