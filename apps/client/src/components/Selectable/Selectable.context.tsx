@@ -10,6 +10,7 @@ import {
 } from "react";
 import clsx from "clsx";
 import { uniq } from "../../services/tools";
+import { Pointer } from "../../services/pointer";
 import s from "./index.module.css";
 
 function hasAdditiveSelectKeyPressed(ctrlKey: boolean, metaKey: boolean) {
@@ -101,6 +102,10 @@ export const Selectable = ({ children, index }: SelectableProps) => {
 
   const handleClick = useCallback<MouseEventHandler<HTMLDivElement>>(
     event => {
+      if (Pointer.type !== "mouse") {
+        return;
+      }
+
       event.preventDefault();
       event.stopPropagation();
       if (event.shiftKey) {

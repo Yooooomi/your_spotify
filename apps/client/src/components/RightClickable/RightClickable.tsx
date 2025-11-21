@@ -6,6 +6,7 @@ import {
   useContext,
 } from "react";
 import { SelectableContext } from "../Selectable/Selectable.context";
+import { Pointer } from "../../services/pointer";
 
 export interface VirtualElement {
   getBoundingClientRect: () => DOMRect;
@@ -52,6 +53,9 @@ export function RightClickable({
 
   const handleRightClick = useCallback<MouseEventHandler<HTMLDivElement>>(
     event => {
+      if (Pointer.type !== "mouse") {
+        return;
+      }
       event.preventDefault();
       onRightClick(eventToVirtualElement(event as any), event as any);
       select(index, "ifnotselected");

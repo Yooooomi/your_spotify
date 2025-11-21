@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import { MoreHoriz } from "@mui/icons-material";
+import { MoreHoriz, MoreVert } from "@mui/icons-material";
 import {
   Button,
   ClickAwayListener,
@@ -21,9 +21,10 @@ export interface ThreePointItem {
 
 interface ThreePointsProps {
   items: ThreePointItem[];
+  horizontal?: boolean;
 }
 
-export default function ThreePoints({ items }: ThreePointsProps) {
+export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -42,7 +43,11 @@ export default function ThreePoints({ items }: ThreePointsProps) {
           size="small"
           ref={buttonRef}
           onClick={() => setOpen(v => !v)}>
-          <MoreHoriz fontSize="small" />
+          {horizontal ? (
+            <MoreHoriz fontSize="small" />
+          ) : (
+            <MoreVert fontSize="small" />
+          )}
         </IconButton>
         <Popper
           open={open}

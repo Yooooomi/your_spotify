@@ -30,11 +30,14 @@ import LongestSessions from "./scenes/LongestSessions";
 import AlbumStats from "./scenes/AlbumStats";
 import Benchmarks from "./scenes/Benchmarks";
 import ApiEndpointSetToFronted from "./scenes/Error/ApiEndpointSetToFronted";
+import { useDetectPointerType } from "./services/pointer";
 
 function App() {
   const dark = useSelector(selectDarkMode);
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const theme = useTheme();
+
+  useDetectPointerType();
 
   useEffect(() => {
     const vars =

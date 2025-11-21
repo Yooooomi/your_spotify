@@ -1,6 +1,6 @@
-import React, { MouseEventHandler, useCallback, useRef } from "react";
+import { MouseEventHandler, useCallback, useRef } from "react";
 import { IconButton, Popover } from "@mui/material";
-import { MoreHoriz } from "@mui/icons-material";
+import { MoreVert } from "@mui/icons-material";
 import { Track } from "../../services/types";
 import { useBooleanState, useIsGuest } from "../../services/hooks/hooks";
 import TrackOptionsContent from "../TrackOptionsContent";
@@ -33,7 +33,7 @@ export default function TrackOptions({ track }: TrackOptionsProps) {
   return (
     <>
       <IconButton ref={ref} size="small" onClick={handleClick} disableRipple>
-        <MoreHoriz fontSize="small" />
+        <MoreVert fontSize="small" />
       </IconButton>
       <Popover
         open={isOpen}
