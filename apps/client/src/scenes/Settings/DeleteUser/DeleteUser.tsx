@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import Dialog from "../../../components/Dialog";
 import LoadingButton from "../../../components/LoadingButton";
@@ -17,12 +17,12 @@ export default function DeleteUser() {
   const [loading, setLoading] = useState(false);
   const [beingDeleted, setBeingDeleted] = useState<string | null>(null);
 
-  const askDelete = useCallback((id: string) => {
+  const askDelete = (id: string) => {
     setBeingDeleted(id);
     setOpen(true);
-  }, []);
+  };
 
-  const doDelete = useCallback(async () => {
+  const doDelete = async () => {
     if (!beingDeleted) {
       return;
     }
@@ -30,7 +30,7 @@ export default function DeleteUser() {
     await dispatch(deleteUser({ id: beingDeleted }));
     setLoading(false);
     setOpen(false);
-  }, [beingDeleted, dispatch]);
+  };
 
   return (
     <TitleCard title="Delete users">

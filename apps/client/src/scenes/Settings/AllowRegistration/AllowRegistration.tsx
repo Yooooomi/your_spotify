@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import { useCallback } from "react";
 import Text from "../../../components/Text";
 import TitleCard from "../../../components/TitleCard";
 import { changeRegistrations } from "../../../services/redux/modules/settings/thunk";
@@ -16,17 +15,17 @@ export default function AllowRegistration({
 }: AllowRegistrationProps) {
   const dispatch = useAppDispatch();
 
-  const allowRegistration = useCallback(() => {
+  const allowRegistration = () => {
     if (!settings) {
       return;
     }
     dispatch(changeRegistrations(!settings.allowRegistrations));
-  }, [dispatch, settings]);
+  };
 
   return (
     <TitleCard title="Allow registrations">
       <SettingLine
-        left={<Text>Allow new registrations</Text>}
+        left={<Text size="normal">Allow new registrations</Text>}
         right={
           <Button onClick={allowRegistration}>
             {settings.allowRegistrations ? "YES" : "NO"}

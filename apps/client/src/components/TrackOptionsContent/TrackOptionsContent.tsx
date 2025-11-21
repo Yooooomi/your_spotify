@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useMobile } from "../../services/hooks/hooks";
 import { setPlaylistContext } from "../../services/redux/modules/playlist/reducer";
 import { playTrack } from "../../services/redux/modules/user/thunk";
@@ -18,7 +17,7 @@ export default function TrackOptionsContent({
   const dispatch = useAppDispatch();
   const [isMobile] = useMobile();
 
-  const add = useCallback(() => {
+  const add = () => {
     onClose();
     dispatch(
       setPlaylistContext({
@@ -26,11 +25,11 @@ export default function TrackOptionsContent({
         songIds: [track.id],
       }),
     );
-  }, [dispatch, onClose, track.id]);
+  };
 
-  const play = useCallback(() => {
+  const play = () => {
     dispatch(playTrack(track.id)).catch(console.error);
-  }, [dispatch, track.id]);
+  };
 
   return (
     <>

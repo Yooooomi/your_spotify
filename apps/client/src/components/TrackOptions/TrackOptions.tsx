@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback, useRef } from "react";
+import { useRef } from "react";
 import { IconButton, Popover } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 import { Track } from "../../services/types";
@@ -18,13 +18,10 @@ export default function TrackOptions({ track }: TrackOptionsProps) {
   const [isOpen, open, close] = useBooleanState();
   const isGuest = useIsGuest();
 
-  const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
-    event => {
+  const handleClick = event => {
       event.stopPropagation();
       open();
-    },
-    [open],
-  );
+    };
 
   if (isGuest) {
     return <div className={s.guest} />;
@@ -38,7 +35,7 @@ export default function TrackOptions({ track }: TrackOptionsProps) {
       <Popover
         open={isOpen}
         onClose={close}
-        anchorEl={ref.current}
+        anchorEl={() => ref.current}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
         <MenuTitle>{track.name}</MenuTitle>

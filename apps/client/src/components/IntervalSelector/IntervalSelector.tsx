@@ -9,7 +9,7 @@ import {
   RadioGroup,
   Select,
 } from "@mui/material";
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState } from "react";
 import { endOfDay, startOfDay } from "date-fns";
 import { getAppropriateTimesplitFromRange } from "../../services/date";
 import { useMobile } from "../../services/hooks/hooks";
@@ -44,13 +44,9 @@ export function IntervalSelector({
     undefined,
   ]);
 
-  const existingInterval = useMemo(
-    () => getAllIndexFromIntervalDetail(value),
-    [value],
-  );
+  const existingInterval = getAllIndexFromIntervalDetail(value);
 
-  const internOnChange = useCallback(
-    (index: number) => {
+  const internOnChange = (index: number) => {
       if (index === -1) {
         setOpen(true);
       } else {
@@ -60,9 +56,7 @@ export function IntervalSelector({
         }
         onChange(interval);
       }
-    },
-    [onChange],
-  );
+    };
 
   let content: React.ReactNode;
 
@@ -95,7 +89,7 @@ export function IntervalSelector({
               key={inter.name}
               value={index}
               control={<Radio />}
-              label={<Text>{inter.name}</Text>}
+              label={<Text size="normal">{inter.name}</Text>}
             />
           ))}
         </RadioGroup>
@@ -106,12 +100,9 @@ export function IntervalSelector({
     );
   }
 
-  const goodRange = useMemo(
-    () => Boolean(customIntervalDate[0] && customIntervalDate[1]),
-    [customIntervalDate],
-  );
+  const goodRange = Boolean(customIntervalDate[0] && customIntervalDate[1]);
 
-  const setCustom = useCallback(() => {
+  const setCustom = () => {
     const [start, end] = customIntervalDate;
     if (!start || !end) {
       return;
@@ -126,7 +117,7 @@ export function IntervalSelector({
       },
     });
     setOpen(false);
-  }, [customIntervalDate, onChange]);
+  };
 
   return (
     <>

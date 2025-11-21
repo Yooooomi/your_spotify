@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { ThemeProvider } from "@mui/system";
@@ -31,6 +31,7 @@ import AlbumStats from "./scenes/AlbumStats";
 import Benchmarks from "./scenes/Benchmarks";
 import ApiEndpointSetToFronted from "./scenes/Error/ApiEndpointSetToFronted";
 import { useDetectPointerType } from "./services/pointer";
+import { ShortcutsContextProvider } from "./services/shortcuts";
 
 function App() {
   const dark = useSelector(selectDarkMode);
@@ -48,149 +49,151 @@ function App() {
   }, [dark, prefersDarkMode]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <div className="app">
-        <BrowserRouter>
-          <Wrapper />
-          <Message />
-          <PlaylistDialog />
-          <Layout>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <PrivateRoute>
-                    <Home />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/sessions"
-                element={
-                  <PrivateRoute>
-                    <LongestSessions />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/all"
-                element={
-                  <PrivateRoute>
-                    <AllStats />
-                  </PrivateRoute>
-                }
-              />
-              <Route path="logout" element={<Logout />} />
-              <Route path="login" element={<Login />} />
-              <Route
-                path="/registrations-disabled"
-                element={<RegistrationsDisabled />}
-              />
-              <Route
-                path="/oauth/spotify" // Error page when someone accidentally configures their API_ENDPOINT to point to the frontend instead of the backend
-                element={<ApiEndpointSetToFronted />}
-              />
-              <Route
-                path="/top/songs"
-                element={
-                  <PrivateRoute>
-                    <Songs />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/top/albums"
-                element={
-                  <PrivateRoute>
-                    <Albums />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/top/artists"
-                element={
-                  <PrivateRoute>
-                    <Artists />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/collaborative/affinity"
-                element={
-                  <PrivateRoute>
-                    <Affinity />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/collaborative/top/songs/:mode"
-                element={
-                  <PrivateRoute>
-                    <CollaborativeSongs />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/collaborative/top/albums/:mode"
-                element={
-                  <PrivateRoute>
-                    <CollaborativeAlbums />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/collaborative/top/artists/:mode"
-                element={
-                  <PrivateRoute>
-                    <CollaborativeArtists />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/artist/:id"
-                element={
-                  <PrivateRoute>
-                    <ArtistStats />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/album/:id"
-                element={
-                  <PrivateRoute>
-                    <AlbumStats />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/song/:id"
-                element={
-                  <PrivateRoute>
-                    <TrackStats />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/settings/*"
-                element={
-                  <PrivateRoute>
-                    <Settings />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/benchmarks"
-                element={
-                  <PrivateRoute>
-                    <Benchmarks />
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
-          </Layout>
-        </BrowserRouter>
-      </div>
-    </ThemeProvider>
+    <ShortcutsContextProvider>
+      <ThemeProvider theme={theme}>
+        <div className="app">
+          <BrowserRouter>
+            <Wrapper />
+            <Message />
+            <PlaylistDialog />
+            <Layout>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <PrivateRoute>
+                      <Home />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/sessions"
+                  element={
+                    <PrivateRoute>
+                      <LongestSessions />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/all"
+                  element={
+                    <PrivateRoute>
+                      <AllStats />
+                    </PrivateRoute>
+                  }
+                />
+                <Route path="logout" element={<Logout />} />
+                <Route path="login" element={<Login />} />
+                <Route
+                  path="/registrations-disabled"
+                  element={<RegistrationsDisabled />}
+                />
+                <Route
+                  path="/oauth/spotify" // Error page when someone accidentally configures their API_ENDPOINT to point to the frontend instead of the backend
+                  element={<ApiEndpointSetToFronted />}
+                />
+                <Route
+                  path="/top/songs"
+                  element={
+                    <PrivateRoute>
+                      <Songs />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/top/albums"
+                  element={
+                    <PrivateRoute>
+                      <Albums />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/top/artists"
+                  element={
+                    <PrivateRoute>
+                      <Artists />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/collaborative/affinity"
+                  element={
+                    <PrivateRoute>
+                      <Affinity />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/collaborative/top/songs/:mode"
+                  element={
+                    <PrivateRoute>
+                      <CollaborativeSongs />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/collaborative/top/albums/:mode"
+                  element={
+                    <PrivateRoute>
+                      <CollaborativeAlbums />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/collaborative/top/artists/:mode"
+                  element={
+                    <PrivateRoute>
+                      <CollaborativeArtists />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/artist/:id"
+                  element={
+                    <PrivateRoute>
+                      <ArtistStats />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/album/:id"
+                  element={
+                    <PrivateRoute>
+                      <AlbumStats />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/song/:id"
+                  element={
+                    <PrivateRoute>
+                      <TrackStats />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/settings/*"
+                  element={
+                    <PrivateRoute>
+                      <Settings />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/benchmarks"
+                  element={
+                    <PrivateRoute>
+                      <Benchmarks />
+                    </PrivateRoute>
+                  }
+                />
+              </Routes>
+            </Layout>
+          </BrowserRouter>
+        </div>
+      </ThemeProvider>
+    </ShortcutsContextProvider>
   );
 }
 

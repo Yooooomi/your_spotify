@@ -12,7 +12,7 @@ import { selectRawIntervalDetail } from "../../../services/redux/modules/user/se
 import Text from "../../Text";
 import s from "./index.module.css";
 
-interface BestArtistProps extends ImplementedCardProps {}
+interface BestArtistProps extends ImplementedCardProps { }
 
 export default function BestArtist({ className }: BestArtistProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -32,10 +32,10 @@ export default function BestArtist({ className }: BestArtistProps) {
           <div className={s.stats}>
             <Skeleton width="40%" />
             <div className={s.statnumbers}>
-              <Text className={s.stat}>
+              <Text element="div" size="big">
                 <Skeleton width="60%" />
               </Text>
-              <Text className={s.stat}>
+              <Text element="div" size="big">
                 <Skeleton width="50%" />
               </Text>
             </div>
@@ -58,19 +58,32 @@ export default function BestArtist({ className }: BestArtistProps) {
           />
         </div>
         <div className={s.stats}>
-          {res && <InlineArtist element="strong" artist={res.artist} />}
-          {!res && <Text element="strong">No data</Text>}
-          <div className={s.statnumbers}>
-            <Text className={s.stat}>
-              <Text element="strong">{res?.count ?? 0}</Text> songs listened
+          {res && (
+            <InlineArtist element="strong" size="huge" artist={res.artist} />
+          )}
+          {!res && (
+            <Text element="strong" size="normal">
+              No data
             </Text>
-            <Text className={s.stat}>
-              <Text element="strong">{msToMinutes(res?.duration_ms ?? 0)}</Text>{" "}
+          )}
+          <div className={s.statnumbers}>
+            <Text size="big">
+              <Text element="strong" size="big">
+                {res?.count ?? 0}
+              </Text>{" "}
+              songs listened
+            </Text>
+            <Text size="big">
+              <Text element="strong" size="big">
+                {msToMinutes(res?.duration_ms ?? 0)}
+              </Text>{" "}
               minutes listened
             </Text>
-            <Text className={s.stat}>
-              <Text element="strong">{res?.differents ?? 0}</Text> different
-              songs
+            <Text size="big">
+              <Text element="strong" size="big">
+                {res?.differents ?? 0}
+              </Text>{" "}
+              different songs
             </Text>
           </div>
         </div>

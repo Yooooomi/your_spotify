@@ -13,7 +13,7 @@ export default function InlineAlbum<T extends HTMLTag = "div">({
   ...other
 }: InlineAlbumProps<T>) {
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
+     
     <Text {...other} title={album.name}>
       <Link to={`/album/${album.id}`} className={s.root}>
         {album.name}

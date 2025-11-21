@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import AddToPlaylist from "../../../components/AddToPlaylist";
@@ -8,7 +7,6 @@ import Loader from "../../../components/Loader";
 import { DEFAULT_PLAYLIST_NB } from "../../../components/PlaylistDialog/PlaylistDialog";
 import TitleCard from "../../../components/TitleCard";
 import { api } from "../../../services/apis/api";
-import { PlaylistContext } from "../../../services/redux/modules/playlist/types";
 import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import { useInfiniteScroll } from "../../../services/hooks/scrolling";
 import { useSelectTracks } from "../../../services/hooks/useSelectTrack";
@@ -30,17 +28,14 @@ export default function Songs() {
     api.getBestSongs,
   );
 
-  const context = useMemo<PlaylistContext>(
-    () => ({
+  const context = {
       type: "top",
       nb: DEFAULT_PLAYLIST_NB,
       interval: {
         start: interval.start.getTime(),
         end: interval.end.getTime(),
       },
-    }),
-    [interval.end, interval.start],
-  );
+    };
 
   const { anchor, selectedTracks, setAnchor, setSelectedTracks, uniqSongIds } =
     useSelectTracks({ tracks: items.map(item => item.track) });

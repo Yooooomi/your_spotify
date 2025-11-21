@@ -27,7 +27,7 @@ export default function Logout() {
 
   return (
     <div>
-      <Text element="h3">You are being logged out</Text>
+      <Text element="h3" size='big'>You are being logged out</Text>
       <CircularProgress />
     </div>
   );

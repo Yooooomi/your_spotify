@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import { useCallback } from "react";
 import Text from "../../../components/Text";
 import TitleCard from "../../../components/TitleCard";
 import { enableAffinity } from "../../../services/redux/modules/settings/thunk";
@@ -16,17 +15,17 @@ export default function EnableAffinity({ settings }: EnableAffinityProps) {
 
   console.log("affiinity", settings);
 
-  const handleEnable = useCallback(() => {
+  const handleEnable = () => {
     if (!settings) {
       return;
     }
     dispatch(enableAffinity(!settings.allowAffinity)).catch(console.error);
-  }, [dispatch, settings]);
+  };
 
   return (
     <TitleCard title="Affinity">
       <SettingLine
-        left={<Text>Enable affinity feature</Text>}
+        left={<Text size="normal">Enable affinity feature</Text>}
         right={
           <Button onClick={handleEnable}>
             {settings.allowAffinity ? "YES" : "NO"}

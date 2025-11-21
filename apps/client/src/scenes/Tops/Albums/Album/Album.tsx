@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react';
+import { Fragment } from 'react';
 import s from './index.module.css';
 import { msToDuration } from '../../../../services/stats';
 import { Artist, Album as AlbumType } from '../../../../services/types';
@@ -30,85 +30,69 @@ export default function Album({
   const [isMobile] = useMobile();
   const albumGrid = useAlbumGrid();
 
-  const columns = useMemo<ColumnDescription[]>(
-    () => [
-      {
-        ...albumGrid.cover,
-        node: (
-          <IdealImage
-            className={s.cover}
-            images={album.images}
-            alt="Album cover"
-            size={48}
-            width={48}
-            height={48}
-          />
-        ),
-      },
-      {
-        ...albumGrid.title,
-        node: (
-          <div className={s.names}>
-            <div>
-              <InlineAlbum album={album} />
-            </div>
-            <div className="subtitle">
-              {artists.map((art, k, a) => (
-                <Fragment key={art.id}>
-                  <InlineArtist artist={art} noStyle />
-                  {k !== a.length - 1 && ", "}
-                </Fragment>
-              ))}
-            </div>
+  const columns: ColumnDescription[] = [
+    {
+      ...albumGrid.cover,
+      node: (
+        <IdealImage
+          className={s.cover}
+          images={album.images}
+          alt="Album cover"
+          size={48}
+          width={48}
+          height={48}
+        />
+      ),
+    },
+    {
+      ...albumGrid.title,
+      node: (
+        <div className={s.names}>
+          <div>
+            <InlineAlbum album={album} size='normal' />
           </div>
-        ),
-      },
-      {
-        ...albumGrid.count,
-        node: (
-          <Text>
-            {count}
-            {!isMobile && (
-              <>
-                {" "}
-                <Text>({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
-              </>
-            )}
-          </Text>
-        ),
-      },
-      {
-        ...albumGrid.total,
-        node: (
-          <Text className="center">
-            {msToDuration(duration)}
-            {!isMobile && (
-              <>
-                {" "}
-                <Text>
-                  ({Math.floor((duration / totalDuration) * 10000) / 100}%)
-                </Text>
-              </>
-            )}
-          </Text>
-        ),
-      },
-    ],
-    [
-      album.images,
-      album.name,
-      albumGrid.count,
-      albumGrid.cover,
-      albumGrid.title,
-      albumGrid.total,
-      artists,
-      count,
-      duration,
-      isMobile,
-      totalCount,
-      totalDuration,
-    ],
-  );
+          <div className="subtitle">
+            {artists.map((art, k, a) => (
+              <Fragment key={art.id}>
+                <InlineArtist artist={art} noStyle size='normal' />
+                {k !== a.length - 1 && ", "}
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
+      ...albumGrid.count,
+      node: (
+        <Text size="normal">
+          {count}
+          {!isMobile && (
+            <>
+              {" "}
+              <Text size="normal">({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+            </>
+          )}
+        </Text>
+      ),
+    },
+    {
+      ...albumGrid.total,
+      node: (
+        <Text className="center" size='normal'>
+          {msToDuration(duration)}
+          {!isMobile && (
+            <>
+              {" "}
+              <Text size="normal">
+                ({Math.floor((duration / totalDuration) * 10000) / 100}%)
+              </Text>
+            </>
+          )}
+        </Text>
+      ),
+    },
+  ]
 
   return <GridRowWrapper columns={columns} />;
 }

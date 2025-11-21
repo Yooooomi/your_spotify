@@ -12,7 +12,7 @@ export default function InlineTrack<T extends HTMLTag = "div">({
   ...other
 }: InlineTrackProps<T>) {
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
+     
     <Text title={track.name} {...other}>
       <Link to={`/song/${track.id}`} className={s.root}>
         {track.name}

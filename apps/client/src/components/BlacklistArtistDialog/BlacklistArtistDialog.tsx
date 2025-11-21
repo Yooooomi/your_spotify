@@ -1,5 +1,4 @@
 import { Dialog, DialogContent, Button } from "@mui/material";
-import { useCallback } from "react";
 import {
   blacklistArtist,
   unblacklistArtist,
@@ -22,21 +21,21 @@ export default function BlacklistArtistDialog({
 }: BlacklistArtistDialogProps) {
   const dispatch = useAppDispatch();
 
-  const doBlacklist = useCallback(async () => {
+  const doBlacklist = async () => {
     if (!artistId) {
       return;
     }
     await dispatch(blacklistArtist(artistId));
     onClose?.();
-  }, [artistId, dispatch, onClose]);
+  };
 
-  const doUnblacklist = useCallback(async () => {
+  const doUnblacklist = async () => {
     if (!artistId) {
       return undefined;
     }
     await dispatch(unblacklistArtist(artistId));
     onClose?.();
-  }, [dispatch, artistId, onClose]);
+  };
 
   return (
     <>

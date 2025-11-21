@@ -32,7 +32,7 @@ export default function LongestSessions() {
             text="Loading your longest sessions, this can take a bit of time"
           />
         )}
-        {result && !hasValidSessions && <Text>No longest session</Text>}
+        {result && !hasValidSessions && <Text size="normal">No longest session</Text>}
         {hasValidSessions && (
           <TitleCard title="5 longest sessions">
             {validResults.map(r => (

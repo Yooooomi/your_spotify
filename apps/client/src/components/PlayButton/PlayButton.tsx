@@ -1,7 +1,6 @@
 import { PlayArrow } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import clsx from "clsx";
-import { useCallback } from "react";
 import { playTrack } from "../../services/redux/modules/user/thunk";
 import { useAppDispatch } from "../../services/redux/tools";
 import { SpotifyImage } from "../../services/types";
@@ -17,9 +16,9 @@ interface PlayButtonProps {
 export default function PlayButton({ id, covers, className }: PlayButtonProps) {
   const dispatch = useAppDispatch();
 
-  const play = useCallback(() => {
+  const play = () => {
     dispatch(playTrack(id));
-  }, [dispatch, id]);
+  };
 
   return (
     <div className={clsx(s.root, className)}>

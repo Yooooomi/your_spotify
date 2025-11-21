@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { MoreHoriz, MoreVert } from "@mui/icons-material";
 import {
   Button,
@@ -28,13 +28,10 @@ export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
-  const internClick = useCallback(
-    (index: number) => {
+  const internClick = (index: number) => {
       items[index]?.onClick();
       setOpen(false);
-    },
-    [items],
-  );
+    };
 
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
@@ -55,14 +52,15 @@ export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
           popperOptions={{ placement: "auto-start" }}
           transition>
           {({ TransitionProps }) => (
-            // eslint-disable-next-line react/jsx-props-no-spreading
+
             <Fade {...TransitionProps}>
               <div className={s.popper}>
                 {items.map((item, index) => (
                   <Tooltip
+                    key={item.label}
                     title={(item.disabled && item.disabledTooltip) || ""}>
                     <Button
-                      // eslint-disable-next-line react/no-array-index-key
+
                       key={index}
                       variant="text"
                       disabled={item.disabled}
@@ -77,7 +75,7 @@ export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
                 ))}
                 {items.length === 0 && (
                   <Button
-                    // eslint-disable-next-line react/no-array-index-key
+
                     variant="text"
                     disabled>
                     No action available

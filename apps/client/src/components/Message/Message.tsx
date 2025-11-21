@@ -1,7 +1,7 @@
 import { IconButton, Snackbar, SnackbarCloseReason } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import clsx from "clsx";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Ref, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { AlertMessage } from "../../services/redux/modules/message/reducer";
 import { selectMessage } from "../../services/redux/modules/message/selector";
@@ -9,45 +9,44 @@ import Text from "../Text";
 import s from "./index.module.css";
 
 interface AlertProps {
+  ref?: Ref<HTMLDivElement>;
   message: string;
   level: AlertMessage["level"];
   onClose: () => void;
 }
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
-  ({ message, level, onClose }: AlertProps, ref) => (
+function Alert({ message, level, onClose, ref }: AlertProps) {
+  return (
     <div
       ref={ref}
       className={clsx({
         [s.alert]: true,
         [s[level]]: true,
       })}>
-      <Text onDark>{message}</Text>
+      <Text onDark size='normal'>{message}</Text>
       <IconButton size="small" onClick={onClose}>
         <Close className={s.icon} fontSize="small" />
       </IconButton>
     </div>
-  ),
-);
+  )
+}
 
 export default function Message() {
   const message = useSelector(selectMessage);
   const [open, setOpen] = useState(false);
 
-  const onClose = useCallback(
-    (
-      _: Event | React.SyntheticEvent<any, Event>,
-      reason: SnackbarCloseReason,
-    ) => {
-      if (reason === "clickaway") {
-        return;
-      }
-      setOpen(false);
-    },
-    [],
-  );
+  function onClose(
+    _: Event | React.SyntheticEvent<any, Event>,
+    reason: SnackbarCloseReason,
+  ) {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpen(true);
   }, [message]);
 

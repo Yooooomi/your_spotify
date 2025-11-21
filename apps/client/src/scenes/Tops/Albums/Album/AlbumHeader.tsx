@@ -1,33 +1,29 @@
-import { useMemo } from "react";
 import Text from "../../../../components/Text";
-import { ColumnDescription, GridRowWrapper } from "../../../../components/Grid";
+import { GridRowWrapper } from "../../../../components/Grid";
 import s from "./index.module.css";
 import { useAlbumGrid } from "./AlbumGrid";
 
 export default function AlbumHeader() {
   const albumGrid = useAlbumGrid();
 
-  const columns = useMemo<ColumnDescription[]>(
-    () => [
+  const columns = [
       {
         ...albumGrid.cover,
         node: <div />,
       },
       {
         ...albumGrid.title,
-        node: <Text>Album name</Text>,
+        node: <Text size="normal">Album name</Text>,
       },
       {
         ...albumGrid.count,
-        node: <Text>Count</Text>,
+        node: <Text size="normal">Count</Text>,
       },
       {
         ...albumGrid.total,
-        node: <Text className="center">Total</Text>,
+        node: <Text className="center" size='normal'>Total</Text>,
       },
-    ],
-    [albumGrid.count, albumGrid.cover, albumGrid.title, albumGrid.total],
-  );
+    ];
 
   return <GridRowWrapper columns={columns} className={s.header} />;
 }

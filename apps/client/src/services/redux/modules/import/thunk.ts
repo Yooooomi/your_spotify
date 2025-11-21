@@ -115,7 +115,7 @@ export const cleanupImport = myAsyncThunk<void, string>(
         }),
       );
       tapi.dispatch(getImports(true)).catch(console.error);
-    } catch (e) {
+    } catch {
       tapi.dispatch(
         alertMessage({
           level: "success",

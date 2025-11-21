@@ -1,5 +1,4 @@
 import { Popover } from "@mui/material";
-import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { VirtualElement } from "../../RightClickable/RightClickable";
 import { setPlaylistContext } from "../../../services/redux/modules/playlist/reducer";
@@ -19,7 +18,7 @@ export function TrackSelectionPopup({
 }: TrackSelectionPopupProps) {
   const dispatch = useDispatch();
 
-  const handlePlaylist = useCallback(() => {
+  const handlePlaylist = () => {
     onClose();
     dispatch(
       setPlaylistContext({
@@ -27,7 +26,7 @@ export function TrackSelectionPopup({
         songIds,
       }),
     );
-  }, [dispatch, onClose, songIds]);
+  };
 
   return (
     <Popover

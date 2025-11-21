@@ -49,24 +49,27 @@
 }
 
 .lonelyHovered {
-  background-color: rgba(211, 211, 211, 0.346);
-  border-radius: 40px;
+  color: var(--background) !important;
+  background-color: var(--primary) !important;
+  border-radius: 40px !important;
 }
 
 .hovering {
-  background-color: rgba(211, 211, 211, 0.246);
+  color: var(--background) !important;
+  background-color: rgba(var(--primary-tuple), 0.4) !important;
 }
 
 .between {
-  background-color: rgba(211, 211, 211, 0.346);
+  color: var(--background) !important;
+  background-color: var(--primary) !important;
 }
 
 .start {
-  border-top-left-radius: 40px;
-  border-bottom-left-radius: 40px;
+  border-top-left-radius: 40px !important;
+  border-bottom-left-radius: 40px !important;
 }
 
 .end {
-  border-top-right-radius: 40px;
-  border-bottom-right-radius: 40px;
+  border-top-right-radius: 40px !important;
+  border-bottom-right-radius: 40px !important;
 }

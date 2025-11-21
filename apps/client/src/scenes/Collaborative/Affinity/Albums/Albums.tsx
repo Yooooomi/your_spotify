@@ -1,5 +1,4 @@
 import { CircularProgress } from "@mui/material";
-import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams, useSearchParams } from "react-router-dom";
 import Header from "../../../../components/Header";
@@ -25,7 +24,7 @@ export default function Albums() {
 
   const idsQuery = query.get("ids");
 
-  const ids = useMemo(() => idsQuery?.split(",") ?? [], [idsQuery]);
+  const ids = idsQuery?.split(",") ?? [];
   const {
     interval: { start, end },
   } = useOldestListenedAtFromUsers(ids, AFFINITY_PREFIX);
@@ -42,7 +41,7 @@ export default function Albums() {
     return (
       <div className={s.loading}>
         <CircularProgress size={18} />
-        <Text element="div">Loading your data</Text>
+        <Text element="div" size="normal">Loading your data</Text>
       </div>
     );
   }
@@ -81,7 +80,7 @@ export default function Albums() {
 
           return (
             <div key={res.album.id} className={s.album}>
-              <Text element="strong" className={s.ranking}>
+              <Text element="strong" className={s.ranking} size="normal">
                 #{index + 1}
               </Text>
               <IdealImage
@@ -91,15 +90,15 @@ export default function Albums() {
                 className={s.albumimage}
               />
               <div className={s.albumname}>
-                <Text element="div">{res.album.name}</Text>
-                <Text className={s.artist}>
-                  <InlineArtist artist={res.artist} />
+                <Text element="div" size="normal">{res.album.name}</Text>
+                <Text className={s.artist} size="normal">
+                  <InlineArtist artist={res.artist} size="normal" />
                 </Text>
               </div>
               <div className={s.enjoyed}>
-                <Text>
+                <Text size="normal">
                   Most enjoyed by{" "}
-                  <Text element="strong">
+                  <Text element="strong" size="normal">
                     {accountsDict[realIds[maxIndex] ?? -1]?.username}
                   </Text>
                 </Text>

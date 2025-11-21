@@ -172,7 +172,7 @@ export default function Benchmarks() {
       setElapsedTime(prev => ({ ...prev, [req.title]: FAILED_REQUEST }));
       return;
     }
-    let start = Date.now();
+    const start = Date.now();
     const { data: result } = await req.request(prepared);
     console.log("Result", result);
     const end = Date.now();
@@ -222,10 +222,10 @@ export default function Benchmarks() {
             return (
               <TableRow key={req.title}>
                 <TableCell component="th" scope="row">
-                  <Text>{req.title}</Text>
+                  <Text size="normal">{req.title}</Text>
                 </TableCell>
                 <TableCell align="right">
-                  <Text>{elapsed}</Text>
+                  <Text size="normal">{elapsed}</Text>
                 </TableCell>
                 <TableCell
                   padding="none"

@@ -15,7 +15,7 @@ export default function TrackStatsWrapper() {
       <FullscreenCentered>
         <CircularProgress />
         <div>
-          <Text element="h3">Loading your stats</Text>
+          <Text element="h3" size='big'>Loading your stats</Text>
         </div>
       </FullscreenCentered>
     );
@@ -24,7 +24,7 @@ export default function TrackStatsWrapper() {
   if ("code" in stats || !params.id) {
     return (
       <FullscreenCentered>
-        <Text element="h3">
+        <Text element="h3" size='big'>
           You never listened to this song, might be someone else registered
         </Text>
       </FullscreenCentered>

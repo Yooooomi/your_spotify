@@ -1,7 +1,7 @@
 import { ExpandMore } from "@mui/icons-material";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import clsx from "clsx";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import ImageTwoLines from "../../../components/ImageTwoLines";
 import InlineArtist from "../../../components/InlineArtist";
 import InlineTrack from "../../../components/InlineTrack";
@@ -24,19 +24,16 @@ export default function LongestSession({
   tracks,
   fullTracks,
 }: LongestSessionProps) {
-  const artistIds = useMemo(
-    () => [
+  const artistIds = [
       ...tracks.reduce((acc, track) => {
         acc.add(track.primaryArtistId);
         return acc;
       }, new Set<string>()),
-    ],
-    [tracks],
-  );
+    ];
   const { loaded, artists } = useLoadArtists(artistIds);
   const [expanded, setExpanded] = useState(false);
 
-  const totalDuration = useMemo(() => {
+  const totalDuration = (() => {
     const first = tracks[0];
     const last = tracks[tracks.length - 1];
     if (!first || !last) {
@@ -46,7 +43,7 @@ export default function LongestSession({
       new Date(first.played_at),
       new Date(new Date(last.played_at).getTime() + last.durationMs),
     );
-  }, [tracks]);
+  })();
 
   const [firstTrack] = tracks;
 
@@ -61,7 +58,7 @@ export default function LongestSession({
       expanded={expanded}
       onChange={(_, value) => setExpanded(value)}>
       <AccordionSummary expandIcon={<ExpandMore />}>
-        <Text>
+        <Text size="normal">
           {DateFormatter.listenedAt(new Date(firstTrack.played_at))} for{" "}
           {totalDuration} ({tracks.length} songs)
         </Text>
@@ -72,7 +69,7 @@ export default function LongestSession({
           const fullTrack = fullTracks[track.id];
           return (
             <div key={track._id} className={clsx("play-button-holder", s.line)}>
-              <Text>#{index + 1}</Text>
+              <Text size="normal">#{index + 1}</Text>
               <ImageTwoLines
                 image={
                   <PlayButton
@@ -80,10 +77,10 @@ export default function LongestSession({
                     covers={artists[track.primaryArtistId]?.images ?? []}
                   />
                 }
-                first={fullTrack ? <InlineTrack track={fullTrack} /> : null}
+                first={fullTrack ? <InlineTrack size='normal' track={fullTrack} /> : null}
                 second={
                   artist ? (
-                    <InlineArtist className={s.artist} artist={artist} />
+                    <InlineArtist size='normal' className={s.artist} artist={artist} />
                   ) : null
                 }
               />
