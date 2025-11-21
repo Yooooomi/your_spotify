@@ -15,7 +15,7 @@ export default function ArtistStatsWrapper() {
       <FullscreenCentered>
         <CircularProgress />
         <div>
-          <Text element="h3">Loading your stats</Text>
+          <Text element="h3" size='normal'>Loading your stats</Text>
         </div>
       </FullscreenCentered>
     );
@@ -24,7 +24,7 @@ export default function ArtistStatsWrapper() {
   if ("code" in stats || !params.id) {
     return (
       <FullscreenCentered>
-        <Text element="h3">
+        <Text element="h3" size='normal'>
           You never listened to this artist, might be someone else registered
         </Text>
       </FullscreenCentered>

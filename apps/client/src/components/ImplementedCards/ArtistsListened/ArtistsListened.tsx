@@ -1,4 +1,3 @@
-import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import clsx from "clsx";
 import { Skeleton } from "@mui/material";
@@ -12,7 +11,7 @@ import { getLastPeriod, getPercentMore } from "../../../services/stats";
 import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import Text from "../../Text";
 
-interface ArtistsListenedProps extends ImplementedCardProps {}
+interface ArtistsListenedProps extends ImplementedCardProps { }
 
 export default function ArtistsListened({ className }: ArtistsListenedProps) {
   const { interval, unit } = useSelector(selectRawIntervalDetail);
@@ -22,10 +21,7 @@ export default function ArtistsListened({ className }: ArtistsListenedProps) {
     interval.end,
     Timesplit.all,
   );
-  const lastPeriod = useMemo(
-    () => getLastPeriod(interval.start, interval.end),
-    [interval],
-  );
+  const lastPeriod = getLastPeriod(interval.start, interval.end);
   const resultOld = useAPI(
     api.differentArtistsPer,
     lastPeriod.start,
@@ -37,10 +33,10 @@ export default function ArtistsListened({ className }: ArtistsListenedProps) {
     return (
       <TitleCard title="Artists listened" className={className} fade>
         <div className={s.root}>
-          <Text className={s.number}>
+          <Text size='normal'>
             <Skeleton width={50} />
           </Text>
-          <Text>
+          <Text size="normal">
             <Skeleton width={200} />
           </Text>
         </div>
@@ -56,17 +52,18 @@ export default function ArtistsListened({ className }: ArtistsListenedProps) {
   return (
     <TitleCard title="Artists listened" className={className} fade>
       <div className={s.root}>
-        <Text className={s.number}>{count} different</Text>
-        <Text>
+        <Text size="huge">{count} different</Text>
+        <Text size="normal">
           <Text
             element="strong"
+            size='normal'
             className={clsx({
               [s.more]: percentMore >= 0,
               [s.less]: percentMore < 0,
             })}>
             {Math.abs(percentMore)}%
           </Text>
-          <Text>
+          <Text size="normal">
             &nbsp;
             {percentMore < 0 ? "less" : "more"} than last {unit}
           </Text>

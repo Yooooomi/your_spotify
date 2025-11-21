@@ -16,7 +16,7 @@ import Tooltip from "../../Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 
-interface AverageAlbumReleaseDateProps extends ImplementedChartProps {}
+interface AverageAlbumReleaseDateProps extends ImplementedChartProps { }
 
 export default function AverageAlbumReleaseDate({
   className,

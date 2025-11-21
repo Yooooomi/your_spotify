@@ -6,6 +6,8 @@ type TypeFromArray<T> = T extends Array<infer K> ? K : never;
 
 interface MyTooltipProps<D extends Array<unknown>>
   extends TooltipProps<any, any> {
+  payload?: ReadonlyArray<Payload<any, any>>
+
   title: TitleFormatter<D>;
   value: ValueFormatter<D>;
   dontShowNullValues?: boolean;
@@ -28,6 +30,7 @@ export default function Tooltip<DataTypeArray extends Array<unknown>>({
   dontShowNullValues,
 }: MyTooltipProps<DataTypeArray>) {
   const firstPayload = payload?.[0];
+
   if (!firstPayload) {
     return null;
   }
@@ -44,7 +47,7 @@ export default function Tooltip<DataTypeArray extends Array<unknown>>({
         {payload
           ?.filter(p => p.value || !dontShowNullValues)
           .map(p => (
-            <div key={p.dataKey} className={s.contentItem}>
+            <div key={p.dataKey?.toString()} className={s.contentItem}>
               {value(
                 p.payload as any,
                 p.value,

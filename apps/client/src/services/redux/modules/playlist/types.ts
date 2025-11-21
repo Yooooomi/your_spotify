@@ -25,10 +25,16 @@ export interface PlaylistSingleSongContext {
   songIds: Array<string>;
 }
 
+export interface PlaylistTopArtistSongsContext {
+  type: "top-artist";
+  artistId: string;
+  nb: number;
+}
+
 export type PlaylistContext =
   | PlaylistTopSongsContext
   | PlaylistSingleSongContext
-  | PlaylistAffinityContext;
+  | PlaylistAffinityContext | PlaylistTopArtistSongsContext;
 
 export type PlaylistContextFromType<T extends PlaylistContext["type"]> =
   Extract<PlaylistContext, { type: T }>;

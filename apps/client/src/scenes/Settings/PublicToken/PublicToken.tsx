@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import { useCallback } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useSelector } from "react-redux";
 import Text from "../../../components/Text";
@@ -19,22 +18,22 @@ export default function PublicToken() {
   const user = useSelector(selectUser);
   const location = window.location.origin;
 
-  const generate = useCallback(() => {
+  const generate = () => {
     dispatch(generateNewPublicToken());
-  }, [dispatch]);
+  };
 
-  const deleteToken = useCallback(() => {
+  const deleteToken = () => {
     dispatch(deletePublicToken());
-  }, [dispatch]);
+  };
 
-  const onCopy = useCallback(() => {
+  const onCopy = () => {
     dispatch(
       alertMessage({
         level: "info",
         message: "Public url copied to clipboard",
       }),
     );
-  }, [dispatch]);
+  };
 
   if (!user) {
     return null;
@@ -44,7 +43,7 @@ export default function PublicToken() {
 
   return (
     <TitleCard title="Public token">
-      <Text element="div" className={s.disclaimer}>
+      <Text element="div" className={s.disclaimer} size='normal'>
         The generated url will allow anyone with it to view your stats
         indefinitely. The user won&apos;t be able to execute any action that
         modifies your account. Regenerating it will cause the older link to be
@@ -57,7 +56,7 @@ export default function PublicToken() {
           user.publicToken ? (
             <CopyToClipboard text={link} onCopy={onCopy}>
               <div className={s.link}>
-                <Text element="div">{link}</Text>
+                <Text element="div" size='normal'>{link}</Text>
               </div>
             </CopyToClipboard>
           ) : (

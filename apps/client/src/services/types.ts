@@ -80,8 +80,8 @@ export interface Track {
   disc_number: number;
   duration_ms: number;
   explicit: boolean;
-  external_ids: Object;
-  external_urls: Object;
+  external_ids: object;
+  external_urls: object;
   href: string;
   id: string;
   is_local: boolean;

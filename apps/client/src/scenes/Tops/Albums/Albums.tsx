@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Header from "../../../components/Header";

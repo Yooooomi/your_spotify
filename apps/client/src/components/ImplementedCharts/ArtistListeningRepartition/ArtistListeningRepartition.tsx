@@ -1,4 +1,3 @@
-import React, { useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import {
   ResponsiveContainer,
@@ -20,11 +19,10 @@ import {
 import { Artist, DateId } from "../../../services/types";
 import ChartCard from "../../ChartCard";
 import Tooltip from "../../Tooltip";
-import { ValueFormatter } from "../../Tooltip/Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 
-interface ArtistListeningRepartitionProps extends ImplementedChartProps {}
+interface ArtistListeningRepartitionProps extends ImplementedChartProps { }
 
 const formatYAxis = (value: any) => `${Math.floor(value * 100)}%`;
 
@@ -44,9 +42,7 @@ export default function ArtistListeningRepartition({
     interval.timesplit,
   );
 
-  const resultsWithCount = useMemo(
-    () =>
-      results?.map(res => ({
+  const resultsWithCount = results?.map(res => ({
         _id: res._id,
         artists: res.artists.reduce<Record<string, number>>(
           (acc, curr, idx) => {
@@ -55,11 +51,9 @@ export default function ArtistListeningRepartition({
           },
           {},
         ),
-      })),
-    [results],
-  );
+      }));
 
-  const allArtists = useMemo(() => {
+  const allArtists = (() => {
     const all: Record<string, Artist> = {};
     results?.forEach(res => {
       res.artists.forEach(art => {
@@ -69,9 +63,9 @@ export default function ArtistListeningRepartition({
       });
     });
     return all;
-  }, [results]);
+  })();
 
-  const data = useMemo(() => {
+  const data = (() => {
     if (!resultsWithCount) {
       return [];
     }
@@ -96,18 +90,15 @@ export default function ArtistListeningRepartition({
       interval.end,
       false,
     );
-  }, [allArtists, interval, resultsWithCount]);
+  })();
 
-  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
-    (_, value, root) => (
+  const tooltipValue = (_, value, root) => (
       <span style={{ color: root.color }}>
-        {allArtists[root.dataKey]?.name}: {Math.floor(value * 1000) / 10}%
+        {allArtists[root.dataKey.toString()]?.name}: {Math.floor(value * 1000) / 10}%
       </span>
-    ),
-    [allArtists],
-  );
+    );
 
-  const tooltipSorter = useCallback((a: any) => -a.payload[a.dataKey], []);
+  const tooltipSorter = (a: any) => -a.payload[a.dataKey];
 
   const formatX = useFormatXAxis(data);
 

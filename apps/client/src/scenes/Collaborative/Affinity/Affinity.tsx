@@ -1,5 +1,5 @@
 import { Button, Checkbox, MenuItem, Select, Tooltip } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { HelpOutline } from "@mui/icons-material";
 import { AdminAccount } from "../../../services/redux/modules/admin/reducer";
@@ -29,8 +29,7 @@ export default function Affinity() {
   );
   const accounts = useSelector(selectAccounts);
 
-  const add = useCallback(
-    (account: AdminAccount) => {
+  const add = (account: AdminAccount) => {
       const newSet = new Set(ids);
       if (newSet.has(account.id)) {
         newSet.delete(account.id);
@@ -38,16 +37,14 @@ export default function Affinity() {
         newSet.add(account.id);
       }
       setIds(newSet);
-    },
-    [ids],
-  );
+    };
 
-  const compute = useCallback(() => {
+  const compute = () => {
     navigate(`/collaborative/top/${statType}/${mode}`, {
       ids: Array.from(ids).join(","),
       ...detailIntervalToQuery(dataInterval, AFFINITY_PREFIX),
     });
-  }, [navigate, statType, mode, ids, dataInterval]);
+  };
 
   const tooltip = (
     <Tooltip
@@ -92,7 +89,7 @@ export default function Affinity() {
       <div className={s.content}>
         <div>
           <div className={s.accountselection}>
-            <Text element="h2" className={s.section}>
+            <Text element="h2" className={s.section} size="big">
               Users
             </Text>
             {accounts.map(account => (
@@ -101,7 +98,7 @@ export default function Affinity() {
                 key={account.id}
                 className={s.account}
                 onClick={() => add(account)}>
-                <Text>{account.username}</Text>
+                <Text size="normal">{account.username}</Text>
                 <Checkbox
                   checked={ids.has(account.id) || account.id === user?._id}
                   disabled={account.id === user?._id}
@@ -113,7 +110,7 @@ export default function Affinity() {
             ))}
           </div>
           <div className={s.modeselection}>
-            <Text element="h2" className={s.section}>
+            <Text element="h2" className={s.section} size="big">
               Mode
             </Text>
             <Select
@@ -125,7 +122,7 @@ export default function Affinity() {
             </Select>
           </div>
           <div className={s.typeselection}>
-            <Text element="h2" className={s.section}>
+            <Text element="h2" className={s.section} size="big">
               Type
             </Text>
             <Select
@@ -138,7 +135,7 @@ export default function Affinity() {
             </Select>
           </div>
           <div className={s.timeselection}>
-            <Text element="h2" className={s.section}>
+            <Text element="h2" className={s.section} size="big">
               Interval
             </Text>
             <IntervalSelector

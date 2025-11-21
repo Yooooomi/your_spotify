@@ -27,7 +27,7 @@ export default function TitleCard({
     <div className={clsx(s.root, className, { [s.noborder]: noBorder })}>
       <div className={clsx(s.container, { [s.nopadding]: noPadding })}>
         <div className={s.title}>
-          <Text element="h3">{title}</Text>
+          <Text element="h3" size='big'>{title}</Text>
           <div>{right}</div>
         </div>
         <div className={clsx(s.content, { fade }, contentClassName)}>

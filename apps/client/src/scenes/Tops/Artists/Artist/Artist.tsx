@@ -1,10 +1,9 @@
-import { useMemo } from "react";
 import { msToDuration } from "../../../../services/stats";
 import { Artist as ArtistType } from "../../../../services/types";
 import InlineArtist from "../../../../components/InlineArtist";
 import Text from "../../../../components/Text";
 import { useMobile } from "../../../../services/hooks/hooks";
-import { ColumnDescription, GridRowWrapper } from "../../../../components/Grid";
+import { GridRowWrapper } from "../../../../components/Grid";
 import IdealImage from "../../../../components/IdealImage";
 import s from "./index.module.css";
 import { useArtistGrid } from "./ArtistGrid";
@@ -29,8 +28,7 @@ export default function Artist({
 
   const genres = artist.genres.join(", ");
 
-  const columns = useMemo<ColumnDescription[]>(
-    () => [
+  const columns = [
       {
         ...artistGrid.cover,
         node: (
@@ -47,15 +45,15 @@ export default function Artist({
       {
         ...artistGrid.title,
         node: (
-          <Text className="otext">
-            <InlineArtist artist={artist} />
+          <Text className="otext" size='normal'>
+            <InlineArtist artist={artist} size='normal' />
           </Text>
         ),
       },
       {
         ...artistGrid.genres,
         node: !isTablet && (
-          <Text className="otext" title={genres}>
+          <Text className="otext" title={genres} size='normal'>
             {genres}
           </Text>
         ),
@@ -63,12 +61,12 @@ export default function Artist({
       {
         ...artistGrid.count,
         node: (
-          <Text>
+          <Text size="normal">
             {count}
             {!isMobile && (
               <>
                 {" "}
-                <Text>({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+                <Text size="normal">({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
               </>
             )}
           </Text>
@@ -77,12 +75,12 @@ export default function Artist({
       {
         ...artistGrid.total,
         node: (
-          <Text className="center">
+          <Text className="center" size='normal'>
             {msToDuration(duration)}
             {!isMobile && (
               <>
                 {" "}
-                <Text>
+                <Text size="normal">
                   ({Math.floor((duration / totalDuration) * 10000) / 100}%)
                 </Text>
               </>
@@ -90,23 +88,7 @@ export default function Artist({
           </Text>
         ),
       },
-    ],
-    [
-      artist,
-      artistGrid.count,
-      artistGrid.cover,
-      artistGrid.genres,
-      artistGrid.title,
-      artistGrid.total,
-      count,
-      duration,
-      genres,
-      isMobile,
-      isTablet,
-      totalCount,
-      totalDuration,
-    ],
-  );
+    ];
 
   return <GridRowWrapper className={s.row} columns={columns} />;
 }

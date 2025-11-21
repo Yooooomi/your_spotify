@@ -5,7 +5,7 @@ import {
   MenuItem,
   Input,
 } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import s from "./index.module.css";
 
 interface CountChooserProps {
@@ -18,8 +18,7 @@ const DEFAULT_CHOICES = [10, 25, 50, 100];
 export default function CountChooser({ value, setValue }: CountChooserProps) {
   const [inputType, setInputType] = useState<"default" | "custom">("default");
 
-  const internSetValue = useCallback(
-    (newValue: string | number, fromSelect = false) => {
+  const internSetValue = (newValue: string | number, fromSelect = false) => {
       if (newValue === "custom") {
         setInputType("custom");
       } else {
@@ -32,9 +31,7 @@ export default function CountChooser({ value, setValue }: CountChooserProps) {
           setValue(newValue);
         }
       }
-    },
-    [setValue],
-  );
+    };
 
   return (
     <>

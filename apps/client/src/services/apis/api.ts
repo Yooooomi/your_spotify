@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import Axios from "axios";
 import { AdminAccount } from "../redux/modules/admin/reducer";
 import { ImporterState } from "../redux/modules/import/types";
@@ -21,8 +21,7 @@ import {
 } from "../types";
 
 const axios = Axios.create({
-  /* @ts-ignore-next-line */
-  baseURL: window.API_ENDPOINT,
+  baseURL: (window as any as { API_ENDPOINT: string }).API_ENDPOINT,
   withCredentials: true,
 });
 
@@ -204,7 +203,7 @@ export const api = {
   version: () => get<{ update: boolean; version: string }>("/version"),
   spotify: () => get("/oauth/spotify"),
   logout: () => axios.post("/logout"),
-  // eslint-disable-next-line no-restricted-globals
+
   me: () => get<{ status: true; user: User } | { status: false }>("/me"),
   sme: () => get<SpotifyMe>("/oauth/spotify/me"),
   globalPreferences: () => get<GlobalPreferences>("/global/preferences"),

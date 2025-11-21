@@ -1,6 +1,5 @@
 import { CircularProgress } from "@mui/material";
 import clsx from "clsx";
-import { useCallback, useMemo } from "react";
 import InlineAlbum from "../../../components/InlineAlbum";
 import Text from "../../../components/Text";
 import { api } from "../../../services/apis/api";
@@ -15,18 +14,15 @@ interface AlbumRankProps {
 export default function AlbumRank({ albumId }: AlbumRankProps) {
   const albumRank = useAPI(api.getAlbumRank, albumId);
 
-  const ids = useMemo(
-    () => albumRank?.results.map(r => r.id) ?? [],
-    [albumRank?.results],
-  );
+  const ids = albumRank?.results.map(r => r.id) ?? [];
   const { albums, loaded } = useLoadAlbums(ids);
 
-  const getArtist = useCallback((id: string) => albums[id], [albums]);
+  const getArtist = (id: string) => albums[id];
   if (!albumRank || !loaded) {
     return (
       <div className={s.loading}>
         <CircularProgress size={24} />
-        <Text>Album rank is loading</Text>
+        <Text size="normal">Album rank is loading</Text>
       </div>
     );
   }
@@ -53,7 +49,7 @@ export default function AlbumRank({ albumId }: AlbumRankProps) {
             k +
             (albumRank.isMax ? 1 : 0) +
             (albumRank.isMin ? -1 : 0)}{" "}
-          <InlineAlbum album={getArtist(rank.id)!} noStyle />
+          <InlineAlbum size='normal' album={getArtist(rank.id)!} noStyle />
         </div>
       ))}
     </div>

@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { startOfDay, startOfMonth, startOfWeek, startOfYear } from "date-fns";
@@ -187,7 +186,7 @@ export function queryToIntervalDetail(
     if (name) {
       toReturn = optimisticGetIntervalDetailFromName(decodeURIComponent(name));
     }
-  } catch (e) {
+  } catch {
     // Do nothing
   }
   return toReturn ?? presetIntervals[0];
@@ -196,14 +195,10 @@ export function queryToIntervalDetail(
 export function useQueryToRawIntervalDetail(prefix: string) {
   const [query] = useSearchParams();
   const user = useSelector(selectUser);
-  return useMemo(
-    () =>
-      getRawIntervalDetail(
+  return getRawIntervalDetail(
         queryToIntervalDetail(query, prefix),
         user ?? undefined,
-      ),
-    [prefix, query, user],
-  );
+      );
 }
 
 export function useOldestListenedAtFromUsers(
@@ -214,20 +209,14 @@ export function useOldestListenedAtFromUsers(
   const users = useSelector(selectAccounts);
   const [query] = useSearchParams();
 
-  const detail = useMemo(
-    () => queryToIntervalDetail(query, prefix),
-    [prefix, query],
-  );
+  const detail = queryToIntervalDetail(query, prefix);
 
   const filtered = users.filter(us => [user?._id, ...userIds].includes(us.id));
   const mins = getMinOfArray(filtered, item =>
     new Date(item.firstListenedAt).getTime(),
   );
   const account = filtered[mins?.minIndex ?? 0];
-  const accountInterval = useMemo(
-    () => getRawIntervalDetail(detail, account),
-    [account, detail],
-  );
+  const accountInterval = getRawIntervalDetail(detail, account);
 
   if (!account && detail.type === "userbased") {
     return getRawIntervalDetail(presetIntervals[0], undefined);

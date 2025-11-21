@@ -1,5 +1,4 @@
 import { Checkbox } from "@mui/material";
-import { useCallback } from "react";
 import Text from "../Text";
 import s from "./index.module.css";
 
@@ -14,12 +13,11 @@ export default function CheckboxWithText({
   checked,
   onChecked,
 }: CheckboxWithTextProps) {
-  const internOnChange = useCallback(() => {
+  const internOnChange = () => {
     onChecked(!checked);
-  }, [checked, onChecked]);
+  };
 
   return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
     <div
       className={s.root}
       role="checkbox"
@@ -27,7 +25,7 @@ export default function CheckboxWithText({
       aria-checked={checked}
       onClick={internOnChange}>
       <Checkbox checked={checked} />
-      <Text>{text}</Text>
+      <Text size="normal">{text}</Text>
     </div>
   );
 }

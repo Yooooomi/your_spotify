@@ -1,4 +1,4 @@
-import { PureComponent, useCallback, useMemo, useRef, useState } from "react";
+import { PureComponent, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Tooltip as MuiTooltip } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -12,9 +12,9 @@ import { getAtLeastImage } from "../../../services/tools";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import Tooltip from "../../Tooltip";
-import { TitleFormatter, ValueFormatter } from "../../Tooltip/Tooltip";
+import { TitleFormatter } from "../../Tooltip/Tooltip";
 
-interface BestArtistsBarProps extends ImplementedChartProps {}
+interface BestArtistsBarProps extends ImplementedChartProps { }
 
 const tooltipTitle: TitleFormatter<unknown[]> = ({ x }) => `Rank ${x + 1}`;
 
@@ -72,31 +72,24 @@ export default function BestArtistsBar({ className }: BestArtistsBarProps) {
     0,
   );
 
-  const compute = useCallback((width: number) => {
+  const compute = (width: number) => {
     setDisplayNb(Math.floor((width || 500) / 50));
-  }, []);
+  };
 
   useResizeDebounce(compute, ref);
 
-  const data = useMemo(
-    () =>
-      result?.slice(0, displayNb).map((r, k) => ({
+  const data = result?.slice(0, displayNb).map((r, k) => ({
         x: k,
         y: r.count,
-      })) ?? [],
-    [displayNb, result],
-  );
+      })) ?? [];
 
-  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
-    payload => {
+  const tooltipValue = payload => {
       const dataValue = result?.[payload.x];
       if (!dataValue) {
         return "";
       }
       return `You listened to ${dataValue.artist.name} ${dataValue.count} times`;
-    },
-    [result],
-  );
+    };
 
   if (!result) {
     return (
@@ -109,7 +102,7 @@ export default function BestArtistsBar({ className }: BestArtistsBarProps) {
       <Bar
         data={data}
         customTooltip={<Tooltip title={tooltipTitle} value={tooltipValue} />}
-        // @ts-ignore
+        // @ts-expect-error this is fine
         customXTick={<ImageAxisTick artists={result.map(r => r.artist)} />}
       />
     </ChartCard>

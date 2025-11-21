@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Checkbox } from "@mui/material";
 import clsx from "clsx";
@@ -24,7 +24,7 @@ export default function Login() {
     }
   }, [navigate, user]);
 
-  const handleRememberMeClick = useCallback(async () => {
+  const handleRememberMeClick = async () => {
     const newRememberMe = !rememberMe;
     setRememberMe(newRememberMe);
     if (newRememberMe) {
@@ -32,14 +32,14 @@ export default function Login() {
     } else {
       LocalStorage.delete(REMEMBER_ME_KEY);
     }
-  }, [rememberMe]);
+  };
 
   return (
     <div className={s.root}>
-      <Text element="h1" className={s.title}>
+      <Text size="pagetitle" element="h1" className={s.title}>
         Login
       </Text>
-      <Text className={s.welcome}>
+      <Text size='big' className={s.welcome}>
         To access your personal dashboard, please login with your account
       </Text>
       <div>
@@ -59,7 +59,7 @@ export default function Login() {
             disableFocusRipple
             classes={{ root: s.check }}
           />
-          <Text>Remember me</Text>
+          <Text size="normal">Remember me</Text>
         </button>
       </div>
     </div>

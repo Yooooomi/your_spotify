@@ -1,6 +1,5 @@
 import { CircularProgress } from "@mui/material";
 import clsx from "clsx";
-import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams, useSearchParams } from "react-router-dom";
 import AddToPlaylist from "../../../../components/AddToPlaylist";
@@ -17,7 +16,6 @@ import { useAPI } from "../../../../services/hooks/hooks";
 import { useOldestListenedAtFromUsers } from "../../../../services/intervals";
 import { AdminAccount } from "../../../../services/redux/modules/admin/reducer";
 import { selectAccounts } from "../../../../services/redux/modules/admin/selector";
-import { PlaylistContext } from "../../../../services/redux/modules/playlist/types";
 import { selectUser } from "../../../../services/redux/modules/user/selector";
 import { compact } from "../../../../services/tools";
 import { CollaborativeMode } from "../../../../services/types";
@@ -32,7 +30,7 @@ export default function Songs() {
 
   const idsQuery = query.get("ids");
 
-  const ids = useMemo(() => idsQuery?.split(",") ?? [], [idsQuery]);
+  const ids = idsQuery?.split(",") ?? [];
   const {
     interval: { start, end },
   } = useOldestListenedAtFromUsers(ids, AFFINITY_PREFIX);
@@ -45,10 +43,9 @@ export default function Songs() {
     mode as CollaborativeMode,
   );
 
-  const realIds = useMemo(() => compact([user?._id, ...ids]), [ids, user?._id]);
+  const realIds = compact([user?._id, ...ids]);
 
-  const context = useMemo<PlaylistContext>(
-    () => ({
+  const context = {
       type: "affinity",
       interval: {
         start: start.getTime(),
@@ -57,15 +54,13 @@ export default function Songs() {
       nb: DEFAULT_PLAYLIST_NB,
       userIds: realIds,
       mode: mode as CollaborativeMode,
-    }),
-    [end, mode, realIds, start],
-  );
+    };
 
   if (!result || !user) {
     return (
       <div className={s.loading}>
         <CircularProgress size={18} />
-        <Text element="div">Loading your data</Text>
+        <Text element="div" size="normal">Loading your data</Text>
       </div>
     );
   }
@@ -108,7 +103,7 @@ export default function Songs() {
             <div
               key={res.track.id}
               className={clsx("play-button-holder", s.track)}>
-              <Text element="strong" className={s.ranking}>
+              <Text element="strong" className={s.ranking} size="normal">
                 #{index + 1}
               </Text>
               <PlayButton
@@ -117,17 +112,17 @@ export default function Songs() {
                 className={s.trackimage}
               />
               <div className={s.trackname}>
-                <Text element="div">
-                  <InlineTrack track={res.track} />
+                <Text element="div" size="normal">
+                  <InlineTrack track={res.track} size="normal" />
                 </Text>
-                <Text className={s.artist}>
-                  <InlineArtist artist={res.artist} />
+                <Text className={s.artist} size="normal">
+                  <InlineArtist artist={res.artist} size="normal" />
                 </Text>
               </div>
               <div className={s.enjoyed}>
-                <Text>
+                <Text size="normal">
                   Most enjoyed by{" "}
-                  <Text element="strong">
+                  <Text element="strong" size="normal">
                     {accountsDict[realIds[maxIndex] ?? -1]?.username}
                   </Text>
                 </Text>

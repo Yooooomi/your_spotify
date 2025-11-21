@@ -1,15 +1,11 @@
 import {
-  cloneElement,
   createContext,
-  MouseEventHandler,
-  ReactElement,
   ReactNode,
-  useCallback,
   useContext,
-  useEffect,
 } from "react";
 import clsx from "clsx";
 import { uniq } from "../../services/tools";
+import { Pointer } from "../../services/pointer";
 import s from "./index.module.css";
 
 function hasAdditiveSelectKeyPressed(ctrlKey: boolean, metaKey: boolean) {
@@ -30,8 +26,8 @@ interface SelectableContext {
 
 export const SelectableContext = createContext<SelectableContext>({
   selected: [],
-  select: () => {},
-  selectTo: () => {},
+  select: () => { },
+  selectTo: () => { },
 });
 
 interface SelectableContextProviderProps {
@@ -45,8 +41,7 @@ export const SelectableContextProvider = ({
   selected,
   setSelected,
 }: SelectableContextProviderProps) => {
-  const handleSelect = useCallback(
-    (index: number, erase: EraseType) => {
+  const handleSelect = (index: number, erase: EraseType) => {
       if (erase === "yes") {
         setSelected([index]);
       } else if (erase === "no") {
@@ -57,12 +52,9 @@ export const SelectableContextProvider = ({
           setSelected([index]);
         }
       }
-    },
-    [selected, setSelected],
-  );
+    };
 
-  const handleSelectTo = useCallback(
-    (index: number) => {
+  const handleSelectTo = (index: number) => {
       const lastSelected = selected.at(-1);
       if (lastSelected === undefined) {
         setSelected([index]);
@@ -79,9 +71,7 @@ export const SelectableContextProvider = ({
         addedIndexes.push(i);
       }
       setSelected(uniq([...selected, ...addedIndexes]));
-    },
-    [selected, setSelected],
-  );
+    };
 
   return (
     <SelectableContext.Provider
@@ -99,8 +89,11 @@ interface SelectableProps {
 export const Selectable = ({ children, index }: SelectableProps) => {
   const { selected, select, selectTo } = useContext(SelectableContext);
 
-  const handleClick = useCallback<MouseEventHandler<HTMLDivElement>>(
-    event => {
+  const handleClick = event => {
+      if (Pointer.type !== "mouse") {
+        return;
+      }
+
       event.preventDefault();
       event.stopPropagation();
       if (event.shiftKey) {
@@ -113,9 +106,7 @@ export const Selectable = ({ children, index }: SelectableProps) => {
             : "yes",
         );
       }
-    },
-    [index, select, selectTo],
-  );
+    };
 
   return (
     <div

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { queryToIntervalDetail } from "../../services/intervals";
@@ -24,7 +24,7 @@ export default function Wrapper() {
   const publicToken = useSelector(selectPublicToken);
   const [query, setQuery] = useSearchParams();
 
-  const urlToken = useMemo(() => query.get("token"), [query]);
+  const urlToken = query.get("token");
 
   useEffect(() => {
     dispatch(

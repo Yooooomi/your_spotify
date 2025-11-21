@@ -12,7 +12,7 @@ export default function LoadingButton({
   ...other
 }: LoadingButtonProps) {
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
+     
     <Button disabled={loading || disabled} {...other}>
       <div className={s.root}>
         {loading && <CircularProgress className={s.loading} size={16} />}

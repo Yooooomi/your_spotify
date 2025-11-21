@@ -1,0 +1,42 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.searchwrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 20px;
+}
+
+.search {
+  padding: 12px;
+  border-radius: 10px;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 20px;
+  font-family: var(--font);
+}
+
+.content {
+  flex-shrink: 1;
+  overflow: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.innercontent > div {
+  padding-bottom: 16px;
+}
+
+.resultcount {
+  position: absolute;
+  right: 16px;
+}

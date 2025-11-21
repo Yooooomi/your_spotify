@@ -1,11 +1,10 @@
 import {
   MouseEvent,
-  MouseEventHandler,
   ReactNode,
-  useCallback,
   useContext,
 } from "react";
 import { SelectableContext } from "../Selectable/Selectable.context";
+import { Pointer } from "../../services/pointer";
 
 export interface VirtualElement {
   getBoundingClientRect: () => DOMRect;
@@ -50,14 +49,14 @@ export function RightClickable({
 }: RightClickableProps) {
   const { select } = useContext(SelectableContext);
 
-  const handleRightClick = useCallback<MouseEventHandler<HTMLDivElement>>(
-    event => {
+  const handleRightClick = event => {
+      if (Pointer.type !== "mouse") {
+        return;
+      }
       event.preventDefault();
       onRightClick(eventToVirtualElement(event as any), event as any);
       select(index, "ifnotselected");
-    },
-    [index, onRightClick, select],
-  );
+    };
 
   return <div onContextMenu={handleRightClick}>{children}</div>;
 }

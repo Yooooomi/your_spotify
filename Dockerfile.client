@@ -15,6 +15,7 @@ COPY apps/dev/tsconfig.json apps/dev/tsconfig.json
 
 COPY apps/client/package.json apps/client/package.json
 COPY apps/client/tsconfig.json apps/client/tsconfig.json
+COPY apps/client/rsbuild.config.ts apps/client/rsbuild.config.ts
 
 RUN yarn --frozen-lockfile
 

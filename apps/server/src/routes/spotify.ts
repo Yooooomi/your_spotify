@@ -17,6 +17,8 @@ import {
   getBest,
   ItemType,
   getBestOfHour,
+  getMostListenedSongOfArtist,
+  getArtists,
 } from "../database";
 import {
   CollaborativeMode,
@@ -412,10 +414,17 @@ const createPlaylistFromSpecific = z.object({
   songIds: z.array(z.string()),
 });
 
+const createPlaylistFromArtistTop = z.object({
+  type: z.literal("top-artist"),
+  nb: z.number(),
+  artistId: z.string(),
+});
+
 const createPlaylist = z.discriminatedUnion("type", [
   createPlaylistBase.merge(createPlaylistFromTop),
   createPlaylistBase.merge(createPlaylistFromSpecific),
   createPlaylistBase.merge(createPlaylistFromAffinity),
+  createPlaylistBase.merge(createPlaylistFromArtistTop),
 ]);
 
 router.post("/playlist/create", logged, withHttpClient, async (req, res) => {
@@ -459,6 +468,17 @@ router.post("/playlist/create", logged, withHttpClient, async (req, res) => {
       body.nb,
     );
     spotifyIds = affinity.map(item => item.track.id);
+  } else if (body.type === "top-artist") {
+    const [artist] = await getArtists([body.artistId]);
+    if (!artist) {
+      res.status(404).end();
+      return;
+    }
+    const mostListened = await getMostListenedSongOfArtist(user, artist.id)
+    spotifyIds = mostListened.map(item => item.track.id);
+    if (!playlistName) {
+      playlistName = `My top of ${artist.id}`;
+    }
   } else {
     if (!playlistName) {
       playlistName = `Your Spotify Playlist • ${DateFormatter.toDayMonthYear(user.settings.dateFormat, new Date())}`;
