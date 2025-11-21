@@ -7,9 +7,9 @@ export const getTracks = (tracksId: string[]) =>
   TrackModel.find({ id: { $in: tracksId } });
 
 export const searchTrack = (str: string) =>
-  TrackModel.find({ name: { $regex: new RegExp(str, "i") } }).populate(
-    "full_album",
-  );
+  TrackModel.find({ name: { $regex: new RegExp(str, "i") } })
+    .populate("full_album")
+    .populate("full_artists");
 
 export const getTrackListenedCount = (user: User, trackId: string) =>
   InfosModel.where({ owner: user._id, id: trackId }).countDocuments();

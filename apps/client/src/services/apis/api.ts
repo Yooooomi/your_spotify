@@ -13,11 +13,12 @@ import {
   Track,
   TrackWithAlbum,
   TrackInfo,
-  TrackInfoWithFullTrack,
+  TrackInfoWithFullArtistAlbum,
   SpotifyMe,
   CollaborativeMode,
   UnboxPromise,
-  TrackWithFullAlbum,
+  TrackWithFullArtistAlbum,
+  AlbumWithFullArtist,
 } from "../types";
 
 const axios = Axios.create({
@@ -221,7 +222,7 @@ export const api = {
       id,
     }),
   getTracks: (start: Date, end: Date, number: number, offset: number) =>
-    get<TrackInfoWithFullTrack[]>("/spotify/gethistory", {
+    get<TrackInfoWithFullArtistAlbum[]>("/spotify/gethistory", {
       number,
       offset,
       start,
@@ -368,7 +369,7 @@ export const api = {
       }[];
     }>(`/artist/${id}/rank`),
   search: (str: string) =>
-    get<{ artists: Artist[]; tracks: TrackWithFullAlbum[]; albums: Album[] }>(
+    get<{ artists: Artist[]; tracks: TrackWithFullArtistAlbum[]; albums: AlbumWithFullArtist[] }>(
       `/search/${str}`,
     ),
   getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>

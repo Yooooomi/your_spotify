@@ -60,14 +60,16 @@ export default function AlbumStats({ stats }: AlbumStatsProps) {
             spacing={2}>
             <Grid size={{ xs: 12 }}>
               <TitleCard title="Context" contentClassName={s.context}>
-                {stats.artists.map(artist => (
-                  <ImageTwoLines
-                    key={artist.id}
-                    image={<IdealImage images={artist.images} size={48} />}
-                    first={<InlineArtist size="normal" artist={artist} />}
-                    second="Artist"
-                  />
-                ))}
+                <div className={s.artists}>
+                  {stats.artists.map(artist => (
+                    <ImageTwoLines
+                      key={artist.id}
+                      image={<IdealImage images={artist.images} size={48} />}
+                      first={<InlineArtist size="normal" artist={artist} />}
+                      second="Artist"
+                    />
+                  ))}
+                </div>
                 <ImageTwoLines
                   image={<TimelapseOutlined color="primary" fontSize="large" />}
                   first={`${msToDuration(

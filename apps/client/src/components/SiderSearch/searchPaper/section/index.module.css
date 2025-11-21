@@ -40,8 +40,18 @@
   border-radius: 6px;
 }
 
+.texts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.subtitle {
+  color: var(--text-grey)
 }

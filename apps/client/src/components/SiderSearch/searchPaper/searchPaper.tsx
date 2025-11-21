@@ -1,8 +1,9 @@
 import {
   Album,
+  AlbumWithFullArtist,
   Artist,
   Track,
-  TrackWithFullAlbum,
+  TrackWithFullArtistAlbum,
 } from "../../../services/types";
 import Text from "../../Text";
 import { Search } from "@mui/icons-material";
@@ -17,8 +18,8 @@ import { useMobile } from "../../../services/hooks/hooks";
 interface SearchPaperProps {
   loading: boolean;
 
-  tracks: Array<TrackWithFullAlbum> | undefined;
-  albums: Array<Album> | undefined;
+  tracks: Array<TrackWithFullArtistAlbum> | undefined;
+  albums: Array<AlbumWithFullArtist> | undefined;
   artists: Array<Artist> | undefined;
 
   text: string;
@@ -66,11 +67,11 @@ export function SearchPaper({
         {loading ? <CircularProgress size={20} style={{ color: 'var(--text-grey)' }} /> : isMobile ? null : <Text size="big" greyed className={s.resultcount}>{resultCount} results</Text>}
       </div>
       <div ref={contentRef} className={s.content}>
-        <AutoHeight maxHeight={300}>
+        <AutoHeight maxHeight={400}>
           <div className={s.innercontent}>
-            <Section title="Tracks" items={tracks} getImages={item => item.full_album.images} onClick={onTrackClick} />
-            <Section title="Artists" items={artists} getImages={item => item.images} onClick={onArtistClick} />
-            <Section title="Albums" items={albums} getImages={item => item.images} onClick={onAlbumClick} />
+            <Section title="Tracks" items={tracks} getContent={item => [item.name, item.full_artists.map(artist => artist.name).join(", ")]} getImages={item => item.full_album.images} onClick={onTrackClick} />
+            <Section title="Artists" items={artists} getContent={item => [item.name]} getImages={item => item.images} onClick={onArtistClick} />
+            <Section title="Albums" items={albums} getContent={item => [item.name, item.full_artists.map(artist => artist.name).join(", ")]} getImages={item => item.images} onClick={onAlbumClick} />
           </div>
         </AutoHeight>
       </div>
