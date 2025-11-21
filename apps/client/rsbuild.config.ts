@@ -6,6 +6,9 @@ export default defineConfig({
   html: {
     template: "./public/index.html",
   },
+  output: {
+    distPath: "./build",
+  },
   plugins: [
     pluginReact({ fastRefresh: true }),
     pluginBabel({
