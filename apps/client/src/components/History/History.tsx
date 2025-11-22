@@ -43,6 +43,7 @@ export default function History() {
     <>
       <TitleCard
         title="Your history"
+        info="You can select tracks by clicking them, ctrl-clicking them to add to the selection. You can also use shift-click to expand your selection"
         right={
           <CheckboxWithText
             checked={followInterval}
