@@ -27,7 +27,7 @@ interface TrackProps {
 }
 
 export default function Track(props: TrackProps) {
-  const [isMobile, isTablet] = useMobile();
+  const [isMobile, isTablet, isDesktop] = useMobile();
   const trackGrid = useTrackGrid();
 
   const {
@@ -99,10 +99,10 @@ export default function Track(props: TrackProps) {
     },
     {
       ...trackGrid.total,
-      node: (
+      node: !isMobile && (
         <Text element="div" className="center" size='normal'>
           {msToDuration(duration)}
-          {!isMobile && (
+          {isDesktop && (
             <>
               {" "}
               <Text size="normal">

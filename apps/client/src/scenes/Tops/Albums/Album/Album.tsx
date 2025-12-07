@@ -29,7 +29,7 @@ export default function Album({
   totalCount,
   rank
 }: AlbumProps) {
-  const [isMobile] = useMobile();
+  const [isMobile, _, isDesktop] = useMobile();
   const albumGrid = useAlbumGrid();
 
   const columns: ColumnDescription[] = [
@@ -88,10 +88,10 @@ export default function Album({
     },
     {
       ...albumGrid.total,
-      node: (
+      node: !isMobile && (
         <Text size="normal" className="center">
           {msToDuration(duration)}
-          {!isMobile && (
+          {isDesktop && (
             <>
               {" "}
               <Text size="normal">
