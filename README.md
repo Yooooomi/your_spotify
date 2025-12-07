@@ -23,7 +23,7 @@ It's composed of a web server which polls the Spotify API every now and then and
 - [Importing past history](#importing-past-history)
   - [Supported import methods](#supported-import-methods)
     - [Privacy data](#privacy-data)
-    - [Full privacy data](#full-privacy-data)
+    - [Full privacy data](#full-privacy-data-recommended)
   - [Troubleshoot](#troubleshoot)
 - [FAQ](#faq)
 - [External guides](#external-guides)
