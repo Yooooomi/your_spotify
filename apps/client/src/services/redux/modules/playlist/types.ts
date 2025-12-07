@@ -34,7 +34,8 @@ export interface PlaylistTopArtistSongsContext {
 export type PlaylistContext =
   | PlaylistTopSongsContext
   | PlaylistSingleSongContext
-  | PlaylistAffinityContext | PlaylistTopArtistSongsContext;
+  | PlaylistAffinityContext
+  | PlaylistTopArtistSongsContext;
 
 export type PlaylistContextFromType<T extends PlaylistContext["type"]> =
   Extract<PlaylistContext, { type: T }>;

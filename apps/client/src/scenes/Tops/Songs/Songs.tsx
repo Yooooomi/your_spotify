@@ -29,13 +29,13 @@ export default function Songs() {
   );
 
   const context = {
-      type: "top",
-      nb: DEFAULT_PLAYLIST_NB,
-      interval: {
-        start: interval.start.getTime(),
-        end: interval.end.getTime(),
-      },
-    };
+    type: "top",
+    nb: DEFAULT_PLAYLIST_NB,
+    interval: {
+      start: interval.start.getTime(),
+      end: interval.end.getTime(),
+    },
+  };
 
   const { anchor, selectedTracks, setAnchor, setSelectedTracks, uniqSongIds } =
     useSelectTracks({ tracks: items.map(item => item.track) });
@@ -67,6 +67,7 @@ export default function Songs() {
                       <RightClickable index={index} onRightClick={setAnchor}>
                         <Track
                           playable
+                          rank={index + 1}
                           track={item.track}
                           album={item.album}
                           artists={[item.artist]}

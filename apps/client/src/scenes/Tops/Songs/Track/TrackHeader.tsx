@@ -36,7 +36,7 @@ export default function TrackHeader() {
       },
       {
         ...trackGrid.total,
-        node: (
+        node: !isMobile && (
           <div className={s.total}>
             <Text element="div" size='normal'>Total</Text>
           </div>

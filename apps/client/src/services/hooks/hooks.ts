@@ -139,10 +139,11 @@ export function useResizeDebounce(
   }, [cb, ref]);
 }
 
-export function useMobile(): [boolean, boolean] {
+export function useMobile(): [boolean, boolean, boolean] {
   return [
     useMediaQuery("(max-width: 960px)"),
     useMediaQuery("(max-width: 1250px)"),
+    useMediaQuery("(min-width: 1250px)"),
   ];
 }
 
