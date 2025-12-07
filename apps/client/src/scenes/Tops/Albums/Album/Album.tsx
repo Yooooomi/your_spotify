@@ -75,7 +75,7 @@ export default function Album({
     {
       ...albumGrid.count,
       node: (
-        <Text size="normal">
+        <Text size="normal" className={isMobile ? "right" : undefined}>
           {count}
           {!isMobile && (
             <>

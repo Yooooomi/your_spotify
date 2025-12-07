@@ -86,7 +86,7 @@ export default function Track(props: TrackProps) {
     {
       ...trackGrid.count,
       node: (
-        <Text element="div" size='normal'>
+        <Text element="div" size="normal" className={isMobile ? "right" : undefined}>
           {count}
           {!isMobile && (
             <>
