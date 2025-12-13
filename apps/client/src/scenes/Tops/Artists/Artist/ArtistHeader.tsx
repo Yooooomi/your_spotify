@@ -24,7 +24,11 @@ export default function ArtistHeader() {
     },
     {
       ...artistGrid.total,
-      node: <Text className="center" size='normal'>Total</Text>,
+      node: !isMobile && (
+        <Text className="center" size="normal">
+          Total
+        </Text>
+      ),
     },
   ];
 
