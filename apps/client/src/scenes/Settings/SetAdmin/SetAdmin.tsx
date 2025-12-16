@@ -1,4 +1,3 @@
-import React, { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "@mui/material";
 import SettingLine from "../SettingLine";
@@ -12,8 +11,7 @@ export default function SetAdmin() {
   const dispatch = useAppDispatch();
   const accounts = useSelector(selectAccounts);
 
-  const doAdmin = useCallback(
-    async (id: string, status: boolean) => {
+  const doAdmin = async (id: string, status: boolean) => {
       try {
         dispatch(setAdmin({ id, status }));
       } catch (e: any) {
@@ -28,9 +26,7 @@ export default function SetAdmin() {
         }
         console.error(e);
       }
-    },
-    [dispatch],
-  );
+    };
 
   return (
     <TitleCard title="Set admin status">

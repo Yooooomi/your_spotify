@@ -1,7 +1,5 @@
-import { useMemo } from "react";
 import BlacklistArtistDialog from "../../../components/BlacklistArtistDialog";
 import ThreePoints from "../../../components/ThreePoints";
-import { ThreePointItem } from "../../../components/ThreePoints/ThreePoints";
 import { useSheetState } from "../../../services/hooks/hooks";
 import { compact, conditionalEntry } from "../../../services/tools";
 
@@ -18,9 +16,7 @@ export default function ArtistContextMenu({
 }: ArtistContextMenuProps) {
   const [open, setOpen, setClosed] = useSheetState();
 
-  const items = useMemo<ThreePointItem[]>(
-    () =>
-      compact([
+  const items = compact([
         conditionalEntry(
           {
             label: "Blacklist",
@@ -37,9 +33,7 @@ export default function ArtistContextMenu({
           },
           blacklisted,
         ),
-      ]),
-    [blacklisted, setOpen],
-  );
+      ]);
 
   return (
     <>

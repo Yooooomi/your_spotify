@@ -40,10 +40,6 @@
   /*object-fit: cover;*/
 }
 
-.songslistened {
-  font-size: 1.4em;
-}
-
 .ml {
   display: flex;
   flex-direction: row;
@@ -55,7 +51,6 @@
 }
 
 .mlrank {
-  font-size: 1.4em;
   width: 48px;
 }
 

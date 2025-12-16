@@ -1,5 +1,4 @@
 import { Select, MenuItem } from "@mui/material";
-import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import Text from "../../../components/Text";
 import TitleCard from "../../../components/TitleCard";
@@ -18,19 +17,16 @@ export function StatMeasurement() {
   const dispatch = useAppDispatch();
   const statMeasurement = useSelector(selectStatMeasurement);
 
-  const handleChangeStatMeasurement = useCallback(
-    (newStatUnit: string | null | undefined) => {
+  const handleChangeStatMeasurement = (newStatUnit: string | null | undefined) => {
       if (newStatUnit !== "number" && newStatUnit !== "duration") {
         return;
       }
       dispatch(changeStatUnit(newStatUnit ?? "number")).catch(console.error);
-    },
-    [dispatch],
-  );
+    };
 
   return (
     <TitleCard title="Stat measurement used">
-      <Text element="span" className={s.marginbottom}>
+      <Text element="span" className={s.marginbottom} size='normal'>
         Measurement used to compute most listened elements.
       </Text>
       <SettingLine

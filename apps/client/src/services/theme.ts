@@ -1,5 +1,4 @@
 import { createTheme, useMediaQuery } from "@mui/material";
-import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { selectDarkMode } from "./redux/modules/user/selector";
 
@@ -9,9 +8,7 @@ export const useTheme = () => {
 
   const isDark = dark === "dark" || (dark === "follow" && prefersDarkMode);
 
-  const theme = useMemo(
-    () =>
-      createTheme({
+  const theme = createTheme({
         palette: {
           mode: isDark ? "dark" : "light",
           primary: {
@@ -59,8 +56,6 @@ export const useTheme = () => {
         shape: {
           borderRadius: 6,
         },
-      }),
-    [isDark],
-  );
+      });
   return theme;
 };

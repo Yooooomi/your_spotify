@@ -9,8 +9,7 @@
 }
 
 .title {
-  margin-bottom: 32px;
-  font-size: 4em;
+  margin-bottom: 12px;
   text-align: center;
 }
 
@@ -29,6 +28,7 @@
   border-radius: 20px;
   padding: 0px 58px;
   font-weight: bold;
+  margin-top: 12px;
 }
 
 .rememberMe {

@@ -2,9 +2,7 @@ import { debounce, useMediaQuery } from "@mui/material";
 import {
   RefObject,
   TouchEvent,
-  useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -23,31 +21,21 @@ export function useAPI<Fn extends (...ags: any[]) => Promise<{ data: D }>, D>(
   ...args: Parameters<Fn>
 ): null | UnboxPromise<ReturnType<Fn>>["data"] {
   // Allows for instant nullify of request in case of deps change
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [value, setValue] = useState<
     UnboxPromise<ReturnType<Fn>>["data"] | null
   >(null);
-  const ref = useRef<UnboxPromise<ReturnType<Fn>>["data"] | null>(null);
-
-  useMemo(() => {
-    ref.current = null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...args]);
-
   useEffect(() => {
     async function fetch() {
       const result = await call(...args);
-      ref.current = result.data;
       setValue(result.data);
     }
 
-    ref.current = null;
     setValue(null);
     fetch().catch(console.error);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...args, call]);
 
-  return ref.current;
+  return value;
 }
 
 export function useConditionalAPI<
@@ -61,24 +49,25 @@ export function useConditionalAPI<
   const [value, setValue] = useState<
     UnboxPromise<ReturnType<Fn>>["data"] | null
   >(null);
-  const loading = useRef(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetch() {
       const result = await call(...args);
-      loading.current = false;
+      setLoading(false);
       setValue(result.data);
     }
 
-    setValue(null);
     if (condition) {
-      loading.current = true;
+      setLoading(true);
       fetch().catch(console.error);
+    } else {
+      setValue(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...args, condition, call]);
 
-  return [value, loading.current];
+  return [value, loading];
 }
 
 export function useShareLink() {
@@ -97,38 +86,34 @@ export function useShareLink() {
   if (user.publicToken) {
     search.set("token", user.publicToken);
   }
-  return `${window.location.origin}${
-    window.location.pathname
-  }?${search.toString()}`;
+  return `${window.location.origin}${window.location.pathname
+    }?${search.toString()}`;
 }
 
 export function useNavigateAndSearch() {
   const navigate = useNavigate();
   const [query] = useSearchParams();
 
-  return useCallback(
-    (url: string, params: Record<string, string | undefined>) => {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined) {
-          query.set(key, value);
-        }
-      });
-      navigate(`${url}?${query.toString()}`);
-    },
-    [navigate, query],
-  );
+  return (url: string, params: Record<string, string | undefined>) => {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) {
+        query.set(key, value);
+      }
+    });
+    navigate(`${url}?${query.toString()}`);
+  };
 }
 
 export function useSheetState() {
   const [open, setOpen] = useState(false);
 
-  const onClose = useCallback(() => {
+  const onClose = () => {
     setOpen(false);
-  }, []);
+  };
 
-  const onOpen = useCallback(() => {
+  const onOpen = () => {
     setOpen(true);
-  }, []);
+  };
 
   return [open, onOpen, onClose] as const;
 }
@@ -154,10 +139,11 @@ export function useResizeDebounce(
   }, [cb, ref]);
 }
 
-export function useMobile(): [boolean, boolean] {
+export function useMobile(): [boolean, boolean, boolean] {
   return [
     useMediaQuery("(max-width: 960px)"),
     useMediaQuery("(max-width: 1250px)"),
+    useMediaQuery("(min-width: 1250px)"),
   ];
 }
 
@@ -166,22 +152,19 @@ export function useLongPress(callback: () => void, ms = 300) {
     undefined,
   );
 
-  const stop = useCallback(() => {
+  function stop() {
     document.removeEventListener("scroll", stop);
     clearTimeout(currentTimeout.current);
     currentTimeout.current = undefined;
-  }, []);
+  }
 
-  const start = useCallback(
-    (event: TouchEvent<HTMLDivElement>) => {
-      document.addEventListener("scroll", stop);
-      event.preventDefault();
-      event.stopPropagation();
-      clearTimeout(currentTimeout.current);
-      currentTimeout.current = setTimeout(callback, ms);
-    },
-    [callback, ms, stop],
-  );
+  function start(event: TouchEvent<HTMLDivElement>) {
+    document.addEventListener("scroll", stop);
+    event.preventDefault();
+    event.stopPropagation();
+    clearTimeout(currentTimeout.current);
+    currentTimeout.current = setTimeout(callback, ms);
+  }
 
   return {
     onTouchStart: start,
@@ -192,8 +175,8 @@ export function useLongPress(callback: () => void, ms = 300) {
 export function useBooleanState(): [boolean, () => void, () => void] {
   const [open, setOpen] = useState(false);
 
-  const onOpen = useCallback(() => setOpen(true), []);
-  const onClose = useCallback(() => setOpen(false), []);
+  const onOpen = () => setOpen(true);
+  const onClose = () => setOpen(false);
 
   return [open, onOpen, onClose];
 }

@@ -57,6 +57,7 @@
 .context {
   display: flex;
   flex-direction: row;
+  align-items: flex-start;
 }
 
 .context > * {
@@ -78,6 +79,11 @@
 }
 
 .mlrank {
-  font-size: 1.4em;
   width: 48px;
+}
+
+.artists {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }

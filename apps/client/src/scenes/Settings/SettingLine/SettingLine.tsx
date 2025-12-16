@@ -9,8 +9,8 @@ interface SettingLineProps {
 export default function SettingLine({ left, right }: SettingLineProps) {
   return (
     <div className={s.root}>
-      <Text element="strong">{left}</Text>
-      <Text>{right}</Text>
+      <Text element="strong" size='normal'>{left}</Text>
+      <Text size="normal">{right}</Text>
     </div>
   );
 }

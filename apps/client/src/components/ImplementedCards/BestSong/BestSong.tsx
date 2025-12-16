@@ -12,7 +12,7 @@ import Text from "../../Text";
 import InlineTrack from "../../InlineTrack";
 import s from "./index.module.css";
 
-interface BestSongProps extends ImplementedCardProps {}
+interface BestSongProps extends ImplementedCardProps { }
 
 export default function BestSong({ className }: BestSongProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -32,10 +32,10 @@ export default function BestSong({ className }: BestSongProps) {
           <div className={s.stats}>
             <Skeleton width="40%" />
             <div className={s.statnumbers}>
-              <Text className={s.stat}>
+              <Text size="big">
                 <Skeleton width="60%" />
               </Text>
-              <Text className={s.stat}>
+              <Text size="big">
                 <Skeleton width="50%" />
               </Text>
             </div>
@@ -58,14 +58,25 @@ export default function BestSong({ className }: BestSongProps) {
           />
         </div>
         <div className={s.stats}>
-          {res && <InlineTrack element="strong" track={res.track} />}
-          {!res && <Text element="strong">No data</Text>}
-          <div className={s.statnumbers}>
-            <Text className={s.stat}>
-              <Text element="strong">{res?.count ?? 0}</Text> times listened
+          {res && (
+            <InlineTrack element="strong" size="huge" track={res.track} />
+          )}
+          {!res && (
+            <Text element="strong" size="big">
+              No data
             </Text>
-            <Text className={s.stat}>
-              <Text element="strong">{msToMinutes(res?.duration_ms ?? 0)}</Text>{" "}
+          )}
+          <div className={s.statnumbers}>
+            <Text size="big">
+              <Text element="strong" size="big">
+                {res?.count ?? 0}
+              </Text>{" "}
+              times listened
+            </Text>
+            <Text size="big">
+              <Text element="strong" size="big">
+                {msToMinutes(res?.duration_ms ?? 0)}
+              </Text>{" "}
               minutes listened
             </Text>
           </div>

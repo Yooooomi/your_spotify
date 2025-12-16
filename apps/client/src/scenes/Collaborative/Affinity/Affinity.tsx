@@ -1,7 +1,6 @@
-import { Button, Checkbox, MenuItem, Select, Tooltip } from "@mui/material";
-import { useCallback, useState } from "react";
+import { Button, Checkbox, MenuItem, Select } from "@mui/material";
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import { HelpOutline } from "@mui/icons-material";
 import { AdminAccount } from "../../../services/redux/modules/admin/reducer";
 import { selectAccounts } from "../../../services/redux/modules/admin/selector";
 import { CollaborativeMode } from "../../../services/types";
@@ -17,6 +16,7 @@ import { useNavigateAndSearch } from "../../../services/hooks/hooks";
 import Header from "../../../components/Header";
 import { AFFINITY_PREFIX } from "./types";
 import s from "./index.module.css";
+import { ITooltip } from "../../../components/iTooltip/iTooltip";
 
 export default function Affinity() {
   const navigate = useNavigateAndSearch();
@@ -29,70 +29,62 @@ export default function Affinity() {
   );
   const accounts = useSelector(selectAccounts);
 
-  const add = useCallback(
-    (account: AdminAccount) => {
-      const newSet = new Set(ids);
-      if (newSet.has(account.id)) {
-        newSet.delete(account.id);
-      } else {
-        newSet.add(account.id);
-      }
-      setIds(newSet);
-    },
-    [ids],
-  );
+  const add = (account: AdminAccount) => {
+    const newSet = new Set(ids);
+    if (newSet.has(account.id)) {
+      newSet.delete(account.id);
+    } else {
+      newSet.add(account.id);
+    }
+    setIds(newSet);
+  };
 
-  const compute = useCallback(() => {
+  const compute = () => {
     navigate(`/collaborative/top/${statType}/${mode}`, {
       ids: Array.from(ids).join(","),
       ...detailIntervalToQuery(dataInterval, AFFINITY_PREFIX),
     });
-  }, [navigate, statType, mode, ids, dataInterval]);
+  };
 
-  const tooltip = (
-    <Tooltip
-      title={
-        <div>
-          <p>
-            The affinity represents the probability the user like the same
-            songs. The affinity feature comes with two <strong>modes</strong>:
-          </p>
-          <ul>
-            <li>
-              <strong>Average</strong>: bases the ranking on the average of the
-              proportion each people listening to a specific element. If A
-              listens to a song 50% of his time, B 25% and C 0%, the average
-              will be 25%, thus ranking higher than A 12%, B 12% and C 12%.
-            </li>
-            <li>
-              <strong>Minima</strong>: bases the ranking on the minimal
-              proportion of each people listening to a specific element. If A
-              listens to a song 50% of his time, B 25% and C 0%, the minima will
-              be 0%, thus ranking lower than A 100% B 5% and C 1%.
-            </li>
-          </ul>
-          <p>
-            Average can mean that the top songs will satisfy a lot some people
-            while minima means that the top songs will be known by everyone but
-            not enjoyed as much for everyone.
-          </p>
-        </div>
-      }>
-      <HelpOutline className={s.question} />
-    </Tooltip>
+  const content = (
+    <div>
+      <p>
+        The affinity represents the probability the user like the same
+        songs. The affinity feature comes with two <strong>modes</strong>:
+      </p>
+      <ul>
+        <li>
+          <strong>Average</strong>: bases the ranking on the average of the
+          proportion each people listening to a specific element. If A
+          listens to a song 50% of his time, B 25% and C 0%, the average
+          will be 25%, thus ranking higher than A 12%, B 12% and C 12%.
+        </li>
+        <li>
+          <strong>Minima</strong>: bases the ranking on the minimal
+          proportion of each people listening to a specific element. If A
+          listens to a song 50% of his time, B 25% and C 0%, the minima will
+          be 0%, thus ranking lower than A 100% B 5% and C 1%.
+        </li>
+      </ul>
+      <p>
+        Average can mean that the top songs will satisfy a lot some people
+        while minima means that the top songs will be known by everyone but
+        not enjoyed as much for everyone.
+      </p>
+    </div>
   );
 
   return (
     <div className={s.root}>
       <Header
         hideInterval
-        title={<div className={s.title}>Affinity {tooltip}</div>}
+        title={<div className={s.title}>Affinity <ITooltip content={content} /></div>}
         subtitle="Compute the affinity you have with somebody using YourSpotify"
       />
       <div className={s.content}>
         <div>
           <div className={s.accountselection}>
-            <Text element="h2" className={s.section}>
+            <Text element="h2" className={s.section} size="big">
               Users
             </Text>
             {accounts.map(account => (
@@ -101,7 +93,7 @@ export default function Affinity() {
                 key={account.id}
                 className={s.account}
                 onClick={() => add(account)}>
-                <Text>{account.username}</Text>
+                <Text size="normal">{account.username}</Text>
                 <Checkbox
                   checked={ids.has(account.id) || account.id === user?._id}
                   disabled={account.id === user?._id}
@@ -113,7 +105,7 @@ export default function Affinity() {
             ))}
           </div>
           <div className={s.modeselection}>
-            <Text element="h2" className={s.section}>
+            <Text element="h2" className={s.section} size="big">
               Mode
             </Text>
             <Select
@@ -125,7 +117,7 @@ export default function Affinity() {
             </Select>
           </div>
           <div className={s.typeselection}>
-            <Text element="h2" className={s.section}>
+            <Text element="h2" className={s.section} size="big">
               Type
             </Text>
             <Select
@@ -138,7 +130,7 @@ export default function Affinity() {
             </Select>
           </div>
           <div className={s.timeselection}>
-            <Text element="h2" className={s.section}>
+            <Text element="h2" className={s.section} size="big">
               Interval
             </Text>
             <IntervalSelector

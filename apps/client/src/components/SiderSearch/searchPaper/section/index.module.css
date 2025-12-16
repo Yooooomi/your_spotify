@@ -1,0 +1,57 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sticky {
+  display: block;
+  padding-bottom: 8px;
+  background-color: white;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.result:hover {
+  background-color: var(--hover);
+}
+
+.result:focus {
+  background-color: var(--selected);
+}
+
+.cover {
+  border-radius: 6px;
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subtitle {
+  color: var(--text-grey)
+}

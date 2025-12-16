@@ -35,7 +35,7 @@ export default function SiderCategory({
 
   return (
     <div className={s.category} key={category.label}>
-      <Text element="div" onDark className={s.categoryname}>
+      <Text element="div" onDark className={s.categoryname} size='small'>
         {category.label}
       </Text>
       {toCopy &&
@@ -46,6 +46,7 @@ export default function SiderCategory({
               <CopyToClipboard key={link.label} onCopy={onCopy} text={toCopy}>
                 <div className={s.link} key={link.label}>
                   <Text
+                    size='normal'
                     onDark
                     className={clsx(s.linkcontent, {
                       [s.active]: active,
@@ -64,6 +65,7 @@ export default function SiderCategory({
               key={link.label}
               onClick={layoutContext.closeDrawer}>
               <Text
+                size='normal'
                 onDark
                 element="div"
                 className={clsx(s.linkcontent, { [s.active]: active })}>

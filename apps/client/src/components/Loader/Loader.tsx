@@ -13,7 +13,7 @@ export default function Loader({ text, className, ...other }: LoaderProps) {
     <div className={clsx(s.root, className)} {...other}>
       <CircularProgress size={24} />
       {text && (
-        <Text element="div" className={s.text}>
+        <Text element="div" className={s.text} size='normal'>
           {text}
         </Text>
       )}

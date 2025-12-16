@@ -1,5 +1,5 @@
 import { Input, Button } from "@mui/material";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import TitleCard from "../../../components/TitleCard";
 import { changeUsername } from "../../../services/redux/modules/user/thunk";
 import { User } from "../../../services/redux/modules/user/types";
@@ -22,13 +22,10 @@ export default function AccountInfos({
   const dispatch = useAppDispatch();
   const [name, setName] = useState("");
 
-  const submit = useCallback(
-    (ev: React.SyntheticEvent) => {
+  const submit = (ev: React.SyntheticEvent) => {
       ev.preventDefault();
       dispatch(changeUsername(name));
-    },
-    [name, dispatch],
-  );
+    };
 
   return (
     <TitleCard title="Account infos">

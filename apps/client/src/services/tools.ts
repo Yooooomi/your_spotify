@@ -18,8 +18,7 @@ export function getAtLeastImage(images: SpotifyImage[], size: number) {
   );
 }
 
-// @ts-ignore
-export const getApiEndpoint = () => window.API_ENDPOINT as string;
+export const getApiEndpoint = () => (window as any as { API_ENDPOINT: string }).API_ENDPOINT;
 
 export const getSpotifyLogUrl = () => `${getApiEndpoint()}/oauth/spotify`;
 
@@ -49,3 +48,21 @@ export function getMinOfArray<T>(
   }
   return { minValue: min, minIndex };
 }
+
+export function uniq<T>(array: T[]) {
+  const uniqd: T[] = [];
+  const seen = new Set<T>();
+
+  for (const item of array) {
+    if (seen.has(item)) {
+      continue;
+    }
+    uniqd.push(item);
+    seen.add(item);
+  }
+  return uniqd;
+}
+
+export function noop() { }
+
+export const wait = (ms: number) => new Promise(res => setTimeout(res, ms));

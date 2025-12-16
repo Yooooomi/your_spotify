@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Header from "../../../components/Header";
@@ -34,9 +33,10 @@ export default function Albums() {
             loader={<Loader />}>
             <GridWrapper>
               <AlbumHeader />
-              {items.map(item => (
+              {items.map((item, rank) => (
                 <Album
                   key={item.album.id}
+                  rank={rank + 1}
                   artists={[item.artist]}
                   album={item.album}
                   count={item.count}

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import Axios from "axios";
 import { AdminAccount } from "../redux/modules/admin/reducer";
 import { ImporterState } from "../redux/modules/import/types";
@@ -13,16 +13,16 @@ import {
   Track,
   TrackWithAlbum,
   TrackInfo,
-  TrackInfoWithFullTrack,
+  TrackInfoWithFullArtistAlbum,
   SpotifyMe,
   CollaborativeMode,
   UnboxPromise,
-  TrackWithFullAlbum,
+  TrackWithFullArtistAlbum,
+  AlbumWithFullArtist,
 } from "../types";
 
 const axios = Axios.create({
-  /* @ts-ignore-next-line */
-  baseURL: window.API_ENDPOINT,
+  baseURL: (window as any as { API_ENDPOINT: string }).API_ENDPOINT,
   withCredentials: true,
 });
 
@@ -204,7 +204,7 @@ export const api = {
   version: () => get<{ update: boolean; version: string }>("/version"),
   spotify: () => get("/oauth/spotify"),
   logout: () => axios.post("/logout"),
-  // eslint-disable-next-line no-restricted-globals
+
   me: () => get<{ status: true; user: User } | { status: false }>("/me"),
   sme: () => get<SpotifyMe>("/oauth/spotify/me"),
   globalPreferences: () => get<GlobalPreferences>("/global/preferences"),
@@ -222,7 +222,7 @@ export const api = {
       id,
     }),
   getTracks: (start: Date, end: Date, number: number, offset: number) =>
-    get<TrackInfoWithFullTrack[]>("/spotify/gethistory", {
+    get<TrackInfoWithFullArtistAlbum[]>("/spotify/gethistory", {
       number,
       offset,
       start,
@@ -369,7 +369,7 @@ export const api = {
       }[];
     }>(`/artist/${id}/rank`),
   search: (str: string) =>
-    get<{ artists: Artist[]; tracks: TrackWithFullAlbum[]; albums: Album[] }>(
+    get<{ artists: Artist[]; tracks: TrackWithFullArtistAlbum[]; albums: AlbumWithFullArtist[] }>(
       `/search/${str}`,
     ),
   getBestSongs: (start: Date, end: Date, nb: number, offset: number) =>

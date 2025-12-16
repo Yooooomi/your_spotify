@@ -1,4 +1,3 @@
-import React, { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { api } from "../../../services/apis/api";
 import { useAPI } from "../../../services/hooks/hooks";
@@ -12,11 +11,10 @@ import { DateId } from "../../../services/types";
 import ChartCard from "../../ChartCard";
 import Line from "../../charts/Line";
 import Tooltip from "../../Tooltip";
-import { ValueFormatter } from "../../Tooltip/Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 
-interface SongsListenedPerProps extends ImplementedChartProps {}
+interface SongsListenedPerProps extends ImplementedChartProps { }
 
 export default function SongsListenedPer({ className }: SongsListenedPerProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -37,10 +35,7 @@ export default function SongsListenedPer({ className }: SongsListenedPerProps) {
   );
 
   const formatX = useFormatXAxis(data);
-  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
-    (_, value) => `${value} songs`,
-    [],
-  );
+  const tooltipValue = (_, value) => `${value} songs`;
 
   if (!result) {
     return (

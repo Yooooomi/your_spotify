@@ -333,6 +333,20 @@ export function chunk<T>(array: T[], chunkSize: number) {
   return chunks;
 }
 
+export function uniq<T>(array: T[]) {
+  const uniqd: T[] = [];
+  const seen = new Set<T>();
+
+  for (const item of array) {
+    if (seen.has(item)) {
+      continue;
+    }
+    uniqd.push(item);
+    seen.add(item);
+  }
+  return uniqd;
+}
+
 export function uniqBy<T>(source: T[], getId: (item: T) => string): T[] {
   const final: T[] = [];
   const alreadyAdded = new Set<string>();

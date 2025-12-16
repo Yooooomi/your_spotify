@@ -15,6 +15,7 @@ interface ArtistProps {
   totalCount: number;
   duration: number;
   totalDuration: number;
+  rank: number;
 }
 
 export default function Artist({
@@ -23,90 +24,82 @@ export default function Artist({
   totalDuration,
   count,
   totalCount,
+  rank
 }: ArtistProps) {
-  const [isMobile, isTablet] = useMobile();
+  const [isMobile, isTablet, isDesktop] = useMobile();
   const artistGrid = useArtistGrid();
 
   const genres = artist.genres.join(", ");
 
-  const columns = useMemo<ColumnDescription[]>(
-    () => [
-      {
-        ...artistGrid.cover,
-        node: (
-          <IdealImage
-            images={artist.images}
-            size={48}
-            alt="Artist cover"
-            className={s.cover}
-            width={48}
-            height={48}
-          />
-        ),
-      },
-      {
-        ...artistGrid.title,
-        node: (
-          <Text className="otext">
-            <InlineArtist artist={artist} />
-          </Text>
-        ),
-      },
-      {
-        ...artistGrid.genres,
-        node: !isTablet && (
-          <Text className="otext" title={genres}>
-            {genres}
-          </Text>
-        ),
-      },
-      {
-        ...artistGrid.count,
-        node: (
-          <Text>
-            {count}
-            {!isMobile && (
-              <>
-                {" "}
-                <Text>({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
-              </>
-            )}
-          </Text>
-        ),
-      },
-      {
-        ...artistGrid.total,
-        node: (
-          <Text className="center">
-            {msToDuration(duration)}
-            {!isMobile && (
-              <>
-                {" "}
-                <Text>
-                  ({Math.floor((duration / totalDuration) * 10000) / 100}%)
-                </Text>
-              </>
-            )}
-          </Text>
-        ),
-      },
-    ],
-    [
-      artist,
-      artistGrid.count,
-      artistGrid.cover,
-      artistGrid.genres,
-      artistGrid.title,
-      artistGrid.total,
-      count,
-      duration,
-      genres,
-      isMobile,
-      isTablet,
-      totalCount,
-      totalDuration,
-    ],
-  );
+  const columns: ColumnDescription[] = [
+    {
+      ...artistGrid.rank,
+      node: (
+        <Text size="normal" element="strong" className={s.mlrank}>
+          #{rank}
+        </Text>
+      )
+    },
+    {
+      ...artistGrid.cover,
+      node: (
+        <IdealImage
+          images={artist.images}
+          size={48}
+          alt="Artist cover"
+          className={s.cover}
+          width={48}
+          height={48}
+        />
+      ),
+    },
+    {
+      ...artistGrid.title,
+      node: (
+        <Text size="normal" className="otext">
+          <InlineArtist size="normal" artist={artist} />
+        </Text>
+      ),
+    },
+    {
+      ...artistGrid.genres,
+      node: !isTablet && (
+        <Text size="normal" className="otext" title={genres}>
+          {genres}
+        </Text>
+      ),
+    },
+    {
+      ...artistGrid.count,
+      node: (
+        <Text size="normal" className={isMobile ? "right" : undefined}>
+          {count}
+          {!isMobile && (
+            <>
+              {" "}
+              <Text size="normal">({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+            </>
+          )}
+        </Text>
+      ),
+    },
+    {
+      ...artistGrid.total,
+      node: !isMobile && (
+        <Text size="normal" className="center">
+          {msToDuration(duration)}
+          {isDesktop && (
+            <>
+              {" "}
+              <Text size="normal">
+                ({Math.floor((duration / totalDuration) * 10000) / 100}%)
+              </Text>
+            </>
+          )}
+        </Text>
+      ),
+    },
+  ];
 
   return <GridRowWrapper className={s.row} columns={columns} />;
 }

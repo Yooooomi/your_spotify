@@ -237,7 +237,7 @@ export const getSongs = async (
       model: "Track",
       populate: [
         { path: "full_album", model: "Album" },
-        { path: "full_artist", model: "Artist" },
+        { path: "full_artists", model: "Artist" },
       ],
     },
   });

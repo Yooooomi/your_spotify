@@ -36,18 +36,17 @@ class NotAdminError extends YourSpotifyError {
 }
 
 export const validate = <
-  Z extends z.AnyZodObject | z.ZodDiscriminatedUnion<any, any>,
+  Z extends z.ZodObject | z.ZodDiscriminatedUnion<any, any>,
 >(
   payload: any,
   schema: Z,
 ): z.infer<Z> => {
   try {
-    const tokenObject = z.object({ token: z.string().optional() });
     let value;
-    if ("merge" in schema) {
-      value = schema.merge(tokenObject).parse(payload);
+    if ("extend" in schema) {
+      value = schema.extend({ token: z.string().optional() }).parse(payload);
     } else {
-      value = schema.and(tokenObject).parse(payload);
+      value = schema.and(z.object({ token: z.string().optional() })).parse(payload);
     }
     return value;
   } catch (e) {

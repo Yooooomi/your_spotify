@@ -30,34 +30,34 @@ export default function AllStats() {
       />
       <div className={s.content}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <BestArtistsBar className={s.chart} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <ListeningRepartition className={s.chart} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <ArtistListeningRepartition className={s.chart} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <BestOfHour className={s.chart} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <SongsListenedPer className={s.chart} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <TimeListenedPer className={s.chart} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <DifferentArtistListenedPer className={s.chart} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <AverageAlbumReleaseDate className={s.chart} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <AverageNumberArtistPer className={s.chart} />
           </Grid>
-          <Grid item xs={12} md={12} lg={6}>
+          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <AverageSongPopularityPer className={s.chart} />
           </Grid>
         </Grid>

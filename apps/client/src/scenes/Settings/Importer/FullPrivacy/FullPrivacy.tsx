@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import { Button, CircularProgress } from "@mui/material";
 import { startImportFullPrivacy } from "../../../../services/redux/modules/import/thunk";
 import Text from "../../../../components/Text";
@@ -10,27 +10,27 @@ export default function FullPrivacy() {
   const [files, setFiles] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const onImport = useCallback(async () => {
+  const onImport = async () => {
     setLoading(true);
     if (!files) {
       return;
     }
     await dispatch(startImportFullPrivacy({ files }));
     setLoading(false);
-  }, [dispatch, files]);
+  };
 
-  const wrongFiles = useMemo(() => {
+  const wrongFiles = (() => {
     if (!files) {
       return false;
     }
     return Array.from(Array(files.length).keys()).some(
       i => !files.item(i)?.name.startsWith("Streaming_History_Audio"),
     );
-  }, [files]);
+  })();
 
   return (
     <div>
-      <Text className={s.import}>
+      <Text className={s.import} size='normal'>
         Here you can import previous data from Spotify privacy data. This is the
         data you requested by mail specifically asking for extended data. It
         usually takes a few weeks for them to get back to you. Once received,
@@ -61,18 +61,18 @@ export default function FullPrivacy() {
       </label>
       {files &&
         Array.from(Array(files.length).keys()).map(i => (
-          <Text key={i} element="div">
+          <Text key={i} element="div" size='normal'>
             {files.item(i)?.name}
           </Text>
         ))}
       {wrongFiles && (
-        <Text className={s.alert}>
+        <Text className={s.alert} size='normal'>
           Some file do not being with <code>Streaming_History_Audio</code>,
           import might not work
         </Text>
       )}
       {files && !wrongFiles && (
-        <Text className={s.noalert}>
+        <Text className={s.noalert} size='normal'>
           Everything looks fine for the import to work
         </Text>
       )}

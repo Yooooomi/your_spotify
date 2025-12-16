@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState } from "react";
-import { MoreHoriz } from "@mui/icons-material";
+import { useRef, useState } from "react";
+import { MoreHoriz, MoreVert } from "@mui/icons-material";
 import {
   Button,
   ClickAwayListener,
@@ -21,19 +21,17 @@ export interface ThreePointItem {
 
 interface ThreePointsProps {
   items: ThreePointItem[];
+  horizontal?: boolean;
 }
 
-export default function ThreePoints({ items }: ThreePointsProps) {
+export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
-  const internClick = useCallback(
-    (index: number) => {
+  const internClick = (index: number) => {
       items[index]?.onClick();
       setOpen(false);
-    },
-    [items],
-  );
+    };
 
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
@@ -42,7 +40,11 @@ export default function ThreePoints({ items }: ThreePointsProps) {
           size="small"
           ref={buttonRef}
           onClick={() => setOpen(v => !v)}>
-          <MoreHoriz fontSize="small" />
+          {horizontal ? (
+            <MoreHoriz fontSize="small" />
+          ) : (
+            <MoreVert fontSize="small" />
+          )}
         </IconButton>
         <Popper
           open={open}
@@ -50,14 +52,15 @@ export default function ThreePoints({ items }: ThreePointsProps) {
           popperOptions={{ placement: "auto-start" }}
           transition>
           {({ TransitionProps }) => (
-            // eslint-disable-next-line react/jsx-props-no-spreading
+
             <Fade {...TransitionProps}>
               <div className={s.popper}>
                 {items.map((item, index) => (
                   <Tooltip
+                    key={item.label}
                     title={(item.disabled && item.disabledTooltip) || ""}>
                     <Button
-                      // eslint-disable-next-line react/no-array-index-key
+
                       key={index}
                       variant="text"
                       disabled={item.disabled}
@@ -72,7 +75,7 @@ export default function ThreePoints({ items }: ThreePointsProps) {
                 ))}
                 {items.length === 0 && (
                   <Button
-                    // eslint-disable-next-line react/no-array-index-key
+
                     variant="text"
                     disabled>
                     No action available

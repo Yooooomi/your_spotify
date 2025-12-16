@@ -1,7 +1,6 @@
-import { useMemo } from "react";
 import Text from "../../../../components/Text";
 import { useMobile } from "../../../../services/hooks/hooks";
-import { ColumnDescription, GridRowWrapper } from "../../../../components/Grid";
+import { GridRowWrapper } from "../../../../components/Grid";
 import s from "./index.module.css";
 import { useTrackGrid } from "./TrackGrid";
 
@@ -10,37 +9,36 @@ export default function TrackHeader() {
 
   const trackGrid = useTrackGrid();
 
-  const columns = useMemo<ColumnDescription[]>(
-    () => [
+  const columns = [
       {
         ...trackGrid.cover,
         node: <div aria-label="cover" />,
       },
       {
         ...trackGrid.title,
-        node: <Text element="div">Title</Text>,
+        node: <Text element="div" size='normal'>Title</Text>,
       },
       {
         ...trackGrid.album,
-        node: !isTablet && <Text element="div">Album name</Text>,
+        node: !isTablet && <Text element="div" size='normal'>Album name</Text>,
       },
       {
         ...trackGrid.duration,
-        node: !isMobile && <Text element="div">Duration</Text>,
+        node: !isMobile && <Text element="div" size='normal'>Duration</Text>,
       },
       {
         ...trackGrid.count,
         node: (
           <div className={s.count}>
-            <Text element="div">Count</Text>
+            <Text element="div" size='normal'>Count</Text>
           </div>
         ),
       },
       {
         ...trackGrid.total,
-        node: (
+        node: !isMobile && (
           <div className={s.total}>
-            <Text element="div">Total</Text>
+            <Text element="div" size='normal'>Total</Text>
           </div>
         ),
       },
@@ -48,19 +46,7 @@ export default function TrackHeader() {
         ...trackGrid.options,
         node: !isMobile && <div aria-label="option-menu" />,
       },
-    ],
-    [
-      isMobile,
-      isTablet,
-      trackGrid.album,
-      trackGrid.count,
-      trackGrid.cover,
-      trackGrid.duration,
-      trackGrid.options,
-      trackGrid.title,
-      trackGrid.total,
-    ],
-  );
+    ];
 
   return <GridRowWrapper columns={columns} className={s.header} />;
 }

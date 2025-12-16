@@ -17,7 +17,7 @@ export default function UpdateChecker() {
   return (
     <div className={s.root}>
       <Link to="/" onClick={layoutContext.closeDrawer}>
-        <Text onDark element="h1">
+        <Text onDark element="h1" size='pagetitle'>
           Your Spotify
         </Text>
       </Link>

@@ -1,11 +1,13 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--content-background);
+}
+
+.recharts-responsive-container * {
+  outline: none;
 }
 
 code {
@@ -32,6 +34,9 @@ h6 {
 }
 
 :root {
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   --track-options: 34px;
   --radius: 6px;
   --page-padding: 0 16px 16px 16px;
@@ -45,48 +50,56 @@ h6 {
   --content-border: 1px solid rgb(51, 51, 52);
   --hardshadow: 3px 3px 40px -5px rgba(170, 170, 170, 0.437);
 
-  --primary: white;
+  --primary-tuple: 255, 255, 255;
+  --primary: rgb(var(--primary-tuple));
 
   --text-grey: rgb(90, 90, 90);
   --border-color: rgb(90, 90, 90);
 
-  --hover: rgb(65, 65, 65);
+  --hover: rgb(43, 43, 43);
+  --selected: rgb(60, 60, 60);
 
-  --background: black;
-  --content-background: black;
+  --background: rgb(0, 0, 0);
+  --content-background: rgb(0, 0, 0);
 
-  --text-on-light: white;
-  --text-on-dark: white;
+  --text-on-light: rgb(255, 255, 255);
+  --text-on-dark: rgb(255, 255, 255);
   --code-background: rgb(133, 133, 133);
 
   --divider: rgb(65, 65, 65);
 
   --input-background-color: var(--secondary-dark);
   --input-background-color-hover: var(--secondary-dark-hover);
+ 
+  --shortcut-background: rgb(96, 96, 96);
 }
 
 .light-vars {
   --shadow: 5px 5px 8px -2px rgba(0,0,0,0.05);
   --hardshadow: 5px 6px 40px -5px rgba(0, 0, 0, 0.2);
 
-  --primary: black;
+  --primary-tuple: 0, 0, 0;
+  --primary: rgb(var(--primary-tuple));
 
   --text-grey: rgb(90, 90, 90);
   --border-color: rgb(227, 229, 233);
 
   --hover: #eaeaea;
+  --selected: #d6d6d6;
 
   --background: white;
   --content-background: #f2f3f6;
 
-  --text-on-light: black;
-  --text-on-dark: white;
+  --text-on-light: rgb(0, 0, 0);
+  --text-on-dark: rgb(255, 255, 255);
   --code-background: rgb(228, 228, 228);
 
   --divider: rgb(232, 232, 232);
 
   --input-background-color: hsl(0, 0%, 85%);
   --input-background-color-hover: hsl(0, 0%, 75%);
+
+  --shortcut-background: rgb(96, 96, 96);
 }
 
 @media (hover: none) and (pointer: coarse) {

@@ -40,7 +40,7 @@ export default function Line<
           tickFormatter={xFormat}
           style={{ fontWeight: "bold" }}
         />
-        <YAxis domain={["dataMin", "dataMax"]} tickFormatter={yFormat} />
+        <YAxis domain={["dataMin", "dataMax"]} tickFormatter={yFormat} width="auto" />
         <Tooltip
           wrapperStyle={{ zIndex: 10 }}
           contentStyle={{ backgroundColor: "var(--background)" }}

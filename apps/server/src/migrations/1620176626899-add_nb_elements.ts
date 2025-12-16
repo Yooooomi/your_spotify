@@ -6,7 +6,6 @@ export const up = async () => {
   await UserModel.updateMany(
     {},
     { $set: { "settings.nbElements": 10 } },
-    { multi: true },
   );
 };
 

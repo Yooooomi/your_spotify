@@ -164,7 +164,7 @@ const buildXYDataWithGetters = <Dict extends Record<string, any>>(
   }
   if (!doNotFillData) {
     let currentDate = getDateFromIndex(currentIndex, start, precision);
-    // eslint-disable-next-line no-constant-condition
+     
     for (let i = 0; currentDate.getTime() <= end.getTime(); i += 1) {
       built.push({
         x: currentIndex + i,

@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 import clsx from "clsx";
 import { msToDuration } from "../../../../services/stats";
 import { Artist, Album, Track as TrackType } from "../../../../services/types";
@@ -8,7 +8,7 @@ import Text from "../../../../components/Text";
 import PlayButton from "../../../../components/PlayButton";
 import TrackOptions from "../../../../components/TrackOptions";
 import { useMobile } from "../../../../services/hooks/hooks";
-import { ColumnDescription, GridRowWrapper } from "../../../../components/Grid";
+import { GridRowWrapper } from "../../../../components/Grid";
 import InlineAlbum from "../../../../components/InlineAlbum";
 import LongClickableTrack from "../../../../components/LongClickableTrack";
 import s from "./index.module.css";
@@ -23,10 +23,11 @@ interface TrackProps {
   totalCount: number;
   duration: number;
   totalDuration: number;
+  rank: number;
 }
 
 export default function Track(props: TrackProps) {
-  const [isMobile, isTablet] = useMobile();
+  const [isMobile, isTablet, isDesktop] = useMobile();
   const trackGrid = useTrackGrid();
 
   const {
@@ -38,97 +39,85 @@ export default function Track(props: TrackProps) {
     totalDuration,
     count,
     totalCount,
+    rank
   } = props;
 
-  const columns = useMemo<ColumnDescription[]>(
-    () => [
-      {
-        ...trackGrid.cover,
-        node: playable && <PlayButton id={track.id} covers={album.images} />,
-      },
-      {
-        ...trackGrid.title,
-        node: (
-          <div className={clsx("otext", s.names)}>
-            <InlineTrack element="div" track={track} />
-            <div className="subtitle">
-              {artists.map((art, k, a) => (
-                <Fragment key={art.id}>
-                  <InlineArtist artist={art} noStyle />
-                  {k !== a.length - 1 && ", "}
-                </Fragment>
-              ))}
-            </div>
+  const columns = [
+    {
+      ...trackGrid.rank,
+      node: (
+        <Text size="normal" element="strong" className={s.mlrank}>
+          #{rank}
+        </Text>
+      )
+    },
+    {
+      ...trackGrid.cover,
+      node: playable && <PlayButton id={track.id} covers={album.images} />,
+    },
+    {
+      ...trackGrid.title,
+      node: (
+        <div className={clsx("otext", s.names)}>
+          <InlineTrack element="div" track={track} size='normal' />
+          <div className="subtitle">
+            {artists.map((art, k, a) => (
+              <Fragment key={art.id}>
+                <InlineArtist artist={art} noStyle size='normal' />
+                {k !== a.length - 1 && ", "}
+              </Fragment>
+            ))}
           </div>
-        ),
-      },
-      {
-        ...trackGrid.album,
-        node: !isTablet && (
-          <InlineAlbum element="div" className="otext" album={album} />
-        ),
-      },
-      {
-        ...trackGrid.duration,
-        node: !isMobile && (
-          <Text element="div">{msToDuration(track.duration_ms)}</Text>
-        ),
-      },
-      {
-        ...trackGrid.count,
-        node: (
-          <Text element="div">
-            {count}
-            {!isMobile && (
-              <>
-                {" "}
-                <Text>({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
-              </>
-            )}
-          </Text>
-        ),
-      },
-      {
-        ...trackGrid.total,
-        node: (
-          <Text element="div" className="center">
-            {msToDuration(duration)}
-            {!isMobile && (
-              <>
-                {" "}
-                <Text>
-                  ({Math.floor((duration / totalDuration) * 10000) / 100}%)
-                </Text>
-              </>
-            )}
-          </Text>
-        ),
-      },
-      {
-        ...trackGrid.options,
-        node: !isMobile && <TrackOptions track={track} />,
-      },
-    ],
-    [
-      album,
-      artists,
-      count,
-      duration,
-      isMobile,
-      isTablet,
-      playable,
-      totalCount,
-      totalDuration,
-      track,
-      trackGrid.album,
-      trackGrid.count,
-      trackGrid.cover,
-      trackGrid.duration,
-      trackGrid.options,
-      trackGrid.title,
-      trackGrid.total,
-    ],
-  );
+        </div>
+      ),
+    },
+    {
+      ...trackGrid.album,
+      node: !isTablet && (
+        <InlineAlbum element="div" className="otext" album={album} size='normal' />
+      ),
+    },
+    {
+      ...trackGrid.duration,
+      node: !isMobile && (
+        <Text element="div" size='normal'>{msToDuration(track.duration_ms)}</Text>
+      ),
+    },
+    {
+      ...trackGrid.count,
+      node: (
+        <Text element="div" size="normal" className={isMobile ? "right" : undefined}>
+          {count}
+          {!isMobile && (
+            <>
+              {" "}
+              <Text size="normal">({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+            </>
+          )}
+        </Text>
+      ),
+    },
+    {
+      ...trackGrid.total,
+      node: !isMobile && (
+        <Text element="div" className="center" size='normal'>
+          {msToDuration(duration)}
+          {isDesktop && (
+            <>
+              {" "}
+              <Text size="normal">
+                ({Math.floor((duration / totalDuration) * 10000) / 100}%)
+              </Text>
+            </>
+          )}
+        </Text>
+      ),
+    },
+    {
+      ...trackGrid.options,
+      node: !isMobile && <TrackOptions track={track} />,
+    },
+  ];
 
   return (
     <LongClickableTrack track={track}>

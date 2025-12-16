@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Drawer } from "@mui/material";
 import clsx from "clsx";
 import { useSelector } from "react-redux";
@@ -19,13 +19,10 @@ export default function Layout({ children }: LayoutProps) {
 
   const publicToken = useSelector(selectPublicToken);
 
-  const layoutContextValue = useMemo(
-    () => ({
+  const layoutContextValue = {
       openDrawer: () => setOpen(true),
       closeDrawer: () => setOpen(false),
-    }),
-    [],
-  );
+    };
 
   return (
     <LayoutContext.Provider value={layoutContextValue}>
@@ -45,7 +42,7 @@ export default function Layout({ children }: LayoutProps) {
           })}>
           {publicToken && (
             <div className={s.publictoken}>
-              <Text>You are viewing as guest</Text>
+              <Text size="normal">You are viewing as guest</Text>
             </div>
           )}
           {children}

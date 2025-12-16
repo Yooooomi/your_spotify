@@ -64,7 +64,7 @@ export default createReducer(initialState, builder => {
     state.user.publicToken = payload;
   });
 
-  builder.addCase(deletePublicToken.fulfilled, (state, { payload }) => {
+  builder.addCase(deletePublicToken.fulfilled, (state) => {
     if (!state.user) {
       return;
     }

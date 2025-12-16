@@ -1,11 +1,8 @@
-import { useMemo, useCallback } from "react";
 import ChartCard from "../../../components/ChartCard";
 import Bar from "../../../components/charts/Bar";
 import Tooltip from "../../../components/Tooltip";
-import {
-  TitleFormatter,
-  ValueFormatter,
-} from "../../../components/Tooltip/Tooltip";
+
+
 import { ArtistStatsResponse } from "../../../services/apis/api";
 import { msToMinutes } from "../../../services/stats";
 
@@ -18,17 +15,9 @@ export default function DayRepartition({
   stats,
   className,
 }: DayRepartitionProps) {
-  const total = useMemo(
-    () => stats.reduce((acc, curr) => acc + curr.count, 0),
-    [stats],
-  );
-  const totalDuration = useMemo(
-    () => stats.reduce((acc, curr) => acc + curr.duration, 0),
-    [stats],
-  );
-  const data = useMemo(
-    () =>
-      Array.from(Array(24).keys()).map(idx => {
+  const total = stats.reduce((acc, curr) => acc + curr.count, 0);
+  const totalDuration = stats.reduce((acc, curr) => acc + curr.duration, 0);
+  const data = Array.from(Array(24).keys()).map(idx => {
         const stat = stats.find(st => st._id === idx);
 
         return {
@@ -37,16 +26,10 @@ export default function DayRepartition({
           count: stat?.count ?? 0,
           duration: stat?.duration ?? 0,
         };
-      }),
-    [stats, total],
-  );
+      });
 
-  const tooltipTitle = useCallback<TitleFormatter<typeof data>>(
-    ({ x }) => `${x}h`,
-    [],
-  );
-  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
-    (payload, value) => (
+  const tooltipTitle = ({ x }) => `${x}h`;
+  const tooltipValue = (payload, value) => (
       <div>
         {`${value}% of your listening`}
         <br />
@@ -57,9 +40,7 @@ export default function DayRepartition({
         )} minutes`}
         <br />
       </div>
-    ),
-    [total, totalDuration],
-  );
+    );
 
   return (
     <ChartCard title="Day repartition of your listening" className={className}>

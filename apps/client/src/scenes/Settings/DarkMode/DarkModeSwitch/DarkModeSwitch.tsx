@@ -1,5 +1,4 @@
 import { MenuItem, Select } from "@mui/material";
-import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { selectDarkMode } from "../../../../services/redux/modules/user/selector";
 import { setDarkMode } from "../../../../services/redux/modules/user/thunk";
@@ -10,12 +9,9 @@ export default function DarkModeSwitch() {
   const dispatch = useAppDispatch();
   const dark = useSelector(selectDarkMode);
 
-  const changeDarkMode = useCallback(
-    (mode: DarkModeType) => {
+  const changeDarkMode = (mode: DarkModeType) => {
       dispatch(setDarkMode(mode));
-    },
-    [dispatch],
-  );
+    };
 
   return (
     <Select

@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { CircularProgress } from "@mui/material";
 import SettingLine from "../../SettingLine";
@@ -26,19 +25,13 @@ export default function ImportHistory() {
   const dispatch = useAppDispatch();
   const imports = useSelector(selectImportStates);
 
-  const cleanImport = useCallback(
-    async (id: string) => {
+  const cleanImport = async (id: string) => {
       dispatch(cleanupImport(id)).catch(console.error);
-    },
-    [dispatch],
-  );
+    };
 
-  const onImport = useCallback(
-    async (id: string) => {
+  const onImport = async (id: string) => {
       await dispatch(startImportPrivacy({ id }));
-    },
-    [dispatch],
-  );
+    };
 
   if (!imports) {
     return <CircularProgress />;
@@ -46,19 +39,19 @@ export default function ImportHistory() {
 
   return (
     <div className={s.importhistory}>
-      <Text element="h3">Import history</Text>
+      <Text element="h3" size='big'>Import history</Text>
       {imports.map(st => (
         <SettingLine
           key={st._id}
           left={
-            <Text>
+            <Text size="normal">
               Import of {DateFormatter.listenedAt(new Date(st.createdAt))}
-              <Text className={s.importertype}>from {st.type}</Text>
+              <Text className={s.importertype} size='normal'>from {st.type}</Text>
             </Text>
           }
           right={
             <div className={s.right}>
-              <Text>
+              <Text size="normal">
                 {statusToString[st.status]} ({st.current}/{st.total})
               </Text>
               <ThreePoints
@@ -68,10 +61,10 @@ export default function ImportHistory() {
                     : undefined,
                   st.status === "failure"
                     ? {
-                        label: "Clean up",
-                        onClick: () => cleanImport(st._id),
-                        style: "destructive",
-                      }
+                      label: "Clean up",
+                      onClick: () => cleanImport(st._id),
+                      style: "destructive",
+                    }
                     : undefined,
                 ])}
               />

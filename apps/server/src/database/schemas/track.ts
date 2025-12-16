@@ -62,7 +62,7 @@ TrackSchema.virtual("full_album", {
   justOne: true,
 });
 
-TrackSchema.virtual("full_artist", {
+TrackSchema.virtual("full_artists", {
   ref: "Artist",
   localField: "artists",
   foreignField: "id",
