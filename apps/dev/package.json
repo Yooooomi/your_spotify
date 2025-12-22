@@ -3,10 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.49.0",
-    "@typescript-eslint/parser": "^8.49.0",
-    "@vercel/ncc": "^0.38.4",
-    "concurrently": "^9.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/parser": "^8.50.1",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
@@ -15,8 +13,6 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "prettier": "^3.7.4",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "prettier": "^3.7.4"
   }
 }

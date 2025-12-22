@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+
+catalog:
+  '@rsbuild/core': 1.6.15
+  typescript: 5.9.3
+
+onlyBuiltDependencies:
+  - core-js
+  - unrs-resolver

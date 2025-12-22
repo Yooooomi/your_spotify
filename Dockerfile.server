@@ -1,14 +1,15 @@
-FROM node:20-alpine AS builder
+FROM node:25-alpine AS builder
 
 WORKDIR /app
 
 ENV MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
 
 RUN apk add python3 gcc g++ make cmake
-RUN npm install -g nodemon
+RUN npm install -g pnpm nodemon
 
-COPY yarn.lock yarn.lock
+COPY pnpm-lock.yaml pnpm-lock.yaml
 COPY package.json package.json
+COPY pnpm-workspace.yaml pnpm-workspace.yaml
 
 COPY apps/dev/package.json apps/dev/package.json
 COPY apps/dev/tsconfig.json apps/dev/tsconfig.json
@@ -16,7 +17,9 @@ COPY apps/dev/tsconfig.json apps/dev/tsconfig.json
 COPY apps/server/package.json apps/server/package.json
 COPY apps/server/tsconfig.json apps/server/tsconfig.json
 
-RUN yarn --frozen-lockfile
+RUN CI=true pnpm install --frozen-lockfile
+
+COPY apps/server/rsbuild.config.ts apps/server/rsbuild.config.ts
 
 COPY apps/server/src apps/server/src
 COPY apps/server/scripts apps/server/scripts

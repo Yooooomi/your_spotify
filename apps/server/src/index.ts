@@ -1,3 +1,8 @@
 import { startServer } from "./bin/www";
+import { runMigrations } from "./migrations";
 
-startServer();
+if (process.argv[2] === "--migrate") {
+  runMigrations();
+} else {
+  startServer();
+}
