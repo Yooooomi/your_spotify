@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop */
+ 
 import { MongoServerSelectionError } from "mongodb";
 import { AxiosError } from "axios";
 import { getCloseTrackId, getUser, getUserCount } from "../database";
@@ -32,7 +32,7 @@ const loop = async (user: User) => {
 
   do {
     const response = await retryPromise(
-      // eslint-disable-next-line @typescript-eslint/no-loop-func
+       
       () => spotifyApi.raw(nextUrl),
       RETRY,
       30,
@@ -100,7 +100,7 @@ const WAIT_MS = 120 * 1000;
 
 export const dbLoop = async () => {
   // return;
-  // eslint-disable-next-line no-constant-condition
+   
   while (true) {
     try {
       const nbUsers = await getUserCount();

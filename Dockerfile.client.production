@@ -26,6 +26,7 @@ COPY apps/client/scripts apps/client/scripts
 
 WORKDIR /app/apps/client
 
+RUN pnpm typecheck
 RUN pnpm build
 
 ARG NODE_ENV

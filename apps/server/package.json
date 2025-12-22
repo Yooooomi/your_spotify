@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "dev": "rsbuild dev",
     "migrate": "node ./build/index.js --migrate",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint --fix . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "axios": "^1.13.2",
@@ -37,7 +38,14 @@
     "@types/node": "^25.0.3",
     "@your_spotify/dev": "workspace:*",
     "@rsbuild/core": "catalog:",
+    "eslint": "catalog:",
     "ts-node": "^10.9.2",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@eslint/css": "catalog:",
+    "@eslint/js": "catalog:",
+    "@eslint/json": "catalog:",
+    "eslint-plugin-unused-imports": "catalog:",
+    "globals": "catalog:",
+    "typescript-eslint": "catalog:"
   }
 }

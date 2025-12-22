@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { msToDuration } from "../../../../services/stats";
 import { Artist as ArtistType } from "../../../../services/types";
 import InlineArtist from "../../../../components/InlineArtist";

@@ -21,6 +21,7 @@ import { compact } from "../../../../services/tools";
 import { CollaborativeMode } from "../../../../services/types";
 import { AFFINITY_PREFIX } from "../types";
 import s from "./index.module.css";
+import { PlaylistContext } from "../../../../services/redux/modules/playlist/types";
 
 export default function Songs() {
   const user = useSelector(selectUser);
@@ -45,16 +46,16 @@ export default function Songs() {
 
   const realIds = compact([user?._id, ...ids]);
 
-  const context = {
-      type: "affinity",
-      interval: {
-        start: start.getTime(),
-        end: end.getTime(),
-      },
-      nb: DEFAULT_PLAYLIST_NB,
-      userIds: realIds,
-      mode: mode as CollaborativeMode,
-    };
+  const context: PlaylistContext = {
+    type: "affinity",
+    interval: {
+      start: start.getTime(),
+      end: end.getTime(),
+    },
+    nb: DEFAULT_PLAYLIST_NB,
+    userIds: realIds,
+    mode: mode as CollaborativeMode,
+  };
 
   if (!result || !user) {
     return (

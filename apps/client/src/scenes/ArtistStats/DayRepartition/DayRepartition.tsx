@@ -18,29 +18,29 @@ export default function DayRepartition({
   const total = stats.reduce((acc, curr) => acc + curr.count, 0);
   const totalDuration = stats.reduce((acc, curr) => acc + curr.duration, 0);
   const data = Array.from(Array(24).keys()).map(idx => {
-        const stat = stats.find(st => st._id === idx);
+    const stat = stats.find(st => st._id === idx);
 
-        return {
-          x: idx,
-          y: stat ? Math.floor((stat.count / total) * 1000) / 10 : 0,
-          count: stat?.count ?? 0,
-          duration: stat?.duration ?? 0,
-        };
-      });
+    return {
+      x: idx,
+      y: stat ? Math.floor((stat.count / total) * 1000) / 10 : 0,
+      count: stat?.count ?? 0,
+      duration: stat?.duration ?? 0,
+    };
+  });
 
-  const tooltipTitle = ({ x }) => `${x}h`;
-  const tooltipValue = (payload, value) => (
-      <div>
-        {`${value}% of your listening`}
-        <br />
-        {`${payload.count} out of ${total} songs`}
-        <br />
-        {`${msToMinutes(payload.duration ?? 0)} out of ${msToMinutes(
-          totalDuration,
-        )} minutes`}
-        <br />
-      </div>
-    );
+  const tooltipTitle = ({ x }: any) => `${x}h`;
+  const tooltipValue = (payload: any, value: any) => (
+    <div>
+      {`${value}% of your listening`}
+      <br />
+      {`${payload.count} out of ${total} songs`}
+      <br />
+      {`${msToMinutes(payload.duration ?? 0)} out of ${msToMinutes(
+        totalDuration,
+      )} minutes`}
+      <br />
+    </div>
+  );
 
   return (
     <ChartCard title="Day repartition of your listening" className={className}>

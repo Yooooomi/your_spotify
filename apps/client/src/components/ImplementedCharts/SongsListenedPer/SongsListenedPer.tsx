@@ -35,7 +35,7 @@ export default function SongsListenedPer({ className }: SongsListenedPerProps) {
   );
 
   const formatX = useFormatXAxis(data);
-  const tooltipValue = (_, value) => `${value} songs`;
+  const tooltipValue = (_: any, value: any) => `${value} songs`;
 
   if (!result) {
     return (

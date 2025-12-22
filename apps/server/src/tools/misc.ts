@@ -258,6 +258,7 @@ for (let i = 0; i < defaultDiacriticsRemovalMap.length; i += 1) {
 }
 
 export function removeDiacritics(str: string) {
+  // eslint-disable-next-line no-control-regex
   return str.replace(/[^\u0000-\u007E]/g, (a: string) => {
     return diacriticsMap[a] || a;
   });
@@ -285,14 +286,13 @@ export const retryPromise = async <T>(
   for (let i = 0; i < max; i += 1) {
     const isLastTry = i === max - 1;
     try {
-      // eslint-disable-next-line no-await-in-loop
+
       const res = await fn();
       return res;
     } catch (e) {
       lastError = e;
       logger.error(
-        `Retrying crashed promise, ${i + 1}/${max}${
-          isLastTry ? "" : `, retrying in ${timeSeconds} seconds...`
+        `Retrying crashed promise, ${i + 1}/${max}${isLastTry ? "" : `, retrying in ${timeSeconds} seconds...`
         }`,
       );
     }

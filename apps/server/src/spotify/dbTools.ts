@@ -41,7 +41,7 @@ const getIdsHandlingMax = async <
       continue;
     }
     const builtUrl = `${url}?ids=${id.join(",")}`;
-    // eslint-disable-next-line no-await-in-loop
+     
     const { data } = await retryPromise(() => spotifyApi.raw(builtUrl), 10, 30);
     datas.push(...data[arrayPath]);
   }

@@ -93,7 +93,7 @@ const baselogged = async (req: Request, useQueryToken = false) => {
       return null;
     }
     return user;
-  } catch (e) {
+  } catch {
     return null;
   }
   return null;
@@ -185,7 +185,7 @@ export const withGlobalPreferences = async (
     }
     (req as GlobalPreferencesRequest).globalPreferences = pref;
     next();
-  } catch (e) {
+  } catch {
     res.status(500).end();
   }
 };

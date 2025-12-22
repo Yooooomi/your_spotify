@@ -19,6 +19,7 @@ import { TrackSelectionPopup } from "../../../components/History/Track/TrackSele
 import Track from "./Track";
 import TrackHeader from "./Track/TrackHeader";
 import s from "./index.module.css";
+import { PlaylistContext } from "../../../services/redux/modules/playlist/types";
 
 export default function Songs() {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -28,7 +29,7 @@ export default function Songs() {
     api.getBestSongs,
   );
 
-  const context = {
+  const context: PlaylistContext = {
     type: "top",
     nb: DEFAULT_PLAYLIST_NB,
     interval: {

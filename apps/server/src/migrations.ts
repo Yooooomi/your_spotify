@@ -1,4 +1,3 @@
-import path from "path";
 import { load, MigrationSet, Callback as CallbackError } from "migrate";
 import { connect } from "./database";
 import { MigrationModel } from "./database/Models";

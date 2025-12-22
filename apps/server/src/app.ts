@@ -47,7 +47,7 @@ morgan.token<IncomingMessage & { originalUrl?: string }>("url", req => {
     }
     return url.pathname +
       (url.searchParams.size > 0 ? "?" + url.searchParams.toString() : "")
-  } catch (error) {
+  } catch {
     return req.originalUrl ?? req.url;
   }
 });

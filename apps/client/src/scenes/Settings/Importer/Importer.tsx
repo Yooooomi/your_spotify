@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CircularProgress,
   FormControl,
@@ -36,9 +36,8 @@ export default function Importer() {
     ImporterStateTypes.privacy,
   );
 
-  async function fetch(force = false) {
-    dispatch(getImports(force)).catch(console.error);
-  };
+  // eslint-disable-next-line react-no-manual-memo/no-hook-memo
+  const fetch = useCallback((force = false) => dispatch(getImports(force)).catch(console.error), [dispatch])
 
   useEffect(() => {
     fetch().catch(console.error);

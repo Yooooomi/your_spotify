@@ -79,17 +79,17 @@ export default function BestArtistsBar({ className }: BestArtistsBarProps) {
   useResizeDebounce(compute, ref);
 
   const data = result?.slice(0, displayNb).map((r, k) => ({
-        x: k,
-        y: r.count,
-      })) ?? [];
+    x: k,
+    y: r.count,
+  })) ?? [];
 
-  const tooltipValue = payload => {
-      const dataValue = result?.[payload.x];
-      if (!dataValue) {
-        return "";
-      }
-      return `You listened to ${dataValue.artist.name} ${dataValue.count} times`;
-    };
+  const tooltipValue = (payload: any) => {
+    const dataValue = result?.[payload.x];
+    if (!dataValue) {
+      return "";
+    }
+    return `You listened to ${dataValue.artist.name} ${dataValue.count} times`;
+  };
 
   if (!result) {
     return (

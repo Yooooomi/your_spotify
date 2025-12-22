@@ -45,7 +45,7 @@ export default function ListeningRepartition({
         };
       });
 
-  const tooltipValue = (payload, value) => {
+  const tooltipValue = (payload: any, value: any) => {
       if (measurement === "number") {
         return (
           <div>

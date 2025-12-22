@@ -25,6 +25,7 @@ COPY apps/server/rsbuild.config.ts apps/server/rsbuild.config.ts
 
 WORKDIR /app/apps/server
 
+RUN pnpm typecheck
 RUN pnpm build
 
 ARG NODE_ENV

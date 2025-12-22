@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop */
+ 
 import { readFile, unlink } from "fs/promises";
 import { z } from "zod";
 import {
@@ -244,7 +244,7 @@ export class PrivacyImporter
     return true;
   };
 
-  // eslint-disable-next-line class-methods-use-this
+   
   cleanup = async (filePaths: string[]) => {
     await Promise.all(filePaths.map(f => unlink(f)));
   };

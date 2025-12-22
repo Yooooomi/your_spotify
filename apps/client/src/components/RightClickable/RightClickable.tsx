@@ -49,14 +49,14 @@ export function RightClickable({
 }: RightClickableProps) {
   const { select } = useContext(SelectableContext);
 
-  const handleRightClick = event => {
-      if (Pointer.type !== "mouse") {
-        return;
-      }
-      event.preventDefault();
-      onRightClick(eventToVirtualElement(event as any), event as any);
-      select(index, "ifnotselected");
-    };
+  const handleRightClick = (event: MouseEvent) => {
+    if (Pointer.type !== "mouse") {
+      return;
+    }
+    event.preventDefault();
+    onRightClick(eventToVirtualElement(event as any), event as any);
+    select(index, "ifnotselected");
+  };
 
   return <div onContextMenu={handleRightClick}>{children}</div>;
 }

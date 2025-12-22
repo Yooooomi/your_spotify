@@ -6,12 +6,33 @@ settings:
 
 catalogs:
   default:
+    '@eslint/css':
+      specifier: 0.14.1
+      version: 0.14.1
+    '@eslint/js':
+      specifier: 9.39.2
+      version: 9.39.2
+    '@eslint/json':
+      specifier: 0.14.0
+      version: 0.14.0
     '@rsbuild/core':
       specifier: 1.6.15
       version: 1.6.15
+    eslint:
+      specifier: 9.39.2
+      version: 9.39.2
+    eslint-plugin-unused-imports:
+      specifier: 4.3.0
+      version: 4.3.0
+    globals:
+      specifier: 16.5.0
+      version: 16.5.0
     typescript:
       specifier: 5.9.3
       version: 5.9.3
+    typescript-eslint:
+      specifier: 8.50.1
+      version: 8.50.1
 
 importers:
 
@@ -81,13 +102,13 @@ importers:
         specifier: ^7.28.5
         version: 7.28.5(@babel/core@7.28.5)
       '@eslint/css':
-        specifier: ^0.14.1
+        specifier: 'catalog:'
         version: 0.14.1
       '@eslint/js':
-        specifier: ^9.39.2
+        specifier: 'catalog:'
         version: 9.39.2
       '@eslint/json':
-        specifier: ^0.14.0
+        specifier: 'catalog:'
         version: 0.14.0
       '@rsbuild/core':
         specifier: 'catalog:'
@@ -101,6 +122,9 @@ importers:
       '@types/node':
         specifier: ^25.0.3
         version: 25.0.3
+      '@types/react':
+        specifier: ^19.2.7
+        version: 19.2.7
       '@types/react-copy-to-clipboard':
         specifier: ^5.0.7
         version: 5.0.7
@@ -114,7 +138,7 @@ importers:
         specifier: workspace:*
         version: link:../dev
       eslint:
-        specifier: ^9.39.2
+        specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)
       eslint-plugin-react:
         specifier: ^7.37.5
@@ -126,13 +150,16 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint-plugin-unused-imports:
-        specifier: ^4.3.0
+        specifier: 'catalog:'
         version: 4.3.0(@typescript-eslint/eslint-plugin@8.50.1(@typescript-eslint/parser@8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))
       globals:
-        specifier: ^16.5.0
+        specifier: 'catalog:'
         version: 16.5.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
       typescript-eslint:
-        specifier: ^8.50.1
+        specifier: 'catalog:'
         version: 8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
 
   apps/dev:
@@ -216,6 +243,15 @@ importers:
         specifier: ^4.2.1
         version: 4.2.1
     devDependencies:
+      '@eslint/css':
+        specifier: 'catalog:'
+        version: 0.14.1
+      '@eslint/js':
+        specifier: 'catalog:'
+        version: 9.39.2
+      '@eslint/json':
+        specifier: 'catalog:'
+        version: 0.14.0
       '@rsbuild/core':
         specifier: 'catalog:'
         version: 1.6.15
@@ -243,12 +279,24 @@ importers:
       '@your_spotify/dev':
         specifier: workspace:*
         version: link:../dev
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.2(jiti@2.6.1)
+      eslint-plugin-unused-imports:
+        specifier: 'catalog:'
+        version: 4.3.0(@typescript-eslint/eslint-plugin@8.50.1(@typescript-eslint/parser@8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))
+      globals:
+        specifier: 'catalog:'
+        version: 16.5.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@25.0.3)(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+      typescript-eslint:
+        specifier: 'catalog:'
+        version: 8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
 
 packages:
 

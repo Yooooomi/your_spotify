@@ -43,15 +43,15 @@ export default function ArtistListeningRepartition({
   );
 
   const resultsWithCount = results?.map(res => ({
-        _id: res._id,
-        artists: res.artists.reduce<Record<string, number>>(
-          (acc, curr, idx) => {
-            acc[curr.id] = res.counts[idx]!;
-            return acc;
-          },
-          {},
-        ),
-      }));
+    _id: res._id,
+    artists: res.artists.reduce<Record<string, number>>(
+      (acc, curr, idx) => {
+        acc[curr.id] = res.counts[idx]!;
+        return acc;
+      },
+      {},
+    ),
+  }));
 
   const allArtists = (() => {
     const all: Record<string, Artist> = {};
@@ -92,11 +92,11 @@ export default function ArtistListeningRepartition({
     );
   })();
 
-  const tooltipValue = (_, value, root) => (
-      <span style={{ color: root.color }}>
-        {allArtists[root.dataKey.toString()]?.name}: {Math.floor(value * 1000) / 10}%
-      </span>
-    );
+  const tooltipValue = (_: any, value: any, root: any) => (
+    <span style={{ color: root.color }}>
+      {allArtists[root.dataKey.toString()]?.name}: {Math.floor(value * 1000) / 10}%
+    </span>
+  );
 
   const tooltipSorter = (a: any) => -a.payload[a.dataKey];
 

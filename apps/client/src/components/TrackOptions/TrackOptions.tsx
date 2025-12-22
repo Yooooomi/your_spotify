@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { MouseEvent, useRef } from "react";
 import { IconButton, Popover } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 import { Track } from "../../services/types";
@@ -18,10 +18,10 @@ export default function TrackOptions({ track }: TrackOptionsProps) {
   const [isOpen, open, close] = useBooleanState();
   const isGuest = useIsGuest();
 
-  const handleClick = event => {
-      event.stopPropagation();
-      open();
-    };
+  const handleClick = (event: MouseEvent) => {
+    event.stopPropagation();
+    open();
+  };
 
   if (isGuest) {
     return <div className={s.guest} />;

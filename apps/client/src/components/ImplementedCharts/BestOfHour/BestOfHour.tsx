@@ -75,10 +75,10 @@ export default function BestOfHour({ className }: BestOfHourProps) {
     );
   })();
 
-  const tooltipTitle = ({ x }) =>
+  const tooltipTitle = ({ x }: any) =>
       `20 most listened ${element} at ${DateFormatter.fromNumberToHour(x)}`;
 
-  const tooltipValue = (payload, value, root) => {
+  const tooltipValue = (payload: any, value: any, root: any) => {
       const foundIndex = result?.findIndex(r => r.hour === payload.x);
       if (!result || foundIndex === undefined || foundIndex === -1) {
         return null;

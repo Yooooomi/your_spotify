@@ -1,5 +1,6 @@
 import {
   createContext,
+  MouseEvent,
   ReactNode,
   useContext,
 } from "react";
@@ -42,36 +43,36 @@ export const SelectableContextProvider = ({
   setSelected,
 }: SelectableContextProviderProps) => {
   const handleSelect = (index: number, erase: EraseType) => {
-      if (erase === "yes") {
+    if (erase === "yes") {
+      setSelected([index]);
+    } else if (erase === "no") {
+      setSelected(uniq([...selected, index]));
+    } else if (erase === "ifnotselected") {
+      const isSelected = selected.indexOf(index) !== -1;
+      if (!isSelected) {
         setSelected([index]);
-      } else if (erase === "no") {
-        setSelected(uniq([...selected, index]));
-      } else if (erase === "ifnotselected") {
-        const isSelected = selected.indexOf(index) !== -1;
-        if (!isSelected) {
-          setSelected([index]);
-        }
       }
-    };
+    }
+  };
 
   const handleSelectTo = (index: number) => {
-      const lastSelected = selected.at(-1);
-      if (lastSelected === undefined) {
-        setSelected([index]);
-        return;
-      }
-      const order = Math.sign(index - lastSelected);
-      console.log(order);
-      const addedIndexes: number[] = [];
-      for (
-        let i = lastSelected;
-        order < 0 ? i >= index : i <= index;
-        i += order
-      ) {
-        addedIndexes.push(i);
-      }
-      setSelected(uniq([...selected, ...addedIndexes]));
-    };
+    const lastSelected = selected.at(-1);
+    if (lastSelected === undefined) {
+      setSelected([index]);
+      return;
+    }
+    const order = Math.sign(index - lastSelected);
+    console.log(order);
+    const addedIndexes: number[] = [];
+    for (
+      let i = lastSelected;
+      order < 0 ? i >= index : i <= index;
+      i += order
+    ) {
+      addedIndexes.push(i);
+    }
+    setSelected(uniq([...selected, ...addedIndexes]));
+  };
 
   return (
     <SelectableContext.Provider
@@ -89,24 +90,24 @@ interface SelectableProps {
 export const Selectable = ({ children, index }: SelectableProps) => {
   const { selected, select, selectTo } = useContext(SelectableContext);
 
-  const handleClick = event => {
-      if (Pointer.type !== "mouse") {
-        return;
-      }
+  const handleClick = (event: MouseEvent) => {
+    if (Pointer.type !== "mouse") {
+      return;
+    }
 
-      event.preventDefault();
-      event.stopPropagation();
-      if (event.shiftKey) {
-        selectTo(index);
-      } else {
-        select(
-          index,
-          hasAdditiveSelectKeyPressed(event.ctrlKey, event.metaKey)
-            ? "no"
-            : "yes",
-        );
-      }
-    };
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.shiftKey) {
+      selectTo(index);
+    } else {
+      select(
+        index,
+        hasAdditiveSelectKeyPressed(event.ctrlKey, event.metaKey)
+          ? "no"
+          : "yes",
+      );
+    }
+  };
 
   return (
     <div

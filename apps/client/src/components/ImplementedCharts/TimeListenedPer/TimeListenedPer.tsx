@@ -37,7 +37,7 @@ export default function TimeListenedPer({ className }: TimeListenedPerProps) {
 
   const formatX = useFormatXAxis(data);
   const formatY = (value: number) => `${msToMinutes(value)}m`;
-  const tooltipValue = (_, value) => `${msToMinutes(value)} minutes listened`;
+  const tooltipValue = (_: any, value: any) => `${msToMinutes(value)} minutes listened`;
 
   if (!result) {
     return (

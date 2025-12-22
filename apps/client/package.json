@@ -9,6 +9,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src/ --ext .tsx,.ts",
+    "lint:fix": "eslint --fix src/ --ext .tsx,.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -34,24 +35,26 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.28.5",
-    "@eslint/css": "^0.14.1",
-    "@eslint/js": "^9.39.2",
-    "@eslint/json": "^0.14.0",
+    "@eslint/css": "catalog:",
+    "@eslint/js": "catalog:",
+    "@eslint/json": "catalog:",
     "@rsbuild/core": "catalog:",
     "@rsbuild/plugin-babel": "^1.0.6",
     "@rsbuild/plugin-react": "^1.4.2",
     "@types/node": "^25.0.3",
+    "@types/react": "^19.2.7",
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-date-range": "^1.4.10",
     "@types/react-dom": "^19.2.3",
     "@your_spotify/dev": "workspace:*",
-    "eslint": "^9.39.2",
+    "eslint": "catalog:",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-no-manual-memo": "^1.0.4",
-    "eslint-plugin-unused-imports": "^4.3.0",
-    "globals": "^16.5.0",
-    "typescript-eslint": "^8.50.1"
+    "eslint-plugin-unused-imports": "catalog:",
+    "globals": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:"
   },
   "browserslist": {
     "production": [
