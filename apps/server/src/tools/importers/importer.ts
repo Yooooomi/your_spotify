@@ -52,7 +52,7 @@ export async function cleanupImport(existingStateId: string) {
   const instance = instanceClass(user);
   try {
     await instance.cleanup(importState.metadata);
-  } catch (e) {
+  } catch {
     // nothing
   }
 }

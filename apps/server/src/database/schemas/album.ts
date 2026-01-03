@@ -50,7 +50,7 @@ export const AlbumSchema = new Schema<Album>(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } },
 );
 
-AlbumSchema.virtual("artist", {
+AlbumSchema.virtual("full_artists", {
   ref: "Artist",
   localField: "artists",
   foreignField: "id",

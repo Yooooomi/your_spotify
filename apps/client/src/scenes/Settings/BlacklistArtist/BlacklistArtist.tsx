@@ -1,5 +1,5 @@
 import { CircularProgress, IconButton } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import UnblacklistIcon from "@mui/icons-material/CloseRounded";
 import ResourceSearch from "../../../components/SiderSearch";
@@ -22,13 +22,13 @@ export default function BlacklistArtist() {
   const blacklisted = useSelector(selectBlacklistedArtists);
   const { artists, loaded } = useLoadArtists(blacklisted);
 
-  const askBlacklist = useCallback((artist: Artist) => {
+  const askBlacklist = (artist: Artist) => {
     setAskedBlacklist(artist);
-  }, []);
+  };
 
-  const askUnblacklist = useCallback((artist: Artist) => {
+  const askUnblacklist = (artist: Artist) => {
     setAskedUnblacklist(artist);
-  }, []);
+  };
 
   if (!loaded) {
     return <CircularProgress />;
@@ -38,18 +38,19 @@ export default function BlacklistArtist() {
 
   return (
     <TitleCard title="Blacklisted artists">
-      <Text element="span" className={s.marginbottom}>
+      <Text element="span" className={s.marginbottom} size='normal'>
         Blacklist artists so they never appear in the statistics. Blacklisting
         an artist will remove already existing records and never record them
         again.
       </Text>
       <div className={s.root}>
         <ResourceSearch
+          showShortcut={false}
           onArtistClick={askBlacklist}
           inputClassname={s.search}
         />
         {blacklisted.length === 0 && (
-          <Text className={s.none}>You have not blacklisted any artist</Text>
+          <Text className={s.none} size='normal'>You have not blacklisted any artist</Text>
         )}
         {compact(blacklisted.map(b => artists[b])).map(artist => (
           <div key={artist.id} className={s.artist}>
@@ -61,7 +62,7 @@ export default function BlacklistArtist() {
               height={48}
               alt="artist"
             />
-            <InlineArtist artist={artist} />
+            <InlineArtist artist={artist} size='normal' />
             <IconButton
               className={s.unblacklist}
               onClick={() => askUnblacklist(artist)}>

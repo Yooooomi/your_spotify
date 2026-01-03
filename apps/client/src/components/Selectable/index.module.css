@@ -1,0 +1,13 @@
+.root {
+  user-select: none;
+  border-radius: var(--radius);
+}
+
+.selected {
+  background-color: var(--selected);
+}
+
+.root:hover:not(.selected) {
+  background-color: var(--hover);
+}
+

@@ -35,7 +35,7 @@ export default function Bar({
           tick={customXTick}
           style={{ fontWeight: "bold" }}
         />
-        <YAxis dataKey="y" tickFormatter={yFormat} width={40} />
+        <YAxis dataKey="y" tickFormatter={yFormat} width="auto" />
         <RBar dataKey="y" fill="var(--primary)" />
         <Tooltip
           wrapperStyle={{ zIndex: 10 }}

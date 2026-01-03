@@ -100,12 +100,12 @@ export class Database {
 
     const duplicateBatch = 50_000;
 
-    // eslint-disable-next-line no-restricted-syntax
+     
     for (const user of users) {
-      // eslint-disable-next-line no-await-in-loop
+       
       const infoCountForUser = await getUserInfoCount(user._id.toString());
       for (let i = 0; i < infoCountForUser; i += duplicateBatch) {
-        // eslint-disable-next-line no-await-in-loop
+         
         const duplicates = await getPossibleDuplicates(
           user._id.toString(),
           30,

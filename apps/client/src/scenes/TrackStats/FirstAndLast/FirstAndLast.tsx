@@ -17,8 +17,8 @@ export default function FirstAndLast({
       {firstDate.getTime() !== lastDate.getTime() && (
         <div className={s.item}>
           <div className={s.stat}>
-            <Text>
-              <Text element="strong">Last listened</Text> on{" "}
+            <Text size="normal">
+              <Text element="strong" size='normal'>Last listened</Text> on{" "}
               {DateFormatter.listenedAt(lastDate)}
             </Text>
           </div>
@@ -26,8 +26,8 @@ export default function FirstAndLast({
       )}
       <div className={s.item}>
         <div className={s.stat}>
-          <Text>
-            <Text element="strong">First listened</Text> on{" "}
+          <Text size="normal">
+            <Text element="strong" size='normal'>First listened</Text> on{" "}
             {DateFormatter.listenedAt(firstDate)}
           </Text>
         </div>

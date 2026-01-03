@@ -8,7 +8,7 @@ import {
   Tabs,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   clearPlaylistContext,
@@ -43,42 +43,40 @@ export default function PlaylistDialog() {
   const [selectedPlaylist, setSelectedPlaylist] = useState("");
   const [requested, setRequested] = useState(false);
 
-  const changeNumber = useCallback(
-    (newNb: number) => {
-      if (!context || (context.type !== "top" && context.type !== "affinity")) {
-        return;
-      }
-      dispatch(
-        setPlaylistContext({
-          ...context,
-          nb: newNb,
-        }),
-      );
-    },
-    [context, dispatch],
-  );
+  const changeNumber = (newNb: number) => {
+    if (!context || (context.type !== "top" && context.type !== "affinity" && context.type !== "top-artist")) {
+      return;
+    }
+    dispatch(
+      setPlaylistContext({
+        ...context,
+        nb: newNb,
+      }),
+    );
+  };
 
-  const reset = useCallback(() => {
+  const reset = () => {
     dispatch(clearPlaylistContext());
     setPlaylistName("");
     setSelectedPlaylist("");
     setTab(0);
     setLoading(false);
-  }, [dispatch]);
+  };
 
   const open = !!context;
 
   useEffect(() => {
     if (open && !playlists && !requested) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRequested(true);
-      dispatch(fetchPlaylists());
+      dispatch(fetchPlaylists()).catch(console.error);
     }
   }, [dispatch, open, playlists, requested]);
 
   const canAdd =
     (tab === 0 && !!playlistName) || (tab === 1 && !!selectedPlaylist);
 
-  const add = useCallback(async () => {
+  const add = async () => {
     if (!context || !canAdd) {
       return;
     }
@@ -91,11 +89,11 @@ export default function PlaylistDialog() {
       }),
     );
     reset();
-  }, [canAdd, context, dispatch, playlistName, reset, selectedPlaylist, tab]);
+  };
 
   return (
     <Dialog onClose={reset} open={open} title="Add to a playlist">
-      <Text className={s.text} element="div">
+      <Text className={s.text} element="div" size='normal'>
         Either select a playlist to add the songs to, or create a new one.
       </Text>
       <Box borderBottom={1} borderColor="divider" className={s.tabs}>
@@ -135,7 +133,7 @@ export default function PlaylistDialog() {
           </Select>
         </FormControl>
       </TabPanel>
-      {(context?.type === "top" || context?.type === "affinity") && (
+      {(context?.type === "top" || context?.type === "affinity" || context?.type === "top-artist") && (
         <CountChooser value={context.nb} setValue={changeNumber} />
       )}
       <div className={s.button}>

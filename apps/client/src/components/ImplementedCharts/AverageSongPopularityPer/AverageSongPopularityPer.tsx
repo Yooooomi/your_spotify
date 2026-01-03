@@ -15,7 +15,7 @@ import Tooltip from "../../Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 
-interface AverageSongPopularityPerProps extends ImplementedChartProps {}
+interface AverageSongPopularityPerProps extends ImplementedChartProps { }
 
 export default function AverageSongPopularityPer({
   className,

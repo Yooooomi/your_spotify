@@ -4,5 +4,5 @@ set -e
 source /app/apps/server/scripts/run/deprecated.sh
 
 cd apps/server
-yarn migrate
-exec yarn start
+node /app/apps/server/build/index.js --migrate
+exec node /app/apps/server/build/index.js

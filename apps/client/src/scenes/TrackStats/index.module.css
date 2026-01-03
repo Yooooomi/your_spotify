@@ -29,10 +29,6 @@
   }
 }
 
-.songslistened {
-  font-size: 1.4em;
-}
-
 .bestperiod {
   display: flex;
   flex-direction: column;

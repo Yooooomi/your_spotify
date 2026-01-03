@@ -28,7 +28,7 @@ export const addToPlaylist = myAsyncThunk<void, AddToPlaylistPayload>(
         "name" in payload ? payload.name : undefined,
         payload.context,
       );
-      tapi.dispatch(fetchPlaylists());
+      tapi.dispatch(fetchPlaylists()).catch(console.error);
     } catch (e) {
       console.error(e);
     }

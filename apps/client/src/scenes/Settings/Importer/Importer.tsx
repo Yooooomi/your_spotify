@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CircularProgress,
   FormControl,
@@ -36,25 +36,15 @@ export default function Importer() {
     ImporterStateTypes.privacy,
   );
 
-  const fetch = useCallback(
-    async (force = false) => {
-      dispatch(getImports(force)).catch(console.error);
-    },
-    [dispatch],
-  );
+  // eslint-disable-next-line react-no-manual-memo/no-hook-memo
+  const fetch = useCallback((force = false) => dispatch(getImports(force)).catch(console.error), [dispatch])
 
   useEffect(() => {
     fetch().catch(console.error);
   }, [fetch]);
 
-  const running = useMemo(
-    () => imports?.find(st => st.status === "progress"),
-    [imports],
-  );
-  const Component = useMemo(
-    () => (importType ? ImportTypeToComponent[importType].component : null),
-    [importType],
-  );
+  const running = imports?.find(st => st.status === "progress");
+  const Component = importType ? ImportTypeToComponent[importType].component : null;
 
   const isAtLeastOneImportRunning = Boolean(running);
 
@@ -85,7 +75,7 @@ export default function Importer() {
       <div>
         {running && (
           <div>
-            <Text className={s.progress}>
+            <Text className={s.progress} size='normal'>
               Importing {running.current} of {running.total}
             </Text>
             <LinearProgress

@@ -15,8 +15,8 @@ services:
       - "8080:8080"
     environment:
       LOG_LEVEL: debug
-      API_ENDPOINT: http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard
-      CLIENT_ENDPOINT: http://localhost:3000
+      API_ENDPOINT: http://127.0.0.1:8080 # This MUST be included as a valid URL in the spotify dashboard
+      CLIENT_ENDPOINT: http://127.0.0.1:3000
       # OFFLINE_DEV_ID: true
 
   mongo:
@@ -40,4 +40,4 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: production
-      API_ENDPOINT: http://localhost:8080
+      API_ENDPOINT: http://127.0.0.1:8080

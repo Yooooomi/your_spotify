@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import {
   BarChart,
   XAxis,
@@ -27,16 +27,12 @@ export default function Bar({
   customXTick,
   customTooltip,
 }: StackedBarProps) {
-  const allKeys = useMemo(
-    () =>
-      data.reduce<Set<string>>((acc, curr) => {
+  const allKeys = data.reduce<Set<string>>((acc, curr) => {
         Object.keys(curr)
           .filter(key => key !== "x")
           .forEach(key => acc.add(key));
         return acc;
-      }, new Set()),
-    [data],
-  );
+      }, new Set());
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -47,7 +43,7 @@ export default function Bar({
           tick={customXTick}
           style={{ fontWeight: "bold" }}
         />
-        <YAxis tickFormatter={yFormat} width={40} />
+        <YAxis tickFormatter={yFormat} width="auto" />
         {Array.from(allKeys).map((k, index) => (
           <RBar key={k} stackId="only" dataKey={k} fill={getColor(index)} />
         ))}

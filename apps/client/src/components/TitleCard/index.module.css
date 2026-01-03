@@ -34,3 +34,11 @@
   position: relative;
   flex-grow: 1;
 }
+
+.left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}

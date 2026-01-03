@@ -1,6 +1,6 @@
 import { IconButton } from "@mui/material";
 import { Menu } from "@mui/icons-material";
-import React, { useCallback, useContext, ReactNode } from "react";
+import React, { useContext, ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { IntervalDetail } from "../../services/intervals";
 import { setDataInterval } from "../../services/redux/modules/user/reducer";
@@ -35,12 +35,9 @@ export default function Header({
   const layoutContext = useContext(LayoutContext);
   const { siderAllowed, siderIsDrawer } = useSider();
 
-  const changeInterval = useCallback(
-    (newInterval: IntervalDetail) => {
+  const changeInterval = (newInterval: IntervalDetail) => {
       dispatch(setDataInterval(intervalDetailToRedux(newInterval)));
-    },
-    [dispatch],
-  );
+    };
 
   return (
     <div className={s.root}>
@@ -54,10 +51,10 @@ export default function Header({
         )}
         {left}
         <div className={s.texts}>
-          <Text element="h1">
+          <Text element="h1" size="pagetitle">
             {siderIsDrawer && tinyTitle ? tinyTitle : title}
           </Text>
-          {!siderIsDrawer && <Text>{subtitle}</Text>}
+          {!siderIsDrawer && <Text size="normal">{subtitle}</Text>}
         </div>
       </div>
       {right}

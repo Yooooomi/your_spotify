@@ -1,13 +1,15 @@
-FROM node:20-alpine AS builder
+FROM node:25-alpine AS builder
 
 WORKDIR /app
 
 ENV MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
 
 RUN apk add python3 gcc g++ make cmake
+RUN npm install -g pnpm
 
-COPY yarn.lock yarn.lock
+COPY pnpm-lock.yaml pnpm-lock.yaml
 COPY package.json package.json
+COPY pnpm-workspace.yaml pnpm-workspace.yaml
 
 COPY apps/dev/package.json apps/dev/package.json
 COPY apps/dev/tsconfig.json apps/dev/tsconfig.json
@@ -15,33 +17,31 @@ COPY apps/dev/tsconfig.json apps/dev/tsconfig.json
 COPY apps/server/package.json apps/server/package.json
 COPY apps/server/tsconfig.json apps/server/tsconfig.json
 
-RUN yarn --frozen-lockfile
+RUN CI=true pnpm install --frozen-lockfile
 
 COPY apps/server/src apps/server/src
 COPY apps/server/scripts apps/server/scripts
+COPY apps/server/rsbuild.config.ts apps/server/rsbuild.config.ts
+
 WORKDIR /app/apps/server
-RUN yarn build
+
+RUN pnpm typecheck
+RUN pnpm build
 
 ARG NODE_ENV
-ENV NODE_ENV ${NODE_ENV:-production}
+ENV NODE_ENV=${NODE_ENV:-production}
 
 RUN rm -r node_modules
-RUN yarn --production --frozen-lockfile
+RUN CI=true pnpm install --production --frozen-lockfile
 
-FROM node:20-alpine
+FROM node:25-alpine
 
 ARG NODE_ENV
-ENV NODE_ENV ${NODE_ENV:-production}
+ENV NODE_ENV=${NODE_ENV:-production}
 
 WORKDIR /app
 
-RUN apk add python3 gcc g++ make cmake
-
-COPY --from=builder /app/node_modules node_modules
-COPY --from=builder /app/package.json package.json
-COPY --from=builder /app/apps/server/package.json apps/server/package.json
 COPY --from=builder /app/apps/server/scripts/ apps/server/scripts/
-COPY --from=builder /app/apps/server/package.json apps/server/package.json
-COPY --from=builder /app/apps/server/lib/ apps/server/lib/
+COPY --from=builder /app/apps/server/build/ apps/server/build/
 
 ENTRYPOINT [ "sh", "/app/apps/server/scripts/run/run.sh" ]

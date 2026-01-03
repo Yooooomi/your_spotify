@@ -1,4 +1,3 @@
-import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import clsx from "clsx";
 import { Skeleton } from "@mui/material";
@@ -16,7 +15,7 @@ import {
 import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import Text from "../../Text";
 
-interface TimeListenedProps extends ImplementedCardProps {}
+interface TimeListenedProps extends ImplementedCardProps { }
 
 export default function TimeListened({ className }: TimeListenedProps) {
   const { interval, unit } = useSelector(selectRawIntervalDetail);
@@ -26,10 +25,7 @@ export default function TimeListened({ className }: TimeListenedProps) {
     interval.end,
     Timesplit.all,
   );
-  const lastPeriod = useMemo(
-    () => getLastPeriod(interval.start, interval.end),
-    [interval],
-  );
+  const lastPeriod = getLastPeriod(interval.start, interval.end);
   const resultOld = useAPI(
     api.timePer,
     lastPeriod.start,
@@ -41,10 +37,10 @@ export default function TimeListened({ className }: TimeListenedProps) {
     return (
       <TitleCard title="Time listened" className={className}>
         <div className={s.root}>
-          <Text className={s.number}>
+          <Text size='normal'>
             <Skeleton width={50} />
           </Text>
-          <Text>
+          <Text size="normal">
             <Skeleton width={200} />
           </Text>
         </div>
@@ -60,11 +56,12 @@ export default function TimeListened({ className }: TimeListenedProps) {
   return (
     <TitleCard title="Time listened" className={className} fade>
       <div className={s.root}>
-        <Text element="span" className={s.number}>
+        <Text element="span" size='huge'>
           {msToMinutes(count)} minutes
         </Text>
-        <Text>
+        <Text size="normal">
           <Text
+            size='normal'
             element="strong"
             className={clsx({
               [s.more]: percentMore >= 0,
@@ -72,7 +69,7 @@ export default function TimeListened({ className }: TimeListenedProps) {
             })}>
             {Math.abs(percentMore)}%
           </Text>
-          <Text element="span">
+          <Text element="span" size='normal'>
             &nbsp;
             {percentMore < 0 ? "less" : "more"} than last {unit}
           </Text>

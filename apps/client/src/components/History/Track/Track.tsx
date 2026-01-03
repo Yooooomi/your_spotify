@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 import clsx from "clsx";
 import { msToDuration } from "../../../services/stats";
 import { Album, Artist, Track as TrackType } from "../../../services/types";
@@ -6,7 +6,7 @@ import InlineArtist from "../../InlineArtist";
 import Text from "../../Text";
 import TrackOptions from "../../TrackOptions";
 import InlineTrack from "../../InlineTrack";
-import { ColumnDescription, GridRowWrapper } from "../../Grid";
+import { GridRowWrapper } from "../../Grid";
 import PlayButton from "../../PlayButton";
 import { useMobile } from "../../../services/hooks/hooks";
 import LongClickableTrack from "../../LongClickableTrack";
@@ -30,8 +30,7 @@ export default function Track({
 }: TrackProps) {
   const [isMobile, isTablet] = useMobile();
 
-  const columns = useMemo<ColumnDescription[]>(
-    () => [
+  const columns = [
       {
         ...trackGrid.cover,
         node: <PlayButton id={track.id} covers={album.images} />,
@@ -40,11 +39,11 @@ export default function Track({
         ...trackGrid.title,
         node: (
           <div className={clsx("otext", s.names)}>
-            <InlineTrack track={track} element="div" />
+            <InlineTrack track={track} size="normal" element="div" />
             <div className="subtitle">
               {artists.map((art, k, a) => (
                 <Fragment key={art.id}>
-                  <InlineArtist artist={art} noStyle />
+                  <InlineArtist size="normal" artist={art} noStyle />
                   {k !== a.length - 1 && ", "}
                 </Fragment>
               ))}
@@ -54,27 +53,27 @@ export default function Track({
       },
       {
         ...trackGrid.album,
-        node: !isTablet && <InlineAlbum className="otext" album={album} />,
+        node: !isTablet && (
+          <InlineAlbum className="otext" size="normal" album={album} />
+        ),
       },
       {
         ...trackGrid.duration,
         node: !isMobile && (
-          <Text>{msToDuration(track.duration_ms)}</Text>
+          <Text size="normal">{msToDuration(track.duration_ms)}</Text>
         ),
       },
       {
         ...trackGrid.listened,
         node: listenedAt && !isMobile && (
-          <Text>{DateFormatter.listenedAt(listenedAt)}</Text>
+          <Text size="normal">{DateFormatter.listenedAt(listenedAt)}</Text>
         ),
       },
       {
         ...trackGrid.option,
         node: !isMobile && <TrackOptions track={track} />,
       },
-    ],
-    [album, artists, isMobile, isTablet, listenedAt, track],
-  );
+    ];
 
   return (
     <LongClickableTrack track={track}>

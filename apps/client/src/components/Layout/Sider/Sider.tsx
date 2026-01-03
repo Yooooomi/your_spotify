@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { useContext } from "react";
 import clsx from "clsx";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -11,7 +11,7 @@ import { selectUser } from "../../../services/redux/modules/user/selector";
 import { useAppDispatch } from "../../../services/redux/tools";
 import { LayoutContext } from "../LayoutContext";
 import SiderSearch from "../../SiderSearch";
-import { Album, Artist, TrackWithFullAlbum } from "../../../services/types";
+import { Album, Artist, Track } from "../../../services/types";
 import {
   selectUpdateAvailable,
   selectVersion,
@@ -35,38 +35,28 @@ export default function Sider({ className, isDrawer }: SiderProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const goToArtist = useCallback(
-    (artist: Artist) => {
-      navigate(`/artist/${artist.id}`);
-      layoutContext.closeDrawer();
-    },
-    [layoutContext, navigate],
-  );
+  function goToArtist(artist: Artist) {
+    navigate(`/artist/${artist.id}`);
+    layoutContext.closeDrawer();
+  }
 
-  const goToTrack = useCallback(
-    (track: TrackWithFullAlbum) => {
-      navigate(`/song/${track.id}`);
-      layoutContext.closeDrawer();
-    },
-    [layoutContext, navigate],
-  );
+  function goToTrack(track: Track) {
+    navigate(`/song/${track.id}`);
+    layoutContext.closeDrawer();
+  }
 
-  const goToAlbum = useCallback(
-    (album: Album) => {
-      navigate(`/album/${album.id}`);
-      layoutContext.closeDrawer();
-    },
-    [layoutContext, navigate],
-  );
+  function goToAlbum(album: Album) {
+    navigate(`/album/${album.id}`);
+    layoutContext.closeDrawer();
+  }
 
-  const copyCurrentPage = useCallback(() => {
+  function copyCurrentPage() {
     if (!user?.publicToken) {
       dispatch(
         alertMessage({
           level: "error",
-          message:
-            "No public token generated, go to the settings page to generate one",
-        }),
+          message: "No public token generated, go to the settings page to generate one",
+        })
       );
       return;
     }
@@ -74,9 +64,9 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       alertMessage({
         level: "info",
         message: "Copied current page to clipboard with public token",
-      }),
+      })
     );
-  }, [dispatch, user?.publicToken]);
+  }
 
   const toCopy = useShareLink();
 
@@ -95,6 +85,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
         <SiderTitle />
       </div>
       <SiderSearch
+        showShortcut
         onTrackClick={goToTrack}
         onAlbumClick={goToAlbum}
         onArtistClick={goToArtist}
@@ -113,7 +104,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       </nav>
       <div className={s.versionwrapper}>
         {version && (
-          <Text noStyle className={s.version}>
+          <Text noStyle className={s.version} size='small'>
             v{version}
           </Text>
         )}
@@ -123,7 +114,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
               href="https://github.com/Yooooomi/your_spotify/releases"
               target="_blank"
               rel="noreferrer">
-              <Text onDark>
+              <Text onDark size='normal'>
                 <UpdateIcon fontSize="small" color="info" />
               </Text>
             </a>

@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import { useCallback } from "react";
 import { useIsGuest } from "../../services/hooks/hooks";
 import { setPlaylistContext } from "../../services/redux/modules/playlist/reducer";
 import { PlaylistContext } from "../../services/redux/modules/playlist/types";
@@ -13,9 +12,9 @@ export default function AddToPlaylist({ context }: AddToPlaylistProps) {
   const dispatch = useAppDispatch();
   const isGuest = useIsGuest();
 
-  const add = useCallback(() => {
+  const add = () => {
     dispatch(setPlaylistContext(context));
-  }, [context, dispatch]);
+  };
 
   if (isGuest) {
     return null;

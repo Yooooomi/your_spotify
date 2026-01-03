@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import {
   Payload,
   NameType,
@@ -13,30 +12,27 @@ export const useRawTooltipLabelFormatter = <
   tooltipLabelFormatter?: (value: string, payload: D) => string,
   forEveryEntry = true,
 ) => {
-  const fn = useCallback(
-    <T extends NameType, V extends ValueType>(
-      label: string,
-      payload?: Payload<V, T>[],
-    ) => {
-      if (!payload) {
-        return null;
+  const fn = <T extends NameType, V extends ValueType>(
+    label: string,
+    payload?: Payload<V, T>[],
+  ) => {
+    if (!payload) {
+      return null;
+    }
+    if (tooltipLabelFormatter) {
+      if (forEveryEntry) {
+        return payload?.map(p => tooltipLabelFormatter(label, p.payload));
       }
-      if (tooltipLabelFormatter) {
-        if (forEveryEntry) {
-          return payload?.map(p => tooltipLabelFormatter(label, p.payload));
-        }
-        const p = payload[0];
-        if (!p) {
-          return <Text element="span">{label}</Text>;
-        }
-        return (
-          <Text element="span">{tooltipLabelFormatter(label, p.payload)}</Text>
-        );
+      const p = payload[0];
+      if (!p) {
+        return <Text element="span" size='normal'>{label}</Text>;
       }
-      return <Text element="span">{label}</Text>;
-    },
-    [forEveryEntry, tooltipLabelFormatter],
-  );
+      return (
+        <Text element="span" size='normal'>{tooltipLabelFormatter(label, p.payload)}</Text>
+      );
+    }
+    return <Text element="span" size='normal'>{label}</Text>;
+  };
   return fn;
 };
 
@@ -45,14 +41,10 @@ export const useRawTooltipValueFormatter = <
 >(
   tooltipValueFormatter?: (value: number, payload: D) => string,
 ) => {
-  const fn = useCallback(
-    (value: any, b: any, pr: any) => {
-      if (tooltipValueFormatter) {
-        return [tooltipValueFormatter(value, pr.payload), null];
-      }
-      return value;
-    },
-    [tooltipValueFormatter],
-  );
-  return fn;
+  return function (value: any, b: any, pr: any) {
+    if (tooltipValueFormatter) {
+      return [tooltipValueFormatter(value, pr.payload), null];
+    }
+    return value;
+  }
 };

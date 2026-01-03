@@ -4,4 +4,4 @@ set -e
 source /app/apps/client/scripts/run/variables.sh
 
 cd /app/apps/client
-exec yarn start
+exec pnpm start

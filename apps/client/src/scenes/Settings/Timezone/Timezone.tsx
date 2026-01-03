@@ -1,5 +1,4 @@
 import { Select, MenuItem } from "@mui/material";
-import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import Text from "../../../components/Text";
 import TitleCard from "../../../components/TitleCard";
@@ -14,19 +13,16 @@ export default function Timezone() {
   const dispatch = useAppDispatch();
   const currentTimezone = useSelector(selectTimezone);
 
-  const handleChangeTimezone = useCallback(
-    (newTimezone: string | null | undefined) => {
+  const handleChangeTimezone = (newTimezone: string | null | undefined) => {
       if (newTimezone === "follow") {
         newTimezone = null;
       }
       dispatch(changeTimezone(newTimezone)).catch(console.error);
-    },
-    [dispatch],
-  );
+    };
 
   return (
     <TitleCard title="Timezone">
-      <Text element="span" className={s.marginbottom}>
+      <Text element="span" className={s.marginbottom} size='normal'>
         Statistics computed by the server need to know your timezone. Change
         this if your history does not match computed stats.
       </Text>

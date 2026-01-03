@@ -1,8 +1,17 @@
 {
   "folders": [
     {
-      "path": "."
-    }
+      "path": "apps/client",
+      "name": "client"
+    },
+    {
+      "path": "apps/server",
+      "name": "server"
+    },
+    {
+      "path": ".",
+      "name": "root"
+    },
   ],
   "settings": {
     "jest.disabledWorkspaceFolders": [
@@ -16,7 +25,7 @@
       {"mode": "auto"}
     ],
     "[typescript]": {
-      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+      "editor.defaultFormatter": "vscode.typescript-language-features"
     },
     "[json]": {
       "editor.defaultFormatter": "vscode.json-language-features"
@@ -25,7 +34,7 @@
       "editor.defaultFormatter": "vscode.html-language-features"
     },
     "[typescriptreact]": {
-      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+      "editor.defaultFormatter": "vscode.typescript-language-features"
     }
   },
   "extensions": {

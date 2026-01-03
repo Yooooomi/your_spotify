@@ -33,9 +33,10 @@ export default function Artists() {
             loader={<Loader />}>
             <GridWrapper>
               <ArtistHeader />
-              {items.map(item => (
+              {items.map((item, rank) => (
                 <Artist
                   key={item.artist.id}
+                  rank={rank + 1}
                   artist={item.artist}
                   count={item.count}
                   totalCount={item.total_count}

@@ -26,7 +26,7 @@ export default function Dialog({
       maxWidth="xl"
       onClose={onClose}
       TransitionComponent={Grow}
-      // eslint-disable-next-line react/jsx-props-no-spreading
+       
       {...other}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>

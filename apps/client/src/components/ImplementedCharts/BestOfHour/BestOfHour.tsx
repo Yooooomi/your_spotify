@@ -1,5 +1,5 @@
 import { MenuItem, Select } from "@mui/material";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { api } from "../../../services/apis/api";
 import { useAPI } from "../../../services/hooks/hooks";
@@ -9,12 +9,11 @@ import ChartCard from "../../ChartCard";
 import StackedBar from "../../charts/StackedBar";
 import { StackedBarProps } from "../../charts/StackedBar/StackedBar";
 import Tooltip from "../../Tooltip";
-import { TitleFormatter, ValueFormatter } from "../../Tooltip/Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 import { DateFormatter } from "../../../services/date";
 
-interface BestOfHourProps extends ImplementedChartProps {}
+interface BestOfHourProps extends ImplementedChartProps { }
 
 enum Element {
   ARTIST = "artists",
@@ -67,23 +66,19 @@ export default function BestOfHour({ className }: BestOfHourProps) {
   const [element, setElement] = useState<Element>(Element.ARTIST);
   const result = useAPI(elementToCall[element], interval.start, interval.end);
 
-  const data = useMemo(() => {
+  const data = (() => {
     if (!result) {
       return [];
     }
     return Array.from(Array(24).keys()).map(index =>
       getElementData(result, index),
     );
-  }, [result]);
+  })();
 
-  const tooltipTitle = useCallback<TitleFormatter<typeof data>>(
-    ({ x }) =>
-      `20 most listened ${element} at ${DateFormatter.fromNumberToHour(x)}`,
-    [element],
-  );
+  const tooltipTitle = ({ x }: any) =>
+      `20 most listened ${element} at ${DateFormatter.fromNumberToHour(x)}`;
 
-  const tooltipValue = useCallback<ValueFormatter<typeof data>>(
-    (payload, value, root) => {
+  const tooltipValue = (payload: any, value: any, root: any) => {
       const foundIndex = result?.findIndex(r => r.hour === payload.x);
       if (!result || foundIndex === undefined || foundIndex === -1) {
         return null;
@@ -97,9 +92,7 @@ export default function BestOfHour({ className }: BestOfHourProps) {
           {value}% of {getElementName(found, root.dataKey.toString())}
         </span>
       );
-    },
-    [result],
-  );
+    };
 
   if (!result) {
     return (
@@ -114,16 +107,18 @@ export default function BestOfHour({ className }: BestOfHourProps) {
     <ChartCard
       title={`Best ${element} for hour of day`}
       right={
-        <Select
-          value={element}
-          onChange={ev => setElement(ev.target.value as Element)}
-          variant="standard">
-          {Object.values(Element).map(elem => (
-            <MenuItem key={elem} value={elem}>
-              {elem}
-            </MenuItem>
-          ))}
-        </Select>
+        <div style={{ position: "absolute", right: 16 }}>
+          <Select
+            value={element}
+            onChange={ev => setElement(ev.target.value as Element)}
+            variant="standard">
+            {Object.values(Element).map(elem => (
+              <MenuItem key={elem} value={elem}>
+                {elem}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
       }
       className={className}>
       <StackedBar

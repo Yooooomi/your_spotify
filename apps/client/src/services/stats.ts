@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { TitleFormatter, ValueFormatter } from "../components/Tooltip/Tooltip";
 import { DateId, Precision } from "./types";
 import { DateFormatter } from "./date";
@@ -164,7 +163,7 @@ const buildXYDataWithGetters = <Dict extends Record<string, any>>(
   }
   if (!doNotFillData) {
     let currentDate = getDateFromIndex(currentIndex, start, precision);
-    // eslint-disable-next-line no-constant-condition
+
     for (let i = 0; currentDate.getTime() <= end.getTime(); i += 1) {
       built.push({
         x: currentIndex + i,
@@ -262,16 +261,13 @@ export const formatDateWithPrecisionToString = ({
 };
 
 export const useFormatXAxis = (data: DefaultGraphItem[]) =>
-  useCallback(
-    (value: number) => {
-      const dataValue = data.find(d => d.x === value);
-      if (!dataValue) {
-        return "";
-      }
-      return formatDateWithPrecisionToSimpleString(dataValue.dateWithPrecision);
-    },
-    [data],
-  );
+  (value: number) => {
+    const dataValue = data.find(d => d.x === value);
+    if (!dataValue) {
+      return "";
+    }
+    return formatDateWithPrecisionToSimpleString(dataValue.dateWithPrecision);
+  }
 
 export function simpleTooltipValue(
   prefix = "",
@@ -319,7 +315,7 @@ export const msToDuration = (ms: number) => {
 
   return parts.join(' ');
 };
-  
+
 
 export const getLastPeriod = (start: Date, end: Date) => {
   const diff = end.getTime() - start.getTime();

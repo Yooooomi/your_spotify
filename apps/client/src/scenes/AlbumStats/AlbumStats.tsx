@@ -36,7 +36,7 @@ export default function AlbumStats({ stats }: AlbumStatsProps) {
         title={stats.album.name}
         subtitle={stats.artists.map((artist, k) => (
           <>
-            <InlineArtist artist={artist} key={artist.id} />
+            <InlineArtist size='normal' artist={artist} key={artist.id} />
             {k < stats.artists.length - 1 && ", "}
           </>
         ))}
@@ -54,22 +54,22 @@ export default function AlbumStats({ stats }: AlbumStatsProps) {
           style={{ marginTop: 0 }}>
           <Grid
             container
-            item
-            xs={12}
-            lg={6}
+            size={{ xs: 12, lg: 6 }}
             justifyContent="flex-start"
             alignItems="flex-start"
             spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TitleCard title="Context" contentClassName={s.context}>
-                {stats.artists.map(artist => (
-                  <ImageTwoLines
-                    key={artist.id}
-                    image={<IdealImage images={artist.images} size={48} />}
-                    first={<InlineArtist artist={artist} />}
-                    second="Artist"
-                  />
-                ))}
+                <div className={s.artists}>
+                  {stats.artists.map(artist => (
+                    <ImageTwoLines
+                      key={artist.id}
+                      image={<IdealImage images={artist.images} size={48} />}
+                      first={<InlineArtist size="normal" artist={artist} />}
+                      second="Artist"
+                    />
+                  ))}
+                </div>
                 <ImageTwoLines
                   image={<TimelapseOutlined color="primary" fontSize="large" />}
                   first={`${msToDuration(
@@ -82,24 +82,24 @@ export default function AlbumStats({ stats }: AlbumStatsProps) {
                 />
               </TitleCard>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <FirstAndLast
                 firstImages={stats.album.images}
                 lastImages={stats.album.images}
                 firstDate={new Date(stats.firstLast.first.played_at)}
                 lastDate={new Date(stats.firstLast.last.played_at)}
                 firstElement={
-                  <InlineTrack track={stats.firstLast.first.track} />
+                  <InlineTrack size='normal' track={stats.firstLast.first.track} />
                 }
-                lastElement={<InlineTrack track={stats.firstLast.last.track} />}
+                lastElement={<InlineTrack size='normal' track={stats.firstLast.last.track} />}
               />
             </Grid>
           </Grid>
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <TitleCard title="Most listened tracks">
               {stats.tracks.map(({ track, count }, k) => (
                 <div key={track.id} className={s.ml}>
-                  <Text element="strong" className={s.mlrank}>
+                  <Text element="strong" size='big' className={s.mlrank}>
                     #{k + 1}
                   </Text>
                   <ImageTwoLines
@@ -111,7 +111,7 @@ export default function AlbumStats({ stats }: AlbumStatsProps) {
                         alt="album cover"
                       />
                     }
-                    first={<InlineTrack track={track} />}
+                    first={<InlineTrack size='normal' track={track} />}
                     second={`${count} times`}
                   />
                 </div>

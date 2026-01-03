@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react';
+import { Fragment } from 'react';
 import s from './index.module.css';
 import { msToDuration } from '../../../../services/stats';
 import { Artist, Album as AlbumType } from '../../../../services/types';
@@ -17,6 +17,7 @@ interface AlbumProps {
   totalCount: number;
   duration: number;
   totalDuration: number;
+  rank: number;
 }
 
 export default function Album({
@@ -26,89 +27,82 @@ export default function Album({
   totalDuration,
   count,
   totalCount,
+  rank
 }: AlbumProps) {
-  const [isMobile] = useMobile();
+  const [isMobile, _, isDesktop] = useMobile();
   const albumGrid = useAlbumGrid();
 
-  const columns = useMemo<ColumnDescription[]>(
-    () => [
-      {
-        ...albumGrid.cover,
-        node: (
-          <IdealImage
-            className={s.cover}
-            images={album.images}
-            alt="Album cover"
-            size={48}
-            width={48}
-            height={48}
-          />
-        ),
-      },
-      {
-        ...albumGrid.title,
-        node: (
-          <div className={s.names}>
-            <div>
-              <InlineAlbum album={album} />
-            </div>
-            <div className="subtitle">
-              {artists.map((art, k, a) => (
-                <Fragment key={art.id}>
-                  <InlineArtist artist={art} noStyle />
-                  {k !== a.length - 1 && ", "}
-                </Fragment>
-              ))}
-            </div>
+  const columns: ColumnDescription[] = [
+    {
+      ...albumGrid.rank,
+      node: (
+        <Text size="normal" element="strong" className={s.mlrank}>
+          #{rank}
+        </Text>
+      )
+    },
+    {
+      ...albumGrid.cover,
+      node: (
+        <IdealImage
+          className={s.cover}
+          images={album.images}
+          alt="Album cover"
+          size={48}
+          width={48}
+          height={48}
+        />
+      ),
+    },
+    {
+      ...albumGrid.title,
+      node: (
+        <div className={s.names}>
+          <div>
+            <InlineAlbum size="normal" album={album} />
           </div>
-        ),
-      },
-      {
-        ...albumGrid.count,
-        node: (
-          <Text>
-            {count}
-            {!isMobile && (
-              <>
-                {" "}
-                <Text>({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
-              </>
-            )}
-          </Text>
-        ),
-      },
-      {
-        ...albumGrid.total,
-        node: (
-          <Text className="center">
-            {msToDuration(duration)}
-            {!isMobile && (
-              <>
-                {" "}
-                <Text>
-                  ({Math.floor((duration / totalDuration) * 10000) / 100}%)
-                </Text>
-              </>
-            )}
-          </Text>
-        ),
-      },
-    ],
-    [
-      album.images,
-      album.name,
-      albumGrid.count,
-      albumGrid.cover,
-      albumGrid.title,
-      albumGrid.total,
-      artists,
-      count,
-      duration,
-      isMobile,
-      totalCount,
-      totalDuration,
-    ],
-  );
+          <div className="subtitle">
+            {artists.map((art, k, a) => (
+              <Fragment key={art.id}>
+                <InlineArtist size="normal" artist={art} noStyle />
+                {k !== a.length - 1 && ", "}
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
+      ...albumGrid.count,
+      node: (
+        <Text size="normal" className={isMobile ? "right" : undefined}>
+          {count}
+          {!isMobile && (
+            <>
+              {" "}
+              <Text size="normal">({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+            </>
+          )}
+        </Text>
+      ),
+    },
+    {
+      ...albumGrid.total,
+      node: !isMobile && (
+        <Text size="normal" className="center">
+          {msToDuration(duration)}
+          {isDesktop && (
+            <>
+              {" "}
+              <Text size="normal">
+                ({Math.floor((duration / totalDuration) * 10000) / 100}%)
+              </Text>
+            </>
+          )}
+        </Text>
+      ),
+    },
+  ];
 
   return <GridRowWrapper columns={columns} />;
 }

@@ -93,7 +93,7 @@ export class SpotifyAPI {
     let nextUrl = "/me/playlists?limit=50";
     while (nextUrl) {
       const thisUrl = nextUrl;
-      // eslint-disable-next-line no-await-in-loop
+       
       const res = await squeue.queue(async () => {
         await this.checkToken();
         return this.client.get(thisUrl);
@@ -108,13 +108,13 @@ export class SpotifyAPI {
     const chunks = chunk(ids, 100);
     for (let i = 0; i < chunks.length; i += 1) {
       const chk = chunks[i]!;
-      // eslint-disable-next-line no-await-in-loop
+       
       await this.client.post(`/playlists/${id}/tracks`, {
         uris: chk.map(trackId => `spotify:track:${trackId}`),
       });
       if (i !== chunks.length - 1) {
         // Cannot queue inside queue, will cause infinite wait
-        // eslint-disable-next-line no-await-in-loop
+         
         await wait(1000);
       }
     }

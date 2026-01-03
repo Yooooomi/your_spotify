@@ -3,7 +3,7 @@ import { HTMLProps, SpotifyImage } from "../../services/types";
 import s from "./index.module.css";
 
 interface IdealImageProps extends HTMLProps<"img"> {
-  images: SpotifyImage[];
+  images: SpotifyImage[] | null;
   size: number;
 }
 
@@ -16,10 +16,10 @@ export default function IdealImage({
     <img
       className={s.image}
       alt="cover"
-      src={getAtLeastImage(images, size)}
+      src={images ? getAtLeastImage(images, size) : "no_data.png"}
       height={size}
       width={size}
-      // eslint-disable-next-line react/jsx-props-no-spreading
+       
       {...other}
     />
   );

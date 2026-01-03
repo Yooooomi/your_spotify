@@ -1,6 +1,5 @@
 import { CircularProgress } from "@mui/material";
 import clsx from "clsx";
-import { useCallback, useMemo } from "react";
 import InlineTrack from "../../../components/InlineTrack";
 import Text from "../../../components/Text";
 import { api } from "../../../services/apis/api";
@@ -15,19 +14,16 @@ interface TrackRankProps {
 export default function TrackRank({ trackId }: TrackRankProps) {
   const trackRank = useAPI(api.getTrackRank, trackId);
 
-  const ids = useMemo(
-    () => trackRank?.results.map(r => r.id) ?? [],
-    [trackRank?.results],
-  );
+  const ids = trackRank?.results.map(r => r.id) ?? [];
   const { loaded, tracks } = useTracks(ids);
 
-  const getTrack = useCallback((id: string) => tracks[id], [tracks]);
+  const getTrack = (id: string) => tracks[id];
 
   if (!trackRank || !loaded) {
     return (
       <div className={s.loading}>
         <CircularProgress size={24} />
-        <Text>Song rank is loading</Text>
+        <Text size="normal">Song rank is loading</Text>
       </div>
     );
   }
@@ -56,7 +52,7 @@ export default function TrackRank({ trackId }: TrackRankProps) {
               k +
               (trackRank.isMax ? 1 : 0) +
               (trackRank.isMin ? -1 : 0)}{" "}
-            {track ? <InlineTrack track={track} noStyle /> : null}
+            {track ? <InlineTrack track={track} noStyle size='normal' /> : null}
           </div>
         );
       })}

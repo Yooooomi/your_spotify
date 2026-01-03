@@ -1,18 +1,12 @@
 .root {
-  padding: 16px;
   box-shadow: var(--shadow) !important;
   background-color: var(--background) !important;
   border: var(--content-border) !important;
+  position: relative;
 }
 
 .noborder {
   border: none;
-}
-
-.root > div > h3 {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
 }
 
 .title {
@@ -20,10 +14,13 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
+  padding: 16px;
 }
 
 .content {
   position: relative;
   height: 92%;
-  padding-bottom: 16px;
+  padding-bottom: 32px;
+  padding-left: 12px;
+  padding-right: 12px;
 }

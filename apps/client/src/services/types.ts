@@ -72,6 +72,10 @@ export interface Album {
   uri: string;
 }
 
+export type AlbumWithFullArtist = Album & {
+  full_artists: Array<Artist>;
+}
+
 export interface Track {
   _id: string;
   album: string; // Id of the album
@@ -80,8 +84,8 @@ export interface Track {
   disc_number: number;
   duration_ms: number;
   explicit: boolean;
-  external_ids: Object;
-  external_urls: Object;
+  external_ids: object;
+  external_urls: object;
   href: string;
   id: string;
   is_local: boolean;
@@ -101,6 +105,10 @@ export type TrackWithFullAlbum = Track & {
   full_album: Album;
 };
 
+export type TrackWithFullArtistAlbum = TrackWithFullAlbum & {
+  full_artists: Array<Artist>;
+};
+
 export interface TrackInfo {
   _id: string;
   owner: string;
@@ -112,10 +120,10 @@ export interface TrackInfo {
   artists: string[];
 }
 
-export type TrackInfoWithFullTrack = TrackInfo & {
+export type TrackInfoWithFullArtistAlbum = TrackInfo & {
   track: Track & {
     full_album: Album;
-    full_artist: Artist[];
+    full_artists: Artist[];
   };
 };
 

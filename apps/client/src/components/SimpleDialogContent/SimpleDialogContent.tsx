@@ -13,7 +13,7 @@ export default function SimpleDialogContent({
 }: SimpleDialogContentProps) {
   return (
     <div>
-      <Text>{message}</Text>
+      <Text size="normal">{message}</Text>
       <div className={s.actions}>{actions}</div>
     </div>
   );

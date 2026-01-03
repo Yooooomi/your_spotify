@@ -1,157 +1,115 @@
-import { Popper, Paper } from "@mui/material";
+import { Popover } from "@mui/material";
 import clsx from "clsx";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState } from "react";
 import { api } from "../../services/apis/api";
 import { useConditionalAPI } from "../../services/hooks/hooks";
-import { Album, Artist, TrackWithFullAlbum } from "../../services/types";
-import IdealImage from "../IdealImage";
-import Loader from "../Loader";
-import Text from "../Text";
+import { Album, Artist, Track } from "../../services/types";
+import { useRegisterShortcut } from "../../services/shortcuts";
 import s from "./index.module.css";
+import { SearchPaper } from "./searchPaper/searchPaper";
+import { AbsoluteShortcut } from "../shortcut/shortcut";
+import { compact } from "../../services/tools";
 
 interface SiderSearchProps {
-  onTrackClick?: (track: TrackWithFullAlbum) => void;
+  onTrackClick?: (track: Track) => void;
   onArtistClick?: (artist: Artist) => void;
   onAlbumClick?: (album: Album) => void;
   inputClassname?: string;
+  showShortcut: boolean;
 }
 
 export default function SiderSearch({
   onTrackClick,
   onArtistClick,
   onAlbumClick,
-  inputClassname,
+  inputClassname, showShortcut
 }: SiderSearchProps) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [search, setSearch] = useState("");
   const [results, loading] = useConditionalAPI(
     search.length >= 3,
     api.search,
     search,
   );
+  const [open, setOpen] = useState(false);
 
-  const internOnTrackClick = useCallback(
-    (track: TrackWithFullAlbum) => {
-      setSearch("");
-      onTrackClick?.(track);
-    },
-    [onTrackClick],
-  );
+  if (showShortcut) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useRegisterShortcut("Meta+k", () => setOpen(true));
+  }
 
-  const internOnArtistClick = useCallback(
-    (artist: Artist) => {
-      setSearch("");
-      onArtistClick?.(artist);
-    },
-    [onArtistClick],
-  );
+  function handleTrackClick(track: Track) {
+    setSearch("");
+    setOpen(false);
+    onTrackClick?.(track);
+  }
 
-  const internOnAlbumClick = useCallback(
-    (album: Album) => {
-      setSearch("");
-      onAlbumClick?.(album);
-    },
-    [onAlbumClick],
-  );
+  function handleAlbumClick(album: Album) {
+    setSearch("");
+    setOpen(false);
+    onAlbumClick?.(album);
+  }
 
-  const totalResults = results
-    ? results.artists.length + results.tracks.length + results.albums.length
-    : 0;
-  const displayAll = Boolean(onArtistClick) && Boolean(onTrackClick);
+  function handleArtistClick(artist: Artist) {
+    setSearch("");
+    setOpen(false);
+    onArtistClick?.(artist);
+  }
+
+  const filteredResults = {
+    tracks: onTrackClick && results?.tracks,
+    albums: onAlbumClick && results?.albums,
+    artists: onArtistClick && results?.artists,
+  }
+
+  const wrapperRef = useRef(null);
 
   return (
     <>
-      <input
+      <div
         className={clsx(s.input, inputClassname)}
-        placeholder="Search..."
-        value={search}
-        onChange={ev => setSearch(ev.target.value)}
-        ref={inputRef}
-      />
-      <Popper
-        open={search.length > 0}
-        anchorEl={inputRef.current}
-        placement="bottom"
-        className={s.popper}>
-        <Paper
-          className={s.results}
-          style={{ width: inputRef.current?.clientWidth }}>
-          {loading && results === null && <Loader className={s.alert} />}
-          {!loading && search.length < 3 && (
-            <Text className={s.alert} element="strong">
-              At least 3 characters
-            </Text>
-          )}
-          {!loading && search.length >= 3 && totalResults === 0 && (
-            <Text className={s.alert} element="strong">
-              No results found
-            </Text>
-          )}
-          {displayAll && (results?.artists.length ?? 0) > 0 && (
-            <Text element="div" className={s.section}>
-              Artists
-            </Text>
-          )}
-          {onArtistClick &&
-            results?.artists.map(res => (
-              <button
-                type="button"
-                key={res.id}
-                className={clsx("no-button", s.result)}
-                onClick={() => internOnArtistClick(res)}>
-                <IdealImage
-                  className={s.resultimage}
-                  images={res.images}
-                  size={48}
-                  alt="Artist"
-                />
-                <Text element="strong">{res.name}</Text>
-              </button>
-            ))}
-          {displayAll && (results?.tracks.length ?? 0) > 0 && (
-            <Text element="div" className={s.section}>
-              Tracks
-            </Text>
-          )}
-          {onTrackClick &&
-            results?.tracks.map(res => (
-              <button
-                type="button"
-                key={res.id}
-                className={clsx("no-button", s.result)}
-                onClick={() => internOnTrackClick(res)}>
-                <IdealImage
-                  className={s.resultimage}
-                  images={res.full_album.images}
-                  size={48}
-                  alt="Album"
-                />
-                <Text element="strong">{res.name}</Text>
-              </button>
-            ))}
-          {displayAll && (results?.albums.length ?? 0) > 0 && (
-            <Text element="div" className={s.section}>
-              Albums
-            </Text>
-          )}
-          {onAlbumClick &&
-            results?.albums.map(res => (
-              <button
-                type="button"
-                key={res.id}
-                className={clsx("no-button", s.result)}
-                onClick={() => internOnAlbumClick(res)}>
-                <IdealImage
-                  className={s.resultimage}
-                  images={res.images}
-                  size={48}
-                  alt="Album"
-                />
-                <Text element="strong">{res.name}</Text>
-              </button>
-            ))}
-        </Paper>
-      </Popper>
+        role="button"
+        onClick={() => setOpen(true)}>
+        Search...
+        {showShortcut && <AbsoluteShortcut sequence="Meta+k" right={8} top={8} />}
+      </div>
+
+      <div
+        ref={wrapperRef}
+        style={{
+          top: 200,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          position: "fixed",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+        }}>
+        <Popover
+          open={open}
+          onClose={() => setOpen(false)}
+          anchorEl={() => wrapperRef.current}
+          transformOrigin={{ horizontal: "center", vertical: "top" }}
+          anchorOrigin={{ horizontal: "center", vertical: "top" }} slotProps={{ paper: { style: { borderRadius: 20, overflow: "hidden", width: "min(600px, 95vw)" } } }}>
+          <SearchPaper
+            tracks={filteredResults.tracks}
+            albums={filteredResults.albums}
+            artists={filteredResults.artists}
+            loading={loading}
+            text={search}
+            onChangeText={setSearch}
+            onTrackClick={handleTrackClick}
+            onAlbumClick={handleAlbumClick}
+            onArtistClick={handleArtistClick}
+            displays={compact([
+              onArtistClick ? "artist" : undefined,
+              onTrackClick ? "track" : undefined,
+              onAlbumClick ? "album" : undefined,
+            ])}
+          />
+        </Popover>
+      </div>
     </>
   );
 }

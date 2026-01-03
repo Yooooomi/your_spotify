@@ -1,22 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import Axios from "axios";
-import { generateRandomString, sha256 } from "../crypto";
+import { generateRandomString } from "../crypto";
 import { credentials } from "./credentials";
 
 export class Provider {
-  static getRedirect = () => {};
+  static getRedirect = () => { };
 
-  // @ts-ignore
-  static exchangeCode = (code: string, state: string) => {};
+  static exchangeCode = (_code: string, _state: string) => { };
 
-  // @ts-ignore
-  static refresh = refreshToken => {};
+  static refresh = (_refreshToken: string) => { };
 
-  // @ts-ignore
-  static getUniqueID = accessToken => {};
+  static getUniqueID = (_accessToken: string) => { };
 
-  // @ts-ignore
-  static getHttpClient = accessToken => {};
+  static getHttpClient = (_accessToken: string) => { };
 }
 
 export class Spotify extends Provider {

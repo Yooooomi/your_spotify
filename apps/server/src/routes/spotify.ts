@@ -17,6 +17,8 @@ import {
   getBest,
   ItemType,
   getBestOfHour,
+  getMostListenedSongOfArtist,
+  getArtists,
 } from "../database";
 import {
   CollaborativeMode,
@@ -35,6 +37,7 @@ import {
 } from "../tools/middleware";
 import { SpotifyRequest, LoggedRequest, Timesplit } from "../tools/types";
 import { toDate, toNumber } from "../tools/zod";
+import { uniq } from "../tools/misc";
 
 export const router = Router();
 
@@ -202,12 +205,11 @@ const intervalPerSchemaNbOffset = z.object({
   ),
   nb: z.preprocess(toNumber, z.number().min(1).max(30)),
   offset: z.preprocess(toNumber, z.number().min(0).default(0)),
-  sortKey: z.string().default("count"),
 });
 
 router.get("/top/songs", isLoggedOrGuest, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end, nb, offset, sortKey } = validate(
+  const { start, end, nb, offset } = validate(
     req.query,
     intervalPerSchemaNbOffset,
   );
@@ -218,7 +220,7 @@ router.get("/top/songs", isLoggedOrGuest, async (req, res) => {
 
 router.get("/top/artists", isLoggedOrGuest, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end, nb, offset, sortKey } = validate(
+  const { start, end, nb, offset } = validate(
     req.query,
     intervalPerSchemaNbOffset,
   );
@@ -229,7 +231,7 @@ router.get("/top/artists", isLoggedOrGuest, async (req, res) => {
 
 router.get("/top/albums", isLoggedOrGuest, async (req, res) => {
   const { user } = req as LoggedRequest;
-  const { start, end, nb, offset, sortKey } = validate(
+  const { start, end, nb, offset } = validate(
     req.query,
     intervalPerSchemaNbOffset,
   );
@@ -246,11 +248,11 @@ const collaborativeSchema = intervalPerSchema.merge(
 );
 
 export function normalizeOtherIdsQuery(query: any) {
-  if (query['otherIds[]']) {
-    query.otherIds = Array.isArray(query['otherIds[]'])
-      ? query['otherIds[]']
-      : [query['otherIds[]']];
-    delete query['otherIds[]'];
+  if (query["otherIds[]"]) {
+    query.otherIds = Array.isArray(query["otherIds[]"])
+      ? query["otherIds[]"]
+      : [query["otherIds[]"]];
+    delete query["otherIds[]"];
   }
   return query;
 }
@@ -406,15 +408,22 @@ const createPlaylistFromAffinity = z.object({
   mode: z.nativeEnum(CollaborativeMode),
 });
 
-const createPlaylistFromSingle = z.object({
-  type: z.literal("single"),
-  songId: z.string(),
+const createPlaylistFromSpecific = z.object({
+  type: z.literal("specific"),
+  songIds: z.array(z.string()),
+});
+
+const createPlaylistFromArtistTop = z.object({
+  type: z.literal("top-artist"),
+  nb: z.number(),
+  artistId: z.string(),
 });
 
 const createPlaylist = z.discriminatedUnion("type", [
   createPlaylistBase.merge(createPlaylistFromTop),
-  createPlaylistBase.merge(createPlaylistFromSingle),
+  createPlaylistBase.merge(createPlaylistFromSpecific),
   createPlaylistBase.merge(createPlaylistFromAffinity),
+  createPlaylistBase.merge(createPlaylistFromArtistTop),
 ]);
 
 router.post("/playlist/create", logged, withHttpClient, async (req, res) => {
@@ -429,7 +438,7 @@ router.post("/playlist/create", logged, withHttpClient, async (req, res) => {
   let playlistName = body.name;
   let spotifyIds: string[];
   if (body.type === "top") {
-    const { interval: intervalData, nb, sortKey } = body;
+    const { interval: intervalData, nb } = body;
     const items = await getBest(
       ItemType.track,
       user,
@@ -458,11 +467,22 @@ router.post("/playlist/create", logged, withHttpClient, async (req, res) => {
       body.nb,
     );
     spotifyIds = affinity.map(item => item.track.id);
+  } else if (body.type === "top-artist") {
+    const [artist] = await getArtists([body.artistId]);
+    if (!artist) {
+      res.status(404).end();
+      return;
+    }
+    const mostListened = await getMostListenedSongOfArtist(user, artist.id)
+    spotifyIds = mostListened.map(item => item.track.id);
+    if (!playlistName) {
+      playlistName = `My top of ${artist.id}`;
+    }
   } else {
     if (!playlistName) {
       playlistName = `Your Spotify Playlist • ${DateFormatter.toDayMonthYear(user.settings.dateFormat, new Date())}`;
     }
-    spotifyIds = [body.songId];
+    spotifyIds = uniq(body.songIds);
   }
   if (body.playlistId) {
     await client.addToPlaylist(body.playlistId, spotifyIds);
