@@ -671,116 +671,146 @@ export const getLongestListeningSession = async (
   end: Date,
 ) => {
   const sessionBreakThreshold = 10 * 60 * 1000;
-  const subtract = {
-    $cond: [
-      "$$value.last",
+  const yearsStep = 1;
+
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate >= endDate) {
+    return [];
+  }
+
+  const windows: { from: Date; to: Date }[] = [];
+  let cursor = new Date(startDate);
+  while (cursor < endDate) {
+    const next = new Date(cursor);
+    next.setFullYear(next.getFullYear() + yearsStep);
+    if (next > endDate) next.setTime(endDate.getTime());
+    windows.push({ from: new Date(cursor), to: new Date(next) });
+    cursor = next;
+  }
+
+  const allSessions: any[] = [];
+
+  const buildPipeline = (from: Date, to: Date): any[] => {
+    const subtract = {
+      $cond: [
+        "$$value.last",
+        {
+          $subtract: [
+            "$$this.played_at",
+            { 
+              $add: ["$$value.last.played_at", "$$value.last.durationMs"],
+            },
+          ],
+        },
+        sessionBreakThreshold + 1,
+      ],
+    };
+
+    const item = { subtract, info: "$$this" };
+
+    return [
+      ...basicMatch(userId, from, to),
+      { $sort: { played_at: 1 } },
       {
-        $subtract: [
-          "$$this.played_at",
-          {
-            $add: ["$$value.last.played_at", "$$value.last.durationMs"],
-          },
-        ],
+        $group: {
+          _id: "$owner",
+          infos: { $push: "$$ROOT" },
+        },
       },
-      sessionBreakThreshold + 1,
-    ],
-  };
-
-  const item = { subtract, info: "$$this" };
-
-  const longestSessions = await InfosModel.aggregate([
-    ...basicMatch(userId, start, end),
-    { $sort: { played_at: 1 } },
-    {
-      $group: {
-        _id: "$owner",
-        infos: { $push: "$$ROOT" },
-      },
-    },
-    {
-      $addFields: {
-        distanceToLast: {
-          $reduce: {
-            input: "$infos",
-            initialValue: { distance: [], current: [] },
-            in: {
-              distance: {
-                $concatArrays: [
-                  "$$value.distance",
-                  {
-                    $cond: {
-                      if: {
-                        $gt: [subtract, sessionBreakThreshold],
+      {
+        $addFields: {
+          distanceToLast: {
+            $reduce: {
+              input: "$infos",
+              initialValue: { distance: [], current: [], last: null },
+              in: {
+                distance: {
+                  $concatArrays: [
+                    "$$value.distance",
+                    {
+                      $cond: {
+                        if: {
+                          $gt: [subtract, sessionBreakThreshold],
+                        },
+                        then: ["$$value.current"],
+                        else: [],
                       },
-                      then: ["$$value.current"],
-                      else: [],
+                    },
+                  ],
+                },
+                current: {
+                  $cond: {
+                    if: {
+                      $gt: [subtract, sessionBreakThreshold],
+                    },
+                    then: [item],
+                    else: {
+                      $concatArrays: ["$$value.current", [item]],
                     },
                   },
-                ],
-              },
-              current: {
-                $cond: {
-                  if: {
-                    $gt: [subtract, sessionBreakThreshold],
-                  },
-                  then: [item],
-                  else: {
-                    $concatArrays: ["$$value.current", [item]],
-                  },
                 },
+                last: "$$this",
               },
-              last: "$$this",
             },
           },
         },
       },
-    },
-    { $unset: ["infos", "distanceToLast.last"] },
-    {
-      $addFields: {
-        "distanceToLast.distance": {
-          $concatArrays: [
-            "$distanceToLast.distance",
-            ["$distanceToLast.current"],
-          ],
+      { $unset: ["infos", "distanceToLast.last"] },
+      {
+        $addFields: {
+          "distanceToLast.distance": {
+            $concatArrays: [
+              "$distanceToLast.distance",
+              ["$distanceToLast.current"],
+            ],
+          },
         },
       },
-    },
-    { $unset: "distanceToLast.current" },
-    {
-      $unwind: {
-        path: "$distanceToLast.distance",
-      },
-    },
-    {
-      $addFields: {
-        sessionLength: {
-          $subtract: [
-            { $last: "$distanceToLast.distance.info.played_at" },
-            { $first: "$distanceToLast.distance.info.played_at" },
-          ],
+      { $unset: "distanceToLast.current" },
+      {
+        $unwind: {
+          path: "$distanceToLast.distance",
         },
       },
-    },
-    { $sort: { sessionLength: -1 } },
-    { $limit: 5 },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "distanceToLast.distance.info.id",
-        foreignField: "id",
-        as: "full_tracks",
+      {
+        $addFields: {
+          sessionLength: {
+            $subtract: [
+              { $last: "$distanceToLast.distance.info.played_at" },
+              { $first: "$distanceToLast.distance.info.played_at" },
+            ],
+          },
+        },
       },
-    },
-  ]);
+      { $sort: { sessionLength: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: "tracks",
+          localField: "distanceToLast.distance.info.id",
+          foreignField: "id",
+          as: "full_tracks",
+        },
+      },
+    ];
+};
 
-  longestSessions.forEach(longestSession => {
-    longestSession.full_tracks = Object.fromEntries(
-      longestSession.full_tracks.map((track: any) => [track.id, track]),
-    );
-  });
+  for (const w of windows) {
+    const chunkSessions = await InfosModel.aggregate(buildPipeline(w.from, w.to));
+    chunkSessions.forEach((s: any) => {
+      s.full_tracks = Object.fromEntries(
+        s.full_tracks.map((t: any) => [t.id, t]),
+      );
+      allSessions.push(s);
+    });
+  }
 
-  return longestSessions;
+  if (!allSessions.length) return [];
+
+  allSessions.sort((a, b) => b.sessionLength - a.sessionLength);
+  return allSessions.slice(0, 5);
 };
 
 export const getRankOf = async (
