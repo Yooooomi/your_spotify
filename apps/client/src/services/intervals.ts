@@ -61,7 +61,7 @@ export const presetIntervals = [
   {
     type: "preset",
     name: "This week",
-    unit: "day",
+    unit: "week",
     interval: { timesplit: Timesplit.day, start: startOfThisWeek, end: now },
   },
   {
