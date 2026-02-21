@@ -109,7 +109,7 @@ export class SpotifyAPI {
     for (let i = 0; i < chunks.length; i += 1) {
       const chk = chunks[i]!;
        
-      await this.client.post(`/playlists/${id}/tracks`, {
+      await this.client.post(`/playlists/${id}/items`, {
         uris: chk.map(trackId => `spotify:track:${trackId}`),
       });
       if (i !== chunks.length - 1) {
@@ -131,7 +131,7 @@ export class SpotifyAPI {
     await squeue.queue(async () => {
       await this.checkToken();
       const { data } = await this.client.post(
-        `/users/${this.spotifyId}/playlists`,
+        `/me/playlists`,
         {
           name,
           public: true,
@@ -144,12 +144,19 @@ export class SpotifyAPI {
   }
 
   async getTracks(spotifyIds: string[]) {
-    const res = await squeue.queue(async () => {
-      await this.checkToken();
-      return this.client.get(`/tracks?ids=${spotifyIds.join(",")}`);
-    });
-
-    return res.data.tracks as (SpotifyTrack | null)[];
+    const results: (SpotifyTrack | null)[] = [];
+    for (const id of spotifyIds) {
+      try {
+        const res = await squeue.queue(async () => {
+          await this.checkToken();
+          return this.client.get(`/tracks/${id}`);
+        });
+        results.push(res.data as SpotifyTrack);
+      } catch {
+        results.push(null);
+      }
+    }
+    return results;
   }
 
   public async search(track: string, artist: string) {

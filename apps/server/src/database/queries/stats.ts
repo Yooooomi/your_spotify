@@ -370,48 +370,6 @@ export const featRatio = async (
   return res;
 };
 
-export const popularityPer = async (
-  user: User,
-  start: Date,
-  end: Date,
-  timeSplit = Timesplit.day,
-) => {
-  const res = await InfosModel.aggregate([
-    ...basicMatch(user._id, start, end),
-    {
-      $project: {
-        ...getGroupByDateProjection(user.settings.timezone),
-        id: 1,
-      },
-    },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
-    {
-      $group: {
-        _id: getGroupingByTimeSplit(timeSplit),
-        totalPopularity: { $sum: "$track.popularity" },
-        count: { $sum: 1 },
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        totalPopularity: { $divide: ["$totalPopularity", "$count"] },
-        count: 1,
-      },
-    },
-    ...sortByTimeSplit(timeSplit, "_id"),
-  ]);
-  return res;
-};
-
 export const differentArtistsPer = async (
   user: User,
   start: Date,

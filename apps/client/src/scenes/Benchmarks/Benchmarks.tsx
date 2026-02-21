@@ -75,11 +75,6 @@ export default function Benchmarks() {
         api.albumDateRatio(interval.start, interval.end, Timesplit.all),
     },
     {
-      title: "Get popularity per",
-      request: () =>
-        api.popularityPer(interval.start, interval.end, Timesplit.all),
-    },
-    {
       title: "Get different artists per",
       request: () =>
         api.differentArtistsPer(interval.start, interval.end, Timesplit.all),

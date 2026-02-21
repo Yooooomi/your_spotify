@@ -294,15 +294,6 @@ export const api = {
         timeSplit,
       },
     ),
-  popularityPer: (start: Date, end: Date, timeSplit: Timesplit) =>
-    get<{ count: number; totalPopularity: number; _id: DateId | null }[]>(
-      "/spotify/popularity_per",
-      {
-        start,
-        end,
-        timeSplit,
-      },
-    ),
   bestArtistsPer: (start: Date, end: Date, timeSplit: Timesplit) =>
     get<{ artists: Artist[]; counts: number[]; _id: DateId | null }[]>(
       "/spotify/best_artists_per",

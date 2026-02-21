@@ -15,48 +15,38 @@ import { Infos } from "../database/schemas/info";
 import { longWriteDbLock } from "../tools/lock";
 import { Metrics } from "../tools/metrics";
 
-const getIdsHandlingMax = async <
+const getIdsIndividually = async <
   T extends SpotifyTrack | SpotifyAlbum | SpotifyArtist,
 >(
   userId: string,
-  url: string,
+  baseUrl: string,
   ids: string[],
-  max: number,
-  arrayPath: string,
 ) => {
-  const idsArray = [];
-  const chunkNb = Math.ceil(ids.length / max);
-
-  for (let i = 0; i < chunkNb; i += 1) {
-    idsArray.push(ids.slice(i * max, Math.min(ids.length, (i + 1) * max)));
-  }
-  const datas = [];
-
+  const results: T[] = [];
   const spotifyApi = new SpotifyAPI(userId);
 
-  // Voluntarily waiting in loop to prevent requests limit
-  for (let i = 0; i < idsArray.length; i += 1) {
-    const id = idsArray[i];
-    if (!id) {
-      continue;
+  for (const id of ids) {
+    try {
+      const { data } = await retryPromise(
+        () => spotifyApi.raw(`${baseUrl}/${id}`),
+        10,
+        30,
+      );
+      results.push(data as T);
+    } catch {
+      logger.warn(`Failed to fetch ${baseUrl}/${id}, skipping`);
     }
-    const builtUrl = `${url}?ids=${id.join(",")}`;
-     
-    const { data } = await retryPromise(() => spotifyApi.raw(builtUrl), 10, 30);
-    datas.push(...data[arrayPath]);
   }
-  return datas as T[];
+  return results;
 };
 
 const trackUrl = "https://api.spotify.com/v1/tracks";
 
 export const getTracks = async (userId: string, ids: string[]) => {
-  const spotifyTracks = await getIdsHandlingMax<SpotifyTrack>(
+  const spotifyTracks = await getIdsIndividually<SpotifyTrack>(
     userId,
     trackUrl,
     ids,
-    50,
-    "tracks",
   );
 
   const tracks = spotifyTracks.map<Track>(track => {
@@ -77,12 +67,10 @@ export const getTracks = async (userId: string, ids: string[]) => {
 const albumUrl = "https://api.spotify.com/v1/albums";
 
 export const getAlbums = async (userId: string, ids: string[]) => {
-  const spotifyAlbums = await getIdsHandlingMax<SpotifyAlbum>(
+  const spotifyAlbums = await getIdsIndividually<SpotifyAlbum>(
     userId,
     albumUrl,
     ids,
-    20,
-    "albums",
   );
 
   const albums: Album[] = spotifyAlbums.map(alb => {
@@ -103,12 +91,10 @@ export const getAlbums = async (userId: string, ids: string[]) => {
 const artistUrl = "https://api.spotify.com/v1/artists";
 
 export const getArtists = async (userId: string, ids: string[]) => {
-  const artists = await getIdsHandlingMax<Artist>(
+  const artists = await getIdsIndividually<Artist>(
     userId,
     artistUrl,
     ids,
-    50,
-    "artists",
   );
 
   artists.forEach(artist =>

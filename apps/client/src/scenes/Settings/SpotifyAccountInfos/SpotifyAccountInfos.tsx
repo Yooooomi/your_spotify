@@ -12,8 +12,7 @@ export default function SpotifyAccountInfos({
   return (
     <TitleCard title="Linked Spotify account">
       <SettingLine left="Id" right={spotifyAccount.id} />
-      <SettingLine left="Mail" right={spotifyAccount.email} />
-      <SettingLine left="Product type" right={spotifyAccount.product} />
+      <SettingLine left="Display name" right={spotifyAccount.display_name} />
     </TitleCard>
   );
 }

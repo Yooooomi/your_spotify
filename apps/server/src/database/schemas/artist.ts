@@ -3,13 +3,13 @@ import { SpotifyImage } from "./types";
 
 export interface Artist {
   external_urls: any;
-  followers: any;
+  followers?: any;
   genres: string[];
   href: string;
   id: string;
   images: SpotifyImage[];
   name: string;
-  popularity: number;
+  popularity?: number;
   type: string;
   uri: string;
 }

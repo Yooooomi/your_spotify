@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import ArtistListeningRepartition from "../../components/ImplementedCharts/ArtistListeningRepartition";
 import AverageAlbumReleaseDate from "../../components/ImplementedCharts/AverageAlbumReleaseDate";
 import AverageNumberArtistPer from "../../components/ImplementedCharts/AverageNumberArtistPer";
-import AverageSongPopularityPer from "../../components/ImplementedCharts/AverageSongPopularityPer";
+
 import BestArtistsBar from "../../components/ImplementedCharts/BestArtistsBar";
 import BestOfHour from "../../components/ImplementedCharts/BestOfHour";
 import DifferentArtistListenedPer from "../../components/ImplementedCharts/DifferentArtistListenedPer";
@@ -56,9 +56,6 @@ export default function AllStats() {
           </Grid>
           <Grid size={{ xs: 12, md: 12, lg: 6 }}>
             <AverageNumberArtistPer className={s.chart} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 12, lg: 6 }}>
-            <AverageSongPopularityPer className={s.chart} />
           </Grid>
         </Grid>
       </div>
