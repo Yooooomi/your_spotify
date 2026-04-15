@@ -170,16 +170,8 @@ export const getMostListenedAlbumOfArtist = async (
   const res = await InfosModel.aggregate([
     { $match: { owner: user._id, primaryArtistId: artistId } },
     {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    {
       $group: {
-        _id: "$track.album",
+        _id: "$albumId",
         count: { $sum: 1 },
       },
     },

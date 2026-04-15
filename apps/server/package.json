@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "dev": "rsbuild dev",
     "migrate": "node ./build/index.js --migrate",
+    "merge-tracks-by-isrc": "ts-node src/migrations/run.ts",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint --fix . --ext .js,.jsx,.ts,.tsx"
   },

@@ -16,6 +16,161 @@ import { longWriteDbLock } from "../tools/lock";
 import { Metrics } from "../tools/metrics";
 import { compact } from "../tools/utils";
 
+interface TracksAlbumsArtistsResult {
+	tracks: Track[];
+	albums: Album[];
+	artists: Artist[];
+	tracksBySpotifyId: Map<string, Track>;
+}
+
+interface TrackCanonicalizationResult {
+	canonicalIdBySpotifyId: Map<string, string>;
+	missingTrackIds: string[];
+}
+
+const spotifyTrackToStoredTrack = (track: SpotifyTrack): Track => ({
+	...track,
+	album: track.album.id,
+	artists: track.artists.map((e) => e.id),
+	isrc: track.external_ids?.isrc,
+});
+
+const getSpotifyTrackIsrcs = (spotifyTracks: SpotifyTrack[]) => [
+	...new Set(
+		spotifyTracks
+			.map((track) => track.external_ids?.isrc)
+			.filter((isrc): isrc is string => Boolean(isrc)),
+	),
+];
+
+const getStoredTracksByIdOrIsrc = (ids: string[], isrcs: string[]) =>
+	TrackModel.find({
+		$or: [
+			{ id: { $in: ids } },
+			...(isrcs.length > 0
+				? [{ isrc: { $in: isrcs }, mergedInto: { $exists: false } }]
+				: []),
+		],
+	});
+
+function canonicalizeSpotifyTracks(
+	spotifyTracks: SpotifyTrack[],
+	storedTracks: Track[],
+): TrackCanonicalizationResult {
+	const storedById = new Map(storedTracks.map((track) => [track.id, track]));
+	const storedByIsrc = new Map(
+		storedTracks
+			.filter((track) => track.isrc && !track.mergedInto)
+			.map((track) => [track.isrc!, track]),
+	);
+	const canonicalIdBySpotifyId = new Map<string, string>();
+	const pendingCanonicalIdByIsrc = new Map<string, string>();
+	const missingTrackIds: string[] = [];
+
+	for (const spotifyTrack of spotifyTracks) {
+		const isrc = spotifyTrack.external_ids?.isrc;
+		const storedByMatchingIsrc = isrc ? storedByIsrc.get(isrc) : undefined;
+		if (storedByMatchingIsrc) {
+			canonicalIdBySpotifyId.set(spotifyTrack.id, storedByMatchingIsrc.id);
+			continue;
+		}
+
+		const storedByMatchingId = storedById.get(spotifyTrack.id);
+		if (storedByMatchingId) {
+			const canonicalId = storedByMatchingId.mergedInto ?? storedByMatchingId.id;
+			canonicalIdBySpotifyId.set(spotifyTrack.id, canonicalId);
+			if (isrc && !pendingCanonicalIdByIsrc.has(isrc)) {
+				pendingCanonicalIdByIsrc.set(isrc, canonicalId);
+			}
+			continue;
+		}
+
+		const pendingCanonicalId = isrc
+			? pendingCanonicalIdByIsrc.get(isrc)
+			: undefined;
+		if (pendingCanonicalId) {
+			canonicalIdBySpotifyId.set(spotifyTrack.id, pendingCanonicalId);
+			continue;
+		}
+
+		canonicalIdBySpotifyId.set(spotifyTrack.id, spotifyTrack.id);
+		missingTrackIds.push(spotifyTrack.id);
+		if (isrc) {
+			pendingCanonicalIdByIsrc.set(isrc, spotifyTrack.id);
+		}
+	}
+
+	return { canonicalIdBySpotifyId, missingTrackIds };
+}
+
+const findMergedIntoTracks = async (storedTracks: Track[]) => {
+	const mergedIntoIds = [
+		...new Set(
+			storedTracks
+				.map((track) => track.mergedInto)
+				.filter((id): id is string => Boolean(id)),
+		),
+	];
+	return mergedIntoIds.length > 0
+		? TrackModel.find({ id: { $in: mergedIntoIds } })
+		: [];
+};
+
+async function updateExistingTrackIsrcs(
+	spotifyTracks: SpotifyTrack[],
+	storedTracks: Track[],
+	canonicalIdBySpotifyId: Map<string, string>,
+) {
+	const storedById = new Map(storedTracks.map((track) => [track.id, track]));
+	const updates = spotifyTracks.flatMap((track) => {
+		const isrc = track.external_ids?.isrc;
+		const storedTrack = storedById.get(track.id);
+		if (
+			!isrc ||
+			!storedTrack ||
+			storedTrack.mergedInto ||
+			storedTrack.isrc === isrc ||
+			canonicalIdBySpotifyId.get(track.id) !== track.id
+		) {
+			return [];
+		}
+		return [
+			{
+				updateOne: {
+					filter: { id: track.id },
+					update: { $set: { isrc } },
+				},
+			},
+		];
+	});
+
+	if (updates.length === 0) {
+		return;
+	}
+
+	try {
+		await TrackModel.bulkWrite(updates, { ordered: false });
+	} catch (error) {
+		logger.warn("Could not update ISRCs on existing tracks", error);
+	}
+}
+
+function mapSpotifyIdsToCanonicalTracks(
+	spotifyTracks: SpotifyTrack[],
+	canonicalIdBySpotifyId: Map<string, string>,
+	tracks: Track[],
+) {
+	const tracksById = new Map(tracks.map((track) => [track.id, track]));
+
+	return new Map(
+		spotifyTracks.flatMap((track) => {
+			const canonicalId = canonicalIdBySpotifyId.get(track.id);
+			const storedTrack = canonicalId ? tracksById.get(canonicalId) : null;
+			return storedTrack ? [[track.id, storedTrack] as const] : [];
+		}),
+	);
+}
+
 export const getTracks = async (userId: string, ids: string[]) => {
 	const client = new SpotifyAPI(userId);
 	const spotifyTracks = compact(await client.getTracks(ids));
@@ -24,11 +179,7 @@ export const getTracks = async (userId: string, ids: string[]) => {
 		logger.info(
 			`Storing non existing track ${track.name} by ${track.artists[0]?.name}`,
 		);
-		return {
-			...track,
-			album: track.album.id,
-			artists: track.artists.map((e) => e.id),
-		};
+		return spotifyTrackToStoredTrack(track);
 	});
 	Metrics.ingestedTracksTotal.inc({ user: userId }, tracks.length);
 
@@ -80,44 +231,76 @@ const getTracksAndRelatedAlbumArtists = async (
 	};
 };
 
+const getSourceAlbumArtistIds = (spotifyTracks: SpotifyTrack[]) => ({
+	artists: [
+		...new Set(
+			spotifyTracks
+				.flatMap((track) => track.artists.map((artist) => artist.id))
+				.filter(Boolean),
+		),
+	],
+	albums: [
+		...new Set(spotifyTracks.map((track) => track.album.id).filter(Boolean)),
+	],
+});
+
 export const getTracksAlbumsArtists = async (
 	userId: string,
 	spotifyTracks: SpotifyTrack[],
-) => {
-	const ids = spotifyTracks.map((track) => track.id);
-	const storedTracks: Track[] = await TrackModel.find({ id: { $in: ids } });
-	const missingTrackIds = ids.filter(
-		(id) =>
-			!storedTracks.find((stored) => stored.id.toString() === id.toString()),
-	);
-
-	if (missingTrackIds.length === 0) {
-		logger.info("No missing tracks, passing...");
+): Promise<TracksAlbumsArtistsResult> => {
+	if (spotifyTracks.length === 0) {
 		return {
 			tracks: [],
 			albums: [],
 			artists: [],
+			tracksBySpotifyId: new Map<string, Track>(),
 		};
 	}
+
+	const ids = spotifyTracks.map((track) => track.id);
+	const isrcs = getSpotifyTrackIsrcs(spotifyTracks);
+	const storedTracks: Track[] = await getStoredTracksByIdOrIsrc(ids, isrcs);
+	const { canonicalIdBySpotifyId, missingTrackIds } =
+		canonicalizeSpotifyTracks(spotifyTracks, storedTracks);
+	const mergedIntoTracks: Track[] = await findMergedIntoTracks(storedTracks);
+
+	await updateExistingTrackIsrcs(
+		spotifyTracks,
+		storedTracks,
+		canonicalIdBySpotifyId,
+	);
 
 	const {
 		tracks,
 		artists: relatedArtists,
 		albums: relatedAlbums,
-	} = await getTracksAndRelatedAlbumArtists(userId, missingTrackIds);
+	} =
+		missingTrackIds.length > 0
+			? await getTracksAndRelatedAlbumArtists(userId, missingTrackIds)
+			: { tracks: [], artists: [], albums: [] };
+	if (missingTrackIds.length === 0) {
+		logger.info("No missing tracks, passing...");
+	}
+	const sourceRelated = getSourceAlbumArtistIds(spotifyTracks);
+	const allRelatedAlbums = [
+		...new Set([...relatedAlbums, ...sourceRelated.albums]),
+	];
+	const allRelatedArtists = [
+		...new Set([...relatedArtists, ...sourceRelated.artists]),
+	];
 
 	const storedAlbums: Album[] = await AlbumModel.find({
-		id: { $in: relatedAlbums },
+		id: { $in: allRelatedAlbums },
 	});
-	const missingAlbumIds = relatedAlbums.filter(
+	const missingAlbumIds = allRelatedAlbums.filter(
 		(alb) =>
 			!storedAlbums.find((salb) => salb.id.toString() === alb.toString()),
 	);
 
 	const storedArtists: Artist[] = await ArtistModel.find({
-		id: { $in: relatedArtists },
+		id: { $in: allRelatedArtists },
 	});
-	const missingArtistIds = relatedArtists.filter(
+	const missingArtistIds = allRelatedArtists.filter(
 		(alb) =>
 			!storedArtists.find((salb) => salb.id.toString() === alb.toString()),
 	);
@@ -133,6 +316,11 @@ export const getTracksAlbumsArtists = async (
 		tracks,
 		albums,
 		artists,
+		tracksBySpotifyId: mapSpotifyIdsToCanonicalTracks(
+			spotifyTracks,
+			canonicalIdBySpotifyId,
+			[...storedTracks, ...mergedIntoTracks, ...tracks],
+		),
 	};
 };
 
@@ -146,7 +334,18 @@ export async function storeTrackAlbumArtist({
 	artists?: Artist[];
 }) {
 	if (tracks) {
-		await TrackModel.create(uniqBy(tracks, (item) => item.id));
+		const uniqueTracks = uniqBy(tracks, (item) => item.id);
+		if (uniqueTracks.length > 0) {
+			await TrackModel.bulkWrite(
+				uniqueTracks.map((track) => ({
+					updateOne: {
+						filter: { id: track.id },
+						update: { $set: track },
+						upsert: true,
+					},
+				})),
+			);
+		}
 	}
 	if (albums) {
 		await AlbumModel.create(uniqBy(albums, (item) => item.id));
@@ -166,26 +365,28 @@ export async function storeIterationOfLoop(
 ) {
 	await longWriteDbLock.lock();
 
-	await storeTrackAlbumArtist({
-		tracks,
-		albums,
-		artists,
-	});
+	try {
+		await storeTrackAlbumArtist({
+			tracks,
+			albums,
+			artists,
+		});
 
-	await addTrackIdsToUser(userId, infos);
+		await addTrackIdsToUser(userId, infos);
 
-	await storeInUser("_id", new mongoose.Types.ObjectId(userId), {
-		lastTimestamp: iterationTimestamp,
-	});
+		await storeInUser("_id", new mongoose.Types.ObjectId(userId), {
+			lastTimestamp: iterationTimestamp,
+		});
 
-	const min = minOfArray(infos, (item) => item.played_at.getTime());
+		const min = minOfArray(infos, (item) => item.played_at.getTime());
 
-	if (min) {
-		const minInfo = infos[min.minIndex]?.played_at;
-		if (minInfo) {
-			await storeFirstListenedAtIfLess(userId, minInfo);
+		if (min) {
+			const minInfo = infos[min.minIndex]?.played_at;
+			if (minInfo) {
+				await storeFirstListenedAtIfLess(userId, minInfo);
+			}
 		}
+	} finally {
+		longWriteDbLock.unlock();
 	}
-
-	longWriteDbLock.unlock();
 }

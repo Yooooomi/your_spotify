@@ -2,6 +2,7 @@
 
 ## Table of Contents
 - [Prometheus](#prometheus)
+- [Operations](#operations)
 - [API](#api)
   - [Authentication](#authentication)
     - [OAuth](#oauth)
@@ -49,6 +50,11 @@ scrape_configs:
     static_configs:
       - targets: ["example.com:443"]
 ```
+
+## Operations
+
+- [ISRC Track Deduplication](./ISRC_DEDUPLICATION.md): run the manual migration
+  for merging duplicate Spotify track IDs that represent the same recording.
 
 ## API
 

@@ -72,10 +72,11 @@ export class FullPrivacyImporter
 	};
 
 	storeItems = async (userId: string, items: RecentlyPlayedTrack[]) => {
-		const { tracks, albums, artists } = await getTracksAlbumsArtists(
-			userId,
-			items.map((it) => it.track),
-		);
+		const { tracks, albums, artists, tracksBySpotifyId } =
+			await getTracksAlbumsArtists(
+				userId,
+				items.map((it) => it.track),
+			);
 		await storeTrackAlbumArtist({
 			tracks,
 			albums,
@@ -84,10 +85,14 @@ export class FullPrivacyImporter
 		const finalInfos: Omit<Infos, "owner">[] = [];
 		for (let i = 0; i < items.length; i += 1) {
 			const item = items[i]!;
+			const track = tracksBySpotifyId.get(item.track.id);
+			if (!track) {
+				continue;
+			}
 			const date = new Date(item.played_at);
 			const duplicate = await getCloseTrackId(
 				this.userId.toString(),
-				item.track.id,
+				track.id,
 				date,
 				60,
 			);
@@ -106,7 +111,7 @@ export class FullPrivacyImporter
 			}
 			finalInfos.push({
 				played_at: date,
-				id: item.track.id,
+				id: track.id,
 				primaryArtistId: primaryArtist.id,
 				albumId: item.track.album.id,
 				artistIds: item.track.artists.map((e) => e.id),
