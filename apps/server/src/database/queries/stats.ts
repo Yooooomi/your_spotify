@@ -565,7 +565,11 @@ export const getBest = (
     },
     { $lookup: lightTrackLookupPipeline("trackId") },
     { $unwind: "$track" },
-    { $lookup: lightAlbumLookupPipeline("albumId") },
+    {
+      $lookup: lightAlbumLookupPipeline(
+        itemType === ItemType.album ? "albumId" : "track.album",
+      ),
+    },
     { $unwind: "$album" },
     { $lookup: lightArtistLookupPipeline("primaryArtistId", false) },
     { $unwind: "$artist" },
