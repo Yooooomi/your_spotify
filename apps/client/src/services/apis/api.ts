@@ -543,6 +543,7 @@ export const api = {
       {
         sessionLength: number;
         full_tracks: Record<string, Track>;
+        full_albums: Record<string, Album>;
         distanceToLast: {
           distance: {
             subtract: number;

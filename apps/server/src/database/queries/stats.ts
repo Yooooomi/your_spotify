@@ -230,22 +230,13 @@ export const albumDateRatio = async (
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
-        id: 1,
+        albumId: 1,
       },
     },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
     {
       $lookup: {
         from: "albums",
-        localField: "track.album",
+        localField: "albumId",
         foreignField: "id",
         as: "album",
       },
@@ -288,25 +279,16 @@ export const featRatio = async (
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
-        id: 1,
+        artistCount: { $size: { $ifNull: ["$artistIds", []] } },
       },
     },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
     {
       $group: {
         _id: getGroupingByTimeSplit(timeSplit),
         1: {
           $sum: {
             $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 1] },
+              if: { $eq: ["$artistCount", 1] },
               then: 1,
               else: 0,
             },
@@ -315,7 +297,7 @@ export const featRatio = async (
         2: {
           $sum: {
             $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 2] },
+              if: { $eq: ["$artistCount", 2] },
               then: 1,
               else: 0,
             },
@@ -324,7 +306,7 @@ export const featRatio = async (
         3: {
           $sum: {
             $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 3] },
+              if: { $eq: ["$artistCount", 3] },
               then: 1,
               else: 0,
             },
@@ -333,7 +315,7 @@ export const featRatio = async (
         4: {
           $sum: {
             $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 4] },
+              if: { $eq: ["$artistCount", 4] },
               then: 1,
               else: 0,
             },
@@ -342,13 +324,13 @@ export const featRatio = async (
         5: {
           $sum: {
             $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 5] },
+              if: { $eq: ["$artistCount", 5] },
               then: 1,
               else: 0,
             },
           },
         },
-        totalPeople: { $sum: { $size: "$track.artists" } },
+        totalPeople: { $sum: "$artistCount" },
         count: { $sum: 1 },
       },
     },
@@ -449,24 +431,19 @@ export const getBestArtistsPer = async (
   const res = await InfosModel.aggregate([
     ...basicMatch(user._id, start, end),
     {
-      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
-    },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
+      $project: {
+        ...getGroupByDateProjection(user.settings.timezone),
+        durationMs: 1,
+        primaryArtistId: 1,
       },
     },
-    { $unwind: "$track" },
     {
       $group: {
         _id: {
           ...getGroupingByTimeSplit(timeSplit),
-          art: { $arrayElemAt: ["$track.artists", 0] },
+          art: "$primaryArtistId",
         },
-        count: { $sum: getTrackSumType(user) },
+        count: { $sum: getTrackSumType(user, "$durationMs") },
       },
     },
     { $sort: { count: -1, "_id.art": 1 } },
@@ -734,11 +711,22 @@ export const getLongestListeningSession = async (
         as: "full_tracks",
       },
     },
+    {
+      $lookup: {
+        from: "albums",
+        localField: "distanceToLast.distance.info.albumId",
+        foreignField: "id",
+        as: "full_albums",
+      },
+    },
   ]);
 
   longestSessions.forEach(longestSession => {
     longestSession.full_tracks = Object.fromEntries(
       longestSession.full_tracks.map((track: any) => [track.id, track]),
+    );
+    longestSession.full_albums = Object.fromEntries(
+      longestSession.full_albums.map((album: any) => [album.id, album]),
     );
   });
 
