@@ -43,6 +43,6 @@ export const getAlbumsWithoutArtist = () =>
         foreignField: "id",
       },
     },
-    { $unwind: "$full_artists" },
+    { $unwind: { path: "$full_artists", preserveNullAndEmptyArrays: true } },
     { $match: { full_artists: null } },
   ]);
