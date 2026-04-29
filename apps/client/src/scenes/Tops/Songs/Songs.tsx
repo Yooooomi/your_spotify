@@ -71,7 +71,11 @@ export default function Songs() {
                           rank={index + 1}
                           track={item.track}
                           album={item.album}
-                          artists={[item.artist]}
+                          artists={
+                            item.track_artists.length > 0
+                              ? item.track_artists
+                              : [item.artist]
+                          }
                           count={item.count}
                           totalCount={item.total_count}
                           duration={item.duration_ms}

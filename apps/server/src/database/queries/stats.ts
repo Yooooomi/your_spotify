@@ -550,6 +550,22 @@ export const getBest = (
     { $unwind: "$album" },
     { $lookup: lightArtistLookupPipeline("primaryArtistId", false) },
     { $unwind: "$artist" },
+    {
+      $lookup: {
+        from: "artists",
+        localField: "track.artists",
+        foreignField: "id",
+        as: "track_artists",
+      },
+    },
+    {
+      $lookup: {
+        from: "artists",
+        localField: "album.artists",
+        foreignField: "id",
+        as: "album_artists",
+      },
+    },
   ]);
 
 export const getBestOfHour = async (

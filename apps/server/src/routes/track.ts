@@ -12,6 +12,7 @@ import {
   ItemType,
 } from "../database";
 import { getAlbums } from "../database/queries/album";
+import { Artist } from "../database/schemas/artist";
 import { isLoggedOrGuest, validate } from "../tools/middleware";
 import { LoggedRequest } from "../tools/types";
 
@@ -39,15 +40,14 @@ router.get("/:id/stats", isLoggedOrGuest, async (req, res) => {
   const { user } = req as LoggedRequest;
   const { id } = validate(req.params, getTrackStats);
   const [track] = await getTracks([id]);
-  const [trackArtist] = track?.artists ?? [];
-  if (!track || !trackArtist) {
+  if (!track) {
     res.status(404).end();
     return;
   }
   const promises = [
     getAlbums([track.album]),
     getTrackListenedCount(user, id),
-    getArtists([trackArtist]),
+    getArtists(track.artists),
     getTrackFirstAndLastListened(user, track.id),
     getTrackListenedAlbums(user, track.id),
     bestPeriodOfTrack(user, track.id),
@@ -56,20 +56,23 @@ router.get("/:id/stats", isLoggedOrGuest, async (req, res) => {
   const [
     [album],
     count,
-    [artist],
+    artists,
     firstLast,
     listenedOn,
     bestPeriod,
     recentHistory,
   ] =
     await Promise.all(promises);
+  const orderedArtists = track.artists
+    .map(artistId => artists.find((artist: Artist) => artist.id === artistId))
+    .filter((artist): artist is Artist => Boolean(artist));
   if (!count) {
     res.status(200).send({ code: "NEVER_LISTENED" });
     return;
   }
   res.status(200).send({
     track,
-    artist,
+    artists: orderedArtists,
     album,
     listenedOn,
     bestPeriod,

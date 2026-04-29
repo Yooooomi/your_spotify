@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { CircularProgress, Grid } from "@mui/material";
 import Header from "../../components/Header";
 import TitleCard from "../../components/TitleCard";
@@ -40,7 +41,12 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
           />
         }
         title={stats.track.name}
-        subtitle={<InlineArtist artist={stats.artist} size='normal' />}
+        subtitle={stats.artists.map((artist, index) => (
+          <Fragment key={artist.id}>
+            <InlineArtist artist={artist} size='normal' />
+            {index < stats.artists.length - 1 && ", "}
+          </Fragment>
+        ))}
         hideInterval
       />
       <div className={s.content}>
@@ -60,17 +66,16 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
             alignItems="flex-start"
             spacing={2}>
             <Grid size={{ xs: 12 }}>
-              <TitleCard title="Context" contentClassName={s.context}>
-                <ImageTwoLines
-                  image={<IdealImage images={stats.artist.images} size={48} />}
-                  first={<InlineArtist artist={stats.artist} size='normal' />}
-                  second="Artist"
-                />
-                <ImageTwoLines
-                  image={<IdealImage images={stats.album.images} size={48} />}
-                  first={<InlineAlbum album={stats.album} size='normal' />}
-                  second="Album"
-                />
+              <TitleCard title="Artists">
+                {stats.artists.map((artist, index) => (
+                  <ImageTwoLines
+                    key={artist.id}
+                    className={s.recentitem}
+                    image={<IdealImage images={artist.images} size={48} />}
+                    first={<InlineArtist artist={artist} size='normal' />}
+                    second={index === 0 ? "Main artist" : "Featured artist"}
+                  />
+                ))}
               </TitleCard>
             </Grid>
             <Grid size={{ xs: 12 }}>

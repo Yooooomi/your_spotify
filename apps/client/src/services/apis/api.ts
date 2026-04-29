@@ -99,37 +99,14 @@ export type ArtistStatsResponse = {
   artist: Artist;
   bestPeriod: {
     _id: DateId;
-    artist: {
-      _id: string;
-      artistInfos: {
-        _id: string;
-        trackId: string;
-        artistId: string;
-      };
-      year: number;
-      month: number;
-      day: number;
-      week: number;
-      hour: number;
-    };
     count: number;
     total: number;
   }[];
   firstLast: {
     first: TrackInfo & {
-      artistInfos: {
-        _id: string;
-        trackId: string;
-        artistId: string;
-      };
       track: TrackWithAlbum;
     };
     last: TrackInfo & {
-      artistInfos: {
-        _id: string;
-        trackId: string;
-        artistId: string;
-      };
       track: TrackWithAlbum;
     };
   };
@@ -155,7 +132,7 @@ export type ArtistStatsResponse = {
 
 export type TrackStatsResponse = {
   track: Track;
-  artist: Artist;
+  artists: Artist[];
   album: Album;
   listenedOn: {
     count: number;
@@ -377,6 +354,7 @@ export const api = {
         album: Album;
         artist: Artist;
         track: Track;
+        track_artists: Artist[];
       }[]
     >("/spotify/top/songs", {
       start,
@@ -409,6 +387,7 @@ export const api = {
         total_duration_ms: number;
         artist: Artist;
         album: Album;
+        album_artists: Artist[];
       }[]
     >("/spotify/top/albums", {
       start,
