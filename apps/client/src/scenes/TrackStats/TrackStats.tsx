@@ -24,6 +24,9 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
   }
 
   const [bestPeriod, secondBestPeriod] = stats.bestPeriod;
+  const albumById = Object.fromEntries(
+    stats.listenedOn.map(item => [item.album.id, item.album]),
+  );
 
   return (
     <div>
@@ -68,6 +71,19 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
                   first={<InlineAlbum album={stats.album} size='normal' />}
                   second="Album"
                 />
+              </TitleCard>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TitleCard title="Listened on">
+                {stats.listenedOn.map(({ album, count }) => (
+                  <ImageTwoLines
+                    key={album.id}
+                    className={s.recentitem}
+                    image={<IdealImage images={album.images} size={48} />}
+                    first={<InlineAlbum album={album} size='normal' />}
+                    second={`${count} ${count === 1 ? "time" : "times"}`}
+                  />
+                ))}
               </TitleCard>
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -121,17 +137,20 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
           </Grid>
           <Grid size={{ lg: 6, xs: 12 }}>
             <TitleCard title="Recently played on">
-              {stats.recentHistory.map(info => (
-                <ImageTwoLines
-                  className={s.recentitem}
-                  key={info.id}
-                  image={<IdealImage images={stats.album.images} size={48} />}
-                  first={stats.track.name}
-                  second={DateFormatter.toMinuteHourDayMonthYear(
-                    new Date(info.played_at),
-                  )}
-                />
-              ))}
+              {stats.recentHistory.map(info => {
+                const album = albumById[info.albumId] ?? stats.album;
+                return (
+                  <ImageTwoLines
+                    className={s.recentitem}
+                    key={info._id}
+                    image={<IdealImage images={album.images} size={48} />}
+                    first={<InlineAlbum album={album} size='normal' />}
+                    second={DateFormatter.toMinuteHourDayMonthYear(
+                      new Date(info.played_at),
+                    )}
+                  />
+                );
+              })}
             </TitleCard>
           </Grid>
         </Grid>

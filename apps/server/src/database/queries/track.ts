@@ -64,6 +64,29 @@ export const getTrackRecentHistory = async (user: User, trackId: string) =>
     .limit(10)
     .sort({ played_at: -1 });
 
+export const getTrackListenedAlbums = async (user: User, trackId: string) => {
+  const res = await InfosModel.aggregate([
+    { $match: { owner: user._id, id: trackId } },
+    {
+      $group: {
+        _id: "$albumId",
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { count: -1, _id: 1 } },
+    {
+      $lookup: {
+        from: "albums",
+        localField: "_id",
+        foreignField: "id",
+        as: "album",
+      },
+    },
+    { $unwind: "$album" },
+  ]);
+  return res;
+};
+
 export const getTrackBySpotifyId = (id: string) => TrackModel.findOne({ id });
 
 export const checkBlacklistConsistency = () =>

@@ -157,6 +157,10 @@ export type TrackStatsResponse = {
   track: Track;
   artist: Artist;
   album: Album;
+  listenedOn: {
+    count: number;
+    album: Album;
+  }[];
   bestPeriod: {
     _id: DateId;
     count: number;

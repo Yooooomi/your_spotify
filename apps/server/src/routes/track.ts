@@ -5,6 +5,7 @@ import {
   getTracks,
   getTrackListenedCount,
   getTrackFirstAndLastListened,
+  getTrackListenedAlbums,
   bestPeriodOfTrack,
   getTrackRecentHistory,
   getRankOf,
@@ -48,10 +49,19 @@ router.get("/:id/stats", isLoggedOrGuest, async (req, res) => {
     getTrackListenedCount(user, id),
     getArtists([trackArtist]),
     getTrackFirstAndLastListened(user, track.id),
+    getTrackListenedAlbums(user, track.id),
     bestPeriodOfTrack(user, track.id),
     getTrackRecentHistory(user, track.id),
   ];
-  const [[album], count, [artist], firstLast, bestPeriod, recentHistory] =
+  const [
+    [album],
+    count,
+    [artist],
+    firstLast,
+    listenedOn,
+    bestPeriod,
+    recentHistory,
+  ] =
     await Promise.all(promises);
   if (!count) {
     res.status(200).send({ code: "NEVER_LISTENED" });
@@ -61,6 +71,7 @@ router.get("/:id/stats", isLoggedOrGuest, async (req, res) => {
     track,
     artist,
     album,
+    listenedOn,
     bestPeriod,
     firstLast,
     recentHistory,
