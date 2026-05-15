@@ -1,6 +1,10 @@
 packages:
   - apps/*
 
+allowBuilds:
+  core-js: set this to true or false
+  unrs-resolver: set this to true or false
+
 catalog:
   '@eslint/css': 0.14.1
   '@eslint/js': 9.39.2

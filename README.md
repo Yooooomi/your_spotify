@@ -56,10 +56,10 @@ services:
     depends_on:
       - mongo
     environment:
-      API_ENDPOINT: http://localhost:8080 # This MUST be included as a valid URL in the spotify dashboard (see below)
+      API_ENDPOINT: http://localhost:8080
       CLIENT_ENDPOINT: http://localhost:3000
-      SPOTIFY_PUBLIC: __your_spotify_client_id__
-      SPOTIFY_SECRET: __your_spotify_secret__
+      EMAIL: __spotify_email__
+      COOKIES: __spotify_cookies__
   mongo:
     container_name: mongo
     image: mongo:6
@@ -87,8 +87,8 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | :--- | :--- | :--- |
 | CLIENT_ENDPOINT       | REQUIRED | The endpoint of your web application |
 | API_ENDPOINT          | REQUIRED | The endpoint of your server |
-| SPOTIFY_PUBLIC        | REQUIRED | The public key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
-| SPOTIFY_SECRET        | REQUIRED | The secret key of your Spotify application (cf [Creating the Spotify Application](#creating-the-spotify-application)) |
+| EMAIL                | REQUIRED | Spotify account email used by the Flask proxy |
+| COOKIES              | REQUIRED | Spotify browser cookie dump used by the Flask proxy |
 | TIMEZONE              | Europe/Paris | The timezone of your stats, only affects read requests since data is saved with UTC time |
 | MONGO_ENDPOINT        | mongodb://mongo:27017/your_spotify | The endpoint of the Mongo database, where **mongo** is the name of your service in the compose file |
 | PROMETHEUS_USERNAME             | _not defined_ | Prometheus basic auth username (see [here](https://github.com/Yooooomi/your_spotify/tree/master/apps/server#prometheus)) |
@@ -111,8 +111,9 @@ For example, a value of `origin1,origin2` will allow `origin1` and `origin2`.
 
 # Creating the Spotify Application
 
-For **YourSpotify** to work you need to provide a Spotify application **public** AND **secret** to the server environment.
-To do so, you need to create a **Spotify application** [here](https://developer.spotify.com/dashboard/applications).
+For the current proxy-based login flow, **Spotify application client credentials are no longer required**. Instead, the Flask proxy uses `EMAIL` and `COOKIES` to authenticate with Spotify.
+
+If you still want to use the legacy Spotify OAuth flow, create a Spotify application [here](https://developer.spotify.com/dashboard/applications) and set the redirect URI to your server callback endpoint.
 
 1. Click on **Create app**.
 2. Fill out all the information.
@@ -121,8 +122,7 @@ To do so, you need to create a **Spotify application** [here](https://developer.
 4. Check **Web API**
 5. Check **I understand and agree**
 6. Hit **Settings** at the top right corner
-7. Copy the **public** and the **secret** key into your `docker-compose` file under the name of `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET`
-   respectively.
+7. (Legacy only) Copy the public and secret key into your `docker-compose` file as `SPOTIFY_PUBLIC` and `SPOTIFY_SECRET` if you choose to use the old OAuth flow.
 8. Once you have created your application, Spotify wants you to register the users that will be able to access the application. (You don't need to do that for the account that created the application)
    1. Click the **User Management** button
    2. Enter the required information, a name and the email the user's Spotify account has been created with.

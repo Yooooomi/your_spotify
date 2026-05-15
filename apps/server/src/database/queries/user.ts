@@ -37,14 +37,17 @@ export const createUser = (
   username: string,
   spotifyId: string,
   admin: boolean,
+  email: string | null = null,
 ) =>
   UserModel.create({
     username,
+    email,
     admin,
     spotifyId,
     accessToken: "",
     refreshToken: "",
     expiresIn: 0,
+    cookieDump: null,
     // Set last timestamp to yesterday so that we already have a pull of tracks
     lastTimestamp: Date.now() - 1000 * 60 * 60 * 24,
     settings: {

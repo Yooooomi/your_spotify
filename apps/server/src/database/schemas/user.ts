@@ -5,12 +5,14 @@ export type DarkModeType = "follow" | "dark" | "light";
 export interface User {
   _id: Types.ObjectId;
   username: string;
+  email: string | null;
   admin: boolean;
   spotifyId: string | null;
   expiresIn: number;
   accessToken: string | null;
   refreshToken: string | null;
   lastTimestamp: number;
+  cookieDump?: Record<string, string | string[]> | null;
   tracks: Schema.Types.ObjectId[];
   settings: {
     historyLine: boolean;
@@ -30,11 +32,13 @@ export interface User {
 export const UserSchema = new Schema<User>(
   {
     username: { type: String, required: true },
+    email: { type: String, default: null },
     admin: { type: Boolean, default: false },
     spotifyId: { type: String, required: true, unique: true, index: true },
     expiresIn: { type: Number, default: 0 },
     accessToken: { type: String, default: null },
     refreshToken: { type: String, default: null },
+    cookieDump: { type: Schema.Types.Mixed, default: null },
     lastTimestamp: { type: Number, default: 0 },
     tracks: {
       type: [Schema.Types.ObjectId],

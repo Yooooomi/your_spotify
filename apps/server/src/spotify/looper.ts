@@ -32,7 +32,7 @@ const loop = async (user: User) => {
   do {
     const response = await retryPromise(
        
-      () => spotifyApi.raw(nextUrl),
+      () => spotifyApi.recentlyPlayed(nextUrl),
       RETRY,
       30,
     );
