@@ -39,10 +39,10 @@ export const getAlbumsWithoutArtist = () =>
       $lookup: {
         from: "artists",
         as: "full_artists",
-        localField: "album",
+        localField: "artists",
         foreignField: "id",
       },
     },
-    { $unwind: "$full_artists" },
+    { $unwind: { path: "$full_artists", preserveNullAndEmptyArrays: true } },
     { $match: { full_artists: null } },
   ]);
