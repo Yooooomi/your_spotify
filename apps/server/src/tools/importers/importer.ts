@@ -14,11 +14,11 @@ import { PrivacyImporter } from "./privacy";
 import {
   HistoryImporter,
   ImporterStateFromType,
-  ImporterStateTypes,
+  ImporterStateType,
 } from "./types";
 
 const importers: {
-  [typ in ImporterStateTypes]: (user: User) => HistoryImporter<typ>;
+  [typ in ImporterStateType]: (user: User) => HistoryImporter<typ>;
 } = {
   privacy: (user: User) => new PrivacyImporter(user),
   "full-privacy": (user: User) => new FullPrivacyImporter(user),
@@ -57,7 +57,7 @@ export async function cleanupImport(existingStateId: string) {
   }
 }
 
-export async function runImporter<T extends ImporterStateTypes>(
+export async function runImporter<T extends ImporterStateType>(
   existingStateId: string | null,
   name: T,
   userId: string,
@@ -116,7 +116,7 @@ export async function runImporter<T extends ImporterStateTypes>(
         metadata: requiredInitData,
         status: "progress",
       } as ImporterStateFromType<T>;
-      existingState = (await createImporterState<T>(
+      existingState = (await createImporterState(
         userId,
         data,
       )) as any as ImporterStateFromType<T>;

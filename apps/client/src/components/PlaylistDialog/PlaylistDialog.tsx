@@ -96,7 +96,7 @@ export default function PlaylistDialog() {
       <Text className={s.text} element="div" size='normal'>
         Either select a playlist to add the songs to, or create a new one.
       </Text>
-      <Box borderBottom={1} borderColor="divider" className={s.tabs}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }} className={s.tabs}>
         <Tabs value={tab} onChange={(_, value) => setTab(value)}>
           <Tab label="Create" />
           <Tab label="Add to existing" />

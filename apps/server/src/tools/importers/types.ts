@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 
-export interface HistoryImporter<T extends ImporterState["type"]> {
+export interface HistoryImporter<T extends ImporterStateType> {
   init: (
     existingState: ImporterStateFromType<T> | null,
     requiredData: ImporterStateFromType<T>["metadata"],
@@ -25,25 +25,20 @@ export interface BaseImporterState {
   total: number;
   status: ImporterStateStatus;
 }
-
-export enum ImporterStateTypes {
-  privacy = "privacy",
-  fullPrivacy = "full-privacy",
-}
-export const importerStateTypes = Object.values(ImporterStateTypes);
-
 export interface PrivacyImporterState extends BaseImporterState {
-  type: ImporterStateTypes.privacy;
+  type: "privacy";
   metadata: string[];
 }
 
 export interface FullPrivacyImporterState extends BaseImporterState {
-  type: ImporterStateTypes.fullPrivacy;
+  type: "full-privacy";
   metadata: string[];
 }
 
 export type ImporterState = PrivacyImporterState | FullPrivacyImporterState;
-export type ImporterStateFromType<T extends ImporterStateTypes> = Extract<
+export type ImporterStateType = ImporterState["type"]
+
+export type ImporterStateFromType<T extends ImporterStateType> = Extract<
   ImporterState,
   { type: T }
 >;

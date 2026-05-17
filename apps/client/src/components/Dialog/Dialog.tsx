@@ -3,7 +3,6 @@ import {
   DialogProps as MDialogProps,
   DialogContent,
   DialogTitle,
-  Grow,
 } from "@mui/material";
 
 interface DialogProps extends MDialogProps {
@@ -25,8 +24,6 @@ export default function Dialog({
       open={open}
       maxWidth="xl"
       onClose={onClose}
-      TransitionComponent={Grow}
-       
       {...other}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>

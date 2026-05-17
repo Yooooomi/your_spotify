@@ -3,7 +3,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import {
   LocalizationProvider,
   DateCalendar,
-  PickersDayProps,
+  PickerDayProps,
 } from "@mui/x-date-pickers";
 import { MenuItem } from "@mui/material";
 import clsx from "clsx";
@@ -111,11 +111,11 @@ function DayWrapper({
   setHover,
   hover,
   outsideCurrentMonth,
-}: PickersDayProps & DayWrapperAdditionalProps) {
+}: PickerDayProps & DayWrapperAdditionalProps) {
   return (
     <Day
       key={day.getTime()}
-      outsideCurrentMonth={outsideCurrentMonth}
+      outsideCurrentMonth={outsideCurrentMonth ?? false}
       onClick={internSetValue}
       value={rangeValue}
       onHover={setHover}
@@ -196,18 +196,18 @@ export default function RangePicker({ value, onChange }: RangePickerProps) {
   const [hover, setHover] = useState<Date | undefined>();
 
   const internSetValue = (date: Date) => {
-      const [first, second] = value;
-      if (!first) {
-        return onChange([date, undefined]);
-      }
-      if (first && second) {
-        return onChange([date, undefined]);
-      }
-      if (first.getTime() < date.getTime()) {
-        return onChange([first, date]);
-      }
-      return onChange([date, first]);
-    };
+    const [first, second] = value;
+    if (!first) {
+      return onChange([date, undefined]);
+    }
+    if (first && second) {
+      return onChange([date, undefined]);
+    }
+    if (first.getTime() < date.getTime()) {
+      return onChange([first, date]);
+    }
+    return onChange([date, first]);
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>

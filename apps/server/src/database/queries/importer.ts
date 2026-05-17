@@ -2,21 +2,21 @@ import {
   ImporterState,
   ImporterStateFromType,
   ImporterStateStatus,
-  ImporterStateTypes,
+  ImporterStateType,
 } from "../../tools/importers/types";
 import { ImporterStateModel } from "../Models";
 
-export const createImporterState = <T extends ImporterStateTypes>(
+export const createImporterState = (
   userId: string,
-  state: Omit<ImporterStateFromType<T>, "_id" | "user">,
-) => ImporterStateModel.create({ user: userId, ...state });
+  state: Omit<ImporterState, "_id" | "user">,
+) => ImporterStateModel.create({ user: userId, ...state } as Omit<ImporterState, "_id" | "user">);
 
 export const setImporterStateStatus = (
   id: string,
   status: ImporterStateStatus,
 ) => ImporterStateModel.findByIdAndUpdate(id, { status });
 
-export const getImporterState = <T extends ImporterStateTypes>(id: string) =>
+export const getImporterState = <T extends ImporterStateType>(id: string) =>
   ImporterStateModel.findById<ImporterStateFromType<T>>(id);
 
 export const setImporterStateMetadata = <T extends ImporterState["metadata"]>(

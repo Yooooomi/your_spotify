@@ -1,6 +1,5 @@
 {
   "extends": ["@your_spotify/dev/tsconfig.json"],
-  "include": ["src", "src/types.d.ts"],
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx"

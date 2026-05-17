@@ -48,15 +48,19 @@ export default function AlbumStats({ stats }: AlbumStatsProps) {
         </div>
         <Grid
           container
-          justifyContent="flex-start"
-          alignItems="flex-start"
+          sx={{
+            justifyContent: "flex-start",
+            alignItems: "flex-start"
+          }}
           spacing={2}
           style={{ marginTop: 0 }}>
           <Grid
             container
             size={{ xs: 12, lg: 6 }}
-            justifyContent="flex-start"
-            alignItems="flex-start"
+            sx={{
+              justifyContent: "flex-start",
+              alignItems: "flex-start"
+            }}
             spacing={2}>
             <Grid size={{ xs: 12 }}>
               <TitleCard title="Context" contentClassName={s.context}>

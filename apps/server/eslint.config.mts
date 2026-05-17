@@ -16,7 +16,6 @@ export default defineConfig([
       parserOptions: {
       // @ts-expect-error - missing in types
         ...config.languageOptions?.parserOptions,
-      // @ts-expect-error - missing in types
         tsconfigRootDir: import.meta.dirname,
       },
     },

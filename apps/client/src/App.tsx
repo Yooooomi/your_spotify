@@ -19,7 +19,6 @@ import Songs from "./scenes/Tops/Songs";
 import CollaborativeSongs from "./scenes/Collaborative/Affinity/Songs";
 import CollaborativeAlbums from "./scenes/Collaborative/Affinity/Albums";
 import CollaborativeArtists from "./scenes/Collaborative/Affinity/Artists";
-import "./App.css";
 import RegistrationsDisabled from "./scenes/Error/RegistrationsDisabled";
 import Affinity from "./scenes/Collaborative/Affinity";
 import { useTheme } from "./services/theme";
@@ -32,6 +31,7 @@ import Benchmarks from "./scenes/Benchmarks";
 import ApiEndpointSetToFronted from "./scenes/Error/ApiEndpointSetToFronted";
 import { useDetectPointerType } from "./services/pointer";
 import { ShortcutsContextProvider } from "./services/shortcuts";
+import "./App.css";
 
 function App() {
   const dark = useSelector(selectDarkMode);
