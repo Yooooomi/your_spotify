@@ -7,7 +7,10 @@ export const getTracks = (tracksId: string[]) =>
   TrackModel.find({ id: { $in: tracksId } });
 
 export const searchTrack = (str: string) =>
-  TrackModel.find({ name: { $regex: new RegExp(str, "i") } })
+  TrackModel.find({
+    name: { $regex: new RegExp(str, "i") },
+    mergedInto: { $exists: false },
+  })
     .populate("full_album")
     .populate("full_artists");
 
