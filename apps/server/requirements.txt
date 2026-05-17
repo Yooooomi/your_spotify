@@ -1,2 +1,2 @@
 Flask>=2.3,<3
-spotipyFree>=1.4.2,<2
+spotipyFree>=1.5.0,<2

@@ -68,7 +68,7 @@ def recently_played():
 @app.route("/api/me")
 def me():
     sp = get_spotify_client()
-    data = sp.current_user()
+    data = sp.me()
     return jsonify(data)
 
 
