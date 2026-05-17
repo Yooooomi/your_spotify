@@ -18,6 +18,7 @@ const validators = {
   MONGO_NO_ADMIN_RIGHTS: z.preprocess(toBoolean, z.boolean().optional()),
   PROMETHEUS_USERNAME: z.string().optional(),
   PROMETHEUS_PASSWORD: z.string().optional(),
+  SPOTIFY_API_DELAY_MS: z.preprocess(toNumber, z.number().optional()),
 } as const;
 
 const validatedEnv: Record<string, any> = {};

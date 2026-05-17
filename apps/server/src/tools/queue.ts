@@ -9,6 +9,8 @@ interface QueueItem<T> {
 export class PromiseQueue {
   private q: QueueItem<any>[] = [];
 
+  constructor(private readonly delay = 1000) {}
+
   execQueue = async () => {
     while (this.q.length > 0) {
       const item = this.q[0];
@@ -21,7 +23,7 @@ export class PromiseQueue {
       } catch (e) {
         item.onError(e);
       }
-      await wait(1000);
+      await wait(this.delay);
       this.q.shift();
     }
   };

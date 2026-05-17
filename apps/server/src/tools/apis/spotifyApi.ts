@@ -8,8 +8,9 @@ import { Spotify } from "../oauth/Provider";
 import { PromiseQueue } from "../queue";
 import { SpotifyAlbum } from "../../database/schemas/album";
 import { SpotifyArtist } from "../../database/schemas/artist";
+import { getWithDefault } from "../env";
 
-export const squeue = new PromiseQueue();
+export const squeue = new PromiseQueue(getWithDefault("SPOTIFY_API_DELAY_MS", 2000));
 
 interface SpotifyMe {
 	id: string;
