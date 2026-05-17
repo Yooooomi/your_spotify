@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "build": "rsbuild build",
-    "buildold": "tsc && cp -r src/public build/",
     "start": "node build/index.js",
     "typecheck": "tsc --noEmit",
     "dev": "concurrently \"rsbuild dev\" \"nodemon build/index.js\"",
