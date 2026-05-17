@@ -27,9 +27,9 @@ const upload = multer({
 
 router.post(
   "/import/privacy",
-  upload.array("imports", 50),
   logged,
   notAlreadyImporting,
+  upload.array("imports", 50),
   async (req, res) => {
     const { files, user } = req as LoggedRequest;
 
@@ -62,9 +62,9 @@ router.post(
 
 router.post(
   "/import/full-privacy",
-  upload.array("imports", 50),
   logged,
   notAlreadyImporting,
+  upload.array("imports", 50),
   async (req, res) => {
     const { files, user } = req as LoggedRequest;
 
