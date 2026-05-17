@@ -89,6 +89,7 @@ router.get("/spotify/callback", withGlobalPreferences, async (req, res) => {
 
     const client = Spotify.getHttpClient(infos.accessToken);
     const { data: spotifyMe } = await client.get("/me");
+    const cookieDump = req.cookies ?? null;
     let user = await getUserFromField("spotifyId", spotifyMe.id, false);
     if (!user) {
       if (!globalPreferences.allowRegistrations) {
@@ -99,9 +100,15 @@ router.get("/spotify/callback", withGlobalPreferences, async (req, res) => {
         spotifyMe.display_name,
         spotifyMe.id,
         nbUsers === 0,
+        spotifyMe.email ?? null,
       );
     }
-    await storeInUser("_id", user._id, infos);
+    await storeInUser("_id", user._id, {
+      ...infos,
+      username: spotifyMe.display_name,
+      email: spotifyMe.email ?? null,
+      cookieDump,
+    });
     const privateData = await getPrivateData();
     if (!privateData?.jwtPrivateKey) {
       throw new Error("No private data found, cannot sign JWT");

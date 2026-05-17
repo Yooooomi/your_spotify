@@ -9,10 +9,10 @@ services:
     depends_on:
       - mongo
     environment:
-      API_ENDPOINT: http://127.0.0.1:8080 # This MUST be included as a valid URL in the spotify dashboard
+      API_ENDPOINT: http://127.0.0.1:8080
       CLIENT_ENDPOINT: http://127.0.0.1:3000
-      SPOTIFY_PUBLIC: __your_spotify_client_id__
-      SPOTIFY_SECRET: __your_spotify_secret__
+      EMAIL: __spotify_email__
+      COOKIES: __spotify_cookies__
 
   mongo:
     container_name: mongo

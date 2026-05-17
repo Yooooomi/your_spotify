@@ -2,8 +2,8 @@ import { get } from "../env";
 
 export const credentials = {
   spotify: {
-    public: get("SPOTIFY_PUBLIC"),
-    secret: get("SPOTIFY_SECRET"),
+    public: process.env.SPOTIFY_PUBLIC ?? "",
+    secret: process.env.SPOTIFY_SECRET ?? "",
     scopes: [
       "user-read-private",
       "user-read-email",

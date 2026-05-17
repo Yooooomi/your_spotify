@@ -1,10 +1,8 @@
-import { AxiosError, AxiosInstance } from "axios";
+import axios, { AxiosInstance } from "axios";
 import { Types } from "mongoose";
-import { getUserFromField, storeInUser } from "../../database";
+import { getUserFromField } from "../../database";
 import { SpotifyTrack } from "../../database/schemas/track";
-import { logger } from "../logger";
-import { chunk, wait } from "../misc";
-import { Spotify } from "../oauth/Provider";
+import { getWithDefault } from "../env";
 import { PromiseQueue } from "../queue";
 import { SpotifyAlbum } from "../../database/schemas/album";
 import { SpotifyArtist } from "../../database/schemas/artist";
@@ -29,200 +27,201 @@ export class SpotifyAPI {
 
 	constructor(private readonly userId: string) {}
 
-	private async checkToken() {
-		// Refresh the token if it expires in less than two minutes (1000ms * 120)
-		const user = await getUserFromField(
-			"_id",
-			new Types.ObjectId(this.userId),
-			true,
-		);
-		let access: string | null | undefined = user?.accessToken;
-		if (!user) {
-			throw new Error("User not found");
-		}
-		if (!user.spotifyId) {
-			throw new Error("User has no spotify id");
-		}
-		if (Date.now() > user.expiresIn - 1000 * 120) {
-			const token = user.refreshToken;
-			if (!token) {
-				return;
-			}
-			const infos = await Spotify.refresh(token);
+private async prepareClient() {
+    const user = await getUserFromField(
+      "_id",
+      new Types.ObjectId(this.userId),
+      true,
+    );
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (!user.spotifyId) {
+      throw new Error("User has no spotify id");
+    }
 
-			await storeInUser("_id", user._id, infos);
-			logger.info(`Refreshed token for ${user.username}`);
-			access = infos.accessToken;
-		}
-		if (access) {
-			this.client = Spotify.getHttpClient(access);
-		} else {
-			throw new Error("Could not get any access token");
-		}
+    const accessToken = user.accessToken;
+    const refreshToken = user.refreshToken;
+    const proxyEndpoint = getWithDefault(
+      "SPOTIPY_PROXY_ENDPOINT",
+      "http://localhost:5000",
+    );
+    const headers: Record<string, string> = {};
+
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+    if (refreshToken) {
+      headers["X-Spotify-Refresh-Token"] = refreshToken;
+    }
+
+    this.client = axios.create({
+      baseURL: proxyEndpoint,
+      headers,
+    });
 	}
 
-	public async raw(url: string) {
+	public async recentlyPlayed(url?: string) {
 		const res = await squeue.queue(async () => {
-			await this.checkToken();
-			return this.client.get(url);
-		});
+      await this.prepareClient();
+      const params: any = {};
+      
+      if (url) {
+        // Parse URL parameters like /me/player/recently-played?after=123&limit=50
+        const urlObj = new URL(url, 'https://api.spotify.com');
+        const after = urlObj.searchParams.get('after');
+        const limit = urlObj.searchParams.get('limit');
+        if (after) params.after = after;
+        if (limit) params.limit = limit;
+      }
+      
+      return this.client.get("/api/recentlyPlayed", { params });
+    });
 
-		return res;
-	}
+    return res;
+  }
 
-	public async playTrack(trackUri: string) {
-		await squeue.queue(async () => {
-			await this.checkToken();
-			return this.client.put("https://api.spotify.com/v1/me/player/play", {
-				uris: [trackUri],
-			});
-		});
-	}
+  public async playTrack(trackUri: string) {
+    await squeue.queue(async () => {
+      await this.prepareClient();
+      return this.client.post("/api/play", {
+        track_uri: trackUri,
+      });
+    });
+  }
 
-	public async me() {
-		const res = await squeue.queue(async () => {
-			await this.checkToken();
-			return this.client.get("/me");
-		});
-		return res.data as SpotifyMe;
-	}
+  public async me() {
+    const res = await squeue.queue(async () => {
+      await this.prepareClient();
+      return this.client.get("/api/me");
+    });
+    return res.data as SpotifyMe;
+  }
 
-	public async playlists() {
-		const items: SpotifyPlaylist[] = [];
+  public async playlists() {
+    const res = await squeue.queue(async () => {
+      await this.prepareClient();
+      return this.client.get("/api/playlists");
+    });
+    return res.data.items as SpotifyPlaylist[];
+  }
 
-		let nextUrl = "/me/playlists?limit=50";
-		while (nextUrl) {
-			const thisUrl = nextUrl;
+  public async addToPlaylist(id: string, ids: string[]) {
+    await squeue.queue(async () => {
+      await this.prepareClient();
+      return this.client.post(`/api/playlists/${id}/tracks`, {
+        ids,
+      });
+    });
+  }
 
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				return this.client.get(thisUrl);
-			});
-			nextUrl = res.data.next;
-			items.push(...res.data.items);
-		}
-		return items;
-	}
+  public async createPlaylist(name: string, ids: string[]) {
+    await squeue.queue(async () => {
+      await this.prepareClient();
+      return this.client.post(`/api/playlists`, {
+        name,
+        ids,
+      });
+    });
+  }
 
-	private async internAddToPlaylist(id: string, ids: string[]) {
-		const chunks = chunk(ids, 100);
-		for (let i = 0; i < chunks.length; i += 1) {
-			const chk = chunks[i]!;
+  async getTrack(id: string) {
+    try {
+      const res = await squeue.queue(async () => {
+        await this.prepareClient();
+        return this.client.get(`/api/tracks/${id}`);
+      });
+      return res.data as SpotifyTrack;
+    } catch {
+      return undefined;
+    }
+  }
 
-			await this.client.post(`/playlists/${id}/tracks`, {
-				uris: chk.map((trackId) => `spotify:track:${trackId}`),
-			});
-			if (i !== chunks.length - 1) {
-				// Cannot queue inside queue, will cause infinite wait
+  async getTracks(spotifyIds: string[]) {
+    try {
+      const res = await squeue.queue(async () => {
+        await this.prepareClient();
+        return this.client.get(`/api/tracks`, {
+          params: { ids: spotifyIds.join(",") },
+        });
+      });
+      return res.data as Array<SpotifyTrack | undefined>;
+    } catch {
+      return spotifyIds.map(() => undefined);
+    }
+  }
 
-				await wait(1000);
-			}
-		}
-	}
+  async getAlbum(id: string) {
+    try {
+      const res = await squeue.queue(async () => {
+        await this.prepareClient();
+        return this.client.get(`/api/albums/${id}`);
+      });
+      return res.data as SpotifyAlbum;
+    } catch {
+      return undefined;
+    }
+  }
 
-	public async addToPlaylist(id: string, ids: string[]) {
-		await squeue.queue(async () => {
-			await this.checkToken();
-			return this.internAddToPlaylist(id, ids);
-		});
-	}
+  async getAlbums(spotifyIds: string[]) {
+    try {
+      const res = await squeue.queue(async () => {
+        await this.prepareClient();
+        return this.client.get(`/api/albums`, {
+          params: { ids: spotifyIds.join(",") },
+        });
+      });
+      return res.data as Array<SpotifyAlbum | undefined>;
+    } catch {
+      return spotifyIds.map(() => undefined);
+    }
+  }
 
-	public async createPlaylist(name: string, ids: string[]) {
-		await squeue.queue(async () => {
-			await this.checkToken();
-			const { data } = await this.client.post(`/me/playlists`, {
-				name,
-				public: true,
-				collaborative: false,
-				description: "",
-			});
-			return this.internAddToPlaylist(data.id, ids);
-		});
-	}
+  async getArtist(id: string) {
+    try {
+      const res = await squeue.queue(async () => {
+        await this.prepareClient();
+        return this.client.get(`/api/artists/${id}`);
+      });
+      return res.data as SpotifyArtist;
+    } catch {
+      return undefined;
+    }
+  }
 
-	async getTrack(id: string) {
-		try {
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				return this.client.get(`/tracks/${id}`);
-			});
-			return res.data as SpotifyTrack;
-		} catch {
-			return undefined;
-		}
-	}
+  async getArtists(spotifyIds: string[]) {
+    try {
+      const res = await squeue.queue(async () => {
+        await this.prepareClient();
+        return this.client.get(`/api/artists`, {
+          params: { ids: spotifyIds.join(",") },
+        });
+      });
+      return res.data as Array<SpotifyArtist | undefined>;
+    } catch {
+      return spotifyIds.map(() => undefined);
+    }
+  }
 
-	async getTracks(spotifyIds: string[]) {
-		const tracks: (SpotifyTrack | undefined)[] = [];
-		for (const id of spotifyIds) {
-			const track = await this.getTrack(id);
-			tracks.push(track);
-		}
-		return tracks;
-	}
-
-	async getAlbum(id: string) {
-		try {
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				return this.client.get(`/albums/${id}`);
-			});
-			return res.data as SpotifyAlbum;
-		} catch {
-			return undefined;
-		}
-	}
-
-	async getAlbums(spotifyIds: string[]) {
-		const albums: (SpotifyAlbum | undefined)[] = [];
-		for (const id of spotifyIds) {
-			const album = await this.getAlbum(id);
-			albums.push(album);
-		}
-		return albums;
-	}
-
-	async getArtist(id: string) {
-		try {
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				return this.client.get(`/artists/${id}`);
-			});
-			return res.data as SpotifyArtist;
-		} catch {
-			return undefined;
-		}
-	}
-
-	async getArtists(spotifyIds: string[]) {
-		const artists: (SpotifyArtist | undefined)[] = [];
-		for (const id of spotifyIds) {
-			const artist = await this.getArtist(id);
-			artists.push(artist);
-		}
-		return artists;
-	}
-
-	public async search(track: string, artist: string) {
-		try {
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				const limitedTrack = track.slice(0, 100);
-				const limitedArtist = artist.slice(0, 100);
-				return this.client.get(
-					`/search?q=track:${encodeURIComponent(
-						limitedTrack,
-					)}+artist:${encodeURIComponent(limitedArtist)}&type=track&limit=10`,
-				);
-			});
-			return res.data.tracks.items[0] as SpotifyTrack;
-		} catch (e) {
-			if (e instanceof AxiosError) {
-				if (e.response?.status === 404) {
-					return undefined;
-				}
-			}
-			throw e;
-		}
-	}
+  public async search(track: string, artist: string) {
+    try {
+      const res = await squeue.queue(async () => {
+        await this.prepareClient();
+        return this.client.get(`/api/search`, {
+          params: {
+            track: track.slice(0, 100),
+            artist: artist.slice(0, 100),
+          },
+        });
+      });
+      return res.data as SpotifyTrack;
+    } catch (e: any) {
+      if (axios.isAxiosError(e)) {
+        if (e.response?.status === 404) {
+          return undefined;
+        }
+      }
+      throw e;
+    }
+  }
 }
