@@ -18,7 +18,7 @@ COPY apps/client/package.json apps/client/package.json
 COPY apps/client/tsconfig.json apps/client/tsconfig.json
 COPY apps/client/rsbuild.config.ts apps/client/rsbuild.config.ts
 
-RUN CI=true pnpm install --frozen-lockfile
+RUN CI=true pnpm install --frozen-lockfile --dangerously-allow-all-builds
 
 COPY apps/client/public apps/client/public
 COPY apps/client/src apps/client/src

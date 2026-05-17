@@ -20,7 +20,7 @@ services:
       # OFFLINE_DEV_ID: true
 
   mongo:
-    image: mongo:6
+    image: mongo:8
     # logging:
     #   driver: none
     volumes:

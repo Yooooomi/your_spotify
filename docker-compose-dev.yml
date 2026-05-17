@@ -22,9 +22,7 @@ services:
       # OFFLINE_DEV_ID: true
 
   mongo:
-    image: mongo:6
-    logging:
-      driver: none
+    image: mongo:8
     volumes:
       - ./db_data:/data/db
     ports:

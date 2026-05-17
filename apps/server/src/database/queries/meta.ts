@@ -33,5 +33,5 @@ export async function setFeatureCompatibilityVersion(version: string) {
     throw new Error("Not connected to database, this should not happen");
   }
   const admin = mongoose.connection.db.admin();
-  await admin.command({ setFeatureCompatibilityVersion: version });
+  await admin.command({ setFeatureCompatibilityVersion: version, confirm: true });
 }

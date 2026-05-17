@@ -84,7 +84,7 @@ if (LogLevelAccepts("info")) {
   app.use(morgan("dev"));
 }
 app.use(cookieParser());
-app.use("/static", express.static(path.join(__dirname, "public")));
+app.use("/static", express.static(path.join(import.meta.dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
