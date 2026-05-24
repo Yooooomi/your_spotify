@@ -1,16 +1,13 @@
-import { AxiosError, AxiosInstance } from "axios";
+import { AxiosError } from "axios";
 import { Types } from "mongoose";
 import { getUserFromField, storeInUser } from "../../database";
 import { SpotifyTrack } from "../../database/schemas/track";
 import { logger } from "../logger";
-import { chunk, wait } from "../misc";
+import { chunk } from "../misc";
 import { Spotify } from "../oauth/Provider";
-import { PromiseQueue } from "../queue";
 import { SpotifyAlbum } from "../../database/schemas/album";
 import { SpotifyArtist } from "../../database/schemas/artist";
-import { getWithDefault } from "../env";
-
-export const squeue = new PromiseQueue(getWithDefault("SPOTIFY_API_DELAY_MS", 2000));
+import { RetryAfterAwareAxiosClient } from "./spotifyApiClient";
 
 interface SpotifyMe {
 	id: string;
@@ -25,12 +22,11 @@ interface SpotifyPlaylist {
 }
 
 export class SpotifyAPI {
-	private client!: AxiosInstance;
+	private client!: RetryAfterAwareAxiosClient;
 
-	constructor(private readonly userId: string) {}
+	constructor(private readonly userId: string) { }
 
 	private async checkToken() {
-		// Refresh the token if it expires in less than two minutes (1000ms * 120)
 		const user = await getUserFromField(
 			"_id",
 			new Types.ObjectId(this.userId),
@@ -43,6 +39,7 @@ export class SpotifyAPI {
 		if (!user.spotifyId) {
 			throw new Error("User has no spotify id");
 		}
+		// Refresh the token if it expires in less than two minutes (1000ms * 120)
 		if (Date.now() > user.expiresIn - 1000 * 120) {
 			const token = user.refreshToken;
 			if (!token) {
@@ -62,28 +59,20 @@ export class SpotifyAPI {
 	}
 
 	public async raw(url: string) {
-		const res = await squeue.queue(async () => {
-			await this.checkToken();
-			return this.client.get(url);
-		});
-
-		return res;
+		await this.checkToken();
+		return this.client.instance.get(url);
 	}
 
 	public async playTrack(trackUri: string) {
-		await squeue.queue(async () => {
-			await this.checkToken();
-			return this.client.put("https://api.spotify.com/v1/me/player/play", {
-				uris: [trackUri],
-			});
+		await this.checkToken();
+		return this.client.instance.put("https://api.spotify.com/v1/me/player/play", {
+			uris: [trackUri],
 		});
 	}
 
 	public async me() {
-		const res = await squeue.queue(async () => {
-			await this.checkToken();
-			return this.client.get("/me");
-		});
+		await this.checkToken();
+		const res = await this.client.instance.get("/me");
 		return res.data as SpotifyMe;
 	}
 
@@ -94,58 +83,45 @@ export class SpotifyAPI {
 		while (nextUrl) {
 			const thisUrl = nextUrl;
 
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				return this.client.get(thisUrl);
-			});
+			await this.checkToken();
+			const res = await this.client.instance.get(thisUrl);
 			nextUrl = res.data.next;
 			items.push(...res.data.items);
 		}
 		return items;
 	}
 
-	private async internAddToPlaylist(id: string, ids: string[]) {
+	private async handleAddIdsToPlaylist(id: string, ids: string[]) {
 		const chunks = chunk(ids, 100);
 		for (let i = 0; i < chunks.length; i += 1) {
 			const chk = chunks[i]!;
 
-			await this.client.post(`/playlists/${id}/tracks`, {
+			await this.client.instance.post(`/playlists/${id}/tracks`, {
 				uris: chk.map((trackId) => `spotify:track:${trackId}`),
 			});
-			if (i !== chunks.length - 1) {
-				// Cannot queue inside queue, will cause infinite wait
-
-				await wait(1000);
-			}
 		}
 	}
 
 	public async addToPlaylist(id: string, ids: string[]) {
-		await squeue.queue(async () => {
-			await this.checkToken();
-			return this.internAddToPlaylist(id, ids);
-		});
+		await this.checkToken();
+		return this.handleAddIdsToPlaylist(id, ids);
 	}
 
 	public async createPlaylist(name: string, ids: string[]) {
-		await squeue.queue(async () => {
-			await this.checkToken();
-			const { data } = await this.client.post(`/me/playlists`, {
-				name,
-				public: true,
-				collaborative: false,
-				description: "",
-			});
-			return this.internAddToPlaylist(data.id, ids);
+		await this.checkToken();
+		const { data } = await this.client.instance.post(`/me/playlists`, {
+			name,
+			public: true,
+			collaborative: false,
+			description: "",
 		});
+		return this.handleAddIdsToPlaylist(data.id, ids);
 	}
 
 	async getTrack(id: string) {
 		try {
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				return this.client.get(`/tracks/${id}`);
-			});
+			await this.checkToken();
+			const res = await this.client.instance.get(`/tracks/${id}`);
 			return res.data as SpotifyTrack;
 		} catch {
 			return undefined;
@@ -163,10 +139,8 @@ export class SpotifyAPI {
 
 	async getAlbum(id: string) {
 		try {
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				return this.client.get(`/albums/${id}`);
-			});
+			await this.checkToken();
+			const res = await this.client.instance.get(`/albums/${id}`);
 			return res.data as SpotifyAlbum;
 		} catch {
 			return undefined;
@@ -184,10 +158,8 @@ export class SpotifyAPI {
 
 	async getArtist(id: string) {
 		try {
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				return this.client.get(`/artists/${id}`);
-			});
+			await this.checkToken();
+			const res = await this.client.instance.get(`/artists/${id}`);
 			return res.data as SpotifyArtist;
 		} catch {
 			return undefined;
@@ -205,16 +177,14 @@ export class SpotifyAPI {
 
 	public async search(track: string, artist: string) {
 		try {
-			const res = await squeue.queue(async () => {
-				await this.checkToken();
-				const limitedTrack = track.slice(0, 100);
-				const limitedArtist = artist.slice(0, 100);
-				return this.client.get(
-					`/search?q=track:${encodeURIComponent(
-						limitedTrack,
-					)}+artist:${encodeURIComponent(limitedArtist)}&type=track&limit=10`,
-				);
-			});
+			await this.checkToken();
+			const limitedTrack = track.slice(0, 100);
+			const limitedArtist = artist.slice(0, 100);
+			const res = await this.client.instance.get(
+				`/search?q=track:${encodeURIComponent(
+					limitedTrack,
+				)}+artist:${encodeURIComponent(limitedArtist)}&type=track&limit=10`,
+			);
 			return res.data.tracks.items[0] as SpotifyTrack;
 		} catch (e) {
 			if (e instanceof AxiosError) {

@@ -1,5 +1,6 @@
 
 import Axios from "axios";
+import { RetryAfterAwareAxiosClient } from "../apis/spotifyApiClient";
 import { generateRandomString } from "../crypto";
 import { credentials } from "./credentials";
 
@@ -86,7 +87,7 @@ export class Spotify extends Provider {
   };
 
   static getHttpClient = (accessToken: string) =>
-    Axios.create({
+    new RetryAfterAwareAxiosClient({
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,

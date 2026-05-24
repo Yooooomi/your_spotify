@@ -88,7 +88,7 @@ router.get("/spotify/callback", withGlobalPreferences, async (req, res) => {
     const infos = await Spotify.exchangeCode(code, cookie.state);
 
     const client = Spotify.getHttpClient(infos.accessToken);
-    const { data: spotifyMe } = await client.get("/me");
+    const { data: spotifyMe } = await client.instance.get("/me");
     let user = await getUserFromField("spotifyId", spotifyMe.id, false);
     if (!user) {
       if (!globalPreferences.allowRegistrations) {

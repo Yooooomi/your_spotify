@@ -34,7 +34,7 @@ export const getTracksWithoutAlbum = () =>
   ]);
 
 export const getAlbumsWithoutArtist = () =>
-  AlbumModel.aggregate<Album>([
+  AlbumModel.aggregate<Album & { index: number }>([
     {
       $lookup: {
         from: "artists",
@@ -43,6 +43,6 @@ export const getAlbumsWithoutArtist = () =>
         foreignField: "id",
       },
     },
-    { $unwind: { path: "$full_artists", preserveNullAndEmptyArrays: true } },
+    { $unwind: { path: "$full_artists", preserveNullAndEmptyArrays: true, includeArrayIndex: "index" } },
     { $match: { full_artists: null } },
   ]);

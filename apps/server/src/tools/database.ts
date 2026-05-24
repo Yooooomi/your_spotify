@@ -24,6 +24,8 @@ import {
 import { getWithDefault } from "./env";
 import { longWriteDbLock } from "./lock";
 import { logger } from "./logger";
+import { uniq } from "./misc";
+import { compact } from "./utils";
 
 export class Database {
   static async detectUpgrade() {
@@ -65,14 +67,14 @@ export class Database {
     }
     const allInfos = await getInfosWithoutTracks();
     if (allInfos.length > 0) {
-      const trackIds = allInfos.map(e => e.id);
+      const trackIds = uniq(allInfos.map(e => e.id));
       logger.info(`Fixing missing tracks (${trackIds.join(",")})`);
       const tracks = await getTracks(user._id.toString(), trackIds);
       await storeTrackAlbumArtist({ tracks });
     }
     const allTracks = await getTracksWithoutAlbum();
     if (allTracks.length > 0) {
-      const albumIds = allTracks.map(t => t.album);
+      const albumIds = uniq(allTracks.map(t => t.album));
       logger.info(
         `Fixing missing albums for tracks ${allTracks.map(track => track.id).join(",")} (${albumIds.join(",")})`,
       );
@@ -81,15 +83,16 @@ export class Database {
     }
     const allAlbums = await getAlbumsWithoutArtist();
     if (allAlbums.length > 0) {
-      const artistIds = allAlbums.map(t => t.artists).flat(1);
+      const artistIds = uniq(compact(allAlbums.map(t => t.artists[t.index])));
       logger.info(
         `Fixing missing artists for albums ${allAlbums.map(track => track.id).join(",")} (${artistIds.join(",")})`,
       );
       const artists = await getArtists(user._id.toString(), artistIds);
       await storeTrackAlbumArtist({ artists });
     }
-    if (allTracks.length > 0 || allAlbums.length > 0) {
-      logger.info("Database fixed");
+    if (allInfos.length > 0 || allTracks.length > 0 || allAlbums.length > 0) {
+      const total = allInfos.length + allTracks.length + allAlbums.length;
+      logger.info(`Database fixed ${total} missing entries`);
     }
     longWriteDbLock.unlock();
   }
