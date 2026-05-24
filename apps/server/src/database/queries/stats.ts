@@ -225,27 +225,30 @@ export const albumDateRatio = async (
   end: Date,
   timeSplit = Timesplit.day,
 ) => {
+  // infos already carries `albumId`, so the per-play `tracks` lookup is
+  // unnecessary. Group by (timeBucket, albumId) first to collapse repeat
+  // plays into a single row, then look the album up once per unique row.
   const res = await InfosModel.aggregate([
     ...basicMatch(user._id, start, end),
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
-        id: 1,
+        albumId: 1,
       },
     },
     {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
+      $group: {
+        _id: {
+          ...getGroupingByTimeSplit(timeSplit),
+          albumId: "$albumId",
+        },
+        plays: { $sum: 1 },
       },
     },
-    { $unwind: "$track" },
     {
       $lookup: {
         from: "albums",
-        localField: "track.album",
+        localField: "_id.albumId",
         foreignField: "id",
         as: "album",
       },
@@ -253,15 +256,20 @@ export const albumDateRatio = async (
     { $unwind: "$album" },
     {
       $group: {
-        _id: getGroupingByTimeSplit(timeSplit),
+        _id: getGroupingByTimeSplit(timeSplit, "_id"),
         totalYear: {
           $sum: {
-            $toInt: {
-              $arrayElemAt: [{ $split: ["$album.release_date", "-"] }, 0],
-            },
+            $multiply: [
+              "$plays",
+              {
+                $toInt: {
+                  $arrayElemAt: [{ $split: ["$album.release_date", "-"] }, 0],
+                },
+              },
+            ],
           },
         },
-        count: { $sum: 1 },
+        count: { $sum: "$plays" },
       },
     },
     {
@@ -283,72 +291,45 @@ export const featRatio = async (
   end: Date,
   timeSplit: Timesplit,
 ) => {
+  // infos already carries `artistIds`, so the per-play `tracks` lookup is
+  // unnecessary — compute the artist count from the denormalized field.
   const res = await InfosModel.aggregate([
     ...basicMatch(user._id, start, end),
     {
       $project: {
         ...getGroupByDateProjection(user.settings.timezone),
-        id: 1,
+        artistsSize: { $size: { $ifNull: ["$artistIds", []] } },
       },
     },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
-      },
-    },
-    { $unwind: "$track" },
     {
       $group: {
         _id: getGroupingByTimeSplit(timeSplit),
         1: {
           $sum: {
-            $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 1] },
-              then: 1,
-              else: 0,
-            },
+            $cond: { if: { $eq: ["$artistsSize", 1] }, then: 1, else: 0 },
           },
         },
         2: {
           $sum: {
-            $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 2] },
-              then: 1,
-              else: 0,
-            },
+            $cond: { if: { $eq: ["$artistsSize", 2] }, then: 1, else: 0 },
           },
         },
         3: {
           $sum: {
-            $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 3] },
-              then: 1,
-              else: 0,
-            },
+            $cond: { if: { $eq: ["$artistsSize", 3] }, then: 1, else: 0 },
           },
         },
         4: {
           $sum: {
-            $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 4] },
-              then: 1,
-              else: 0,
-            },
+            $cond: { if: { $eq: ["$artistsSize", 4] }, then: 1, else: 0 },
           },
         },
         5: {
           $sum: {
-            $cond: {
-              if: { $eq: [{ $size: "$track.artists" }, 5] },
-              then: 1,
-              else: 0,
-            },
+            $cond: { if: { $eq: ["$artistsSize", 5] }, then: 1, else: 0 },
           },
         },
-        totalPeople: { $sum: { $size: "$track.artists" } },
+        totalPeople: { $sum: "$artistsSize" },
         count: { $sum: 1 },
       },
     },
@@ -446,27 +427,24 @@ export const getBestArtistsPer = async (
   end: Date,
   timeSplit = Timesplit.day,
 ) => {
+  // infos already carries `primaryArtistId` and `durationMs`, so the per-play
+  // `tracks` lookup is unnecessary.
   const res = await InfosModel.aggregate([
     ...basicMatch(user._id, start, end),
     {
-      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
-    },
-    {
-      $lookup: {
-        from: "tracks",
-        localField: "id",
-        foreignField: "id",
-        as: "track",
+      $project: {
+        ...getGroupByDateProjection(user.settings.timezone),
+        primaryArtistId: 1,
+        durationMs: 1,
       },
     },
-    { $unwind: "$track" },
     {
       $group: {
         _id: {
           ...getGroupingByTimeSplit(timeSplit),
-          art: { $arrayElemAt: ["$track.artists", 0] },
+          art: "$primaryArtistId",
         },
-        count: { $sum: getTrackSumType(user) },
+        count: { $sum: getTrackSumType(user, "$durationMs") },
       },
     },
     { $sort: { count: -1, "_id.art": 1 } },
@@ -629,99 +607,92 @@ export const getLongestListeningSession = async (
   end: Date,
 ) => {
   const sessionBreakThreshold = 10 * 60 * 1000;
-  const subtract = {
-    $cond: [
-      "$$value.last",
-      {
-        $subtract: [
-          "$$this.played_at",
-          {
-            $add: ["$$value.last.played_at", "$$value.last.durationMs"],
-          },
-        ],
-      },
-      sessionBreakThreshold + 1,
-    ],
-  };
 
-  const item = { subtract, info: "$$this" };
-
+  // Sessionize by gap-detection: pull each row's previous played_at/durationMs
+  // via $shift, flag rows whose gap exceeds the threshold as session starts,
+  // then cumulative-sum the flags to assign a session id. This replaces an
+  // earlier $reduce + $concatArrays implementation that was O(N²) in the
+  // number of plays.
   const longestSessions = await InfosModel.aggregate([
     ...basicMatch(userId, start, end),
     { $sort: { played_at: 1 } },
     {
-      $group: {
-        _id: "$owner",
-        infos: { $push: "$$ROOT" },
+      $setWindowFields: {
+        partitionBy: "$owner",
+        sortBy: { played_at: 1 },
+        output: {
+          _prevPlayedAt: { $shift: { output: "$played_at", by: -1 } },
+          _prevDurationMs: { $shift: { output: "$durationMs", by: -1 } },
+        },
       },
     },
     {
       $addFields: {
-        distanceToLast: {
-          $reduce: {
-            input: "$infos",
-            initialValue: { distance: [], current: [] },
-            in: {
-              distance: {
-                $concatArrays: [
-                  "$$value.distance",
-                  {
-                    $cond: {
-                      if: {
-                        $gt: [subtract, sessionBreakThreshold],
-                      },
-                      then: ["$$value.current"],
-                      else: [],
-                    },
-                  },
-                ],
-              },
-              current: {
-                $cond: {
-                  if: {
-                    $gt: [subtract, sessionBreakThreshold],
-                  },
-                  then: [item],
-                  else: {
-                    $concatArrays: ["$$value.current", [item]],
-                  },
-                },
-              },
-              last: "$$this",
+        subtract: {
+          $cond: [
+            { $ifNull: ["$_prevPlayedAt", false] },
+            {
+              $subtract: [
+                "$played_at",
+                { $add: ["$_prevPlayedAt", "$_prevDurationMs"] },
+              ],
             },
+            sessionBreakThreshold + 1,
+          ],
+        },
+      },
+    },
+    {
+      $setWindowFields: {
+        partitionBy: "$owner",
+        sortBy: { played_at: 1 },
+        output: {
+          _sessionId: {
+            $sum: {
+              $cond: [{ $gt: ["$subtract", sessionBreakThreshold] }, 1, 0],
+            },
+            window: { documents: ["unbounded", "current"] },
           },
         },
       },
     },
-    { $unset: ["infos", "distanceToLast.last"] },
     {
-      $addFields: {
-        "distanceToLast.distance": {
-          $concatArrays: [
-            "$distanceToLast.distance",
-            ["$distanceToLast.current"],
-          ],
+      $group: {
+        _id: { owner: "$owner", sessionId: "$_sessionId" },
+        distance: {
+          $push: {
+            subtract: "$subtract",
+            info: {
+              _id: "$_id",
+              owner: "$owner",
+              id: "$id",
+              albumId: "$albumId",
+              primaryArtistId: "$primaryArtistId",
+              artistIds: "$artistIds",
+              durationMs: "$durationMs",
+              played_at: "$played_at",
+              blacklistedBy: "$blacklistedBy",
+            },
+          },
         },
+        firstPlayedAt: { $min: "$played_at" },
+        lastPlayedAt: { $max: "$played_at" },
       },
     },
-    { $unset: "distanceToLast.current" },
-    {
-      $unwind: {
-        path: "$distanceToLast.distance",
-      },
-    },
     {
       $addFields: {
-        sessionLength: {
-          $subtract: [
-            { $last: "$distanceToLast.distance.info.played_at" },
-            { $first: "$distanceToLast.distance.info.played_at" },
-          ],
-        },
+        sessionLength: { $subtract: ["$lastPlayedAt", "$firstPlayedAt"] },
       },
     },
     { $sort: { sessionLength: -1 } },
     { $limit: 5 },
+    {
+      $project: {
+        _id: "$_id.owner",
+        sessionLength: 1,
+        distanceToLast: { distance: "$distance" },
+      },
+    },
     {
       $lookup: {
         from: "tracks",
