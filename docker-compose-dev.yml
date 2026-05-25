@@ -1,46 +1,46 @@
 services:
-    app:
-        container_name: server
-        restart: always
-        build:
-            context: .
-            dockerfile: Dockerfile.server
-            args:
-                NODE_ENV: development
-        volumes:
-            - ./apps/server/src/:/app/apps/server/src/
-        links:
-            - mongo
-        depends_on:
-            - mongo
-        ports:
-            - "8080:8080"
-        environment:
-            LOG_LEVEL: debug
-            API_ENDPOINT: http://127.0.0.1:8080 # This MUST be included as a valid URL in the spotify dashboard
-            CLIENT_ENDPOINT: http://127.0.0.1:3000
-            # OFFLINE_DEV_ID: true
+  app:
+    container_name: server
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+      args:
+        NODE_ENV: development
+    volumes:
+      - ./apps/server/src/:/app/apps/server/src/
+    links:
+      - mongo
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+    environment:
+      LOG_LEVEL: debug
+      API_ENDPOINT: http://127.0.0.1:8080 # This MUST be included as a valid URL in the spotify dashboard
+      CLIENT_ENDPOINT: http://127.0.0.1:3000
+      # OFFLINE_DEV_ID: true
 
-    mongo:
-        image: mongo:8
-        volumes:
-            - ./db_data:/data/db
-        ports:
-            - "27017:27017"
+  mongo:
+    image: mongo:8
+    volumes:
+      - ./db_data:/data/db
+    ports:
+      - "27017:27017"
 
-    web:
-        container_name: web
-        restart: always
-        build:
-            context: .
-            dockerfile: Dockerfile.client
-            args:
-                NODE_ENV: development
-        volumes:
-            - ./apps/client/src:/app/apps/client/src/
-            - ./apps/client/public:/app/apps/client/public/
-        ports:
-            - "3000:3000"
-        environment:
-            NODE_ENV: development
-            API_ENDPOINT: http://127.0.0.1:8080
+  web:
+    container_name: web
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+      args:
+        NODE_ENV: development
+    volumes:
+      - ./apps/client/src:/app/apps/client/src/
+      - ./apps/client/public:/app/apps/client/public/
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      API_ENDPOINT: http://127.0.0.1:8080
