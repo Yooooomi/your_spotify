@@ -53,7 +53,7 @@ export class Database {
       return;
     }
     logger.info(`Setting feature compatibility version to ${major}.${minor}`);
-    await setFeatureCompatibilityVersion(`${major}.${minor ?? 0}`);
+    await setFeatureCompatibilityVersion(`${major}.${minor ?? 0}`, major);
   }
 
   static async fixMissingTrackData() {
@@ -103,12 +103,12 @@ export class Database {
 
     const duplicateBatch = 50_000;
 
-     
+
     for (const user of users) {
-       
+
       const infoCountForUser = await getUserInfoCount(user._id.toString());
       for (let i = 0; i < infoCountForUser; i += duplicateBatch) {
-         
+
         const duplicates = await getPossibleDuplicates(
           user._id.toString(),
           30,
