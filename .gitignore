@@ -106,3 +106,8 @@ docker-compose-personal.yml
 client/public/index.html
 client/public/variables.js
 db_data
+
+# ISRC merge report files
+isrc-merge-report.md
+isrc-dry-run-report.md
+merge-tracks-by-isrc-*.md

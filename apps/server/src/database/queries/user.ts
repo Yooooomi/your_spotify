@@ -247,7 +247,7 @@ export const getSongs = async (
     {
       $lookup: {
         from: "albums",
-        localField: "track.album",
+        localField: "albumId",
         foreignField: "id",
         as: "track.full_album",
       },

@@ -7,7 +7,10 @@ export const getTracks = (tracksId: string[]) =>
   TrackModel.find({ id: { $in: tracksId } });
 
 export const searchTrack = (str: string) =>
-  TrackModel.find({ name: { $regex: new RegExp(str, "i") } })
+  TrackModel.find({
+    name: { $regex: new RegExp(str, "i") },
+    mergedInto: { $exists: false },
+  })
     .populate("full_album")
     .populate("full_artists");
 
@@ -63,6 +66,29 @@ export const getTrackRecentHistory = async (user: User, trackId: string) =>
     .where({ owner: user._id, id: trackId })
     .limit(10)
     .sort({ played_at: -1 });
+
+export const getTrackListenedAlbums = async (user: User, trackId: string) => {
+  const res = await InfosModel.aggregate([
+    { $match: { owner: user._id, id: trackId } },
+    {
+      $group: {
+        _id: "$albumId",
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { count: -1, _id: 1 } },
+    {
+      $lookup: {
+        from: "albums",
+        localField: "_id",
+        foreignField: "id",
+        as: "album",
+      },
+    },
+    { $unwind: "$album" },
+  ]);
+  return res;
+};
 
 export const getTrackBySpotifyId = (id: string) => TrackModel.findOne({ id });
 

@@ -12,17 +12,19 @@ import {
   intervalToHoursAndMinutes,
 } from "../../../services/date";
 import { useLoadArtists } from "../../../services/hooks/artist";
-import { Track, TrackInfo } from "../../../services/types";
+import { Album, Track, TrackInfo } from "../../../services/types";
 import s from "./index.module.css";
 
 interface LongestSessionProps {
   tracks: TrackInfo[];
   fullTracks: Record<string, Track>;
+  fullAlbums: Record<string, Album>;
 }
 
 export default function LongestSession({
   tracks,
   fullTracks,
+  fullAlbums,
 }: LongestSessionProps) {
   const artistIds = [
       ...tracks.reduce((acc, track) => {
@@ -67,6 +69,7 @@ export default function LongestSession({
         {tracks.map((track, index) => {
           const artist = artists[track.primaryArtistId];
           const fullTrack = fullTracks[track.id];
+          const album = fullAlbums[track.albumId];
           return (
             <div key={track._id} className={clsx("play-button-holder", s.line)}>
               <Text size="normal">#{index + 1}</Text>
@@ -74,7 +77,9 @@ export default function LongestSession({
                 image={
                   <PlayButton
                     id={track.id}
-                    covers={artists[track.primaryArtistId]?.images ?? []}
+                    covers={
+                      album?.images ?? artists[track.primaryArtistId]?.images ?? []
+                    }
                   />
                 }
                 first={fullTrack ? <InlineTrack size='normal' track={fullTrack} /> : null}

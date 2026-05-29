@@ -49,17 +49,19 @@ const loop = async (user: User) => {
   }
 
   const spotifyTracks = items.map(e => e.track);
-  const { tracks, albums, artists } = await getTracksAlbumsArtists(
-    user._id.toString(),
-    spotifyTracks,
-  );
+  const { tracks, albums, artists, tracksBySpotifyId } =
+    await getTracksAlbumsArtists(user._id.toString(), spotifyTracks);
   const infos: Omit<Infos, "owner">[] = [];
   for (let i = 0; i < items.length; i += 1) {
     const item = items[i]!;
+    const track = tracksBySpotifyId.get(item.track.id);
+    if (!track) {
+      continue;
+    }
     const date = new Date(item.played_at);
     const duplicate = await getCloseTrackId(
       user._id.toString(),
-      item.track.id,
+      track.id,
       date,
       30,
     );
@@ -77,7 +79,7 @@ const loop = async (user: User) => {
         albumId: item.track.album.id,
         primaryArtistId: primaryArtist.id,
         artistIds: item.track.artists.map(e => e.id),
-        id: item.track.id,
+        id: track.id,
         ...(isBlacklisted ? { blacklistedBy: "artist" } : {}),
       });
     }

@@ -37,7 +37,15 @@ export default function Albums() {
                 <Album
                   key={item.album.id}
                   rank={rank + 1}
-                  artists={[item.artist]}
+                  artists={
+                    item.album_artists.length > 0 &&
+                    !(
+                      item.album_artists.length === 1 &&
+                      item.album_artists[0]?.name === "Various Artists"
+                    )
+                      ? item.album_artists
+                      : [item.artist]
+                  }
                   album={item.album}
                   count={item.count}
                   totalCount={item.total_count}

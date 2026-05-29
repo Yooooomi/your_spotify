@@ -11,7 +11,9 @@ export interface Track {
   external_urls: any;
   href: string;
   id: string;
+  isrc?: string;
   is_local: boolean;
+  mergedInto?: string;
   name: string;
   preview_url: string;
   track_number: number;
@@ -19,9 +21,17 @@ export interface Track {
   uri: string;
 }
 
-export type SpotifyTrack = Omit<Track, "artists" | "album"> & {
+export type SpotifyTrack = Omit<
+  Track,
+  "artists" | "album" | "isrc" | "mergedInto"
+> & {
   artists: SpotifyArtist[];
   album: SpotifyAlbum;
+  external_ids?: {
+    isrc?: string;
+    ean?: string;
+    upc?: string;
+  };
 };
 
 export interface RecentlyPlayedTrack {
@@ -39,7 +49,9 @@ export const TrackSchema = new Schema<Track>(
     external_urls: Object,
     href: String,
     id: { type: String, unique: true },
+    isrc: { type: String, index: true, sparse: true, unique: true },
     is_local: Boolean,
+    mergedInto: String,
     name: String,
     preview_url: String,
     track_number: Number,

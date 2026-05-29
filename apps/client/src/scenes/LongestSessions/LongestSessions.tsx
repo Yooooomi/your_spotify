@@ -40,6 +40,7 @@ export default function LongestSessions() {
                 key={r.distanceToLast.distance.map(e => e.info._id).join(",")}
                 tracks={r.distanceToLast.distance.map(e => e.info)}
                 fullTracks={r.full_tracks}
+                fullAlbums={r.full_albums}
               />
             ))}
           </TitleCard>
