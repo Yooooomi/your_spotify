@@ -60,11 +60,6 @@ services:
       CLIENT_ENDPOINT: http://localhost:3000
       SPOTIFY_PUBLIC: __your_spotify_client_id__
       SPOTIFY_SECRET: __your_spotify_secret__
-  mongo:
-    container_name: mongo
-    image: mongo:6
-    volumes:
-      - ./your_spotify_db:/data/db
 
   web:
     image: yooooomi/your_spotify_client
@@ -73,9 +68,14 @@ services:
       - "3000:3000"
     environment:
       API_ENDPOINT: http://localhost:8080
-```
 
-> Some ARM-based devices might have trouble with Mongo >= 5. I suggest you use the image **mongo:4.4**.
+  mongo:
+    container_name: mongo
+    image: mongo:8
+    volumes:
+      - ./your_spotify_db:/data/db
+
+```
 
 ## Installing locally (not recommended)
 
