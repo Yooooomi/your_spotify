@@ -47,13 +47,6 @@ private async prepareClient() {
     );
     const headers: Record<string, string> = {};
 
-    if (accessToken) {
-      headers.Authorization = `Bearer ${accessToken}`;
-    }
-    if (refreshToken) {
-      headers["X-Spotify-Refresh-Token"] = refreshToken;
-    }
-
     this.client = axios.create({
       baseURL: proxyEndpoint,
       headers,
@@ -64,16 +57,6 @@ private async prepareClient() {
 		const res = await squeue.queue(async () => {
       await this.prepareClient();
       const params: any = {};
-      
-      if (url) {
-        // Parse URL parameters like /me/player/recently-played?after=123&limit=50
-        const urlObj = new URL(url, 'https://api.spotify.com');
-        const after = urlObj.searchParams.get('after');
-        const limit = urlObj.searchParams.get('limit');
-        if (after) params.after = after;
-        if (limit) params.limit = limit;
-      }
-      
       return this.client.get("/api/recentlyPlayed", { params });
     });
 
