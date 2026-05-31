@@ -38,20 +38,16 @@ def recently_played():
     limit = int(request.args.get("limit", 50))
     
     try:
-        all_recent = list(sp.recentlyPlayed)  # deque (converted to list) with the history of the last 50 songs played
+        all_recent = list(sp.current_user_recently_played())  # deque (converted to list) with the history of the last 50 songs played
         if after:
             after_timestamp = int(after)
-            # Filter items played after the given timestamp
-            # Assume played_at is in milliseconds
             filtered_items = [item for item in all_recent if int(item.get("played_at", 0)) > after_timestamp]
         else:
             filtered_items = all_recent
-        
-        # Return paginated response similar to Spotify API
+
         items = filtered_items[:limit]
         next_url = None
         if len(filtered_items) > limit:
-            # Continue from the last item's played_at
             last_item = items[-1]
             next_after = last_item.get("played_at")
             next_url = f"/api/recentlyPlayed?after={next_after}&limit={limit}"
@@ -74,21 +70,8 @@ def me():
 
 @app.route("/api/playlists")
 def playlists():
-    """ Not yet working in spotipyFree """
-    return
-
     sp = get_spotify_client()
-    items = []
-    offset = 0
-
-    while True:
-        page = sp.current_user_playlists(limit=50, offset=offset)
-        items.extend(page.get("items", []))
-        if not page.get("next"):
-            break
-        offset += 50
-
-    return jsonify({"items": items})
+    return jsonify({"items": sp.current_user_playlists()})
 
 
 @app.route("/api/play", methods=["POST"])
