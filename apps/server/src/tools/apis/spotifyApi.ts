@@ -129,10 +129,17 @@ export class SpotifyAPI {
 	}
 
 	async getTracks(spotifyIds: string[]) {
+		if (spotifyIds.length === 0) {
+			return [];
+		}
+		await this.checkToken();
+		// Spotify Get Several Tracks accepts up to 50 ids per request
+		const chunks = chunk(spotifyIds, 50);
 		const tracks: (SpotifyTrack | undefined)[] = [];
-		for (const id of spotifyIds) {
-			const track = await this.getTrack(id);
-			tracks.push(track);
+		for (const ch of chunks) {
+			const res = await this.client.instance.get(`/tracks?ids=${ch.join(",")}`);
+			const data: (SpotifyTrack | null)[] = res.data.tracks;
+			tracks.push(...data.map((t) => (t === null ? undefined : (t as SpotifyTrack))));
 		}
 		return tracks;
 	}
@@ -148,10 +155,17 @@ export class SpotifyAPI {
 	}
 
 	async getAlbums(spotifyIds: string[]) {
+		if (spotifyIds.length === 0) {
+			return [];
+		}
+		await this.checkToken();
+		// Spotify Get Several Albums accepts up to 20 ids per request
+		const chunks = chunk(spotifyIds, 20);
 		const albums: (SpotifyAlbum | undefined)[] = [];
-		for (const id of spotifyIds) {
-			const album = await this.getAlbum(id);
-			albums.push(album);
+		for (const ch of chunks) {
+			const res = await this.client.instance.get(`/albums?ids=${ch.join(",")}`);
+			const data: (SpotifyAlbum | null)[] = res.data.albums;
+			albums.push(...data.map((a) => (a === null ? undefined : (a as SpotifyAlbum))));
 		}
 		return albums;
 	}
@@ -167,10 +181,17 @@ export class SpotifyAPI {
 	}
 
 	async getArtists(spotifyIds: string[]) {
+		if (spotifyIds.length === 0) {
+			return [];
+		}
+		await this.checkToken();
+		// Spotify Get Several Artists accepts up to 50 ids per request
+		const chunks = chunk(spotifyIds, 50);
 		const artists: (SpotifyArtist | undefined)[] = [];
-		for (const id of spotifyIds) {
-			const artist = await this.getArtist(id);
-			artists.push(artist);
+		for (const ch of chunks) {
+			const res = await this.client.instance.get(`/artists?ids=${ch.join(",")}`);
+			const data: (SpotifyArtist | null)[] = res.data.artists;
+			artists.push(...data.map((a) => (a === null ? undefined : (a as SpotifyArtist))));
 		}
 		return artists;
 	}
