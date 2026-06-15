@@ -67,7 +67,7 @@ export default function FullPrivacy() {
         ))}
       {wrongFiles && (
         <Text className={s.alert} size='normal'>
-          Some file do not being with <code>Streaming_History_Audio</code>,
+          Some files do not begin with <code>Streaming_History_Audio</code>,
           import might not work
         </Text>
       )}

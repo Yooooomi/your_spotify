@@ -63,7 +63,7 @@ export default function Privacy() {
         ))}
       {wrongFiles && (
         <Text className={s.alert} size='normal'>
-          Some file do not being with <code>StreamingHistory</code>, import
+          Some files do not begin with <code>StreamingHistory</code>, import
           might not work
         </Text>
       )}
