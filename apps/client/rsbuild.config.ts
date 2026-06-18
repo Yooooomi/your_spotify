@@ -9,6 +9,30 @@ export default defineConfig({
   output: {
     distPath: "./build",
   },
+  tools: {
+    rspack: {
+      optimization: {
+        splitChunks: {
+          cacheGroups: {
+            mui: {
+              name: 'lib-mui',
+              test: /[\\/]node_modules[\\/]@mui[\\/]/,
+              chunks: 'all',
+              enforce: true,
+              priority: 40,
+            },
+            emotion: {
+              name: 'lib-emotion',
+              test: /[\\/]node_modules[\\/]@emotion[\\/]/,
+              chunks: 'all',
+              enforce: true,
+              priority: 30,
+            },
+          },
+        },
+      },
+    },
+  },
   plugins: [
     pluginReact({ fastRefresh: true }),
     pluginBabel({
