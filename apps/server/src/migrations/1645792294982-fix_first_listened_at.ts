@@ -11,7 +11,7 @@ export const up = async () => {
   const users = await getAllUsers(false);
 
   await Promise.all(
-    users.map(async user => {
+    users.map(async (user) => {
       const firstInfo = await getFirstInfo(user._id.toString());
       if (firstInfo) {
         await storeFirstListenedAtIfLess(

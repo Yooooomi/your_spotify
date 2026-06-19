@@ -14,7 +14,7 @@ interface ArtistRankProps {
 export default function ArtistRank({ artistId }: ArtistRankProps) {
   const artistRank = useAPI(api.getArtistRank, artistId);
 
-  const ids = artistRank?.results.map(r => r.id) ?? [];
+  const ids = artistRank?.results.map((r) => r.id) ?? [];
   const { artists, loaded } = useLoadArtists(ids);
 
   const getArtist = (id: string) => artists[id];

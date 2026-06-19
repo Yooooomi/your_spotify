@@ -16,9 +16,7 @@ import { LoggedRequest } from "../tools/types";
 
 export const router = Router();
 
-const getTracksSchema = z.object({
-  ids: z.string(),
-});
+const getTracksSchema = z.object({ ids: z.string() });
 
 router.get("/:ids", isLoggedOrGuest, async (req, res) => {
   const { ids } = validate(req.params, getTracksSchema);
@@ -30,9 +28,7 @@ router.get("/:ids", isLoggedOrGuest, async (req, res) => {
   res.status(200).send(tracks);
 });
 
-const getTrackStats = z.object({
-  id: z.string(),
-});
+const getTrackStats = z.object({ id: z.string() });
 
 router.get("/:id/stats", isLoggedOrGuest, async (req, res) => {
   const { user } = req as LoggedRequest;
@@ -57,17 +53,17 @@ router.get("/:id/stats", isLoggedOrGuest, async (req, res) => {
     res.status(200).send({ code: "NEVER_LISTENED" });
     return;
   }
-  res.status(200).send({
-    track,
-    artist,
-    album,
-    bestPeriod,
-    firstLast,
-    recentHistory,
-    total: {
-      count,
-    },
-  });
+  res
+    .status(200)
+    .send({
+      track,
+      artist,
+      album,
+      bestPeriod,
+      firstLast,
+      recentHistory,
+      total: { count },
+    });
 });
 
 router.get("/:id/rank", isLoggedOrGuest, async (req, res) => {

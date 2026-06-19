@@ -11,7 +11,7 @@ import { getLastPeriod, getPercentMore } from "../../../services/stats";
 import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import Text from "../../Text";
 
-interface SongsListenedProps extends ImplementedCardProps { }
+interface SongsListenedProps extends ImplementedCardProps {}
 
 export default function SongsListened({ className }: SongsListenedProps) {
   const { interval, unit } = useSelector(selectRawIntervalDetail);
@@ -55,12 +55,12 @@ export default function SongsListened({ className }: SongsListenedProps) {
     <TitleCard title="Songs listened" className={className} fade>
       <div className={s.root}>
         <div className={s.twonumbers}>
-          <Text size='huge'>{count}</Text>
-          <Text size='small'>{different} diff.</Text>
+          <Text size="huge">{count}</Text>
+          <Text size="small">{different} diff.</Text>
         </div>
         <Text size="normal">
           <Text
-            size='normal'
+            size="normal"
             element="strong"
             className={clsx({
               [s.more]: percentMore >= 0,
@@ -68,7 +68,7 @@ export default function SongsListened({ className }: SongsListenedProps) {
             })}>
             {Math.abs(percentMore)}%
           </Text>
-          <Text element="span" size='normal'>
+          <Text element="span" size="normal">
             &nbsp;
             {percentMore < 0 ? "less" : "more"} than last {unit}
           </Text>

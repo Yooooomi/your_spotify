@@ -8,14 +8,16 @@ import SongStats from "./TrackStats";
 
 export default function TrackStatsWrapper() {
   const params = useParams();
-  const stats = useAPI(api.getTrackStats, params.id || '');
+  const stats = useAPI(api.getTrackStats, params.id || "");
 
   if (stats === null) {
     return (
       <FullscreenCentered>
         <CircularProgress />
         <div>
-          <Text element="h3" size='big'>Loading your stats</Text>
+          <Text element="h3" size="big">
+            Loading your stats
+          </Text>
         </div>
       </FullscreenCentered>
     );
@@ -24,7 +26,7 @@ export default function TrackStatsWrapper() {
   if ("code" in stats || !params.id) {
     return (
       <FullscreenCentered>
-        <Text element="h3" size='big'>
+        <Text element="h3" size="big">
           You never listened to this song, might be someone else registered
         </Text>
       </FullscreenCentered>

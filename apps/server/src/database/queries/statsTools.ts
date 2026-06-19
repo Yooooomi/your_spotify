@@ -27,7 +27,7 @@ export const basicMatchUsers = (
     $in:
       userIds[0] instanceof Types.ObjectId
         ? userIds
-        : userIds.map(id => new Types.ObjectId(id)),
+        : userIds.map((id) => new Types.ObjectId(id)),
   },
   blacklistedBy: { $exists: 0 },
   played_at: { $gt: start, $lt: end },

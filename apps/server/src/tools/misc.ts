@@ -1,7 +1,7 @@
 import { logger } from "./logger";
 
 export const wait = (ms: number) =>
-  new Promise(s => {
+  new Promise((s) => {
     setTimeout(s, ms);
   });
 
@@ -286,13 +286,13 @@ export const retryPromise = async <T>(
   for (let i = 0; i < max; i += 1) {
     const isLastTry = i === max - 1;
     try {
-
       const res = await fn();
       return res;
     } catch (e) {
       lastError = e;
       logger.error(
-        `Retrying crashed promise, ${i + 1}/${max}${isLastTry ? "" : `, retrying in ${timeSeconds} seconds...`
+        `Retrying crashed promise, ${i + 1}/${max}${
+          isLastTry ? "" : `, retrying in ${timeSeconds} seconds...`
         }`,
       );
     }

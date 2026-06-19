@@ -129,63 +129,54 @@ const presets: Array<{
   label: string;
   create: () => [start: Date, end: Date];
 }> = [
-    {
-      label: "Previous day",
-      create: () => {
-        const startOfLastDay = startOfDay(subDays(new Date(), 1));
-        return [startOfLastDay, endOfDay(startOfLastDay)];
-      },
+  {
+    label: "Previous day",
+    create: () => {
+      const startOfLastDay = startOfDay(subDays(new Date(), 1));
+      return [startOfLastDay, endOfDay(startOfLastDay)];
     },
-    {
-      label: "Previous week",
-      create: () => {
-        const startOfLastWeek = startOfWeek(subWeeks(new Date(), 1));
-        return [startOfLastWeek, endOfWeek(startOfLastWeek)];
-      },
+  },
+  {
+    label: "Previous week",
+    create: () => {
+      const startOfLastWeek = startOfWeek(subWeeks(new Date(), 1));
+      return [startOfLastWeek, endOfWeek(startOfLastWeek)];
     },
-    {
-      label: "Previous month",
-      create: () => {
-        const startOfLastMonth = startOfMonth(subMonths(new Date(), 1));
-        return [startOfLastMonth, endOfMonth(startOfLastMonth)];
-      },
+  },
+  {
+    label: "Previous month",
+    create: () => {
+      const startOfLastMonth = startOfMonth(subMonths(new Date(), 1));
+      return [startOfLastMonth, endOfMonth(startOfLastMonth)];
     },
-    {
-      label: "Previous year",
-      create: () => {
-        const startOfLastYear = startOfYear(subYears(new Date(), 1));
-        return [startOfLastYear, endOfYear(startOfLastYear)];
-      },
+  },
+  {
+    label: "Previous year",
+    create: () => {
+      const startOfLastYear = startOfYear(subYears(new Date(), 1));
+      return [startOfLastYear, endOfYear(startOfLastYear)];
     },
-    {
-      label: "Last 24 hours",
-      create: () => [subHours(new Date(), 24), new Date()],
-    },
-    {
-      label: "Last 7 days",
-      create: () => [subDays(new Date(), 7), new Date()],
-    },
-    {
-      label: "Last month",
-      create: () => [subMonths(new Date(), 1), new Date()],
-    },
-    {
-      label: "Last 3 months",
-      create: () => [subMonths(new Date(), 3), new Date()],
-    },
-    {
-      label: "Last year",
-      create: () => [subYears(new Date(), 1), new Date()],
-    },
-    {
-      label: "Last 2 years",
-      create: () => [subYears(new Date(), 2), new Date()],
-    },
-    {
-      label: "Last 10 years",
-      create: () => [subYears(new Date(), 10), new Date()],
-    },
-  ];
+  },
+  {
+    label: "Last 24 hours",
+    create: () => [subHours(new Date(), 24), new Date()],
+  },
+  { label: "Last 7 days", create: () => [subDays(new Date(), 7), new Date()] },
+  { label: "Last month", create: () => [subMonths(new Date(), 1), new Date()] },
+  {
+    label: "Last 3 months",
+    create: () => [subMonths(new Date(), 3), new Date()],
+  },
+  { label: "Last year", create: () => [subYears(new Date(), 1), new Date()] },
+  {
+    label: "Last 2 years",
+    create: () => [subYears(new Date(), 2), new Date()],
+  },
+  {
+    label: "Last 10 years",
+    create: () => [subYears(new Date(), 10), new Date()],
+  },
+];
 
 interface RangePickerProps {
   value: Range;
@@ -213,7 +204,7 @@ export default function RangePicker({ value, onChange }: RangePickerProps) {
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <div className={s.panel}>
         <div className={s.presets}>
-          {presets.map(preset => (
+          {presets.map((preset) => (
             <MenuItem
               key={preset.label}
               onClick={() => onChange(preset.create())}>
@@ -224,16 +215,9 @@ export default function RangePicker({ value, onChange }: RangePickerProps) {
         <DateCalendar
           classes={{ root: s.calendarRoot }}
           value={null}
-          slots={{
-            day: DayWrapper as any,
-          }}
+          slots={{ day: DayWrapper as any }}
           slotProps={{
-            day: {
-              hover,
-              internSetValue,
-              setHover,
-              rangeValue: value,
-            } as any,
+            day: { hover, internSetValue, setHover, rangeValue: value } as any,
           }}
         />
       </div>

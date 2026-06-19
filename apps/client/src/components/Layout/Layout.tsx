@@ -20,9 +20,9 @@ export default function Layout({ children }: LayoutProps) {
   const publicToken = useSelector(selectPublicToken);
 
   const layoutContextValue = {
-      openDrawer: () => setOpen(true),
-      closeDrawer: () => setOpen(false),
-    };
+    openDrawer: () => setOpen(true),
+    closeDrawer: () => setOpen(false),
+  };
 
   return (
     <LayoutContext.Provider value={layoutContextValue}>

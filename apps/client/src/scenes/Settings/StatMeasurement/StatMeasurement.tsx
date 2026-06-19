@@ -17,16 +17,18 @@ export function StatMeasurement() {
   const dispatch = useAppDispatch();
   const statMeasurement = useSelector(selectStatMeasurement);
 
-  const handleChangeStatMeasurement = (newStatUnit: string | null | undefined) => {
-      if (newStatUnit !== "number" && newStatUnit !== "duration") {
-        return;
-      }
-      dispatch(changeStatUnit(newStatUnit ?? "number")).catch(console.error);
-    };
+  const handleChangeStatMeasurement = (
+    newStatUnit: string | null | undefined,
+  ) => {
+    if (newStatUnit !== "number" && newStatUnit !== "duration") {
+      return;
+    }
+    dispatch(changeStatUnit(newStatUnit ?? "number")).catch(console.error);
+  };
 
   return (
     <TitleCard title="Stat measurement used">
-      <Text element="span" className={s.marginbottom} size='normal'>
+      <Text element="span" className={s.marginbottom} size="normal">
         Measurement used to compute most listened elements.
       </Text>
       <SettingLine
@@ -35,8 +37,8 @@ export function StatMeasurement() {
           <Select
             variant="standard"
             value={statMeasurement}
-            onChange={ev => handleChangeStatMeasurement(ev.target.value)}>
-            {units.map(unit => (
+            onChange={(ev) => handleChangeStatMeasurement(ev.target.value)}>
+            {units.map((unit) => (
               <MenuItem key={unit.value} value={unit.value}>
                 {unit.name}
               </MenuItem>

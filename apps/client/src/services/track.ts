@@ -4,11 +4,11 @@ import { Track } from "./types";
 
 export function useTracks(ids: string[]) {
   const [tracks, setTracks] = useState<Record<string, Track>>({});
-  const loaded = ids.length === 0 || ids.every(id => id in tracks);
+  const loaded = ids.length === 0 || ids.every((id) => id in tracks);
 
   useEffect(() => {
     async function fetchTracks() {
-      if (!ids.every(id => id in tracks)) {
+      if (!ids.every((id) => id in tracks)) {
         try {
           const { data } = await api.getTrackDetails(ids);
           setTracks(

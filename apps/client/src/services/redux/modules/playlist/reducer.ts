@@ -7,27 +7,24 @@ interface PlaylistReducer {
   context: PlaylistContext | null;
 }
 
-const initialState: PlaylistReducer = {
-  playlists: null,
-  context: null,
-};
+const initialState: PlaylistReducer = { playlists: null, context: null };
 
 export const clearPlaylistContext = createAction("@playlist/clear");
 export const setPlaylistContext =
   createAction<PlaylistContext>("@playlist/set");
 
-export default createReducer(initialState, builder => {
+export default createReducer(initialState, (builder) => {
   builder.addCase(fetchPlaylists.fulfilled, (state, { payload }) => {
     if (payload) {
       state.playlists = payload;
     }
   });
 
-  builder.addCase(addToPlaylist.fulfilled, state => {
+  builder.addCase(addToPlaylist.fulfilled, (state) => {
     state.context = null;
   });
 
-  builder.addCase(clearPlaylistContext, state => {
+  builder.addCase(clearPlaylistContext, (state) => {
     state.context = null;
   });
 

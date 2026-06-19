@@ -12,7 +12,7 @@ import { selectRawIntervalDetail } from "../../../services/redux/modules/user/se
 import Text from "../../Text";
 import s from "./index.module.css";
 
-interface BestArtistProps extends ImplementedCardProps { }
+interface BestArtistProps extends ImplementedCardProps {}
 
 export default function BestArtist({ className }: BestArtistProps) {
   const { interval } = useSelector(selectRawIntervalDetail);

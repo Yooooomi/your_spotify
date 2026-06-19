@@ -5,8 +5,9 @@ export const getAlbums = (albumsId: string[]) =>
   AlbumModel.find({ id: { $in: albumsId } });
 
 export const searchAlbum = (str: string) =>
-  AlbumModel.find({ name: { $regex: new RegExp(str, "i") } })
-    .populate("full_artists");
+  AlbumModel.find({ name: { $regex: new RegExp(str, "i") } }).populate(
+    "full_artists",
+  );
 
 export const getAlbumInfos = (albumId: string) => [
   {
@@ -49,7 +50,7 @@ export const getFirstAndLastListenedAlbum = async (
       },
     },
     ...["first", "last"]
-      .map(e => [
+      .map((e) => [
         {
           $lookup: {
             from: "tracks",

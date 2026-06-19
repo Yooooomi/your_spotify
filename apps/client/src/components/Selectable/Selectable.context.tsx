@@ -1,9 +1,4 @@
-import {
-  createContext,
-  MouseEvent,
-  ReactNode,
-  useContext,
-} from "react";
+import { createContext, MouseEvent, ReactNode, useContext } from "react";
 import clsx from "clsx";
 import { uniq } from "../../services/tools";
 import { Pointer } from "../../services/pointer";
@@ -27,8 +22,8 @@ interface SelectableContext {
 
 export const SelectableContext = createContext<SelectableContext>({
   selected: [],
-  select: () => { },
-  selectTo: () => { },
+  select: () => {},
+  selectTo: () => {},
 });
 
 interface SelectableContextProviderProps {

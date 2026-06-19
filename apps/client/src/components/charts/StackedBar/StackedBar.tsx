@@ -11,9 +11,7 @@ import { ContentType } from "recharts/types/component/Tooltip";
 import { getColor } from "../../../services/colors";
 
 export interface StackedBarProps {
-  data: ({
-    x: number | string;
-  } & { [o: string]: number })[];
+  data: ({ x: number | string } & { [o: string]: number })[];
   customXTick?: React.ComponentProps<typeof XAxis>["tick"];
   xFormat?: React.ComponentProps<typeof XAxis>["tickFormatter"];
   yFormat?: React.ComponentProps<typeof YAxis>["tickFormatter"];
@@ -28,11 +26,11 @@ export default function Bar({
   customTooltip,
 }: StackedBarProps) {
   const allKeys = data.reduce<Set<string>>((acc, curr) => {
-        Object.keys(curr)
-          .filter(key => key !== "x")
-          .forEach(key => acc.add(key));
-        return acc;
-      }, new Set());
+    Object.keys(curr)
+      .filter((key) => key !== "x")
+      .forEach((key) => acc.add(key));
+    return acc;
+  }, new Set());
 
   return (
     <ResponsiveContainer width="100%" height="100%">

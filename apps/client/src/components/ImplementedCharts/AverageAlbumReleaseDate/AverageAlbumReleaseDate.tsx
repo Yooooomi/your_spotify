@@ -16,7 +16,7 @@ import Tooltip from "../../Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 
-interface AverageAlbumReleaseDateProps extends ImplementedChartProps { }
+interface AverageAlbumReleaseDateProps extends ImplementedChartProps {}
 
 export default function AverageAlbumReleaseDate({
   className,
@@ -30,7 +30,7 @@ export default function AverageAlbumReleaseDate({
   );
 
   const data = buildXYData(
-    result?.map(r => ({
+    result?.map((r) => ({
       _id: r._id as DateId,
       value: Math.floor(r.totalYear * 100) / 100,
     })) ?? [],

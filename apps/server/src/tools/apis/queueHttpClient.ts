@@ -72,19 +72,13 @@ export class QueuedHttpClient {
   static normalPriority(
     config: QueuedAxiosRequestConfig = {},
   ): QueuedAxiosRequestConfig {
-    return {
-      ...config,
-      priority: "normal",
-    };
+    return { ...config, priority: "normal" };
   }
 
   static highPriority(
     config: QueuedAxiosRequestConfig = {},
   ): QueuedAxiosRequestConfig {
-    return {
-      ...config,
-      priority: "high",
-    };
+    return { ...config, priority: "high" };
   }
 
   request<T = any, D = any>(
@@ -105,35 +99,19 @@ export class QueuedHttpClient {
   }
 
   get<T = any, D = any>(url: string, config?: QueuedAxiosRequestConfig<D>) {
-    return this.request<T, D>({
-      ...config,
-      method: "get",
-      url,
-    });
+    return this.request<T, D>({ ...config, method: "get", url });
   }
 
   delete<T = any, D = any>(url: string, config?: QueuedAxiosRequestConfig<D>) {
-    return this.request<T, D>({
-      ...config,
-      method: "delete",
-      url,
-    });
+    return this.request<T, D>({ ...config, method: "delete", url });
   }
 
   head<T = any, D = any>(url: string, config?: QueuedAxiosRequestConfig<D>) {
-    return this.request<T, D>({
-      ...config,
-      method: "head",
-      url,
-    });
+    return this.request<T, D>({ ...config, method: "head", url });
   }
 
   options<T = any, D = any>(url: string, config?: QueuedAxiosRequestConfig<D>) {
-    return this.request<T, D>({
-      ...config,
-      method: "options",
-      url,
-    });
+    return this.request<T, D>({ ...config, method: "options", url });
   }
 
   post<T = any, D = any>(
@@ -141,12 +119,7 @@ export class QueuedHttpClient {
     data?: D,
     config?: QueuedAxiosRequestConfig<D>,
   ) {
-    return this.request<T, D>({
-      ...config,
-      method: "post",
-      url,
-      data,
-    });
+    return this.request<T, D>({ ...config, method: "post", url, data });
   }
 
   put<T = any, D = any>(
@@ -154,12 +127,7 @@ export class QueuedHttpClient {
     data?: D,
     config?: QueuedAxiosRequestConfig<D>,
   ) {
-    return this.request<T, D>({
-      ...config,
-      method: "put",
-      url,
-      data,
-    });
+    return this.request<T, D>({ ...config, method: "put", url, data });
   }
 
   patch<T = any, D = any>(
@@ -167,12 +135,7 @@ export class QueuedHttpClient {
     data?: D,
     config?: QueuedAxiosRequestConfig<D>,
   ) {
-    return this.request<T, D>({
-      ...config,
-      method: "patch",
-      url,
-      data,
-    });
+    return this.request<T, D>({ ...config, method: "patch", url, data });
   }
 
   private processQueue() {

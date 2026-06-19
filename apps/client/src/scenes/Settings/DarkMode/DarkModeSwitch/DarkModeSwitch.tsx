@@ -10,14 +10,14 @@ export default function DarkModeSwitch() {
   const dark = useSelector(selectDarkMode);
 
   const changeDarkMode = (mode: DarkModeType) => {
-      dispatch(setDarkMode(mode));
-    };
+    dispatch(setDarkMode(mode));
+  };
 
   return (
     <Select
       variant="standard"
       value={dark}
-      onChange={ev => changeDarkMode(ev.target.value as DarkModeType)}>
+      onChange={(ev) => changeDarkMode(ev.target.value as DarkModeType)}>
       <MenuItem value="follow">Follow system theme</MenuItem>
       <MenuItem value="dark">Use dark theme</MenuItem>
       <MenuItem value="light">Use light theme</MenuItem>

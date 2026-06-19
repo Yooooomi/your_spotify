@@ -19,7 +19,6 @@ export default function IdealImage({
       src={images ? getAtLeastImage(images, size) : "no_data.png"}
       height={size}
       width={size}
-       
       {...other}
     />
   );

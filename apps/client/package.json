@@ -8,8 +8,8 @@
     "preview": "rsbuild preview",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src/ --ext .tsx,.ts",
-    "lint:fix": "eslint --fix src/ --ext .tsx,.ts",
+    "lint": "oxlint -c ../dev/.oxlintrc.json . && oxfmt -c ../dev/.oxfmtrc.json --check .",
+    "lint:fix": "oxlint -c ../dev/.oxlintrc.json --fix . && oxfmt -c ../dev/.oxfmtrc.json .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -35,9 +35,6 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.28.5",
-    "@eslint/css": "catalog:",
-    "@eslint/js": "catalog:",
-    "@eslint/json": "catalog:",
     "@rsbuild/core": "catalog:",
     "@rsbuild/plugin-babel": "^1.1.2",
     "@rsbuild/plugin-react": "^2.0.0",
@@ -47,14 +44,9 @@
     "@types/react-date-range": "^1.4.10",
     "@types/react-dom": "^19.2.3",
     "@your_spotify/dev": "workspace:*",
-    "eslint": "catalog:",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-no-manual-memo": "^1.0.4",
-    "eslint-plugin-unused-imports": "catalog:",
-    "globals": "catalog:",
-    "typescript": "catalog:",
-    "typescript-eslint": "catalog:"
+    "oxfmt": "^0.7.0",
+    "oxlint": "^1.10.0",
+    "typescript": "catalog:"
   },
   "browserslist": {
     "production": [

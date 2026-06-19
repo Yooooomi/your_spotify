@@ -36,17 +36,19 @@ const maskedSearchParams: Record<string, Set<string>> = {
   "/oauth/spotify/callback": new Set(["code"]),
 };
 
-morgan.token<IncomingMessage & { originalUrl?: string }>("url", req => {
+morgan.token<IncomingMessage & { originalUrl?: string }>("url", (req) => {
   try {
     const url = new URL(req.originalUrl ?? req.url!, "http://localhost");
 
     for (const param of url.searchParams.keys()) {
       if (maskedSearchParams[url.pathname]?.has(param)) {
-        url.searchParams.set(param, 'MASKED');
+        url.searchParams.set(param, "MASKED");
       }
     }
-    return url.pathname +
+    return (
+      url.pathname +
       (url.searchParams.size > 0 ? "?" + url.searchParams.toString() : "")
+    );
   } catch {
     return req.originalUrl ?? req.url;
   }

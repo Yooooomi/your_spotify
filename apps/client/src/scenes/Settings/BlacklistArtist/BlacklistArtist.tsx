@@ -38,7 +38,7 @@ export default function BlacklistArtist() {
 
   return (
     <TitleCard title="Blacklisted artists">
-      <Text element="span" className={s.marginbottom} size='normal'>
+      <Text element="span" className={s.marginbottom} size="normal">
         Blacklist artists so they never appear in the statistics. Blacklisting
         an artist will remove already existing records and never record them
         again.
@@ -50,9 +50,11 @@ export default function BlacklistArtist() {
           inputClassname={s.search}
         />
         {blacklisted.length === 0 && (
-          <Text className={s.none} size='normal'>You have not blacklisted any artist</Text>
+          <Text className={s.none} size="normal">
+            You have not blacklisted any artist
+          </Text>
         )}
-        {compact(blacklisted.map(b => artists[b])).map(artist => (
+        {compact(blacklisted.map((b) => artists[b])).map((artist) => (
           <div key={artist.id} className={s.artist}>
             <IdealImage
               className={s.artistcover}
@@ -62,7 +64,7 @@ export default function BlacklistArtist() {
               height={48}
               alt="artist"
             />
-            <InlineArtist artist={artist} size='normal' />
+            <InlineArtist artist={artist} size="normal" />
             <IconButton
               className={s.unblacklist}
               onClick={() => askUnblacklist(artist)}>

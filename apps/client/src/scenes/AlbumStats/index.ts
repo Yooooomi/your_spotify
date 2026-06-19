@@ -1,1 +1,1 @@
-export { default } from './AlbumStatsWrapper';
+export { default } from "./AlbumStatsWrapper";

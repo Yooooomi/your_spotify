@@ -25,11 +25,11 @@ export default function LongestSession({
   fullTracks,
 }: LongestSessionProps) {
   const artistIds = [
-      ...tracks.reduce((acc, track) => {
-        acc.add(track.primaryArtistId);
-        return acc;
-      }, new Set<string>()),
-    ];
+    ...tracks.reduce((acc, track) => {
+      acc.add(track.primaryArtistId);
+      return acc;
+    }, new Set<string>()),
+  ];
   const { loaded, artists } = useLoadArtists(artistIds);
   const [expanded, setExpanded] = useState(false);
 
@@ -77,10 +77,18 @@ export default function LongestSession({
                     covers={artists[track.primaryArtistId]?.images ?? []}
                   />
                 }
-                first={fullTrack ? <InlineTrack size='normal' track={fullTrack} /> : null}
+                first={
+                  fullTrack ? (
+                    <InlineTrack size="normal" track={fullTrack} />
+                  ) : null
+                }
                 second={
                   artist ? (
-                    <InlineArtist size='normal' className={s.artist} artist={artist} />
+                    <InlineArtist
+                      size="normal"
+                      className={s.artist}
+                      artist={artist}
+                    />
                   ) : null
                 }
               />

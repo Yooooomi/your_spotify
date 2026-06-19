@@ -14,15 +14,15 @@ export default function Timezone() {
   const currentTimezone = useSelector(selectTimezone);
 
   const handleChangeTimezone = (newTimezone: string | null | undefined) => {
-      if (newTimezone === "follow") {
-        newTimezone = null;
-      }
-      dispatch(changeTimezone(newTimezone)).catch(console.error);
-    };
+    if (newTimezone === "follow") {
+      newTimezone = null;
+    }
+    dispatch(changeTimezone(newTimezone)).catch(console.error);
+  };
 
   return (
     <TitleCard title="Timezone">
-      <Text element="span" className={s.marginbottom} size='normal'>
+      <Text element="span" className={s.marginbottom} size="normal">
         Statistics computed by the server need to know your timezone. Change
         this if your history does not match computed stats.
       </Text>
@@ -32,9 +32,9 @@ export default function Timezone() {
           <Select
             variant="standard"
             value={currentTimezone}
-            onChange={ev => handleChangeTimezone(ev.target.value)}>
+            onChange={(ev) => handleChangeTimezone(ev.target.value)}>
             <MenuItem value="follow">Default timezone</MenuItem>
-            {timezones.map(timezone => (
+            {timezones.map((timezone) => (
               <MenuItem key={timezone} value={timezone}>
                 {timezone}
               </MenuItem>

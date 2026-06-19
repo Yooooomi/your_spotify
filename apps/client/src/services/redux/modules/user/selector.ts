@@ -7,15 +7,18 @@ const selectUserState = (state: RootState) => state.user;
 
 export const selectLoaded = createSelector(
   selectUserState,
-  state => state.loaded,
+  (state) => state.loaded,
 );
-export const selectUser = createSelector(selectUserState, state => state.user);
+export const selectUser = createSelector(
+  selectUserState,
+  (state) => state.user,
+);
 export const selectInterval = createSelector(
   selectUserState,
-  state => fromReduxIntervalDetail(state.intervalDetail).interval,
+  (state) => fromReduxIntervalDetail(state.intervalDetail).interval,
 );
 
-export const selectIntervalDetail = createSelector(selectUserState, state =>
+export const selectIntervalDetail = createSelector(selectUserState, (state) =>
   fromReduxIntervalDetail(state.intervalDetail),
 );
 
@@ -39,32 +42,32 @@ export const selectRawAllInterval = createSelector(
 
 export const selectPublicToken = createSelector(
   selectUserState,
-  state => state.publicToken,
+  (state) => state.publicToken,
 );
-export const selectIsPublic = createSelector(selectPublicToken, token =>
+export const selectIsPublic = createSelector(selectPublicToken, (token) =>
   Boolean(token),
 );
 export const selectDarkMode = createSelector(
   selectUser,
-  user => user?.settings.darkMode ?? "follow",
+  (user) => user?.settings.darkMode ?? "follow",
 );
 export const selectTimezone = createSelector(
   selectUser,
-  user => user?.settings.timezone ?? "follow",
+  (user) => user?.settings.timezone ?? "follow",
 );
 export const selectDateFormat = createSelector(
   selectUser,
-  user => user?.settings.dateFormat ?? "default",
+  (user) => user?.settings.dateFormat ?? "default",
 );
 export const selectStatMeasurement = createSelector(
   selectUser,
-  user => user?.settings.metricUsed ?? "number",
+  (user) => user?.settings.metricUsed ?? "number",
 );
 export const selectBlacklistedArtist = (artistId: string) =>
-  createSelector(selectUser, user =>
-    Boolean(user?.settings.blacklistedArtists?.find(art => art === artistId)),
+  createSelector(selectUser, (user) =>
+    Boolean(user?.settings.blacklistedArtists?.find((art) => art === artistId)),
   );
 export const selectBlacklistedArtists = createSelector(
   selectUser,
-  user => user?.settings.blacklistedArtists ?? [],
+  (user) => user?.settings.blacklistedArtists ?? [],
 );

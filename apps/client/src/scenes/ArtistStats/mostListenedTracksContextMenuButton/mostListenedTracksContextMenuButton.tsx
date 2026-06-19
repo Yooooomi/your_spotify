@@ -6,14 +6,18 @@ interface MostListenedTracksContextMenuButtonProps {
   artistId: string;
 }
 
-export function MostListenedTracksContextMenuButton({ artistId }: MostListenedTracksContextMenuButtonProps) {
-  const dispatch = useDispatch()
+export function MostListenedTracksContextMenuButton({
+  artistId,
+}: MostListenedTracksContextMenuButtonProps) {
+  const dispatch = useDispatch();
 
   function handleCreatePlaylist() {
-    dispatch(setPlaylistContext({ type: "top-artist", nb: 10, artistId }))
+    dispatch(setPlaylistContext({ type: "top-artist", nb: 10, artistId }));
   }
 
-  return <ThreePoints items={[{
-    label: "Create playlist", onClick: handleCreatePlaylist,
-  }]} />
+  return (
+    <ThreePoints
+      items={[{ label: "Create playlist", onClick: handleCreatePlaylist }]}
+    />
+  );
 }

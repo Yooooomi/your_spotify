@@ -14,7 +14,7 @@ import Tooltip from "../../Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 
-interface SongsListenedPerProps extends ImplementedChartProps { }
+interface SongsListenedPerProps extends ImplementedChartProps {}
 
 export default function SongsListenedPer({ className }: SongsListenedPerProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -26,10 +26,7 @@ export default function SongsListenedPer({ className }: SongsListenedPerProps) {
   );
 
   const data = buildXYData(
-    result?.map(r => ({
-      _id: r._id as DateId,
-      value: r.count,
-    })) ?? [],
+    result?.map((r) => ({ _id: r._id as DateId, value: r.count })) ?? [],
     interval.start,
     interval.end,
   );

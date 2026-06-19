@@ -43,7 +43,7 @@ export default function PublicToken() {
 
   return (
     <TitleCard title="Public token">
-      <Text element="div" className={s.disclaimer} size='normal'>
+      <Text element="div" className={s.disclaimer} size="normal">
         The generated url will allow anyone with it to view your stats
         indefinitely. The user won&apos;t be able to execute any action that
         modifies your account. Regenerating it will cause the older link to be
@@ -56,7 +56,9 @@ export default function PublicToken() {
           user.publicToken ? (
             <CopyToClipboard text={link} onCopy={onCopy}>
               <div className={s.link}>
-                <Text element="div" size='normal'>{link}</Text>
+                <Text element="div" size="normal">
+                  {link}
+                </Text>
               </div>
             </CopyToClipboard>
           ) : (

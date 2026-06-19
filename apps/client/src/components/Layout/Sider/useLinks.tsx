@@ -29,12 +29,7 @@ export function useLinks() {
     {
       label: "General",
       items: [
-        {
-          label: "Home",
-          link: "/",
-          icon: <HomeOutlined />,
-          iconOn: <Home />,
-        },
+        { label: "Home", link: "/", icon: <HomeOutlined />, iconOn: <Home /> },
         {
           label: "Longest sessions",
           link: "/sessions",
@@ -74,17 +69,17 @@ export function useLinks() {
     },
     affinityEnabled
       ? {
-        label: "With people",
-        items: [
-          {
-            label: "Affinity",
-            link: "/collaborative/affinity",
-            icon: <MusicNoteOutlined />,
-            iconOn: <MusicNote />,
-            restrict: "guest",
-          },
-        ],
-      }
+          label: "With people",
+          items: [
+            {
+              label: "Affinity",
+              link: "/collaborative/affinity",
+              icon: <MusicNoteOutlined />,
+              iconOn: <MusicNote />,
+              restrict: "guest",
+            },
+          ],
+        }
       : undefined,
     {
       label: "Settings",

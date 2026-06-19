@@ -14,7 +14,7 @@ interface AlbumRankProps {
 export default function AlbumRank({ albumId }: AlbumRankProps) {
   const albumRank = useAPI(api.getAlbumRank, albumId);
 
-  const ids = albumRank?.results.map(r => r.id) ?? [];
+  const ids = albumRank?.results.map((r) => r.id) ?? [];
   const { albums, loaded } = useLoadAlbums(ids);
 
   const getArtist = (id: string) => albums[id];
@@ -49,7 +49,7 @@ export default function AlbumRank({ albumId }: AlbumRankProps) {
             k +
             (albumRank.isMax ? 1 : 0) +
             (albumRank.isMin ? -1 : 0)}{" "}
-          <InlineAlbum size='normal' album={getArtist(rank.id)!} noStyle />
+          <InlineAlbum size="normal" album={getArtist(rank.id)!} noStyle />
         </div>
       ))}
     </div>

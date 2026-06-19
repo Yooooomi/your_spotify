@@ -55,8 +55,9 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       dispatch(
         alertMessage({
           level: "error",
-          message: "No public token generated, go to the settings page to generate one",
-        })
+          message:
+            "No public token generated, go to the settings page to generate one",
+        }),
       );
       return;
     }
@@ -64,7 +65,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       alertMessage({
         level: "info",
         message: "Copied current page to clipboard with public token",
-      })
+      }),
     );
   }
 
@@ -91,7 +92,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
         onArtistClick={goToArtist}
       />
       <nav>
-        {links.map(category => (
+        {links.map((category) => (
           <SiderCategory
             key={category.label}
             user={user}
@@ -104,7 +105,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
       </nav>
       <div className={s.versionwrapper}>
         {version && (
-          <Text noStyle className={s.version} size='small'>
+          <Text noStyle className={s.version} size="small">
             v{version}
           </Text>
         )}
@@ -114,7 +115,7 @@ export default function Sider({ className, isDrawer }: SiderProps) {
               href="https://github.com/Yooooomi/your_spotify/releases"
               target="_blank"
               rel="noreferrer">
-              <Text onDark size='normal'>
+              <Text onDark size="normal">
                 <UpdateIcon fontSize="small" color="info" />
               </Text>
             </a>

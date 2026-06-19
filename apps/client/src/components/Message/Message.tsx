@@ -17,18 +17,15 @@ interface AlertProps {
 
 function Alert({ message, level, onClose, ref }: AlertProps) {
   return (
-    <div
-      ref={ref}
-      className={clsx({
-        [s.alert]: true,
-        [s[level]]: true,
-      })}>
-      <Text onDark size='normal'>{message}</Text>
+    <div ref={ref} className={clsx({ [s.alert]: true, [s[level]]: true })}>
+      <Text onDark size="normal">
+        {message}
+      </Text>
       <IconButton size="small" onClick={onClose}>
         <Close className={s.icon} fontSize="small" />
       </IconButton>
     </div>
-  )
+  );
 }
 
 export default function Message() {

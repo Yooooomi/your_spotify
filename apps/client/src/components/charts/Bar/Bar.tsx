@@ -9,10 +9,7 @@ import {
 import { ContentType } from "recharts/types/component/Tooltip";
 
 interface BarProps {
-  data: {
-    x: number | string;
-    y: number;
-  }[];
+  data: { x: number | string; y: number }[];
   customXTick?: React.ComponentProps<typeof XAxis>["tick"];
   xFormat?: React.ComponentProps<typeof XAxis>["tickFormatter"];
   yFormat?: React.ComponentProps<typeof YAxis>["tickFormatter"];

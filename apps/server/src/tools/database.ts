@@ -67,25 +67,25 @@ export class Database {
     }
     const allInfos = await getInfosWithoutTracks();
     if (allInfos.length > 0) {
-      const trackIds = uniq(allInfos.map(e => e.id));
+      const trackIds = uniq(allInfos.map((e) => e.id));
       logger.info(`Fixing missing tracks (${trackIds.join(",")})`);
       const tracks = await getTracks(user._id.toString(), trackIds);
       await storeTrackAlbumArtist({ tracks });
     }
     const allTracks = await getTracksWithoutAlbum();
     if (allTracks.length > 0) {
-      const albumIds = uniq(allTracks.map(t => t.album));
+      const albumIds = uniq(allTracks.map((t) => t.album));
       logger.info(
-        `Fixing missing albums for tracks ${allTracks.map(track => track.id).join(",")} (${albumIds.join(",")})`,
+        `Fixing missing albums for tracks ${allTracks.map((track) => track.id).join(",")} (${albumIds.join(",")})`,
       );
       const albums = await getAlbums(user._id.toString(), albumIds);
       await storeTrackAlbumArtist({ albums });
     }
     const allAlbums = await getAlbumsWithoutArtist();
     if (allAlbums.length > 0) {
-      const artistIds = uniq(compact(allAlbums.map(t => t.artists[t.index])));
+      const artistIds = uniq(compact(allAlbums.map((t) => t.artists[t.index])));
       logger.info(
-        `Fixing missing artists for albums ${allAlbums.map(track => track.id).join(",")} (${artistIds.join(",")})`,
+        `Fixing missing artists for albums ${allAlbums.map((track) => track.id).join(",")} (${artistIds.join(",")})`,
       );
       const artists = await getArtists(user._id.toString(), artistIds);
       await storeTrackAlbumArtist({ artists });
@@ -103,12 +103,9 @@ export class Database {
 
     const duplicateBatch = 50_000;
 
-
     for (const user of users) {
-
       const infoCountForUser = await getUserInfoCount(user._id.toString());
       for (let i = 0; i < infoCountForUser; i += duplicateBatch) {
-
         const duplicates = await getPossibleDuplicates(
           user._id.toString(),
           30,

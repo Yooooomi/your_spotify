@@ -16,9 +16,7 @@ interface SpotifyMe {
 interface SpotifyPlaylist {
   id: string;
   name: string;
-  owner: {
-    id: string;
-  };
+  owner: { id: string };
 }
 
 export class SpotifyAPI {

@@ -20,12 +20,7 @@ export function TrackSelectionPopup({
 
   const handlePlaylist = () => {
     onClose();
-    dispatch(
-      setPlaylistContext({
-        type: "specific",
-        songIds,
-      }),
-    );
+    dispatch(setPlaylistContext({ type: "specific", songIds }));
   };
 
   return (

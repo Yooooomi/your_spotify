@@ -39,7 +39,7 @@ export default function Track(props: TrackProps) {
     totalDuration,
     count,
     totalCount,
-    rank
+    rank,
   } = props;
 
   const columns = [
@@ -49,21 +49,23 @@ export default function Track(props: TrackProps) {
         <Text size="normal" element="strong" className={s.mlrank}>
           #{rank}
         </Text>
-      )
+      ),
     },
     {
       ...trackGrid.cover,
-      node: playable && <PlayButton id={track.id} covers={album?.images ?? []} />,
+      node: playable && (
+        <PlayButton id={track.id} covers={album?.images ?? []} />
+      ),
     },
     {
       ...trackGrid.title,
       node: (
         <div className={clsx("otext", s.names)}>
-          <InlineTrack element="div" track={track} size='normal' />
+          <InlineTrack element="div" track={track} size="normal" />
           <div className="subtitle">
             {artists.map((art, k, a) => (
               <Fragment key={art.id}>
-                <InlineArtist artist={art} noStyle size='normal' />
+                <InlineArtist artist={art} noStyle size="normal" />
                 {k !== a.length - 1 && ", "}
               </Fragment>
             ))}
@@ -74,24 +76,36 @@ export default function Track(props: TrackProps) {
     {
       ...trackGrid.album,
       node: !isTablet && album && (
-        <InlineAlbum element="div" className="otext" album={album} size='normal' />
+        <InlineAlbum
+          element="div"
+          className="otext"
+          album={album}
+          size="normal"
+        />
       ),
     },
     {
       ...trackGrid.duration,
       node: !isMobile && (
-        <Text element="div" size='normal'>{msToDuration(track.duration_ms)}</Text>
+        <Text element="div" size="normal">
+          {msToDuration(track.duration_ms)}
+        </Text>
       ),
     },
     {
       ...trackGrid.count,
       node: (
-        <Text element="div" size="normal" className={isMobile ? "right" : undefined}>
+        <Text
+          element="div"
+          size="normal"
+          className={isMobile ? "right" : undefined}>
           {count}
           {!isMobile && (
             <>
               {" "}
-              <Text size="normal">({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+              <Text size="normal">
+                ({Math.floor((count / totalCount) * 10000) / 100}%)
+              </Text>
             </>
           )}
         </Text>
@@ -100,7 +114,7 @@ export default function Track(props: TrackProps) {
     {
       ...trackGrid.total,
       node: !isMobile && (
-        <Text element="div" className="center" size='normal'>
+        <Text element="div" className="center" size="normal">
           {msToDuration(duration)}
           {isDesktop && (
             <>
@@ -113,10 +127,7 @@ export default function Track(props: TrackProps) {
         </Text>
       ),
     },
-    {
-      ...trackGrid.options,
-      node: !isMobile && <TrackOptions track={track} />,
-    },
+    { ...trackGrid.options, node: !isMobile && <TrackOptions track={track} /> },
   ];
 
   return (

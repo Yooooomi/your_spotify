@@ -6,9 +6,7 @@ export async function up() {
   startMigration("add date format to user");
 
   for await (const user of UserModel.find()) {
-    await changeSetting("_id", user._id, {
-      dateFormat: "default",
-    });
+    await changeSetting("_id", user._id, { dateFormat: "default" });
   }
 }
 

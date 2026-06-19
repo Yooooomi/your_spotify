@@ -1,11 +1,5 @@
 import { debounce, useMediaQuery } from "@mui/material";
-import {
-  RefObject,
-  TouchEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { RefObject, TouchEvent, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { detailIntervalToQuery } from "../intervals";
@@ -86,8 +80,9 @@ export function useShareLink() {
   if (user.publicToken) {
     search.set("token", user.publicToken);
   }
-  return `${window.location.origin}${window.location.pathname
-    }?${search.toString()}`;
+  return `${window.location.origin}${
+    window.location.pathname
+  }?${search.toString()}`;
 }
 
 export function useNavigateAndSearch() {
@@ -166,10 +161,7 @@ export function useLongPress(callback: () => void, ms = 300) {
     currentTimeout.current = setTimeout(callback, ms);
   }
 
-  return {
-    onTouchStart: start,
-    onTouchEnd: stop,
-  };
+  return { onTouchStart: start, onTouchEnd: stop };
 }
 
 export function useBooleanState(): [boolean, () => void, () => void] {

@@ -4,9 +4,7 @@ import { getWithDefault } from "../env";
 const maxCacheSize = getWithDefault("MAX_IMPORT_CACHE_SIZE", 100000);
 
 export type SpotifyTrackCacheItem =
-  | {
-      exists: false;
-    }
+  | { exists: false }
   | { exists: true; track: SpotifyTrack };
 
 const cache: Record<string, Record<string, SpotifyTrackCacheItem>> = {};

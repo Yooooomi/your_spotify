@@ -31,7 +31,6 @@ const loop = async (user: User) => {
 
   do {
     const response = await retryPromise(
-       
       () => spotifyApi.raw(nextUrl),
       RETRY,
       30,
@@ -48,7 +47,7 @@ const loop = async (user: User) => {
     return;
   }
 
-  const spotifyTracks = items.map(e => e.track);
+  const spotifyTracks = items.map((e) => e.track);
   const { tracks, albums, artists } = await getTracksAlbumsArtists(
     user._id.toString(),
     spotifyTracks,
@@ -65,7 +64,7 @@ const loop = async (user: User) => {
     );
     if (duplicate.length === 0) {
       const isBlacklisted = user.settings.blacklistedArtists.find(
-        a => a === item.track.artists[0]?.id,
+        (a) => a === item.track.artists[0]?.id,
       );
       const [primaryArtist] = item.track.artists;
       if (!primaryArtist) {
@@ -76,7 +75,7 @@ const loop = async (user: User) => {
         durationMs: item.track.duration_ms,
         albumId: item.track.album.id,
         primaryArtistId: primaryArtist.id,
-        artistIds: item.track.artists.map(e => e.id),
+        artistIds: item.track.artists.map((e) => e.id),
         id: item.track.id,
         ...(isBlacklisted ? { blacklistedBy: "artist" } : {}),
       });
@@ -99,7 +98,7 @@ const WAIT_MS = 120 * 1000;
 
 export const dbLoop = async () => {
   // return;
-   
+
   while (true) {
     try {
       const nbUsers = await getUserCount();

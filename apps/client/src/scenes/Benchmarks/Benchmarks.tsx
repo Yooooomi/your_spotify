@@ -158,20 +158,20 @@ export default function Benchmarks() {
   ] as const satisfies Request<any>[];
 
   const run = async (req: Request<any>) => {
-    setElapsedTime(prev => ({ ...prev, [req.title]: NOT_FINISHED_REQUEST }));
+    setElapsedTime((prev) => ({ ...prev, [req.title]: NOT_FINISHED_REQUEST }));
     let prepared = undefined;
     if (req.prepare) {
       prepared = await req.prepare();
     }
     if (!prepared && req.prepare) {
-      setElapsedTime(prev => ({ ...prev, [req.title]: FAILED_REQUEST }));
+      setElapsedTime((prev) => ({ ...prev, [req.title]: FAILED_REQUEST }));
       return;
     }
     const start = Date.now();
     const { data: result } = await req.request(prepared);
     console.log("Result", result);
     const end = Date.now();
-    setElapsedTime(prev => ({ ...prev, [req.title]: end - start }));
+    setElapsedTime((prev) => ({ ...prev, [req.title]: end - start }));
   };
 
   const runAll = async () => {
@@ -203,7 +203,7 @@ export default function Benchmarks() {
               Actions
             </TableCell>
           </TableHead>
-          {requests.map(req => {
+          {requests.map((req) => {
             let elapsed: ReactNode;
             const requestTimeElapsed = elapsedTime[req.title];
             if (requestTimeElapsed === NOT_FINISHED_REQUEST) {

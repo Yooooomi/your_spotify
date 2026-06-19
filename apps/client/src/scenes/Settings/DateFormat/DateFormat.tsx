@@ -14,14 +14,12 @@ export default function DateFormat() {
   const currentDateFormat = useSelector(selectDateFormat);
 
   const handleChangeDateFormat = (newDateFormat: string | null | undefined) => {
-      dispatch(changeDateFormat(newDateFormat ?? "default")).catch(
-        console.error,
-      );
-    };
+    dispatch(changeDateFormat(newDateFormat ?? "default")).catch(console.error);
+  };
 
   return (
     <TitleCard title="Date format">
-      <Text element="span" className={s.marginbottom} size='normal'>
+      <Text element="span" className={s.marginbottom} size="normal">
         Format of dates throughout the application for this user.
       </Text>
       <SettingLine
@@ -30,9 +28,9 @@ export default function DateFormat() {
           <Select
             variant="standard"
             value={currentDateFormat}
-            onChange={ev => handleChangeDateFormat(ev.target.value)}>
+            onChange={(ev) => handleChangeDateFormat(ev.target.value)}>
             <MenuItem value="default">Follow browser</MenuItem>
-            {dateFormats.map(dateFormat => (
+            {dateFormats.map((dateFormat) => (
               <MenuItem key={dateFormat.code} value={dateFormat.code}>
                 {dateFormat.name}
               </MenuItem>

@@ -41,7 +41,9 @@ export default function Albums() {
     return (
       <div className={s.loading}>
         <CircularProgress size={18} />
-        <Text element="div" size="normal">Loading your data</Text>
+        <Text element="div" size="normal">
+          Loading your data
+        </Text>
       </div>
     );
   }
@@ -60,13 +62,13 @@ export default function Albums() {
       <Header
         title="Affinity by album"
         subtitle={`Affinity computed between ${realIds
-          .map(id => accountsDict[id]?.username)
+          .map((id) => accountsDict[id]?.username)
           .join(", ")} in ${mode} mode, from ${intervalToDisplay(start, end)}`}
         hideInterval
       />
       <div className={s.content}>
         {result?.map((res, index) => {
-          const listened = realIds.map(id => res[id]);
+          const listened = realIds.map((id) => res[id]);
 
           let maxIndex = 0;
           let max = 0;
@@ -90,7 +92,9 @@ export default function Albums() {
                 className={s.albumimage}
               />
               <div className={s.albumname}>
-                <Text element="div" size="normal">{res.album.name}</Text>
+                <Text element="div" size="normal">
+                  {res.album.name}
+                </Text>
                 <Text className={s.artist} size="normal">
                   <InlineArtist artist={res.artist} size="normal" />
                 </Text>

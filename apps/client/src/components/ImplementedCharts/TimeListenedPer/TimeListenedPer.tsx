@@ -15,7 +15,7 @@ import { ImplementedChartProps } from "../types";
 import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import Tooltip from "../../Tooltip";
 
-interface TimeListenedPerProps extends ImplementedChartProps { }
+interface TimeListenedPerProps extends ImplementedChartProps {}
 
 export default function TimeListenedPer({ className }: TimeListenedPerProps) {
   const { interval } = useSelector(selectRawIntervalDetail);
@@ -27,17 +27,15 @@ export default function TimeListenedPer({ className }: TimeListenedPerProps) {
   );
 
   const data = buildXYData(
-    result?.map(r => ({
-      _id: r._id as DateId,
-      value: r.count,
-    })) ?? [],
+    result?.map((r) => ({ _id: r._id as DateId, value: r.count })) ?? [],
     interval.start,
     interval.end,
   );
 
   const formatX = useFormatXAxis(data);
   const formatY = (value: number) => `${msToMinutes(value)}m`;
-  const tooltipValue = (_: any, value: any) => `${msToMinutes(value)} minutes listened`;
+  const tooltipValue = (_: any, value: any) =>
+    `${msToMinutes(value)} minutes listened`;
 
   if (!result) {
     return (

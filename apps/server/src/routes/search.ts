@@ -6,9 +6,7 @@ import { searchAlbum } from "../database/queries/album";
 
 export const router = Router();
 
-const search = z.object({
-  query: z.string().min(3).max(64),
-});
+const search = z.object({ query: z.string().min(3).max(64) });
 
 router.get("/:query", isLoggedOrGuest, async (req, res) => {
   const { query } = validate(req.params, search);

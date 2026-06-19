@@ -32,14 +32,11 @@ export default function Songs() {
   const context: PlaylistContext = {
     type: "top",
     nb: DEFAULT_PLAYLIST_NB,
-    interval: {
-      start: interval.start.getTime(),
-      end: interval.end.getTime(),
-    },
+    interval: { start: interval.start.getTime(), end: interval.end.getTime() },
   };
 
   const { anchor, selectedTracks, setAnchor, setSelectedTracks, uniqSongIds } =
-    useSelectTracks({ tracks: items.map(item => item.track) });
+    useSelectTracks({ tracks: items.map((item) => item.track) });
 
   return (
     <>

@@ -13,7 +13,6 @@ export default function InlineAlbum<T extends HTMLTag = "div">({
   ...other
 }: InlineAlbumProps<T>) {
   return (
-     
     <Text {...other} title={album.name}>
       <Link to={`/album/${album.id}`} className={s.root}>
         {album.name}

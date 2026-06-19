@@ -47,16 +47,16 @@ export function IntervalSelector({
   const existingInterval = getAllIndexFromIntervalDetail(value);
 
   const internOnChange = (index: number) => {
-      if (index === -1) {
-        setOpen(true);
-      } else {
-        const interval = allIntervals[index];
-        if (!interval) {
-          return;
-        }
-        onChange(interval);
+    if (index === -1) {
+      setOpen(true);
+    } else {
+      const interval = allIntervals[index];
+      if (!interval) {
+        return;
       }
-    };
+      onChange(interval);
+    }
+  };
 
   let content: React.ReactNode;
 
@@ -65,7 +65,7 @@ export function IntervalSelector({
       <Select
         variant={selectType}
         value={existingInterval}
-        onChange={ev => internOnChange(ev.target.value as number)}>
+        onChange={(ev) => internOnChange(ev.target.value as number)}>
         {allIntervals.map((inter, index) => (
           <MenuItem key={inter.name} value={index}>
             {inter.name}
@@ -82,7 +82,9 @@ export function IntervalSelector({
         <RadioGroup
           row
           value={existingInterval}
-          onChange={ev => internOnChange(ev.target.value as unknown as number)}
+          onChange={(ev) =>
+            internOnChange(ev.target.value as unknown as number)
+          }
           name="interval radio group">
           {allIntervals.map((inter, index) => (
             <FormControlLabel

@@ -19,12 +19,7 @@ export default function TrackOptionsContent({
 
   const add = () => {
     onClose();
-    dispatch(
-      setPlaylistContext({
-        type: "specific",
-        songIds: [track.id],
-      }),
-    );
+    dispatch(setPlaylistContext({ type: "specific", songIds: [track.id] }));
   };
 
   const play = () => {

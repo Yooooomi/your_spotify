@@ -9,7 +9,7 @@ export class Pointer {
 export function useDetectPointerType() {
   useEffect(
     () =>
-      document.addEventListener("pointerdown", e => {
+      document.addEventListener("pointerdown", (e) => {
         Pointer.type = e.pointerType === "mouse" ? "mouse" : "other";
       }),
     [],

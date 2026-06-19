@@ -14,7 +14,7 @@ import Tooltip from "../../Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 
-interface AverageNumberArtistPerProps extends ImplementedChartProps { }
+interface AverageNumberArtistPerProps extends ImplementedChartProps {}
 
 export default function AverageNumberArtistPer({
   className,
@@ -28,7 +28,7 @@ export default function AverageNumberArtistPer({
   );
 
   const data = buildXYData(
-    result?.map(r => ({
+    result?.map((r) => ({
       _id: r._id as DateId,
       value: Math.floor(r.average * 100) / 100,
     })) ?? [],

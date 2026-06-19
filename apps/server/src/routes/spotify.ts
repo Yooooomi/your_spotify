@@ -40,9 +40,7 @@ import { uniq } from "../tools/misc";
 
 export const router = Router();
 
-const playSchema = z.object({
-  id: z.string(),
-});
+const playSchema = z.object({ id: z.string() });
 
 router.post("/play", logged, withHttpClient, async (req, res) => {
   const { client } = req as SpotifyRequest;
@@ -260,7 +258,7 @@ router.get(
       collaborativeSchema,
     );
     const result = await getCollaborativeBestSongs(
-      [user._id.toString(), ...otherIds.filter(e => e.length > 0)],
+      [user._id.toString(), ...otherIds.filter((e) => e.length > 0)],
       start,
       end,
       mode,
@@ -364,7 +362,7 @@ router.get("/playlists", logged, withHttpClient, async (req, res) => {
   const playlists = await client.playlists();
   res
     .status(200)
-    .send(playlists.filter(playlist => playlist.owner.id === user.spotifyId));
+    .send(playlists.filter((playlist) => playlist.owner.id === user.spotifyId));
 });
 
 const createPlaylistBase = z.object({
@@ -438,7 +436,7 @@ router.post("/playlist/create", logged, withHttpClient, async (req, res) => {
       nb,
       0,
     );
-    spotifyIds = items.map(item => item.track.id);
+    spotifyIds = items.map((item) => item.track.id);
     if (!playlistName) {
       playlistName = `Top songs • ${intervalToDisplay(
         user.settings.dateFormat,
@@ -457,15 +455,19 @@ router.post("/playlist/create", logged, withHttpClient, async (req, res) => {
       body.mode,
       body.nb,
     );
-    spotifyIds = affinity.map(item => item.track.id);
+    spotifyIds = affinity.map((item) => item.track.id);
   } else if (body.type === "top-artist") {
     const [artist] = await getArtists([body.artistId]);
     if (!artist) {
       res.status(404).end();
       return;
     }
-    const mostListened = await getMostListenedSongOfArtist(user, artist.id, body.nb);
-    spotifyIds = mostListened.map(item => item.track.id);
+    const mostListened = await getMostListenedSongOfArtist(
+      user,
+      artist.id,
+      body.nb,
+    );
+    spotifyIds = mostListened.map((item) => item.track.id);
     if (!playlistName) {
       playlistName = `My top of ${artist.name}`;
     }

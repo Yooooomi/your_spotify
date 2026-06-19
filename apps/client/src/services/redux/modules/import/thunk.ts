@@ -25,8 +25,8 @@ export const startImportPrivacy = myAsyncThunk<
         return;
       }
       const filesArray = Array.from(Array(files.length).keys())
-        .map(i => files.item(i))
-        .filter(f => f);
+        .map((i) => files.item(i))
+        .filter((f) => f);
       await api.doImportPrivacy(filesArray as File[]);
     } else {
       await api.retryImport(id);
@@ -69,8 +69,8 @@ export const startImportFullPrivacy = myAsyncThunk<
         return;
       }
       const filesArray = Array.from(Array(files.length).keys())
-        .map(i => files.item(i))
-        .filter(f => f);
+        .map((i) => files.item(i))
+        .filter((f) => f);
       await api.doImportFullPrivacy(filesArray as File[]);
     } else {
       await api.retryImport(id);

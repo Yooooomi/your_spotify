@@ -73,9 +73,7 @@ export const storeFirstListenedAtIfLess = async (
     (!user.firstListenedAt ||
       playedAt.getTime() < user.firstListenedAt.getTime())
   ) {
-    await storeInUser("_id", id, {
-      firstListenedAt: playedAt,
-    });
+    await storeInUser("_id", id, { firstListenedAt: playedAt });
   }
 };
 
@@ -86,7 +84,7 @@ export const changeSetting = <F extends keyof User>(
 ) => {
   const toSet: Record<string, any> = {};
   const toUnset: Record<string, any> = {};
-  Object.keys(infos).forEach(key => {
+  Object.keys(infos).forEach((key) => {
     const finalValue = infos[key as keyof typeof infos];
     if (finalValue === undefined) {
       toUnset[`settings.${key}`] = 1;
@@ -105,13 +103,13 @@ export const addTrackIdsToUser = async (
   id: string,
   infos: Omit<Infos, "owner">[],
 ) => {
-  const realInfos = infos.map(info => ({
+  const realInfos = infos.map((info) => ({
     ...info,
     owner: new Types.ObjectId(id),
   }));
   const infosSaved = await InfosModel.create(realInfos);
   return UserModel.findByIdAndUpdate(id, {
-    $push: { tracks: { $each: infosSaved.map(e => e._id) } },
+    $push: { tracks: { $each: infosSaved.map((e) => e._id) } },
   });
 };
 
@@ -147,12 +145,7 @@ export const getPossibleDuplicates = async (
     { $sort: { played_at: 1 } },
     { $skip: offset },
     { $limit: count },
-    {
-      $group: {
-        _id: "$id",
-        infos: { $push: "$$ROOT" },
-      },
-    },
+    { $group: { _id: "$id", infos: { $push: "$$ROOT" } } },
     {
       $addFields: {
         a: {
@@ -253,10 +246,7 @@ export const getSongs = async (
       },
     },
     {
-      $unwind: {
-        path: "$track.full_album",
-        preserveNullAndEmptyArrays: true,
-      },
+      $unwind: { path: "$track.full_album", preserveNullAndEmptyArrays: true },
     },
     {
       $lookup: {
@@ -290,7 +280,7 @@ export const deleteAllOrphanTracks = async () => {
     { $match: { $expr: { $eq: [{ $size: "$infos" }, 0] } } },
   ]);
 
-  const tracksToDelete = tracks.map(tr => tr._id);
+  const tracksToDelete = tracks.map((tr) => tr._id);
   await TrackModel.deleteMany({ _id: { $in: tracksToDelete } });
 
   const albums = await AlbumModel.aggregate([
@@ -305,7 +295,7 @@ export const deleteAllOrphanTracks = async () => {
     { $match: { $expr: { $eq: [{ $size: "$tracks" }, 0] } } },
   ]);
 
-  const albumsToDelete = albums.map(alb => alb._id);
+  const albumsToDelete = albums.map((alb) => alb._id);
   await AlbumModel.deleteMany({ _id: { $in: albumsToDelete } });
 
   const artists = await ArtistModel.aggregate([
@@ -337,7 +327,7 @@ export const deleteAllOrphanTracks = async () => {
     },
   ]);
 
-  const artistsToDelete = artists.map(art => art._id);
+  const artistsToDelete = artists.map((art) => art._id);
   await ArtistModel.deleteMany({ _id: { $in: artistsToDelete } });
 
   return { tracksToDelete, albumsToDelete, artistsToDelete };
@@ -370,5 +360,5 @@ export const unblacklistArtist = (userId: string, artistId: string) =>
 
 export const deleteInfos = (infoIds: string[]) =>
   InfosModel.deleteMany({
-    _id: { $in: infoIds.map(id => new Types.ObjectId(id)) },
+    _id: { $in: infoIds.map((id) => new Types.ObjectId(id)) },
   });

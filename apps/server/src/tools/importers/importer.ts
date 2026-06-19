@@ -24,9 +24,7 @@ const importers: {
   "full-privacy": (user: User) => new FullPrivacyImporter(user),
 } as const;
 
-const userImporters: {
-  [userId: string]: HistoryImporter<any>;
-} = {};
+const userImporters: { [userId: string]: HistoryImporter<any> } = {};
 
 export function canUserImport(userId: string) {
   return !(userId in userImporters);

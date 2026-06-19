@@ -5,8 +5,10 @@ import { getApiEndpoint } from "../../../services/tools";
 export default function ApiEndpointSetToFrontend() {
   return (
     <div className={s.root}>
-      <Text element="h1" size="pagetitle">API Endpoint is not set up correctly</Text>
-      <Text className={s.explain} size='normal'>
+      <Text element="h1" size="pagetitle">
+        API Endpoint is not set up correctly
+      </Text>
+      <Text className={s.explain} size="normal">
         This request should have reached the backend, but was handled by the
         frontend instead.
         <p />

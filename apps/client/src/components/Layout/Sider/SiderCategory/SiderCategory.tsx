@@ -26,7 +26,7 @@ export default function SiderCategory({
   const layoutContext = useContext(LayoutContext);
 
   const links = category.items.filter(
-    item => !item.restrict || (item.restrict === "guest" && !user.isGuest),
+    (item) => !item.restrict || (item.restrict === "guest" && !user.isGuest),
   );
 
   if (links.length === 0) {
@@ -35,22 +35,20 @@ export default function SiderCategory({
 
   return (
     <div className={s.category} key={category.label}>
-      <Text element="div" onDark className={s.categoryname} size='small'>
+      <Text element="div" onDark className={s.categoryname} size="small">
         {category.label}
       </Text>
       {toCopy &&
-        links.map(link => {
+        links.map((link) => {
           const active = pathname === link.link;
           if (link.link === "/share") {
             return (
               <CopyToClipboard key={link.label} onCopy={onCopy} text={toCopy}>
                 <div className={s.link} key={link.label}>
                   <Text
-                    size='normal'
+                    size="normal"
                     onDark
-                    className={clsx(s.linkcontent, {
-                      [s.active]: active,
-                    })}>
+                    className={clsx(s.linkcontent, { [s.active]: active })}>
                     {active ? link.iconOn : link.icon}
                     {link.label}
                   </Text>
@@ -65,7 +63,7 @@ export default function SiderCategory({
               key={link.label}
               onClick={layoutContext.closeDrawer}>
               <Text
-                size='normal'
+                size="normal"
                 onDark
                 element="div"
                 className={clsx(s.linkcontent, { [s.active]: active })}>

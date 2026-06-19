@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["import", "react", "typescript"],
+  "rules": {
+    "no-shadow": "error",
+    "eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "react/exhaustive-deps": "error",
+    "typescript/no-explicit-any": "off",
+    "typescript/no-empty-object-type": "off"
+  }
+}

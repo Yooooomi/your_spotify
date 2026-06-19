@@ -5,5 +5,5 @@ const selectMessageState = (state: RootState) => state.message;
 
 export const selectMessage = createSelector(
   selectMessageState,
-  state => state.message,
+  (state) => state.message,
 );

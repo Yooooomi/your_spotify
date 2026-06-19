@@ -26,12 +26,12 @@ export default function ImportHistory() {
   const imports = useSelector(selectImportStates);
 
   const cleanImport = async (id: string) => {
-      dispatch(cleanupImport(id)).catch(console.error);
-    };
+    dispatch(cleanupImport(id)).catch(console.error);
+  };
 
   const onImport = async (id: string) => {
-      await dispatch(startImportPrivacy({ id }));
-    };
+    await dispatch(startImportPrivacy({ id }));
+  };
 
   if (!imports) {
     return <CircularProgress />;
@@ -39,14 +39,18 @@ export default function ImportHistory() {
 
   return (
     <div className={s.importhistory}>
-      <Text element="h3" size='big'>Import history</Text>
-      {imports.map(st => (
+      <Text element="h3" size="big">
+        Import history
+      </Text>
+      {imports.map((st) => (
         <SettingLine
           key={st._id}
           left={
             <Text size="normal">
               Import of {DateFormatter.listenedAt(new Date(st.createdAt))}
-              <Text className={s.importertype} size='normal'>from {st.type}</Text>
+              <Text className={s.importertype} size="normal">
+                from {st.type}
+              </Text>
             </Text>
           }
           right={
@@ -61,10 +65,10 @@ export default function ImportHistory() {
                     : undefined,
                   st.status === "failure"
                     ? {
-                      label: "Clean up",
-                      onClick: () => cleanImport(st._id),
-                      style: "destructive",
-                    }
+                        label: "Clean up",
+                        onClick: () => cleanImport(st._id),
+                        style: "destructive",
+                      }
                     : undefined,
                 ])}
               />

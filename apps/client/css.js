@@ -1,16 +1,16 @@
-const fs = require('fs');
-const { dirname } = require('path');
+const fs = require("fs");
+const { dirname } = require("path");
 
 function getClassesOfCSS(path) {
   const rg = /\.([a-zA-Z]+)/g;
   const content = fs.readFileSync(path).toString();
-  return [...content.matchAll(rg)].map(res => res[1]);
+  return [...content.matchAll(rg)].map((res) => res[1]);
 }
 
 function getUsedClassesOfJs(path) {
   const rg = /\Ws\.([a-zA-Z]+)/g;
   const content = fs.readFileSync(path).toString();
-  return [...content.matchAll(rg)].map(res => res[1]);
+  return [...content.matchAll(rg)].map((res) => res[1]);
 }
 
 function checkBoth(a, b) {
@@ -43,7 +43,7 @@ function computeIndex(fullindex) {
 
 async function main(indexes) {
   const notUsed = indexes.map(computeIndex);
-  console.log('FILE | IN CSS BUT NOT IN JS | IN JS BUT NOT IN CSS');
+  console.log("FILE | IN CSS BUT NOT IN JS | IN JS BUT NOT IN CSS");
   notUsed.forEach((nu, k) => {
     if (nu[0].length + nu[1].length > 0) {
       console.log(indexes[k], nu[0], nu[1]);

@@ -14,7 +14,7 @@ import { selectRawIntervalDetail } from "../../../services/redux/modules/user/se
 import Tooltip from "../../Tooltip";
 import { TitleFormatter } from "../../Tooltip/Tooltip";
 
-interface BestArtistsBarProps extends ImplementedChartProps { }
+interface BestArtistsBarProps extends ImplementedChartProps {}
 
 const tooltipTitle: TitleFormatter<unknown[]> = ({ x }) => `Rank ${x + 1}`;
 
@@ -22,9 +22,7 @@ const svgImgSize = 32;
 class ImageAxisTick extends PureComponent<{
   x: number;
   y: number;
-  payload: {
-    index: number;
-  };
+  payload: { index: number };
   artists: Artist[];
 }> {
   render() {
@@ -78,10 +76,8 @@ export default function BestArtistsBar({ className }: BestArtistsBarProps) {
 
   useResizeDebounce(compute, ref);
 
-  const data = result?.slice(0, displayNb).map((r, k) => ({
-    x: k,
-    y: r.count,
-  })) ?? [];
+  const data =
+    result?.slice(0, displayNb).map((r, k) => ({ x: k, y: r.count })) ?? [];
 
   const tooltipValue = (payload: any) => {
     const dataValue = result?.[payload.x];
@@ -103,7 +99,7 @@ export default function BestArtistsBar({ className }: BestArtistsBarProps) {
         data={data}
         customTooltip={<Tooltip title={tooltipTitle} value={tooltipValue} />}
         // @ts-expect-error this is fine
-        customXTick={<ImageAxisTick artists={result.map(r => r.artist)} />}
+        customXTick={<ImageAxisTick artists={result.map((r) => r.artist)} />}
       />
     </ChartCard>
   );

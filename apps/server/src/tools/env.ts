@@ -45,7 +45,7 @@ Object.entries(validators).forEach(([key, value]) => {
   } catch (e) {
     console.error(`[error] ${key} env variable is missing`);
     if (e instanceof z.ZodError) {
-      e.issues.forEach(issue => {
+      e.issues.forEach((issue) => {
         console.error(`[error] -> ${issue.message}`);
       });
     }

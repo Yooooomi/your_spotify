@@ -50,7 +50,7 @@ export default function DeleteUser() {
           </LoadingButton>
         </div>
       </Dialog>
-      {accounts.map(user => (
+      {accounts.map((user) => (
         <SettingLine
           key={user.id}
           left={user.username}

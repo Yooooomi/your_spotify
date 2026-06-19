@@ -39,7 +39,7 @@ export default function Login() {
       <Text size="pagetitle" element="h1" className={s.title}>
         Login
       </Text>
-      <Text size='big' className={s.welcome}>
+      <Text size="big" className={s.welcome}>
         To access your personal dashboard, please login with your account
       </Text>
       <div>

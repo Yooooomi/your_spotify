@@ -19,19 +19,19 @@ export default function CountChooser({ value, setValue }: CountChooserProps) {
   const [inputType, setInputType] = useState<"default" | "custom">("default");
 
   const internSetValue = (newValue: string | number, fromSelect = false) => {
-      if (newValue === "custom") {
-        setInputType("custom");
-      } else {
-        if (fromSelect) {
-          setInputType("default");
-        }
-        if (typeof newValue === "string") {
-          setValue(+newValue.slice(0, 10));
-        } else if (typeof newValue === "number") {
-          setValue(newValue);
-        }
+    if (newValue === "custom") {
+      setInputType("custom");
+    } else {
+      if (fromSelect) {
+        setInputType("default");
       }
-    };
+      if (typeof newValue === "string") {
+        setValue(+newValue.slice(0, 10));
+      } else if (typeof newValue === "number") {
+        setValue(newValue);
+      }
+    }
+  };
 
   return (
     <>
@@ -42,8 +42,8 @@ export default function CountChooser({ value, setValue }: CountChooserProps) {
           label="Number of items"
           displayEmpty
           value={inputType === "default" ? value.toString() : "custom"}
-          onChange={ev => internSetValue(ev.target.value, true)}>
-          {DEFAULT_CHOICES.map(choice => (
+          onChange={(ev) => internSetValue(ev.target.value, true)}>
+          {DEFAULT_CHOICES.map((choice) => (
             <MenuItem key={choice} value={choice}>
               {choice}
             </MenuItem>
@@ -58,7 +58,7 @@ export default function CountChooser({ value, setValue }: CountChooserProps) {
           placeholder="Custom amount"
           fullWidth
           value={value.toString()}
-          onChange={ev => internSetValue(ev.target.value)}
+          onChange={(ev) => internSetValue(ev.target.value)}
         />
       )}
     </>

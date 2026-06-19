@@ -5,5 +5,5 @@ const selectAdminState = (state: RootState) => state.admin;
 
 export const selectAccounts = createSelector(
   selectAdminState,
-  state => state.accounts,
+  (state) => state.accounts,
 );

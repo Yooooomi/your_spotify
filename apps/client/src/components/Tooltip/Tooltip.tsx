@@ -6,7 +6,7 @@ type TypeFromArray<T> = T extends Array<infer K> ? K : never;
 
 interface MyTooltipProps<D extends Array<unknown>>
   extends TooltipProps<any, any> {
-  payload?: ReadonlyArray<Payload<any, any>>
+  payload?: ReadonlyArray<Payload<any, any>>;
 
   title: TitleFormatter<D>;
   value: ValueFormatter<D>;
@@ -45,8 +45,8 @@ export default function Tooltip<DataTypeArray extends Array<unknown>>({
       </div>
       <div className={s.content}>
         {payload
-          ?.filter(p => p.value || !dontShowNullValues)
-          .map(p => (
+          ?.filter((p) => p.value || !dontShowNullValues)
+          .map((p) => (
             <div key={p.dataKey?.toString()} className={s.contentItem}>
               {value(
                 p.payload as any,

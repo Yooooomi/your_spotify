@@ -48,12 +48,12 @@ const settingsSchema = z.object({
   timezone: z
     .string()
     .nullable()
-    .transform(e => e ?? undefined)
+    .transform((e) => e ?? undefined)
     .optional(),
   dateFormat: z
     .string()
     .nullable()
-    .transform(e => e ?? undefined)
+    .transform((e) => e ?? undefined)
     .optional(),
 });
 
@@ -91,23 +91,21 @@ router.post("/delete-public-token", logged, async (req, res) => {
 
 router.get("/accounts", isLoggedOrGuest, async (_, res) => {
   const users = await getAllUsers(false);
-  res.status(200).send(
-    users.map(user => ({
-      id: user._id.toString(),
-      username: user.username,
-      admin: user.admin,
-      firstListenedAt: user.firstListenedAt,
-    })),
-  );
+  res
+    .status(200)
+    .send(
+      users.map((user) => ({
+        id: user._id.toString(),
+        username: user.username,
+        admin: user.admin,
+        firstListenedAt: user.firstListenedAt,
+      })),
+    );
 });
 
-const setAdmin = z.object({
-  id: z.string(),
-});
+const setAdmin = z.object({ id: z.string() });
 
-const setAdminBody = z.object({
-  status: z.preprocess(toBoolean, z.boolean()),
-});
+const setAdminBody = z.object({ status: z.preprocess(toBoolean, z.boolean()) });
 
 router.put("/admin/:id", logged, admin, async (req, res) => {
   const { id } = validate(req.params, setAdmin);
@@ -122,9 +120,7 @@ router.put("/admin/:id", logged, admin, async (req, res) => {
   res.status(204).end();
 });
 
-const deleteAccount = z.object({
-  id: z.string(),
-});
+const deleteAccount = z.object({ id: z.string() });
 
 router.delete("/account/:id", logged, admin, async (req, res) => {
   const { id } = validate(req.params, deleteAccount);
@@ -138,9 +134,7 @@ router.delete("/account/:id", logged, admin, async (req, res) => {
   res.status(204).end();
 });
 
-const rename = z.object({
-  newName: z.string().max(64).min(2),
-});
+const rename = z.object({ newName: z.string().max(64).min(2) });
 
 router.put("/rename", logged, async (req, res) => {
   const { user } = req as LoggedRequest;

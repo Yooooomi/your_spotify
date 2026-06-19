@@ -21,17 +21,27 @@ export const useRawTooltipLabelFormatter = <
     }
     if (tooltipLabelFormatter) {
       if (forEveryEntry) {
-        return payload?.map(p => tooltipLabelFormatter(label, p.payload));
+        return payload?.map((p) => tooltipLabelFormatter(label, p.payload));
       }
       const p = payload[0];
       if (!p) {
-        return <Text element="span" size='normal'>{label}</Text>;
+        return (
+          <Text element="span" size="normal">
+            {label}
+          </Text>
+        );
       }
       return (
-        <Text element="span" size='normal'>{tooltipLabelFormatter(label, p.payload)}</Text>
+        <Text element="span" size="normal">
+          {tooltipLabelFormatter(label, p.payload)}
+        </Text>
       );
     }
-    return <Text element="span" size='normal'>{label}</Text>;
+    return (
+      <Text element="span" size="normal">
+        {label}
+      </Text>
+    );
   };
   return fn;
 };
@@ -46,5 +56,5 @@ export const useRawTooltipValueFormatter = <
       return [tooltipValueFormatter(value, pr.payload), null];
     }
     return value;
-  }
+  };
 };

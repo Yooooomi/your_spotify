@@ -47,8 +47,8 @@ router.post(
       null,
       "privacy",
       user._id.toString(),
-      (files as Express.Multer.File[]).map(f => f.path),
-      success => {
+      (files as Express.Multer.File[]).map((f) => f.path),
+      (success) => {
         if (success) {
           res.status(200).send({ code: "IMPORT_STARTED" });
           return;
@@ -82,8 +82,8 @@ router.post(
       null,
       "full-privacy",
       user._id.toString(),
-      (files as Express.Multer.File[]).map(f => f.path),
-      success => {
+      (files as Express.Multer.File[]).map((f) => f.path),
+      (success) => {
         if (success) {
           res.status(200).send({ code: "IMPORT_STARTED" });
           return;
@@ -95,9 +95,7 @@ router.post(
   },
 );
 
-const retrySchema = z.object({
-  existingStateId: z.string(),
-});
+const retrySchema = z.object({ existingStateId: z.string() });
 
 router.post("/import/retry", logged, notAlreadyImporting, async (req, res) => {
   const { user } = req as LoggedRequest;
@@ -120,7 +118,7 @@ router.post("/import/retry", logged, notAlreadyImporting, async (req, res) => {
     importState.type,
     user._id.toString(),
     importState.metadata,
-    success => {
+    (success) => {
       if (success) {
         res.status(200).send({ code: "IMPORT_STARTED" });
         return;
@@ -131,9 +129,7 @@ router.post("/import/retry", logged, notAlreadyImporting, async (req, res) => {
   ).catch(logger.error);
 });
 
-const cleanupImportSchema = z.object({
-  id: z.string(),
-});
+const cleanupImportSchema = z.object({ id: z.string() });
 
 router.delete("/import/clean/:id", logged, async (req, res) => {
   const { user } = req as LoggedRequest;

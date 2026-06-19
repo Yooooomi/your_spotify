@@ -82,7 +82,7 @@ export const userBasedIntervals: UserBasedIntervalDetails[] = [
   {
     type: "userbased",
     name: "All",
-    interval: user => {
+    interval: (user) => {
       const start = getFirstListenedAt(
         user ? new Date(user.firstListenedAt) : new Date(2010),
       );
@@ -100,23 +100,23 @@ export const allIntervals = [...presetIntervals, ...userBasedIntervals];
 export function getPresetIndexFromIntervalDetail(
   details: PresetIntervalDetail,
 ) {
-  return presetIntervals.findIndex(v => v.name === details.name);
+  return presetIntervals.findIndex((v) => v.name === details.name);
 }
 
 export function getUserBasedIndexFromIntervalDetail(
   details: UserBasedIntervalDetails,
 ) {
-  return userBasedIntervals.findIndex(v => v.name === details.name);
+  return userBasedIntervals.findIndex((v) => v.name === details.name);
 }
 
 export function getAllIndexFromIntervalDetail(details: IntervalDetail) {
   return allIntervals.findIndex(
-    v => v.type === details.type && v.name === details.name,
+    (v) => v.type === details.type && v.name === details.name,
   );
 }
 
 export function optimisticGetIntervalDetailFromName(name: string) {
-  return allIntervals.find(inter => inter.name === name);
+  return allIntervals.find((inter) => inter.name === name);
 }
 
 export function getRawIntervalDetail(
@@ -196,9 +196,9 @@ export function useQueryToRawIntervalDetail(prefix: string) {
   const [query] = useSearchParams();
   const user = useSelector(selectUser);
   return getRawIntervalDetail(
-        queryToIntervalDetail(query, prefix),
-        user ?? undefined,
-      );
+    queryToIntervalDetail(query, prefix),
+    user ?? undefined,
+  );
 }
 
 export function useOldestListenedAtFromUsers(
@@ -211,8 +211,10 @@ export function useOldestListenedAtFromUsers(
 
   const detail = queryToIntervalDetail(query, prefix);
 
-  const filtered = users.filter(us => [user?._id, ...userIds].includes(us.id));
-  const mins = getMinOfArray(filtered, item =>
+  const filtered = users.filter((us) =>
+    [user?._id, ...userIds].includes(us.id),
+  );
+  const mins = getMinOfArray(filtered, (item) =>
     new Date(item.firstListenedAt).getTime(),
   );
   const account = filtered[mins?.minIndex ?? 0];

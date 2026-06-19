@@ -39,7 +39,7 @@ export default function Wrapper() {
       `${GLOBAL_PREFIX}end`,
       `${GLOBAL_PREFIX}name`,
     ];
-    fieldsToDelete.forEach(field => query.delete(field));
+    fieldsToDelete.forEach((field) => query.delete(field));
     setQuery(query);
     // Only set the interval on the first render
     // eslint-disable-next-line react-hooks/exhaustive-deps

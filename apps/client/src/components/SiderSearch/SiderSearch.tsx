@@ -22,7 +22,8 @@ export default function SiderSearch({
   onTrackClick,
   onArtistClick,
   onAlbumClick,
-  inputClassname, showShortcut
+  inputClassname,
+  showShortcut,
 }: SiderSearchProps) {
   const [search, setSearch] = useState("");
   const [results, loading] = useConditionalAPI(
@@ -59,7 +60,7 @@ export default function SiderSearch({
     tracks: onTrackClick && results?.tracks,
     albums: onAlbumClick && results?.albums,
     artists: onArtistClick && results?.artists,
-  }
+  };
 
   const wrapperRef = useRef(null);
 
@@ -70,7 +71,9 @@ export default function SiderSearch({
         role="button"
         onClick={() => setOpen(true)}>
         Search...
-        {showShortcut && <AbsoluteShortcut sequence="Meta+k" right={8} top={8} />}
+        {showShortcut && (
+          <AbsoluteShortcut sequence="Meta+k" right={8} top={8} />
+        )}
       </div>
 
       <div
@@ -91,7 +94,16 @@ export default function SiderSearch({
           onClose={() => setOpen(false)}
           anchorEl={() => wrapperRef.current}
           transformOrigin={{ horizontal: "center", vertical: "top" }}
-          anchorOrigin={{ horizontal: "center", vertical: "top" }} slotProps={{ paper: { style: { borderRadius: 20, overflow: "hidden", width: "min(600px, 95vw)" } } }}>
+          anchorOrigin={{ horizontal: "center", vertical: "top" }}
+          slotProps={{
+            paper: {
+              style: {
+                borderRadius: 20,
+                overflow: "hidden",
+                width: "min(600px, 95vw)",
+              },
+            },
+          }}>
           <SearchPaper
             tracks={filteredResults.tracks}
             albums={filteredResults.albums}

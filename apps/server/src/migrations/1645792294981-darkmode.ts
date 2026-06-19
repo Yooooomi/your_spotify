@@ -7,14 +7,10 @@ export const up = async () => {
 
   const users = await getAllUsers(false);
   await Promise.all(
-    users.map(user =>
-      changeSetting("_id", user._id, {
-        darkMode: "follow",
-      }),
-    ),
+    users.map((user) => changeSetting("_id", user._id, { darkMode: "follow" })),
   );
   await Promise.all(
-    users.map(async user => {
+    users.map(async (user) => {
       const firstArray = await InfosModel.find({ owner: user._id })
         .sort("played_at")
         .limit(1);
@@ -22,9 +18,7 @@ export const up = async () => {
       if (!first) {
         return;
       }
-      await storeInUser("_id", user._id, {
-        firstListenedAt: first.played_at,
-      });
+      await storeInUser("_id", user._id, { firstListenedAt: first.played_at });
     }),
   );
 };

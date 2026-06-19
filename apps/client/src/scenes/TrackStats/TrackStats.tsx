@@ -37,7 +37,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
           />
         }
         title={stats.track.name}
-        subtitle={<InlineArtist artist={stats.artist} size='normal' />}
+        subtitle={<InlineArtist artist={stats.artist} size="normal" />}
         hideInterval
       />
       <div className={s.content}>
@@ -47,36 +47,30 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
         <Grid
           container
           spacing={2}
-          sx={{
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-          }}
+          sx={{ justifyContent: "flex-start", alignItems: "flex-start" }}
           style={{ marginTop: 0 }}>
           <Grid
             container
             size={{ xs: 12, lg: 6 }}
-            sx={{
-              justifyContent: "flex-start",
-              alignItems: "flex-start"
-            }}
+            sx={{ justifyContent: "flex-start", alignItems: "flex-start" }}
             spacing={2}>
             <Grid size={{ xs: 12 }}>
               <TitleCard title="Context" contentClassName={s.context}>
                 <ImageTwoLines
                   image={<IdealImage images={stats.artist.images} size={48} />}
-                  first={<InlineArtist artist={stats.artist} size='normal' />}
+                  first={<InlineArtist artist={stats.artist} size="normal" />}
                   second="Artist"
                 />
                 <ImageTwoLines
                   image={<IdealImage images={stats.album.images} size={48} />}
-                  first={<InlineAlbum album={stats.album} size='normal' />}
+                  first={<InlineAlbum album={stats.album} size="normal" />}
                   second="Album"
                 />
               </TitleCard>
             </Grid>
             <Grid size={{ xs: 12 }}>
               <TitleCard title="Times listened">
-                <Text element="strong" size='big'>
+                <Text element="strong" size="big">
                   {stats.total.count}
                 </Text>
               </TitleCard>
@@ -92,7 +86,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
                 title={`Top two months you listened to ${stats.track.name}`}>
                 {bestPeriod && (
                   <div className={s.bestperiod}>
-                    <Text element="strong" size='normal'>
+                    <Text element="strong" size="normal">
                       {DateFormatter.toMonthStringYear(
                         buildFromDateId(bestPeriod._id),
                       )}
@@ -106,7 +100,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
                 )}
                 {secondBestPeriod && (
                   <div className={s.bestperiod}>
-                    <Text element="strong" size='normal'>
+                    <Text element="strong" size="normal">
                       {DateFormatter.toMonthStringYear(
                         buildFromDateId(secondBestPeriod._id),
                       )}
@@ -125,7 +119,7 @@ export default function TrackStats({ trackId, stats }: TrackStatsProps) {
           </Grid>
           <Grid size={{ lg: 6, xs: 12 }}>
             <TitleCard title="Recently played on">
-              {stats.recentHistory.map(info => (
+              {stats.recentHistory.map((info) => (
                 <ImageTwoLines
                   className={s.recentitem}
                   key={info.id}

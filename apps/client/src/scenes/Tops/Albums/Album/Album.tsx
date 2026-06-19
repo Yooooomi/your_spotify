@@ -1,14 +1,14 @@
-import { Fragment } from 'react';
-import s from './index.module.css';
-import { msToDuration } from '../../../../services/stats';
-import { Artist, Album as AlbumType } from '../../../../services/types';
-import InlineArtist from '../../../../components/InlineArtist';
-import Text from '../../../../components/Text';
-import { useMobile } from '../../../../services/hooks/hooks';
-import { ColumnDescription, GridRowWrapper } from '../../../../components/Grid';
-import IdealImage from '../../../../components/IdealImage';
-import { useAlbumGrid } from './AlbumGrid';
-import InlineAlbum from '../../../../components/InlineAlbum';
+import { Fragment } from "react";
+import s from "./index.module.css";
+import { msToDuration } from "../../../../services/stats";
+import { Artist, Album as AlbumType } from "../../../../services/types";
+import InlineArtist from "../../../../components/InlineArtist";
+import Text from "../../../../components/Text";
+import { useMobile } from "../../../../services/hooks/hooks";
+import { ColumnDescription, GridRowWrapper } from "../../../../components/Grid";
+import IdealImage from "../../../../components/IdealImage";
+import { useAlbumGrid } from "./AlbumGrid";
+import InlineAlbum from "../../../../components/InlineAlbum";
 
 interface AlbumProps {
   artists: Artist[];
@@ -27,7 +27,7 @@ export default function Album({
   totalDuration,
   count,
   totalCount,
-  rank
+  rank,
 }: AlbumProps) {
   const [isMobile, _, isDesktop] = useMobile();
   const albumGrid = useAlbumGrid();
@@ -39,7 +39,7 @@ export default function Album({
         <Text size="normal" element="strong" className={s.mlrank}>
           #{rank}
         </Text>
-      )
+      ),
     },
     {
       ...albumGrid.cover,
@@ -80,7 +80,9 @@ export default function Album({
           {!isMobile && (
             <>
               {" "}
-              <Text size="normal">({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+              <Text size="normal">
+                ({Math.floor((count / totalCount) * 10000) / 100}%)
+              </Text>
             </>
           )}
         </Text>

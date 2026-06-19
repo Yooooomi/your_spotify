@@ -5,5 +5,5 @@ const selectImportState = (state: RootState) => state.import;
 
 export const selectImportStates = createSelector(
   selectImportState,
-  state => state.imports,
+  (state) => state.imports,
 );

@@ -1,30 +1,26 @@
-import { defineConfig } from '@rsbuild/core';
-import { pluginReact } from '@rsbuild/plugin-react';
-import { pluginBabel } from '@rsbuild/plugin-babel';
+import { defineConfig } from "@rsbuild/core";
+import { pluginReact } from "@rsbuild/plugin-react";
+import { pluginBabel } from "@rsbuild/plugin-babel";
 
 export default defineConfig({
-  html: {
-    template: "./public/index.html",
-  },
-  output: {
-    distPath: "./build",
-  },
+  html: { template: "./public/index.html" },
+  output: { distPath: "./build" },
   tools: {
     rspack: {
       optimization: {
         splitChunks: {
           cacheGroups: {
             mui: {
-              name: 'lib-mui',
+              name: "lib-mui",
               test: /[\\/]node_modules[\\/]@mui[\\/]/,
-              chunks: 'all',
+              chunks: "all",
               enforce: true,
               priority: 40,
             },
             emotion: {
-              name: 'lib-emotion',
+              name: "lib-emotion",
               test: /[\\/]node_modules[\\/]@emotion[\\/]/,
-              chunks: 'all',
+              chunks: "all",
               enforce: true,
               priority: 30,
             },
@@ -38,7 +34,7 @@ export default defineConfig({
     pluginBabel({
       include: /\.(?:jsx|tsx)$/,
       babelLoaderOptions(opts) {
-        opts.plugins?.unshift('babel-plugin-react-compiler');
+        opts.plugins?.unshift("babel-plugin-react-compiler");
       },
     }),
   ],

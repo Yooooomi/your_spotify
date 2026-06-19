@@ -24,13 +24,13 @@ export default function Privacy() {
       return false;
     }
     return Array.from(Array(files.length).keys()).some(
-      i => !files.item(i)?.name.startsWith("StreamingHistory"),
+      (i) => !files.item(i)?.name.startsWith("StreamingHistory"),
     );
   })();
 
   return (
     <div>
-      <Text className={s.import} size='normal'>
+      <Text className={s.import} size="normal">
         Here you can import previous data from Spotify privacy data. You can
         request them{" "}
         <a
@@ -49,26 +49,26 @@ export default function Privacy() {
           multiple
           type="file"
           style={{ display: "none" }}
-          onChange={ev => setFiles(ev.target.files)}
+          onChange={(ev) => setFiles(ev.target.files)}
         />
         <Button component="span">
           Select your StreamingHistoryX.json files
         </Button>
       </label>
       {files &&
-        Array.from(Array(files.length).keys()).map(i => (
-          <Text key={i} element="div" size='normal'>
+        Array.from(Array(files.length).keys()).map((i) => (
+          <Text key={i} element="div" size="normal">
             {files.item(i)?.name}
           </Text>
         ))}
       {wrongFiles && (
-        <Text className={s.alert} size='normal'>
+        <Text className={s.alert} size="normal">
           Some file do not being with <code>StreamingHistory</code>, import
           might not work
         </Text>
       )}
       {files && !wrongFiles && (
-        <Text className={s.noalert} size='normal'>
+        <Text className={s.noalert} size="normal">
           Everything looks fine for the import to work
         </Text>
       )}

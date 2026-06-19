@@ -18,7 +18,7 @@ export default function ButtonsHeader({ items }: ButtonsHeaderProps) {
   const location = useLocation();
 
   const tab = (() => {
-    const currentTab = items.findIndex(item =>
+    const currentTab = items.findIndex((item) =>
       location.pathname.startsWith(item.url),
     );
     if (currentTab !== -1) {
@@ -28,12 +28,12 @@ export default function ButtonsHeader({ items }: ButtonsHeaderProps) {
   })();
 
   const goto = (value: number) => {
-      const url = items[value];
-      if (!url) {
-        return;
-      }
-      navigate(url.url);
-    };
+    const url = items[value];
+    if (!url) {
+      return;
+    }
+    navigate(url.url);
+  };
 
   return (
     <Tabs

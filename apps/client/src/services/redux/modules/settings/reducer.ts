@@ -19,7 +19,7 @@ const initialState: SettingsReducer = {
   update: false,
 };
 
-export default createReducer(initialState, builder => {
+export default createReducer(initialState, (builder) => {
   builder.addCase(getSettings.fulfilled, (state, { payload }) => {
     state.settings = payload;
   });

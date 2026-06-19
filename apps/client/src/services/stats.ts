@@ -142,10 +142,7 @@ const buildXYDataWithGetters = <Dict extends Record<string, any>>(
         built.push({
           ...getDefaultData(),
           x: currentIndex,
-          dateWithPrecision: {
-            date: currentDate,
-            precision,
-          },
+          dateWithPrecision: { date: currentDate, precision },
         });
       }
       currentIndex += 1;
@@ -167,10 +164,7 @@ const buildXYDataWithGetters = <Dict extends Record<string, any>>(
     for (let i = 0; currentDate.getTime() <= end.getTime(); i += 1) {
       built.push({
         x: currentIndex + i,
-        dateWithPrecision: {
-          date: currentDate,
-          precision,
-        },
+        dateWithPrecision: { date: currentDate, precision },
         ...getDefaultData(),
       });
       currentIndex += 1;
@@ -191,7 +185,7 @@ export const buildXYData = (
     start,
     end,
     Boolean(doNotFillData),
-    idx => ({ y: data[idx]!.value }),
+    (idx) => ({ y: data[idx]!.value }),
     () => ({ y: 0 }),
   );
 
@@ -211,7 +205,7 @@ export const buildXYDataObjSpread = <D extends { _id: DateId }>(
     start,
     end,
     Boolean(doNotFillData),
-    idx => data[idx]!,
+    (idx) => data[idx]!,
     () => zeros,
   );
 };
@@ -260,14 +254,13 @@ export const formatDateWithPrecisionToString = ({
   return "no precision found";
 };
 
-export const useFormatXAxis = (data: DefaultGraphItem[]) =>
-  (value: number) => {
-    const dataValue = data.find(d => d.x === value);
-    if (!dataValue) {
-      return "";
-    }
-    return formatDateWithPrecisionToSimpleString(dataValue.dateWithPrecision);
+export const useFormatXAxis = (data: DefaultGraphItem[]) => (value: number) => {
+  const dataValue = data.find((d) => d.x === value);
+  if (!dataValue) {
+    return "";
   }
+  return formatDateWithPrecisionToSimpleString(dataValue.dateWithPrecision);
+};
 
 export function simpleTooltipValue(
   prefix = "",
@@ -290,9 +283,7 @@ export const formatYAxisDateTooltip: ValueFormatter<unknown[]> = (_, value) =>
   formatYAxisDate(value);
 
 export const formatXAxisDateTooltip: TitleFormatter<
-  {
-    dateWithPrecision: DateWithPrecision;
-  }[]
+  { dateWithPrecision: DateWithPrecision }[]
 > = (_, payload) => formatDateWithPrecisionToString(payload.dateWithPrecision);
 
 export const msToMinutes = (ms: number) => Math.floor(ms / 1000 / 60);
@@ -313,9 +304,8 @@ export const msToDuration = (ms: number) => {
   if (minutes > 0) parts.push(`${minutes}m`);
   if (seconds > 0) parts.push(`${seconds}s`);
 
-  return parts.join(' ');
+  return parts.join(" ");
 };
-
 
 export const getLastPeriod = (start: Date, end: Date) => {
   const diff = end.getTime() - start.getTime();

@@ -44,15 +44,15 @@ export default function PlaylistDialog() {
   const [requested, setRequested] = useState(false);
 
   const changeNumber = (newNb: number) => {
-    if (!context || (context.type !== "top" && context.type !== "affinity" && context.type !== "top-artist")) {
+    if (
+      !context ||
+      (context.type !== "top" &&
+        context.type !== "affinity" &&
+        context.type !== "top-artist")
+    ) {
       return;
     }
-    dispatch(
-      setPlaylistContext({
-        ...context,
-        nb: newNb,
-      }),
-    );
+    dispatch(setPlaylistContext({ ...context, nb: newNb }));
   };
 
   const reset = () => {
@@ -93,7 +93,7 @@ export default function PlaylistDialog() {
 
   return (
     <Dialog onClose={reset} open={open} title="Add to a playlist">
-      <Text className={s.text} element="div" size='normal'>
+      <Text className={s.text} element="div" size="normal">
         Either select a playlist to add the songs to, or create a new one.
       </Text>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }} className={s.tabs}>
@@ -107,7 +107,7 @@ export default function PlaylistDialog() {
           fullWidth
           placeholder="Name of the playlist..."
           value={playlistName}
-          onChange={ev => setPlaylistName(ev.target.value)}
+          onChange={(ev) => setPlaylistName(ev.target.value)}
         />
       </TabPanel>
       <TabPanel index={1} value={tab}>
@@ -118,8 +118,8 @@ export default function PlaylistDialog() {
             labelId="playlist"
             label="Select a playlist"
             value={selectedPlaylist}
-            onChange={ev => setSelectedPlaylist(ev.target.value)}>
-            {playlists?.map(playlist => (
+            onChange={(ev) => setSelectedPlaylist(ev.target.value)}>
+            {playlists?.map((playlist) => (
               <MenuItem key={playlist.id} value={playlist.id}>
                 <IdealImage
                   alt="playlist cover"
@@ -133,7 +133,9 @@ export default function PlaylistDialog() {
           </Select>
         </FormControl>
       </TabPanel>
-      {(context?.type === "top" || context?.type === "affinity" || context?.type === "top-artist") && (
+      {(context?.type === "top" ||
+        context?.type === "affinity" ||
+        context?.type === "top-artist") && (
         <CountChooser value={context.nb} setValue={changeNumber} />
       )}
       <div className={s.button}>

@@ -1,8 +1,5 @@
-import { defineConfig } from '@rsbuild/core';
+import { defineConfig } from "@rsbuild/core";
 
 export default defineConfig({
-  output: {
-    distPath: "./build",
-    target: 'node',
-  },
+  output: { distPath: "./build", target: "node" },
 });

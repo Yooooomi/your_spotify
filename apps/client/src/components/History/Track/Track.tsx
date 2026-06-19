@@ -31,49 +31,46 @@ export default function Track({
   const [isMobile, isTablet] = useMobile();
 
   const columns = [
-      {
-        ...trackGrid.cover,
-        node: <PlayButton id={track.id} covers={album?.images ?? []} />,
-      },
-      {
-        ...trackGrid.title,
-        node: (
-          <div className={clsx("otext", s.names)}>
-            <InlineTrack track={track} size="normal" element="div" />
-            <div className="subtitle">
-              {artists.map((art, k, a) => (
-                <Fragment key={art.id}>
-                  <InlineArtist size="normal" artist={art} noStyle />
-                  {k !== a.length - 1 && ", "}
-                </Fragment>
-              ))}
-            </div>
+    {
+      ...trackGrid.cover,
+      node: <PlayButton id={track.id} covers={album?.images ?? []} />,
+    },
+    {
+      ...trackGrid.title,
+      node: (
+        <div className={clsx("otext", s.names)}>
+          <InlineTrack track={track} size="normal" element="div" />
+          <div className="subtitle">
+            {artists.map((art, k, a) => (
+              <Fragment key={art.id}>
+                <InlineArtist size="normal" artist={art} noStyle />
+                {k !== a.length - 1 && ", "}
+              </Fragment>
+            ))}
           </div>
-        ),
-      },
-      {
-        ...trackGrid.album,
-        node: !isTablet && album && (
-          <InlineAlbum className="otext" size="normal" album={album} />
-        ),
-      },
-      {
-        ...trackGrid.duration,
-        node: !isMobile && (
-          <Text size="normal">{msToDuration(track.duration_ms)}</Text>
-        ),
-      },
-      {
-        ...trackGrid.listened,
-        node: listenedAt && !isMobile && (
-          <Text size="normal">{DateFormatter.listenedAt(listenedAt)}</Text>
-        ),
-      },
-      {
-        ...trackGrid.option,
-        node: !isMobile && <TrackOptions track={track} />,
-      },
-    ];
+        </div>
+      ),
+    },
+    {
+      ...trackGrid.album,
+      node: !isTablet && album && (
+        <InlineAlbum className="otext" size="normal" album={album} />
+      ),
+    },
+    {
+      ...trackGrid.duration,
+      node: !isMobile && (
+        <Text size="normal">{msToDuration(track.duration_ms)}</Text>
+      ),
+    },
+    {
+      ...trackGrid.listened,
+      node: listenedAt && !isMobile && (
+        <Text size="normal">{DateFormatter.listenedAt(listenedAt)}</Text>
+      ),
+    },
+    { ...trackGrid.option, node: !isMobile && <TrackOptions track={track} /> },
+  ];
 
   return (
     <LongClickableTrack track={track}>

@@ -5,7 +5,7 @@ import { Album, Artist } from "../types";
 export function useLoadArtists(ids: string[]) {
   const [artists, setArtists] = useState<Record<string, Artist>>({});
 
-  const loaded = ids.length === 0 || ids.every(id => id in artists);
+  const loaded = ids.length === 0 || ids.every((id) => id in artists);
 
   useEffect(() => {
     async function fetchArtists() {
@@ -32,7 +32,7 @@ export function useLoadArtists(ids: string[]) {
 export function useLoadAlbums(ids: string[]) {
   const [albums, setAlbums] = useState<Record<string, Album>>({});
 
-  const loaded = ids.length === 0 || ids.every(id => id in albums);
+  const loaded = ids.length === 0 || ids.every((id) => id in albums);
 
   useEffect(() => {
     async function fetchAlbums() {

@@ -29,14 +29,12 @@ export const getCollaborativeBestSongs = (
   mode: CollaborativeMode,
   limit: number,
 ) => {
-  const users = _users.map(u => new mongoose.Types.ObjectId(u));
+  const users = _users.map((u) => new mongoose.Types.ObjectId(u));
   return InfosModel.aggregate([
-    {
-      $match: basicMatchUsers(_users, start, end),
-    },
+    { $match: basicMatchUsers(_users, start, end) },
     {
       $addFields: fromPairs(
-        users.map(user => [
+        users.map((user) => [
           user.toString(),
           { $cond: [{ $eq: ["$owner", user] }, 1, 0] },
         ]),
@@ -47,7 +45,7 @@ export const getCollaborativeBestSongs = (
         _id: null,
         data: { $push: "$$ROOT" },
         ...fromPairs(
-          users.map(user => [
+          users.map((user) => [
             `total_${user.toString()}`,
             { $sum: `$${user.toString()}` },
           ]),
@@ -59,13 +57,13 @@ export const getCollaborativeBestSongs = (
       $group: {
         _id: "$data.id",
         ...fromPairs(
-          users.map(user => [
+          users.map((user) => [
             user.toString(),
             { $sum: `$data.${user.toString()}` },
           ]),
         ),
         ...fromPairs(
-          users.map(user => [
+          users.map((user) => [
             `total_${user.toString()}`,
             { $first: `$total_${user.toString()}` },
           ]),
@@ -74,7 +72,7 @@ export const getCollaborativeBestSongs = (
     },
     {
       $addFields: fromPairs(
-        users.map(user => [
+        users.map((user) => [
           `percent_${user.toString()}`,
           { $divide: [`$${user.toString()}`, `$total_${user.toString()}`] },
         ]),
@@ -84,13 +82,11 @@ export const getCollaborativeBestSongs = (
       $addFields: {
         average_percents: {
           $divide: [
-            { $sum: users.map(user => `$percent_${user.toString()}`) },
+            { $sum: users.map((user) => `$percent_${user.toString()}`) },
             users.length,
           ],
         },
-        minima: {
-          $min: users.map(user => `$percent_${user.toString()}`),
-        },
+        minima: { $min: users.map((user) => `$percent_${user.toString()}`) },
       },
     },
     {
@@ -115,14 +111,12 @@ export const getCollaborativeBestAlbums = (
   end: Date,
   mode: CollaborativeMode,
 ) => {
-  const users = _users.map(u => new mongoose.Types.ObjectId(u));
+  const users = _users.map((u) => new mongoose.Types.ObjectId(u));
   return InfosModel.aggregate([
-    {
-      $match: basicMatchUsers(_users, start, end),
-    },
+    { $match: basicMatchUsers(_users, start, end) },
     {
       $addFields: fromPairs(
-        users.map(user => [
+        users.map((user) => [
           user.toString(),
           { $cond: [{ $eq: ["$owner", user] }, 1, 0] },
         ]),
@@ -133,7 +127,7 @@ export const getCollaborativeBestAlbums = (
         _id: null,
         data: { $push: "$$ROOT" },
         ...fromPairs(
-          users.map(user => [
+          users.map((user) => [
             `total_${user.toString()}`,
             { $sum: `$${user.toString()}` },
           ]),
@@ -147,13 +141,13 @@ export const getCollaborativeBestAlbums = (
       $group: {
         _id: "$track.album",
         ...fromPairs(
-          users.map(user => [
+          users.map((user) => [
             user.toString(),
             { $sum: `$data.${user.toString()}` },
           ]),
         ),
         ...fromPairs(
-          users.map(user => [
+          users.map((user) => [
             `total_${user.toString()}`,
             { $first: `$total_${user.toString()}` },
           ]),
@@ -162,7 +156,7 @@ export const getCollaborativeBestAlbums = (
     },
     {
       $addFields: fromPairs(
-        users.map(user => [
+        users.map((user) => [
           `percent_${user.toString()}`,
           { $divide: [`$${user.toString()}`, `$total_${user.toString()}`] },
         ]),
@@ -172,13 +166,11 @@ export const getCollaborativeBestAlbums = (
       $addFields: {
         average_percents: {
           $divide: [
-            { $sum: users.map(user => `$percent_${user.toString()}`) },
+            { $sum: users.map((user) => `$percent_${user.toString()}`) },
             users.length,
           ],
         },
-        minima: {
-          $min: users.map(user => `$percent_${user.toString()}`),
-        },
+        minima: { $min: users.map((user) => `$percent_${user.toString()}`) },
       },
     },
     {
@@ -201,14 +193,12 @@ export const getCollaborativeBestArtists = (
   end: Date,
   mode: CollaborativeMode,
 ) => {
-  const users = _users.map(u => new mongoose.Types.ObjectId(u));
+  const users = _users.map((u) => new mongoose.Types.ObjectId(u));
   return InfosModel.aggregate([
-    {
-      $match: basicMatchUsers(_users, start, end),
-    },
+    { $match: basicMatchUsers(_users, start, end) },
     {
       $addFields: fromPairs(
-        users.map(user => [
+        users.map((user) => [
           user.toString(),
           { $cond: [{ $eq: ["$owner", user] }, 1, 0] },
         ]),
@@ -219,7 +209,7 @@ export const getCollaborativeBestArtists = (
         _id: null,
         data: { $push: "$$ROOT" },
         ...fromPairs(
-          users.map(user => [
+          users.map((user) => [
             `total_${user.toString()}`,
             { $sum: `$${user.toString()}` },
           ]),
@@ -234,13 +224,13 @@ export const getCollaborativeBestArtists = (
       $group: {
         _id: "$track.artist",
         ...fromPairs(
-          users.map(user => [
+          users.map((user) => [
             user.toString(),
             { $sum: `$data.${user.toString()}` },
           ]),
         ),
         ...fromPairs(
-          users.map(user => [
+          users.map((user) => [
             `total_${user.toString()}`,
             { $first: `$total_${user.toString()}` },
           ]),
@@ -249,7 +239,7 @@ export const getCollaborativeBestArtists = (
     },
     {
       $addFields: fromPairs(
-        users.map(user => [
+        users.map((user) => [
           `percent_${user.toString()}`,
           { $divide: [`$${user.toString()}`, `$total_${user.toString()}`] },
         ]),
@@ -259,13 +249,11 @@ export const getCollaborativeBestArtists = (
       $addFields: {
         average_percents: {
           $divide: [
-            { $sum: users.map(user => `$percent_${user.toString()}`) },
+            { $sum: users.map((user) => `$percent_${user.toString()}`) },
             users.length,
           ],
         },
-        minima: {
-          $min: users.map(user => `$percent_${user.toString()}`),
-        },
+        minima: { $min: users.map((user) => `$percent_${user.toString()}`) },
       },
     },
     {

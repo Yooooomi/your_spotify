@@ -12,18 +12,19 @@ export function getAtLeastImage(images: SpotifyImage[], size: number) {
     (a, b) => a.width + a.height - (b.width + b.height),
   );
   return (
-    sorted.find(s => s.width > realSize && s.height > realSize)?.url ??
+    sorted.find((s) => s.width > realSize && s.height > realSize)?.url ??
     sorted[sorted.length - 1]?.url ??
     NO_DATA_IMAGE
   );
 }
 
-export const getApiEndpoint = () => (window as any as { API_ENDPOINT: string }).API_ENDPOINT;
+export const getApiEndpoint = () =>
+  (window as any as { API_ENDPOINT: string }).API_ENDPOINT;
 
 export const getSpotifyLogUrl = () => `${getApiEndpoint()}/oauth/spotify`;
 
 export const compact = <T>(arr: (T | undefined)[]): T[] =>
-  arr.filter(a => a != null) as T[];
+  arr.filter((a) => a != null) as T[];
 
 export const conditionalEntry = <T>(value: T, state: boolean) => {
   return state ? value : undefined;
@@ -63,6 +64,6 @@ export function uniq<T>(array: T[]) {
   return uniqd;
 }
 
-export function noop() { }
+export function noop() {}
 
-export const wait = (ms: number) => new Promise(res => setTimeout(res, ms));
+export const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));

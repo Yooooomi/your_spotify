@@ -15,7 +15,7 @@ import {
 import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import Text from "../../Text";
 
-interface TimeListenedProps extends ImplementedCardProps { }
+interface TimeListenedProps extends ImplementedCardProps {}
 
 export default function TimeListened({ className }: TimeListenedProps) {
   const { interval, unit } = useSelector(selectRawIntervalDetail);
@@ -37,7 +37,7 @@ export default function TimeListened({ className }: TimeListenedProps) {
     return (
       <TitleCard title="Time listened" className={className}>
         <div className={s.root}>
-          <Text size='normal'>
+          <Text size="normal">
             <Skeleton width={50} />
           </Text>
           <Text size="normal">
@@ -56,12 +56,12 @@ export default function TimeListened({ className }: TimeListenedProps) {
   return (
     <TitleCard title="Time listened" className={className} fade>
       <div className={s.root}>
-        <Text element="span" size='huge'>
+        <Text element="span" size="huge">
           {msToMinutes(count)} minutes
         </Text>
         <Text size="normal">
           <Text
-            size='normal'
+            size="normal"
             element="strong"
             className={clsx({
               [s.more]: percentMore >= 0,
@@ -69,7 +69,7 @@ export default function TimeListened({ className }: TimeListenedProps) {
             })}>
             {Math.abs(percentMore)}%
           </Text>
-          <Text element="span" size='normal'>
+          <Text element="span" size="normal">
             &nbsp;
             {percentMore < 0 ? "less" : "more"} than last {unit}
           </Text>

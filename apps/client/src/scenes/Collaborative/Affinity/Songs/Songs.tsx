@@ -48,10 +48,7 @@ export default function Songs() {
 
   const context: PlaylistContext = {
     type: "affinity",
-    interval: {
-      start: start.getTime(),
-      end: end.getTime(),
-    },
+    interval: { start: start.getTime(), end: end.getTime() },
     nb: DEFAULT_PLAYLIST_NB,
     userIds: realIds,
     mode: mode as CollaborativeMode,
@@ -61,7 +58,9 @@ export default function Songs() {
     return (
       <div className={s.loading}>
         <CircularProgress size={18} />
-        <Text element="div" size="normal">Loading your data</Text>
+        <Text element="div" size="normal">
+          Loading your data
+        </Text>
       </div>
     );
   }
@@ -79,7 +78,7 @@ export default function Songs() {
       <Header
         title="Affinity by song"
         subtitle={`Affinity computed between ${realIds
-          .map(id => accountsDict[id]?.username)
+          .map((id) => accountsDict[id]?.username)
           .join(", ")} in ${mode} mode, from ${intervalToDisplay(start, end)}`}
         hideInterval
       />
@@ -88,7 +87,7 @@ export default function Songs() {
           <AddToPlaylist context={context} />
         </div>
         {result?.map((res, index) => {
-          const listened = realIds.map(id => res[id]);
+          const listened = realIds.map((id) => res[id]);
 
           let maxIndex = 0;
           let max = 0;

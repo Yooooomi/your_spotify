@@ -3,10 +3,7 @@ import { startMigration } from "../tools/migrations";
 
 export const up = async () => {
   startMigration("add best metric");
-  await UserModel.updateMany(
-    {},
-    { $set: { "settings.metricUsed": "number" } },
-  );
+  await UserModel.updateMany({}, { $set: { "settings.metricUsed": "number" } });
 };
 
 export const down = async () => {

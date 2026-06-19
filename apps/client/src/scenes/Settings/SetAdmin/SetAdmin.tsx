@@ -12,25 +12,24 @@ export default function SetAdmin() {
   const accounts = useSelector(selectAccounts);
 
   const doAdmin = async (id: string, status: boolean) => {
-      try {
-        dispatch(setAdmin({ id, status }));
-      } catch (e: any) {
-        if (e?.response?.data?.code === "CANNOT_HAVE_ZERO_ADMIN") {
-          dispatch(
-            alertMessage({
-              level: "error",
-              message:
-                "Cannot have less than one administrator of the platform",
-            }),
-          );
-        }
-        console.error(e);
+    try {
+      dispatch(setAdmin({ id, status }));
+    } catch (e: any) {
+      if (e?.response?.data?.code === "CANNOT_HAVE_ZERO_ADMIN") {
+        dispatch(
+          alertMessage({
+            level: "error",
+            message: "Cannot have less than one administrator of the platform",
+          }),
+        );
       }
-    };
+      console.error(e);
+    }
+  };
 
   return (
     <TitleCard title="Set admin status">
-      {accounts.map(user => (
+      {accounts.map((user) => (
         <SettingLine
           key={user.id}
           left={user.username}

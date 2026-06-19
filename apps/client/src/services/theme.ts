@@ -9,53 +9,31 @@ export const useTheme = () => {
   const isDark = dark === "dark" || (dark === "follow" && prefersDarkMode);
 
   const theme = createTheme({
-        palette: {
-          mode: isDark ? "dark" : "light",
-          primary: {
-            main: isDark ? "#ffffff" : "#000000",
-          },
+    palette: {
+      mode: isDark ? "dark" : "light",
+      primary: { main: isDark ? "#ffffff" : "#000000" },
+    },
+    components: {
+      MuiTab: {
+        defaultProps: {
+          disableRipple: true,
+          focusRipple: false,
+          disableFocusRipple: true,
+          disableTouchRipple: true,
         },
-        components: {
-          MuiTab: {
-            defaultProps: {
-              disableRipple: true,
-              focusRipple: false,
-              disableFocusRipple: true,
-              disableTouchRipple: true,
-            },
-          },
-          MuiTabs: {
-            styleOverrides: {
-              root: {
-                backgroundColor: "var(--content-background)",
-              },
-            },
-          },
-          MuiPaper: {
-            styleOverrides: {
-              root: {
-                backgroundImage: "unset",
-              },
-            },
-          },
-          MuiCheckbox: {
-            styleOverrides: {
-              root: {
-                color: "var(--primary) !important",
-              },
-            },
-          },
-          MuiSkeleton: {
-            styleOverrides: {
-              rectangular: {
-                borderRadius: "6px",
-              },
-            },
-          },
+      },
+      MuiTabs: {
+        styleOverrides: {
+          root: { backgroundColor: "var(--content-background)" },
         },
-        shape: {
-          borderRadius: 6,
-        },
-      });
+      },
+      MuiPaper: { styleOverrides: { root: { backgroundImage: "unset" } } },
+      MuiCheckbox: {
+        styleOverrides: { root: { color: "var(--primary) !important" } },
+      },
+      MuiSkeleton: { styleOverrides: { rectangular: { borderRadius: "6px" } } },
+    },
+    shape: { borderRadius: 6 },
+  });
   return theme;
 };

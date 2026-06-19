@@ -29,9 +29,9 @@ export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const internClick = (index: number) => {
-      items[index]?.onClick();
-      setOpen(false);
-    };
+    items[index]?.onClick();
+    setOpen(false);
+  };
 
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
@@ -39,7 +39,7 @@ export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
         <IconButton
           size="small"
           ref={buttonRef}
-          onClick={() => setOpen(v => !v)}>
+          onClick={() => setOpen((v) => !v)}>
           {horizontal ? (
             <MoreHoriz fontSize="small" />
           ) : (
@@ -52,7 +52,6 @@ export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
           popperOptions={{ placement: "auto-start" }}
           transition>
           {({ TransitionProps }) => (
-
             <Fade {...TransitionProps}>
               <div className={s.popper}>
                 {items.map((item, index) => (
@@ -60,7 +59,6 @@ export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
                     key={item.label}
                     title={(item.disabled && item.disabledTooltip) || ""}>
                     <Button
-
                       key={index}
                       variant="text"
                       disabled={item.disabled}
@@ -74,10 +72,7 @@ export default function ThreePoints({ items, horizontal }: ThreePointsProps) {
                   </Tooltip>
                 ))}
                 {items.length === 0 && (
-                  <Button
-
-                    variant="text"
-                    disabled>
+                  <Button variant="text" disabled>
                     No action available
                   </Button>
                 )}

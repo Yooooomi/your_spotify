@@ -20,11 +20,7 @@ export default function Dialog({
   ...other
 }: DialogProps) {
   return (
-    <MDialog
-      open={open}
-      maxWidth="xl"
-      onClose={onClose}
-      {...other}>
+    <MDialog open={open} maxWidth="xl" onClose={onClose} {...other}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
     </MDialog>

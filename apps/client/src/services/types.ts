@@ -67,9 +67,7 @@ export interface Album {
   uri: string;
 }
 
-export type AlbumWithFullArtist = Album & {
-  full_artists: Array<Artist>;
-}
+export type AlbumWithFullArtist = Album & { full_artists: Array<Artist> };
 
 export interface Track {
   _id: string;
@@ -89,13 +87,9 @@ export interface Track {
   uri: string;
 }
 
-export type TrackWithAlbum = Omit<Track, "album"> & {
-  album: Album;
-};
+export type TrackWithAlbum = Omit<Track, "album"> & { album: Album };
 
-export type TrackWithFullAlbum = Track & {
-  full_album: Album;
-};
+export type TrackWithFullAlbum = Track & { full_album: Album };
 
 export type TrackWithFullArtistAlbum = TrackWithFullAlbum & {
   full_artists: Array<Artist>;
@@ -113,10 +107,7 @@ export interface TrackInfo {
 }
 
 export type TrackInfoWithFullArtistAlbum = TrackInfo & {
-  track: Track & {
-    full_album: Album;
-    full_artists: Artist[];
-  };
+  track: Track & { full_album: Album; full_artists: Artist[] };
 };
 
 export interface DateId {

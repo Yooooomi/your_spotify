@@ -12,7 +12,6 @@ export default function InlineTrack<T extends HTMLTag = "div">({
   ...other
 }: InlineTrackProps<T>) {
   return (
-     
     <Text title={track.name} {...other}>
       <Link to={`/song/${track.id}`} className={s.root}>
         {track.name}

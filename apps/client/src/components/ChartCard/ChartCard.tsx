@@ -13,13 +13,18 @@ interface ChartCardProps {
   noBorder?: boolean;
 }
 
-function ChartCard({ ref, className, title, right, children, noBorder }: ChartCardProps) {
+function ChartCard({
+  ref,
+  className,
+  title,
+  right,
+  children,
+  noBorder,
+}: ChartCardProps) {
   return (
     <Paper
       ref={ref}
-      className={clsx(s.root, className, {
-        [s.noborder]: noBorder,
-      })}>
+      className={clsx(s.root, className, { [s.noborder]: noBorder })}>
       <div className={s.title}>
         <Text size="big" weight="bold">
           {title}

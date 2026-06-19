@@ -15,9 +15,7 @@ import {
   Selectable,
   SelectableContextProvider,
 } from "../Selectable/Selectable.context";
-import {
-  RightClickable,
-} from "../RightClickable/RightClickable";
+import { RightClickable } from "../RightClickable/RightClickable";
 import { useSelectTracks } from "../../services/hooks/useSelectTrack";
 import TrackHeader from "./Track/TrackHeader";
 import Track from "./Track";

@@ -14,7 +14,7 @@ export default function LongestSessions() {
   const result = useAPI(api.getLongestSessions, interval.start, interval.end);
 
   const validResults = result?.filter(
-    res => res.distanceToLast.distance.length >= 1,
+    (res) => res.distanceToLast.distance.length >= 1,
   );
 
   const hasValidSessions = validResults && validResults.length > 0;
@@ -32,13 +32,15 @@ export default function LongestSessions() {
             text="Loading your longest sessions, this can take a bit of time"
           />
         )}
-        {result && !hasValidSessions && <Text size="normal">No longest session</Text>}
+        {result && !hasValidSessions && (
+          <Text size="normal">No longest session</Text>
+        )}
         {hasValidSessions && (
           <TitleCard title="5 longest sessions">
-            {validResults.map(r => (
+            {validResults.map((r) => (
               <LongestSession
-                key={r.distanceToLast.distance.map(e => e.info._id).join(",")}
-                tracks={r.distanceToLast.distance.map(e => e.info)}
+                key={r.distanceToLast.distance.map((e) => e.info._id).join(",")}
+                tracks={r.distanceToLast.distance.map((e) => e.info)}
                 fullTracks={r.full_tracks}
               />
             ))}

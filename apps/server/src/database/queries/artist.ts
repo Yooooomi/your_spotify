@@ -48,7 +48,7 @@ export const getFirstAndLastListened = async (user: User, artistId: string) => {
       },
     },
     ...["first", "last"]
-      .map(e => [
+      .map((e) => [
         {
           $lookup: {
             from: "tracks",
@@ -145,11 +145,7 @@ export const getTotalListeningOfArtist = async (
     { $match: { owner: user._id, primaryArtistId: artistId } },
     ...getArtistInfos(artistId),
     {
-      $group: {
-        _id: 1,
-        count: { $sum: 1 },
-        differents: { $addToSet: "$id" },
-      },
+      $group: { _id: 1, count: { $sum: 1 }, differents: { $addToSet: "$id" } },
     },
     { $unwind: "$differents" },
     {
@@ -177,12 +173,7 @@ export const getMostListenedAlbumOfArtist = async (
         as: "track",
       },
     },
-    {
-      $group: {
-        _id: "$track.album",
-        count: { $sum: 1 },
-      },
-    },
+    { $group: { _id: "$track.album", count: { $sum: 1 } } },
     { $sort: { count: -1 } },
     {
       $lookup: {

@@ -27,29 +27,29 @@ export default function Home() {
         subtitle="Here is what happened for the period you chose on the right"
       />
       <div className={s.content}>
-        <Grid container spacing={2} sx={{ alignItems: "stretch" }} >
+        <Grid container spacing={2} sx={{ alignItems: "stretch" }}>
           <Grid size={{ xs: 12, md: 12, lg: 4 }}>
             <SongsListened />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }} >
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <TimeListened />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }} >
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ArtistsListened />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 8 }} >
+          <Grid size={{ xs: 12, md: 6, lg: 8 }}>
             <TimeListenedPer className={s.timelisten} />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }} >
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <BestArtist />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 8 }} >
+          <Grid size={{ xs: 12, md: 6, lg: 8 }}>
             <ListeningRepartition className={s.timelisten} />
           </Grid>
-          <Grid size={{ xs: 12, md: 6, lg: 4 }} >
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <BestSong />
           </Grid>
-          <Grid size={{ xs: 12, md: 12, lg: 12 }} >
+          <Grid size={{ xs: 12, md: 12, lg: 12 }}>
             <History />
           </Grid>
         </Grid>

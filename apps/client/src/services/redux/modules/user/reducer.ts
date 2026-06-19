@@ -31,8 +31,8 @@ export const setDataInterval =
 export const setPublicToken = createAction<string | null>(
   "@user/set-public-token",
 );
-export default createReducer(initialState, builder => {
-  builder.addCase(logout, state => {
+export default createReducer(initialState, (builder) => {
+  builder.addCase(logout, (state) => {
     state.user = null;
     state.publicToken = null;
     api.publicToken = null;

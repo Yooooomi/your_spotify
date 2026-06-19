@@ -1,6 +1,6 @@
 import { InfoOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import s from './index.module.css'
+import s from "./index.module.css";
 import { ReactNode } from "react";
 
 interface ITooltipProps {

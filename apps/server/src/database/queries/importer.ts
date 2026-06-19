@@ -9,7 +9,11 @@ import { ImporterStateModel } from "../Models";
 export const createImporterState = (
   userId: string,
   state: Omit<ImporterState, "_id" | "user">,
-) => ImporterStateModel.create({ user: userId, ...state } as Omit<ImporterState, "_id" | "user">);
+) =>
+  ImporterStateModel.create({ user: userId, ...state } as Omit<
+    ImporterState,
+    "_id" | "user"
+  >);
 
 export const setImporterStateStatus = (
   id: string,

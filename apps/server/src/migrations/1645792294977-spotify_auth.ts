@@ -12,15 +12,15 @@ export const up = async () => {
 
   // Delete users with no spotify access token
   const toDelete: string[] = allUsers
-    .filter(u => Boolean(!u.accessToken || !u.refreshToken))
-    .map(u => u._id.toString());
+    .filter((u) => Boolean(!u.accessToken || !u.refreshToken))
+    .map((u) => u._id.toString());
 
-  allUsers = allUsers.filter(u => Boolean(u.accessToken && u.refreshToken));
+  allUsers = allUsers.filter((u) => Boolean(u.accessToken && u.refreshToken));
 
   // Assign the spotify ID to each account having an access token
   // If an account is incorrect, just exit the migration
   await Promise.all(
-    allUsers.map(async us => {
+    allUsers.map(async (us) => {
       const spotifyApi = new SpotifyAPI(us._id.toString());
       try {
         const res = await spotifyApi.me();
@@ -57,17 +57,17 @@ export const up = async () => {
   );
 
   // Deletes all the user marked as to be deleted
-  await Promise.all(toDelete.map(d => deleteUser(d)));
+  await Promise.all(toDelete.map((d) => deleteUser(d)));
 
   const userWithMultiple = Object.values(usersWithSameSpotifyID).filter(
-    arr => arr.length > 1,
+    (arr) => arr.length > 1,
   );
 
   // For each Spotify ID that have more than one account
   // Keep the one that has the oldest first song listened
-  const promises = userWithMultiple.map(async users => {
+  const promises = userWithMultiple.map(async (users) => {
     const firsts = await Promise.all(
-      users.map(u => getFirstInfo(u._id.toString())),
+      users.map((u) => getFirstInfo(u._id.toString())),
     );
     let min = new Date(3000, 1, 1).getTime();
     let chosen = 0;
@@ -82,7 +82,7 @@ export const up = async () => {
       }
     }
     const duplicates = users.filter((_, k) => k !== chosen);
-    await Promise.all(duplicates.map(d => deleteUser(d._id.toString())));
+    await Promise.all(duplicates.map((d) => deleteUser(d._id.toString())));
   });
   await Promise.all(promises);
 

@@ -48,10 +48,7 @@ export const deleteUser = myAsyncThunk<void, { id: string }>(
     } catch (e) {
       console.error(e);
       tapi.dispatch(
-        alertMessage({
-          level: "error",
-          message: "Could not delete this user",
-        }),
+        alertMessage({ level: "error", message: "Could not delete this user" }),
       );
       throw e;
     }

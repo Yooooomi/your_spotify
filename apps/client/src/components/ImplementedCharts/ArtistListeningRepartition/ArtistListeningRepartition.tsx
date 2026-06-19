@@ -22,14 +22,11 @@ import Tooltip from "../../Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 
-interface ArtistListeningRepartitionProps extends ImplementedChartProps { }
+interface ArtistListeningRepartitionProps extends ImplementedChartProps {}
 
 const formatYAxis = (value: any) => `${Math.floor(value * 100)}%`;
 
-type DataItem = { [otherkeys: string]: number } & {
-  x: number;
-  _id: DateId;
-};
+type DataItem = { [otherkeys: string]: number } & { x: number; _id: DateId };
 
 export default function ArtistListeningRepartition({
   className,
@@ -42,21 +39,18 @@ export default function ArtistListeningRepartition({
     interval.timesplit,
   );
 
-  const resultsWithCount = results?.map(res => ({
+  const resultsWithCount = results?.map((res) => ({
     _id: res._id,
-    artists: res.artists.reduce<Record<string, number>>(
-      (acc, curr, idx) => {
-        acc[curr.id] = res.counts[idx]!;
-        return acc;
-      },
-      {},
-    ),
+    artists: res.artists.reduce<Record<string, number>>((acc, curr, idx) => {
+      acc[curr.id] = res.counts[idx]!;
+      return acc;
+    }, {}),
   }));
 
   const allArtists = (() => {
     const all: Record<string, Artist> = {};
-    results?.forEach(res => {
-      res.artists.forEach(art => {
+    results?.forEach((res) => {
+      res.artists.forEach((art) => {
         if (!(art.id in all)) {
           all[art.id] = art;
         }
@@ -70,15 +64,12 @@ export default function ArtistListeningRepartition({
       return [];
     }
     const d = resultsWithCount.map((curr, idx) => {
-      const obj: DataItem = {
-        x: idx,
-        _id: curr._id as DateId,
-      } as DataItem;
+      const obj: DataItem = { x: idx, _id: curr._id as DateId } as DataItem;
       const total = Object.values(curr.artists).reduce(
         (acc, count) => acc + count,
         0,
       );
-      Object.values(allArtists).forEach(art => {
+      Object.values(allArtists).forEach((art) => {
         obj[art.id] = (curr.artists[art.id] ?? 0) / total;
       });
       return obj;
@@ -94,7 +85,8 @@ export default function ArtistListeningRepartition({
 
   const tooltipValue = (_: any, value: any, root: any) => (
     <span style={{ color: root.color }}>
-      {allArtists[root.dataKey.toString()]?.name}: {Math.floor(value * 1000) / 10}%
+      {allArtists[root.dataKey.toString()]?.name}:{" "}
+      {Math.floor(value * 1000) / 10}%
     </span>
   );
 

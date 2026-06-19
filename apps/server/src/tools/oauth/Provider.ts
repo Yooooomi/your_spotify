@@ -4,22 +4,14 @@ import { generateRandomString } from "../crypto";
 import { credentials } from "./credentials";
 
 export interface Provider {
-  getRedirect(): Promise<{
-    url: string;
-    state: string;
-  }>;
+  getRedirect(): Promise<{ url: string; state: string }>;
   exchangeCode(
     code: string,
     state: string,
-  ): Promise<{
-    accessToken: string;
-    refreshToken?: string;
-    expiresIn: number;
-  }>;
-  refresh(refreshToken: string): Promise<{
-    accessToken: string;
-    expiresIn: number;
-  }>;
+  ): Promise<{ accessToken: string; refreshToken?: string; expiresIn: number }>;
+  refresh(
+    refreshToken: string,
+  ): Promise<{ accessToken: string; expiresIn: number }>;
   getHttpClient(accessToken: string): QueuedHttpClient;
 }
 
@@ -43,10 +35,7 @@ export class Spotify implements Provider {
     authorizeUrl.searchParams.append("state", state);
     authorizeUrl.searchParams.append("scope", this.scopes);
 
-    return {
-      url: authorizeUrl.toString(),
-      state,
-    };
+    return { url: authorizeUrl.toString(), state };
   }
 
   async exchangeCode(code: string, state: string) {
@@ -62,9 +51,7 @@ export class Spotify implements Provider {
           client_secret: this.clientSecret,
           state,
         },
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       },
     );
 
@@ -80,10 +67,7 @@ export class Spotify implements Provider {
       "https://accounts.spotify.com/api/token",
       null,
       {
-        params: {
-          grant_type: "refresh_token",
-          refresh_token: refresh,
-        },
+        params: { grant_type: "refresh_token", refresh_token: refresh },
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Authorization: `Basic ${Buffer.from(

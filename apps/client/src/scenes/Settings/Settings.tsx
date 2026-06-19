@@ -40,7 +40,9 @@ export default function Settings() {
     return (
       <FullscreenCentered>
         <CircularProgress />
-        <Text element="h3" size='big'>Your settings are loading</Text>
+        <Text element="h3" size="big">
+          Your settings are loading
+        </Text>
       </FullscreenCentered>
     );
   }

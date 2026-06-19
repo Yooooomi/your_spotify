@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "../client/build/**",
+    "../server/build/**"
+  ],
+  "arrowParens": "always",
+  "bracketSameLine": true,
+  "bracketSpacing": true,
+  "endOfLine": "lf",
+  "printWidth": 80,
+  "semi": true,
+  "singleQuote": false,
+  "sortImports": true,
+  "trailingComma": "all",
+  "useTabs": false,
+  "tabWidth": 2,
+  "objectWrap": "collapse"
+}

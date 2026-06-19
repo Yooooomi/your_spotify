@@ -11,7 +11,7 @@ import { getLastPeriod, getPercentMore } from "../../../services/stats";
 import { selectRawIntervalDetail } from "../../../services/redux/modules/user/selector";
 import Text from "../../Text";
 
-interface ArtistsListenedProps extends ImplementedCardProps { }
+interface ArtistsListenedProps extends ImplementedCardProps {}
 
 export default function ArtistsListened({ className }: ArtistsListenedProps) {
   const { interval, unit } = useSelector(selectRawIntervalDetail);
@@ -33,7 +33,7 @@ export default function ArtistsListened({ className }: ArtistsListenedProps) {
     return (
       <TitleCard title="Artists listened" className={className} fade>
         <div className={s.root}>
-          <Text size='normal'>
+          <Text size="normal">
             <Skeleton width={50} />
           </Text>
           <Text size="normal">
@@ -56,7 +56,7 @@ export default function ArtistsListened({ className }: ArtistsListenedProps) {
         <Text size="normal">
           <Text
             element="strong"
-            size='normal'
+            size="normal"
             className={clsx({
               [s.more]: percentMore >= 0,
               [s.less]: percentMore < 0,

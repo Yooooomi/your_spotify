@@ -26,9 +26,7 @@ export function useInfiniteScroll<T>(
         DEFAULT_ITEMS_TO_LOAD,
         isNew ? 0 : items.length,
       );
-      const filteredData = filter
-        ? result.data.filter(filter)
-        : result.data;
+      const filteredData = filter ? result.data.filter(filter) : result.data;
       if (isNew) {
         setItems([...filteredData]);
       } else {

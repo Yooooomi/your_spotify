@@ -37,14 +37,19 @@ export default function Importer() {
   );
 
   // eslint-disable-next-line react-no-manual-memo/no-hook-memo
-  const fetch = useCallback((force = false) => dispatch(getImports(force)).catch(console.error), [dispatch])
+  const fetch = useCallback(
+    (force = false) => dispatch(getImports(force)).catch(console.error),
+    [dispatch],
+  );
 
   useEffect(() => {
     fetch().catch(console.error);
   }, [fetch]);
 
-  const running = imports?.find(st => st.status === "progress");
-  const Component = importType ? ImportTypeToComponent[importType].component : null;
+  const running = imports?.find((st) => st.status === "progress");
+  const Component = importType
+    ? ImportTypeToComponent[importType].component
+    : null;
 
   const isAtLeastOneImportRunning = Boolean(running);
 
@@ -75,7 +80,7 @@ export default function Importer() {
       <div>
         {running && (
           <div>
-            <Text className={s.progress} size='normal'>
+            <Text className={s.progress} size="normal">
               Importing {running.current} of {running.total}
             </Text>
             <LinearProgress
@@ -94,10 +99,10 @@ export default function Importer() {
               labelId="import-type-select"
               value={importType}
               label="Import type"
-              onChange={ev =>
+              onChange={(ev) =>
                 setImportType(ev.target.value as ImporterStateType)
               }>
-              {Object.values(ImporterStateType).map(typ => (
+              {Object.values(ImporterStateType).map((typ) => (
                 <MenuItem value={typ} key={typ}>
                   {ImportTypeToComponent[typ].label}
                 </MenuItem>

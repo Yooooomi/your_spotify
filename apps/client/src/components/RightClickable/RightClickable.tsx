@@ -1,8 +1,4 @@
-import {
-  MouseEvent,
-  ReactNode,
-  useContext,
-} from "react";
+import { MouseEvent, ReactNode, useContext } from "react";
 import { SelectableContext } from "../Selectable/Selectable.context";
 import { Pointer } from "../../services/pointer";
 

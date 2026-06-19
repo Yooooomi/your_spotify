@@ -10,18 +10,12 @@ export default function ArtistHeader() {
 
   const columns = [
     { ...artistGrid.cover, node: <div /> },
-    {
-      ...artistGrid.title,
-      node: <Text size="normal">Artist name</Text>,
-    },
+    { ...artistGrid.title, node: <Text size="normal">Artist name</Text> },
     {
       ...artistGrid.genres,
       node: !isTablet && <Text size="normal">Genres</Text>,
     },
-    {
-      ...artistGrid.count,
-      node: <Text size="normal">Count</Text>,
-    },
+    { ...artistGrid.count, node: <Text size="normal">Count</Text> },
     {
       ...artistGrid.total,
       node: !isMobile && (

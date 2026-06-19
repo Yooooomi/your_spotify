@@ -46,7 +46,9 @@ export const validate = <
     if ("extend" in schema) {
       value = schema.extend({ token: z.string().optional() }).parse(payload);
     } else {
-      value = schema.and(z.object({ token: z.string().optional() })).parse(payload);
+      value = schema
+        .and(z.object({ token: z.string().optional() }))
+        .parse(payload);
     }
     return value;
   } catch (e) {
@@ -96,7 +98,6 @@ const baselogged = async (req: Request, useQueryToken = false) => {
   } catch {
     return null;
   }
-  return null;
 };
 
 export const logged = async (
@@ -202,7 +203,7 @@ export const notAlreadyImporting = async (
 ) => {
   const { user } = req as LoggedRequest;
   const imports = await getUserImporterState(user._id.toString());
-  if (imports.some(imp => imp.status === "progress")) {
+  if (imports.some((imp) => imp.status === "progress")) {
     throw new AlreadyImportingError();
   }
   next();

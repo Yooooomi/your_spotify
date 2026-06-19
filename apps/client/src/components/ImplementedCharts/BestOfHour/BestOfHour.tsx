@@ -13,7 +13,7 @@ import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 import { DateFormatter } from "../../../services/date";
 
-interface BestOfHourProps extends ImplementedChartProps { }
+interface BestOfHourProps extends ImplementedChartProps {}
 
 enum Element {
   ARTIST = "artists",
@@ -40,7 +40,7 @@ function getElementData(
   result: UnboxPromise<ReturnType<(typeof elementToCall)[Element]>>["data"],
   index: number,
 ) {
-  const foundIndex = result.findIndex(r => r.hour === index);
+  const foundIndex = result.findIndex((r) => r.hour === index);
   if (foundIndex === -1) {
     return { x: index };
   }
@@ -70,29 +70,29 @@ export default function BestOfHour({ className }: BestOfHourProps) {
     if (!result) {
       return [];
     }
-    return Array.from(Array(24).keys()).map(index =>
+    return Array.from(Array(24).keys()).map((index) =>
       getElementData(result, index),
     );
   })();
 
   const tooltipTitle = ({ x }: any) =>
-      `20 most listened ${element} at ${DateFormatter.fromNumberToHour(x)}`;
+    `20 most listened ${element} at ${DateFormatter.fromNumberToHour(x)}`;
 
   const tooltipValue = (payload: any, value: any, root: any) => {
-      const foundIndex = result?.findIndex(r => r.hour === payload.x);
-      if (!result || foundIndex === undefined || foundIndex === -1) {
-        return null;
-      }
-      const found = result[foundIndex];
-      if (!found) {
-        return null;
-      }
-      return (
-        <span style={{ color: root.color }}>
-          {value}% of {getElementName(found, root.dataKey.toString())}
-        </span>
-      );
-    };
+    const foundIndex = result?.findIndex((r) => r.hour === payload.x);
+    if (!result || foundIndex === undefined || foundIndex === -1) {
+      return null;
+    }
+    const found = result[foundIndex];
+    if (!found) {
+      return null;
+    }
+    return (
+      <span style={{ color: root.color }}>
+        {value}% of {getElementName(found, root.dataKey.toString())}
+      </span>
+    );
+  };
 
   if (!result) {
     return (
@@ -110,9 +110,9 @@ export default function BestOfHour({ className }: BestOfHourProps) {
         <div style={{ position: "absolute", right: 16 }}>
           <Select
             value={element}
-            onChange={ev => setElement(ev.target.value as Element)}
+            onChange={(ev) => setElement(ev.target.value as Element)}
             variant="standard">
-            {Object.values(Element).map(elem => (
+            {Object.values(Element).map((elem) => (
               <MenuItem key={elem} value={elem}>
                 {elem}
               </MenuItem>

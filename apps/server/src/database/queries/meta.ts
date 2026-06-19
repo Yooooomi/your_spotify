@@ -28,12 +28,16 @@ export async function getCompatibilityVersion(): Promise<{
   };
 }
 
-export async function setFeatureCompatibilityVersion(version: string, currentMajor: number) {
+export async function setFeatureCompatibilityVersion(
+  version: string,
+  currentMajor: number,
+) {
   if (!mongoose.connection.db) {
     throw new Error("Not connected to database, this should not happen");
   }
   const admin = mongoose.connection.db.admin();
-  const command: { setFeatureCompatibilityVersion: string; confirm?: boolean } = { setFeatureCompatibilityVersion: version };
+  const command: { setFeatureCompatibilityVersion: string; confirm?: boolean } =
+    { setFeatureCompatibilityVersion: version };
   if (currentMajor >= 7) {
     command.confirm = true;
   }

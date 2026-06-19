@@ -13,24 +13,12 @@ import {
   sortByTimeSplit,
 } from "./statsTools";
 
-export type ItemType = {
-  field: string;
-  collection: string;
-};
+export type ItemType = { field: string; collection: string };
 
 export const ItemType = {
-  track: {
-    field: "$id",
-    collection: "tracks",
-  },
-  album: {
-    field: "$albumId",
-    collection: "albums",
-  },
-  artist: {
-    field: "$primaryArtistId",
-    collection: "artists",
-  },
+  track: { field: "$id", collection: "tracks" },
+  album: { field: "$albumId", collection: "albums" },
+  artist: { field: "$primaryArtistId", collection: "artists" },
 } as const satisfies Record<string, ItemType>;
 
 export const getMostListenedSongs = async (
@@ -168,10 +156,7 @@ export const getSongsPer = async (
   const res = await InfosModel.aggregate([
     ...basicMatch(user._id, start, end),
     {
-      $project: {
-        ...getGroupByDateProjection(user.settings.timezone),
-        id: 1,
-      },
+      $project: { ...getGroupByDateProjection(user.settings.timezone), id: 1 },
     },
     {
       $group: {
@@ -238,10 +223,7 @@ export const albumDateRatio = async (
     },
     {
       $group: {
-        _id: {
-          ...getGroupingByTimeSplit(timeSplit),
-          albumId: "$albumId",
-        },
+        _id: { ...getGroupingByTimeSplit(timeSplit), albumId: "$albumId" },
         plays: { $sum: 1 },
       },
     },
@@ -440,10 +422,7 @@ export const getBestArtistsPer = async (
     },
     {
       $group: {
-        _id: {
-          ...getGroupingByTimeSplit(timeSplit),
-          art: "$primaryArtistId",
-        },
+        _id: { ...getGroupingByTimeSplit(timeSplit), art: "$primaryArtistId" },
         count: { $sum: getTrackSumType(user, "$durationMs") },
       },
     },
@@ -529,16 +508,12 @@ export const getBest = (
     {
       $project: {
         _id: "$infos._id",
-        result: {
-          $mergeObjects: ["$infos", "$computations"],
-        },
+        result: { $mergeObjects: ["$infos", "$computations"] },
       },
     },
     {
       $replaceRoot: {
-        newRoot: {
-          $mergeObjects: ["$result", { _id: "$_id" }],
-        },
+        newRoot: { $mergeObjects: ["$result", { _id: "$_id" }] },
       },
     },
     { $lookup: lightTrackLookupPipeline("trackId") },
@@ -570,9 +545,7 @@ export const getBestOfHour = async (
     {
       $group: {
         _id: "$_id.hour",
-        items: {
-          $push: { itemId: "$_id.itemId", total: "$total" },
-        },
+        items: { $push: { itemId: "$_id.itemId", total: "$total" } },
         total: { $sum: "$total" },
       },
     },
@@ -703,7 +676,7 @@ export const getLongestListeningSession = async (
     },
   ]);
 
-  longestSessions.forEach(longestSession => {
+  longestSessions.forEach((longestSession) => {
     longestSession.full_tracks = Object.fromEntries(
       longestSession.full_tracks.map((track: any) => [track.id, track]),
     );
@@ -722,12 +695,7 @@ export const getRankOf = async (
     { $group: { _id: itemType.field, count: { $sum: 1 } } },
     { $sort: { count: -1, _id: 1 } },
     { $group: { _id: 1, array: { $push: { id: "$_id", count: "$count" } } } },
-    {
-      $project: {
-        index: { $indexOfArray: ["$array.id", itemId] },
-        array: 1,
-      },
-    },
+    { $project: { index: { $indexOfArray: ["$array.id", itemId] }, array: 1 } },
     {
       $project: {
         index: 1,

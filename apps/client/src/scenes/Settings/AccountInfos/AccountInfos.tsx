@@ -23,9 +23,9 @@ export default function AccountInfos({
   const [name, setName] = useState("");
 
   const submit = (ev: React.SyntheticEvent) => {
-      ev.preventDefault();
-      dispatch(changeUsername(name));
-    };
+    ev.preventDefault();
+    dispatch(changeUsername(name));
+  };
 
   return (
     <TitleCard title="Account infos">
@@ -41,7 +41,7 @@ export default function AccountInfos({
             placeholder="Rename account..."
             fullWidth
             value={name}
-            onChange={ev => setName(ev.target.value)}
+            onChange={(ev) => setName(ev.target.value)}
           />
           <Button type="submit" variant="contained">
             Change

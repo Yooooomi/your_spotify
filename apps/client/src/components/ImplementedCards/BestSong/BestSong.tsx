@@ -12,7 +12,7 @@ import Text from "../../Text";
 import InlineTrack from "../../InlineTrack";
 import s from "./index.module.css";
 
-interface BestSongProps extends ImplementedCardProps { }
+interface BestSongProps extends ImplementedCardProps {}
 
 export default function BestSong({ className }: BestSongProps) {
   const { interval } = useSelector(selectRawIntervalDetail);

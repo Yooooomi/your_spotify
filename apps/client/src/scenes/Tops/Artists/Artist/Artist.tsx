@@ -23,7 +23,7 @@ export default function Artist({
   totalDuration,
   count,
   totalCount,
-  rank
+  rank,
 }: ArtistProps) {
   const [isMobile, isTablet, isDesktop] = useMobile();
   const artistGrid = useArtistGrid();
@@ -37,7 +37,7 @@ export default function Artist({
         <Text size="normal" element="strong" className={s.mlrank}>
           #{rank}
         </Text>
-      )
+      ),
     },
     {
       ...artistGrid.cover,
@@ -76,7 +76,9 @@ export default function Artist({
           {!isMobile && (
             <>
               {" "}
-              <Text size="normal">({Math.floor((count / totalCount) * 10000) / 100}%)</Text>
+              <Text size="normal">
+                ({Math.floor((count / totalCount) * 10000) / 100}%)
+              </Text>
             </>
           )}
         </Text>

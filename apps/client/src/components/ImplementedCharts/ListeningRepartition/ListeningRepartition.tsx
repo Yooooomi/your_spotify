@@ -29,40 +29,36 @@ export default function ListeningRepartition({
   const result = useAPI(api.timePerHourOfDay, interval.start, interval.end);
 
   const total = result?.reduce((acc, curr) => acc + curr.count, 0) ?? 0;
-  const data = Array.from(Array(24).keys()).map(i => {
-        const dataValue = result?.find(r => r._id === i);
-        if (!dataValue) {
-          return {
-            x: i,
-            y: 0,
-            count: 0,
-          };
-        }
-        return {
-          x: i,
-          y: Math.floor((dataValue.count / total) * 1000) / 10,
-          count: dataValue.count,
-        };
-      });
+  const data = Array.from(Array(24).keys()).map((i) => {
+    const dataValue = result?.find((r) => r._id === i);
+    if (!dataValue) {
+      return { x: i, y: 0, count: 0 };
+    }
+    return {
+      x: i,
+      y: Math.floor((dataValue.count / total) * 1000) / 10,
+      count: dataValue.count,
+    };
+  });
 
   const tooltipValue = (payload: any, value: any) => {
-      if (measurement === "number") {
-        return (
-          <div>
-            {`${value}% of your daily listening`}
-            <br />
-            {`${payload.count} out of ${total} songs`}
-          </div>
-        );
-      }
+    if (measurement === "number") {
       return (
         <div>
           {`${value}% of your daily listening`}
           <br />
-          {`${msToMinutes(payload.count)} out of ${msToMinutes(total)} minutes`}
+          {`${payload.count} out of ${total} songs`}
         </div>
       );
-    };
+    }
+    return (
+      <div>
+        {`${value}% of your daily listening`}
+        <br />
+        {`${msToMinutes(payload.count)} out of ${msToMinutes(total)} minutes`}
+      </div>
+    );
+  };
 
   if (!result) {
     return (

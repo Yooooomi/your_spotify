@@ -6,5 +6,5 @@ export function enterClicks(callback: () => void) {
       return;
     }
     callback();
-  }
+  };
 }

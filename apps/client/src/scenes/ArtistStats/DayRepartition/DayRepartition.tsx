@@ -2,7 +2,6 @@ import ChartCard from "../../../components/ChartCard";
 import Bar from "../../../components/charts/Bar";
 import Tooltip from "../../../components/Tooltip";
 
-
 import { ArtistStatsResponse } from "../../../services/apis/api";
 import { msToMinutes } from "../../../services/stats";
 
@@ -17,8 +16,8 @@ export default function DayRepartition({
 }: DayRepartitionProps) {
   const total = stats.reduce((acc, curr) => acc + curr.count, 0);
   const totalDuration = stats.reduce((acc, curr) => acc + curr.duration, 0);
-  const data = Array.from(Array(24).keys()).map(idx => {
-    const stat = stats.find(st => st._id === idx);
+  const data = Array.from(Array(24).keys()).map((idx) => {
+    const stat = stats.find((st) => st._id === idx);
 
     return {
       x: idx,

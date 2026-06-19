@@ -136,10 +136,7 @@ export const playTrack = myAsyncThunk<void, string>(
       } else {
         console.error(e);
         tapi.dispatch(
-          alertMessage({
-            level: "error",
-            message: "Could not play song",
-          }),
+          alertMessage({ level: "error", message: "Could not play song" }),
         );
       }
     }

@@ -36,8 +36,8 @@ export default function Header({
   const { siderAllowed, siderIsDrawer } = useSider();
 
   const changeInterval = (newInterval: IntervalDetail) => {
-      dispatch(setDataInterval(intervalDetailToRedux(newInterval)));
-    };
+    dispatch(setDataInterval(intervalDetailToRedux(newInterval)));
+  };
 
   return (
     <div className={s.root}>

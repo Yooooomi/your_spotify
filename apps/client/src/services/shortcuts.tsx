@@ -1,10 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import { createContext, ReactNode, useContext, useEffect, useRef } from "react";
 import { noop } from "./tools";
 
 interface ShortcutsContext {
@@ -26,9 +20,9 @@ export function stringifySequence(sequence: string) {
       return "cmd";
     }
     if (key === "Meta" && !isMac) {
-      return 'ctrl';
+      return "ctrl";
     }
-    return key.toLowerCase()
+    return key.toLowerCase();
   }
 
   return sequence.split("+").map(getString).join("+");

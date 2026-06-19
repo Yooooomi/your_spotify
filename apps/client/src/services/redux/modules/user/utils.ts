@@ -24,16 +24,10 @@ export function intervalDetailToRedux(
       };
     }
     case "custom": {
-      return {
-        type: "custom",
-        interval: intervalDetail.interval,
-      };
+      return { type: "custom", interval: intervalDetail.interval };
     }
     default: {
-      return {
-        type: "custom",
-        interval: presetIntervals[0].interval,
-      };
+      return { type: "custom", interval: presetIntervals[0].interval };
     }
   }
 }

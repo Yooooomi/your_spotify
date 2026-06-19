@@ -14,7 +14,7 @@ import Tooltip from "../../Tooltip";
 import LoadingImplementedChart from "../LoadingImplementedChart";
 import { ImplementedChartProps } from "../types";
 
-interface DifferentArtistsListenedPerProps extends ImplementedChartProps { }
+interface DifferentArtistsListenedPerProps extends ImplementedChartProps {}
 
 export default function DifferentArtistsListenedPer({
   className,
@@ -28,10 +28,7 @@ export default function DifferentArtistsListenedPer({
   );
 
   const data = buildXYData(
-    result?.map(r => ({
-      _id: r._id as DateId,
-      value: r.differents,
-    })) ?? [],
+    result?.map((r) => ({ _id: r._id as DateId, value: r.differents })) ?? [],
     interval.start,
     interval.end,
   );

@@ -31,7 +31,9 @@ export default function TitleCard({
       <div className={clsx(s.container, { [s.nopadding]: noPadding })}>
         <div className={s.title}>
           <div className={s.left}>
-            <Text element="h3" size='big'>{title}</Text>
+            <Text element="h3" size="big">
+              {title}
+            </Text>
             <ITooltip content={info} />
           </div>
           <div>{right}</div>

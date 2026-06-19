@@ -14,7 +14,7 @@ interface TrackRankProps {
 export default function TrackRank({ trackId }: TrackRankProps) {
   const trackRank = useAPI(api.getTrackRank, trackId);
 
-  const ids = trackRank?.results.map(r => r.id) ?? [];
+  const ids = trackRank?.results.map((r) => r.id) ?? [];
   const { loaded, tracks } = useTracks(ids);
 
   const getTrack = (id: string) => tracks[id];
@@ -52,7 +52,7 @@ export default function TrackRank({ trackId }: TrackRankProps) {
               k +
               (trackRank.isMax ? 1 : 0) +
               (trackRank.isMin ? -1 : 0)}{" "}
-            {track ? <InlineTrack track={track} noStyle size='normal' /> : null}
+            {track ? <InlineTrack track={track} noStyle size="normal" /> : null}
           </div>
         );
       })}

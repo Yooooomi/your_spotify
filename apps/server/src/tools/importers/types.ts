@@ -36,7 +36,7 @@ export interface FullPrivacyImporterState extends BaseImporterState {
 }
 
 export type ImporterState = PrivacyImporterState | FullPrivacyImporterState;
-export type ImporterStateType = ImporterState["type"]
+export type ImporterStateType = ImporterState["type"];
 
 export type ImporterStateFromType<T extends ImporterStateType> = Extract<
   ImporterState,
