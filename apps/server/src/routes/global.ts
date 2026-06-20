@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
+
 import { getGlobalPreferences, updateGlobalPreferences } from "../database";
 import { admin, logged, validate } from "../tools/middleware";
 

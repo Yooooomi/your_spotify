@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
+
 import {
   getTrackBySpotifyId,
   getSongs,
@@ -34,9 +35,9 @@ import {
   validate,
   withHttpClient,
 } from "../tools/middleware";
+import { uniq } from "../tools/misc";
 import { SpotifyRequest, LoggedRequest, Timesplit } from "../tools/types";
 import { toDate, toNumber } from "../tools/zod";
-import { uniq } from "../tools/misc";
 
 export const router = Router();
 

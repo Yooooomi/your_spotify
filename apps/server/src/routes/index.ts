@@ -1,14 +1,8 @@
 import { Router } from "express";
 import { Types } from "mongoose";
-import { z } from "zod";
 import { v4 } from "uuid";
-import {
-  admin,
-  isLoggedOrGuest,
-  logged,
-  optionalLoggedOrGuest,
-  validate,
-} from "../tools/middleware";
+import { z } from "zod";
+
 import {
   changeSetting,
   getAllAdmins,
@@ -18,12 +12,19 @@ import {
   setUserPublicToken,
   storeInUser,
 } from "../database";
-import { LoggedRequest, OptionalLoggedRequest } from "../tools/types";
-import { toBoolean, toNumber } from "../tools/zod";
-import { deleteUser } from "../tools/user";
 import { GithubAPI } from "../tools/apis/githubApi";
-import { Version } from "../tools/version";
 import { getWithDefault } from "../tools/env";
+import {
+  admin,
+  isLoggedOrGuest,
+  logged,
+  optionalLoggedOrGuest,
+  validate,
+} from "../tools/middleware";
+import { LoggedRequest, OptionalLoggedRequest } from "../tools/types";
+import { deleteUser } from "../tools/user";
+import { Version } from "../tools/version";
+import { toBoolean, toNumber } from "../tools/zod";
 
 export const router = Router();
 

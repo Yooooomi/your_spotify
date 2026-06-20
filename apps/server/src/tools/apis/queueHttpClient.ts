@@ -35,7 +35,9 @@ export class HttpError extends Error {
   public readonly body: string;
 
   constructor(options: { status: number; statusText: string; body: string }) {
-    super(`HTTP error! status: ${options.status}, statusText: ${options.statusText}, body: ${options.body}`);
+    super(
+      `HTTP error! status: ${options.status}, statusText: ${options.statusText}, body: ${options.body}`,
+    );
     this.status = options.status;
     this.statusText = options.statusText;
     this.body = options.body;
@@ -54,15 +56,22 @@ function createQueueState(): QueueState {
 }
 
 export class QueuedHttpClientFactory {
-  private readonly queueState: QueueState = createQueueState()
+  private readonly queueState: QueueState = createQueueState();
 
   constructor(
-    private readonly options: { baseURL: string; headers: Record<string, string> },
-  ) { }
+    private readonly options: {
+      baseURL: string;
+      headers: Record<string, string>;
+    },
+  ) {}
 
   createClient(headers: Record<string, string>) {
     const mergedHeaders = { ...this.options.headers, ...headers };
-    return new QueuedHttpClient(this.options.baseURL, mergedHeaders, this.queueState);
+    return new QueuedHttpClient(
+      this.options.baseURL,
+      mergedHeaders,
+      this.queueState,
+    );
   }
 }
 
@@ -71,8 +80,7 @@ export class QueuedHttpClient {
     private readonly baseURL: string,
     private readonly headers: Record<string, string>,
     private readonly queueState: QueueState = createQueueState(),
-  ) {
-  }
+  ) {}
 
   request<T = any>(
     config: HttpClientRequestConfig,
@@ -113,24 +121,15 @@ export class QueuedHttpClient {
     return this.request<T>({ ...config, method: "options", url });
   }
 
-  post<T = any>(
-    url: string,
-    config?: Partial<HttpClientRequestConfig>,
-  ) {
+  post<T = any>(url: string, config?: Partial<HttpClientRequestConfig>) {
     return this.request<T>({ ...config, method: "post", url });
   }
 
-  put<T = any>(
-    url: string,
-    config?: Partial<HttpClientRequestConfig>,
-  ) {
+  put<T = any>(url: string, config?: Partial<HttpClientRequestConfig>) {
     return this.request<T>({ ...config, method: "put", url });
   }
 
-  patch<T = any>(
-    url: string,
-    config?: Partial<HttpClientRequestConfig>,
-  ) {
+  patch<T = any>(url: string, config?: Partial<HttpClientRequestConfig>) {
     return this.request<T>({ ...config, method: "patch", url });
   }
 
@@ -157,7 +156,7 @@ export class QueuedHttpClient {
   }
 
   private async execute<T = any>(queueItem: QueueItem<T>) {
-    const url = new URL(queueItem.config.url)
+    const url = new URL(queueItem.config.url);
 
     if (queueItem.config.params) {
       Object.entries(queueItem.config.params).forEach(([key, value]) => {
@@ -168,9 +167,11 @@ export class QueuedHttpClient {
     const payload: RequestInit = {
       method: queueItem.config.method,
       headers: queueItem.config.headers,
-      body: queueItem.config.data ? JSON.stringify(queueItem.config.data) : undefined,
+      body: queueItem.config.data
+        ? JSON.stringify(queueItem.config.data)
+        : undefined,
       credentials: "include",
-    }
+    };
 
     const response = await fetch(url, payload);
 
@@ -178,14 +179,22 @@ export class QueuedHttpClient {
       const text = await response.text();
 
       if (response.status !== 429) {
-        throw new HttpError({ status: response.status, statusText: response.statusText, body: text });
+        throw new HttpError({
+          status: response.status,
+          statusText: response.statusText,
+          body: text,
+        });
       }
 
       const maxAttempts =
         queueItem.config.retry429MaxAttempts ?? DEFAULT_RETRY_429_MAX_ATTEMPTS;
 
       if (queueItem.retry429AttemptCount >= maxAttempts) {
-        throw new HttpError({ status: response.status, statusText: response.statusText, body: text });
+        throw new HttpError({
+          status: response.status,
+          statusText: response.statusText,
+          body: text,
+        });
       }
 
       queueItem.retry429AttemptCount += 1;
@@ -196,7 +205,11 @@ export class QueuedHttpClient {
     }
 
     const data = await response.json();
-    queueItem.resolve({ data, status: response.status, statusText: response.statusText });
+    queueItem.resolve({
+      data,
+      status: response.status,
+      statusText: response.statusText,
+    });
   }
 
   private requeue(queueItem: QueueItem<any>) {

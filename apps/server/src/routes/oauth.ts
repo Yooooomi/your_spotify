@@ -1,12 +1,15 @@
 import { Request, Response, Router } from "express";
 import { sign } from "jsonwebtoken";
 import { z } from "zod";
+
 import {
   createUser,
   getUserCount,
   getUserFromField,
   storeInUser,
 } from "../database";
+import { getPrivateData } from "../database/queries/privateData";
+import { SpotifyMe } from "../tools/apis/spotifyApi";
 import { get, getWithDefault } from "../tools/env";
 import { logger } from "../tools/logger";
 import {
@@ -17,8 +20,6 @@ import {
 } from "../tools/middleware";
 import { spotifyProvider } from "../tools/oauth/Provider";
 import { GlobalPreferencesRequest, SpotifyRequest } from "../tools/types";
-import { getPrivateData } from "../database/queries/privateData";
-import { SpotifyMe } from "../tools/apis/spotifyApi";
 
 export const router = Router();
 
@@ -82,10 +83,9 @@ router.get("/spotify/callback", withGlobalPreferences, async (req, res) => {
     const infos = await spotifyProvider.exchangeCode(code, cookie.state);
 
     const client = spotifyProvider.getHttpClient(infos.accessToken);
-    const { data: spotifyMe } = await client.get<SpotifyMe>(
-      "/me",
-      { priority: "high" }
-    );
+    const { data: spotifyMe } = await client.get<SpotifyMe>("/me", {
+      priority: "high",
+    });
     let user = await getUserFromField("spotifyId", spotifyMe.id, false);
     if (!user) {
       if (!globalPreferences.allowRegistrations) {
@@ -120,7 +120,7 @@ router.get("/spotify/callback", withGlobalPreferences, async (req, res) => {
 router.get("/spotify/me", logged, withHttpClient, async (req, res) => {
   const { client } = req as SpotifyRequest;
 
-  console.log('WYTFUDGZJDGHZAKJHDKJZHZDKJHAZJKDHZAJKDHJKAHZ')
+  console.log("WYTFUDGZJDGHZAKJHDKJZHZDKJHAZJKDHZAJKDHJKAHZ");
 
   try {
     const me = await client.me();

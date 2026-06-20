@@ -23,7 +23,7 @@ export class Spotify implements Provider {
     private readonly clientSecret: string,
     private readonly scopes: string,
     private readonly redirectUri: string,
-  ) { }
+  ) {}
 
   async getRedirect() {
     const authorizeUrl = new URL("https://accounts.spotify.com/authorize");
@@ -50,9 +50,7 @@ export class Spotify implements Provider {
           client_secret: this.clientSecret,
           state,
         },
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       },
     );
 

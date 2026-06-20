@@ -1,6 +1,6 @@
+import { Timesplit } from "../../tools/types";
 import { InfosModel, TrackModel } from "../Models";
 import { User } from "../schemas/user";
-import { Timesplit } from "../../tools/types";
 import { getGroupByDateProjection, getGroupingByTimeSplit } from "./statsTools";
 
 export const getTracks = (tracksId: string[]) =>

@@ -1,21 +1,23 @@
 import { hrtime } from "process";
+
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
 import { verify } from "jsonwebtoken";
 import { Types } from "mongoose";
+import { z } from "zod";
+
 import { getUserFromField, getGlobalPreferences } from "../database";
 import { getUserImporterState } from "../database/queries/importer";
 import { getPrivateData } from "../database/queries/privateData";
+import { SpotifyAPI } from "./apis/spotifyApi";
+import { YourSpotifyError } from "./errors/error";
 import { logger } from "./logger";
+import { Metrics } from "./metrics";
 import {
   GlobalPreferencesRequest,
   LoggedRequest,
   OptionalLoggedRequest,
   SpotifyRequest,
 } from "./types";
-import { SpotifyAPI } from "./apis/spotifyApi";
-import { Metrics } from "./metrics";
-import { YourSpotifyError } from "./errors/error";
 
 export class ValidationError extends YourSpotifyError {
   type = "MALFORMED" as const;

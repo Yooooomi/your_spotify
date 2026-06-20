@@ -1,22 +1,24 @@
 import { readFile, unlink } from "fs/promises";
+
 import { z } from "zod";
+
 import {
   addTrackIdsToUser,
   getCloseTrackId,
   storeFirstListenedAtIfLess,
 } from "../../database";
 import { setImporterStateCurrent } from "../../database/queries/importer";
+import { Infos } from "../../database/schemas/info";
 import { RecentlyPlayedTrack } from "../../database/schemas/track";
 import { User } from "../../database/schemas/user";
 import {
   getTracksAlbumsArtists,
   storeTrackAlbumArtist,
 } from "../../spotify/dbTools";
+import { SpotifyAPI } from "../apis/spotifyApi";
 import { logger } from "../logger";
 import { minOfArray, retryPromise } from "../misc";
-import { SpotifyAPI } from "../apis/spotifyApi";
 import { Unpack } from "../types";
-import { Infos } from "../../database/schemas/info";
 import { getFromCacheString, setToCacheString } from "./cache";
 import { FullPrivacyImporterState, HistoryImporter } from "./types";
 

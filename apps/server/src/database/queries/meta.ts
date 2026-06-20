@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 import { MongoInfos } from "./meta.types";
 
 export async function getMongoInfos(): Promise<MongoInfos> {

@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+
 import { SpotifyImage } from "./types";
 
 export interface Artist {

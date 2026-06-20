@@ -1,13 +1,14 @@
 import { MongoServerSelectionError } from "mongodb";
+
 import { getCloseTrackId, getUser, getUserCount } from "../database";
+import { Infos } from "../database/schemas/info";
 import { RecentlyPlayedTrack } from "../database/schemas/track";
 import { User } from "../database/schemas/user";
+import { HttpError } from "../tools/apis/queueHttpClient";
+import { SpotifyAPI } from "../tools/apis/spotifyApi";
 import { logger } from "../tools/logger";
 import { retryPromise, wait } from "../tools/misc";
-import { SpotifyAPI } from "../tools/apis/spotifyApi";
-import { Infos } from "../database/schemas/info";
 import { getTracksAlbumsArtists, storeIterationOfLoop } from "./dbTools";
-import { HttpError } from "../tools/apis/queueHttpClient";
 
 const RETRY = 10;
 
@@ -21,8 +22,9 @@ const loop = async (user: User) => {
     return;
   }
 
-  const url = `/me/player/recently-played?after=${user.lastTimestamp - 1000 * 60 * 60 * 2
-    }`;
+  const url = `/me/player/recently-played?after=${
+    user.lastTimestamp - 1000 * 60 * 60 * 2
+  }`;
   const spotifyApi = new SpotifyAPI(user._id.toString());
 
   const items: RecentlyPlayedTrack[] = [];

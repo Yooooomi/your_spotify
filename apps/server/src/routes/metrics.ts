@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { register } from "prom-client";
 import basicAuth from "express-basic-auth";
+import { register } from "prom-client";
+
 import { get } from "../tools/env";
 
 export const router = Router();

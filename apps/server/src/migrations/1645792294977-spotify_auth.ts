@@ -1,9 +1,9 @@
 import { getAllUsers, getFirstInfo, storeInUser } from "../database";
 import { UserModel } from "../database/Models";
 import { User } from "../database/schemas/user";
+import { SpotifyAPI } from "../tools/apis/spotifyApi";
 import { logger } from "../tools/logger";
 import { startMigration } from "../tools/migrations";
-import { SpotifyAPI } from "../tools/apis/spotifyApi";
 import { deleteUser } from "../tools/user";
 
 export const up = async () => {

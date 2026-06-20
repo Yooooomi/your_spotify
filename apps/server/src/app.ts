@@ -1,24 +1,25 @@
+import { IncomingMessage } from "http";
 import * as path from "path";
-import express from "express";
+
 import cookieParser from "cookie-parser";
-import morgan from "morgan";
 import cors from "cors";
+import express from "express";
+import morgan from "morgan";
 
 import { router as indexRouter } from "./routes";
-import { router as oauthRouter } from "./routes/oauth";
-import { router as spotifyRouter } from "./routes/spotify";
-import { router as globalRouter } from "./routes/global";
-import { router as artistRouter } from "./routes/artist";
 import { router as albumRouter } from "./routes/album";
+import { router as artistRouter } from "./routes/artist";
+import { router as globalRouter } from "./routes/global";
 import { router as importRouter } from "./routes/importer";
-import { router as trackRouter } from "./routes/track";
-import { router as searchRouter } from "./routes/search";
 import { router as metricsRouter } from "./routes/metrics";
+import { router as oauthRouter } from "./routes/oauth";
+import { router as searchRouter } from "./routes/search";
+import { router as spotifyRouter } from "./routes/spotify";
+import { router as trackRouter } from "./routes/track";
 import { get } from "./tools/env";
+import { ErrorTypeToHTTPCode, YourSpotifyError } from "./tools/errors/error";
 import { logger, LogLevelAccepts } from "./tools/logger";
 import { measureRequestDuration } from "./tools/middleware";
-import { ErrorTypeToHTTPCode, YourSpotifyError } from "./tools/errors/error";
-import { IncomingMessage } from "http";
 
 const app = express();
 const ALLOW_ALL_CORS =

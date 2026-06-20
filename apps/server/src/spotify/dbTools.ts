@@ -1,19 +1,20 @@
 import mongoose from "mongoose";
-import { TrackModel, AlbumModel, ArtistModel } from "../database/Models";
-import { Album } from "../database/schemas/album";
-import { Artist } from "../database/schemas/artist";
-import { SpotifyTrack, Track } from "../database/schemas/track";
-import { logger } from "../tools/logger";
-import { minOfArray, uniqBy } from "../tools/misc";
-import { SpotifyAPI } from "../tools/apis/spotifyApi";
+
 import {
   addTrackIdsToUser,
   storeInUser,
   storeFirstListenedAtIfLess,
 } from "../database";
+import { TrackModel, AlbumModel, ArtistModel } from "../database/Models";
+import { Album } from "../database/schemas/album";
+import { Artist } from "../database/schemas/artist";
 import { Infos } from "../database/schemas/info";
+import { SpotifyTrack, Track } from "../database/schemas/track";
+import { SpotifyAPI } from "../tools/apis/spotifyApi";
 import { longWriteDbLock } from "../tools/lock";
+import { logger } from "../tools/logger";
 import { Metrics } from "../tools/metrics";
+import { minOfArray, uniqBy } from "../tools/misc";
 import { compact } from "../tools/utils";
 
 export const getTracks = async (userId: string, ids: string[]) => {

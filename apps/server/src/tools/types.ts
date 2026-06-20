@@ -1,4 +1,5 @@
 import { Request } from "express";
+
 import { GlobalPreferences } from "../database/schemas/globalPreference";
 import { User } from "../database/schemas/user";
 import { SpotifyAPI } from "./apis/spotifyApi";

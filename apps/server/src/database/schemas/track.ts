@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+
 import { SpotifyAlbum } from "./album";
 import { SpotifyArtist } from "./artist";
 

@@ -1,8 +1,9 @@
 import { load, MigrationSet, Callback as CallbackError } from "migrate";
+
 import { connect } from "./database";
 import { MigrationModel } from "./database/Models";
-import { logger } from "./tools/logger";
 import { Database } from "./tools/database";
+import { logger } from "./tools/logger";
 
 type Callback = (err: any, data: any) => void;
 

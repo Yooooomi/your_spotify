@@ -1,11 +1,12 @@
 import { Types } from "mongoose";
+
 import { getUserFromField, storeInUser } from "../../database";
+import { SpotifyAlbum } from "../../database/schemas/album";
+import { SpotifyArtist } from "../../database/schemas/artist";
 import { SpotifyTrack } from "../../database/schemas/track";
 import { logger } from "../logger";
 import { chunk } from "../misc";
 import { spotifyProvider } from "../oauth/Provider";
-import { SpotifyAlbum } from "../../database/schemas/album";
-import { SpotifyArtist } from "../../database/schemas/artist";
 import { HttpError } from "./queueHttpClient";
 
 export interface SpotifyMe {
@@ -20,7 +21,7 @@ interface SpotifyPlaylist {
 }
 
 export class SpotifyAPI {
-  constructor(private readonly userId: string) { }
+  constructor(private readonly userId: string) {}
 
   private async checkToken() {
     const user = await getUserFromField(
@@ -61,11 +62,7 @@ export class SpotifyAPI {
 
   public async playTrack(trackUri: string) {
     const client = await this.checkToken();
-    return client.put("/me/player/play", {
-      data: {
-        uris: [trackUri],
-      }
-    });
+    return client.put("/me/player/play", { data: { uris: [trackUri] } });
   }
 
   public async me() {
@@ -96,9 +93,7 @@ export class SpotifyAPI {
 
       const client = await this.checkToken();
       await client.post(`/playlists/${id}/tracks`, {
-        data: {
-          uris: chk.map((trackId) => `spotify:track:${trackId}`)
-        },
+        data: { uris: chk.map((trackId) => `spotify:track:${trackId}`) },
       });
     }
   }
@@ -111,12 +106,7 @@ export class SpotifyAPI {
   public async createPlaylist(name: string, ids: string[]) {
     const client = await this.checkToken();
     const { data } = await client.post(`/me/playlists`, {
-      data: {
-        name,
-        public: true,
-        collaborative: false,
-        description: "",
-      }
+      data: { name, public: true, collaborative: false, description: "" },
     });
     return this.handleAddIdsToPlaylist(data.id, ids);
   }
