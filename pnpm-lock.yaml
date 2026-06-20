@@ -88,13 +88,13 @@ importers:
         version: 8.0.1(@babel/core@7.29.7)
       '@rsbuild/core':
         specifier: 'catalog:'
-        version: 2.0.15(core-js@3.47.0)
+        version: 2.0.15
       '@rsbuild/plugin-babel':
         specifier: ^2.0.0
-        version: 2.0.0(@rsbuild/core@2.0.15(core-js@3.47.0))
+        version: 2.0.0(@rsbuild/core@2.0.15)
       '@rsbuild/plugin-react':
         specifier: ^2.1.0
-        version: 2.1.0(@rsbuild/core@2.0.15(core-js@3.47.0))(@rspack/core@2.0.8(@swc/helpers@0.5.23))
+        version: 2.1.0(@rsbuild/core@2.0.15)(@rspack/core@2.0.8(@swc/helpers@0.5.23))
       '@types/node':
         specifier: ^26.0.0
         version: 26.0.0
@@ -176,7 +176,7 @@ importers:
     devDependencies:
       '@rsbuild/core':
         specifier: 'catalog:'
-        version: 2.0.15(core-js@3.47.0)
+        version: 2.0.15
       '@types/cookie-parser':
         specifier: ^1.4.10
         version: 1.4.10(@types/express@5.0.6)
@@ -1407,9 +1407,6 @@ packages:
 
   core-js-pure@3.49.0:
     resolution: {integrity: sha512-XM4RFka59xATyJv/cS3O3Kml72hQXUeGRuuTmMYFxwzc9/7C8OYTaIR/Ji+Yt8DXzsFLNhat15cE/JP15HrCgw==}
-
-  core-js@3.47.0:
-    resolution: {integrity: sha512-c3Q2VVkGAUyupsjRnaNX6u8Dq2vAdzm9iuPj5FW0fRxzlxgq9Q39MDq10IvmQSpLgHQNyQzQmOo6bgGHmH3NNg==}
 
   cors@2.8.6:
     resolution: {integrity: sha512-tJtZBBHA6vjIAaF6EnIaq6laBBP9aq/Y3ouVJjEfoHbRBcHBAHYcMh/w8LDrk2PvIMMq8gmopa5D4V8RmbrxGw==}
@@ -3076,16 +3073,14 @@ snapshots:
       react: 19.2.7
       react-redux: 9.3.0(@types/react@19.2.17)(react@19.2.7)(redux@5.0.1)
 
-  '@rsbuild/core@2.0.15(core-js@3.47.0)':
+  '@rsbuild/core@2.0.15':
     dependencies:
       '@rspack/core': 2.0.8(@swc/helpers@0.5.23)
       '@swc/helpers': 0.5.23
-    optionalDependencies:
-      core-js: 3.47.0
     transitivePeerDependencies:
       - '@module-federation/runtime-tools'
 
-  '@rsbuild/plugin-babel@2.0.0(@rsbuild/core@2.0.15(core-js@3.47.0))':
+  '@rsbuild/plugin-babel@2.0.0(@rsbuild/core@2.0.15)':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-proposal-decorators': 7.29.7(@babel/core@7.29.7)
@@ -3094,16 +3089,16 @@ snapshots:
       '@types/babel__core': 7.20.5
       reduce-configs: 1.1.2
     optionalDependencies:
-      '@rsbuild/core': 2.0.15(core-js@3.47.0)
+      '@rsbuild/core': 2.0.15
     transitivePeerDependencies:
       - supports-color
 
-  '@rsbuild/plugin-react@2.1.0(@rsbuild/core@2.0.15(core-js@3.47.0))(@rspack/core@2.0.8(@swc/helpers@0.5.23))':
+  '@rsbuild/plugin-react@2.1.0(@rsbuild/core@2.0.15)(@rspack/core@2.0.8(@swc/helpers@0.5.23))':
     dependencies:
       '@rspack/plugin-react-refresh': 2.0.2(@rspack/core@2.0.8(@swc/helpers@0.5.23))(react-refresh@0.18.0)
       react-refresh: 0.18.0
     optionalDependencies:
-      '@rsbuild/core': 2.0.15(core-js@3.47.0)
+      '@rsbuild/core': 2.0.15
     transitivePeerDependencies:
       - '@rspack/core'
 
@@ -3515,9 +3510,6 @@ snapshots:
       toggle-selection: 1.0.6
 
   core-js-pure@3.49.0: {}
-
-  core-js@3.47.0:
-    optional: true
 
   cors@2.8.6:
     dependencies:

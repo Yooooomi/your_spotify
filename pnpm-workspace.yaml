@@ -1,6 +1,9 @@
 packages:
   - apps/*
 
+allowBuilds:
+  core-js-pure: true
+
 catalog:
   '@eslint/json': 1.2.0
   '@rsbuild/core': 2.0.15
@@ -9,6 +12,9 @@ catalog:
   typescript-eslint: 8.59.3
   oxfmt: 0.55.0
   oxlint: 1.70.0
+
+minimumReleaseAgeExclude:
+  - uuid@14.0.1
 
 onlyBuiltDependencies:
   - core-js
