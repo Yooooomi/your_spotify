@@ -37,8 +37,8 @@
     "@types/node": "^26.0.0",
     "@your_spotify/dev": "workspace:*",
     "concurrently": "^10.0.3",
-    "oxfmt": "^0.55.0",
-    "oxlint": "^1.70.0",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
     "ts-node": "^10.9.2",
     "typescript": "catalog:"
   }

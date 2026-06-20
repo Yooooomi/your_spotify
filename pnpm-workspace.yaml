@@ -2,15 +2,13 @@ packages:
   - apps/*
 
 catalog:
-  '@eslint/css': 1.2.0
-  '@eslint/js': 10.0.1
   '@eslint/json': 1.2.0
   '@rsbuild/core': 2.0.15
-  eslint: 10.4.0
-  eslint-plugin-unused-imports: 4.4.1
   globals: 17.6.0
   typescript: 6.0.3
   typescript-eslint: 8.59.3
+  oxfmt: 0.55.0
+  oxlint: 1.70.0
 
 onlyBuiltDependencies:
   - core-js
