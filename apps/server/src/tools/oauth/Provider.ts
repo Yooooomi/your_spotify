@@ -16,14 +16,14 @@ export interface Provider {
 }
 
 export class Spotify implements Provider {
-  private readonly client = spotifyHttpClientFactory.createClient();
+  private readonly client = spotifyHttpClientFactory.createClient({});
 
   constructor(
     private readonly clientId: string,
     private readonly clientSecret: string,
     private readonly scopes: string,
     private readonly redirectUri: string,
-  ) {}
+  ) { }
 
   async getRedirect() {
     const authorizeUrl = new URL("https://accounts.spotify.com/authorize");
@@ -41,7 +41,6 @@ export class Spotify implements Provider {
   async exchangeCode(code: string, state: string) {
     const { data } = await this.client.post(
       "https://accounts.spotify.com/api/token",
-      null,
       {
         params: {
           grant_type: "authorization_code",
@@ -51,7 +50,9 @@ export class Spotify implements Provider {
           client_secret: this.clientSecret,
           state,
         },
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       },
     );
 
@@ -65,7 +66,6 @@ export class Spotify implements Provider {
   async refresh(refresh: string) {
     const { data } = await this.client.post(
       "https://accounts.spotify.com/api/token",
-      null,
       {
         params: { grant_type: "refresh_token", refresh_token: refresh },
         headers: {
@@ -85,11 +85,7 @@ export class Spotify implements Provider {
 
   getHttpClient(accessToken: string) {
     return spotifyHttpClientFactory.createClient({
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      baseURL: "https://api.spotify.com/v1",
+      Authorization: `Bearer ${accessToken}`,
     });
   }
 }

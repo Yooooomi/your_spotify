@@ -1,5 +1,4 @@
 import { MongoServerSelectionError } from "mongodb";
-import { AxiosError } from "axios";
 import { getCloseTrackId, getUser, getUserCount } from "../database";
 import { RecentlyPlayedTrack } from "../database/schemas/track";
 import { User } from "../database/schemas/user";
@@ -8,6 +7,7 @@ import { retryPromise, wait } from "../tools/misc";
 import { SpotifyAPI } from "../tools/apis/spotifyApi";
 import { Infos } from "../database/schemas/info";
 import { getTracksAlbumsArtists, storeIterationOfLoop } from "./dbTools";
+import { HttpError } from "../tools/apis/queueHttpClient";
 
 const RETRY = 10;
 
@@ -21,9 +21,8 @@ const loop = async (user: User) => {
     return;
   }
 
-  const url = `/me/player/recently-played?after=${
-    user.lastTimestamp - 1000 * 60 * 60 * 2
-  }`;
+  const url = `/me/player/recently-played?after=${user.lastTimestamp - 1000 * 60 * 60 * 2
+    }`;
   const spotifyApi = new SpotifyAPI(user._id.toString());
 
   const items: RecentlyPlayedTrack[] = [];
@@ -110,14 +109,13 @@ export const dbLoop = async () => {
             await loop(us);
           } catch (error) {
             logger.error(`[${us.username}]: Error during refresh`, error);
-            if (error instanceof AxiosError) {
-              if (error.response?.data) {
-                logger.info("Response of failed request", error.response.data);
-              }
-              logger.info(
-                "There appears to be issues with either your internet connection or Spotify",
-              );
+            if (error instanceof HttpError) {
+              logger.info("Response of failed request", error.message);
+              continue;
             }
+            logger.info(
+              "There appears to be issues with either your internet connection or Spotify",
+            );
           }
         }
       }

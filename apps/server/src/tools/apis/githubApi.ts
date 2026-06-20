@@ -1,5 +1,5 @@
-import axios from "axios";
 import { Version } from "../version";
+import { githubHttpClientFactory } from "./queuedHttpClient.providers";
 
 interface Author {
   login: string;
@@ -58,11 +58,13 @@ export interface Release {
 }
 
 export class GithubAPI {
+  static client = githubHttpClientFactory.createClient({});
+
   static async releases() {
-    const { data: releases } = await axios.get(
+    const { data: releases } = await GithubAPI.client.get<Release[]>(
       "https://api.github.com/repos/yooooomi/your_spotify/releases",
     );
-    return releases as Release[];
+    return releases;
   }
 
   static async lastVersion() {

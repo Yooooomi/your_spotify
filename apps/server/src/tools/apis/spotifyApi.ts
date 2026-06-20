@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import { Types } from "mongoose";
 import { getUserFromField, storeInUser } from "../../database";
 import { SpotifyTrack } from "../../database/schemas/track";
@@ -7,10 +6,11 @@ import { chunk } from "../misc";
 import { spotifyProvider } from "../oauth/Provider";
 import { SpotifyAlbum } from "../../database/schemas/album";
 import { SpotifyArtist } from "../../database/schemas/artist";
-import { QueuedHttpClient } from "./queueHttpClient";
+import { HttpError } from "./queueHttpClient";
 
-interface SpotifyMe {
+export interface SpotifyMe {
   id: string;
+  display_name: string;
 }
 
 interface SpotifyPlaylist {
@@ -20,7 +20,7 @@ interface SpotifyPlaylist {
 }
 
 export class SpotifyAPI {
-  constructor(private readonly userId: string) {}
+  constructor(private readonly userId: string) { }
 
   private async checkToken() {
     const user = await getUserFromField(
@@ -61,14 +61,16 @@ export class SpotifyAPI {
 
   public async playTrack(trackUri: string) {
     const client = await this.checkToken();
-    return client.put("https://api.spotify.com/v1/me/player/play", {
-      uris: [trackUri],
+    return client.put("/me/player/play", {
+      data: {
+        uris: [trackUri],
+      }
     });
   }
 
   public async me() {
     const client = await this.checkToken();
-    const res = await client.get("/me", QueuedHttpClient.highPriority());
+    const res = await client.get("/me", { priority: "high" });
     return res.data as SpotifyMe;
   }
 
@@ -94,7 +96,9 @@ export class SpotifyAPI {
 
       const client = await this.checkToken();
       await client.post(`/playlists/${id}/tracks`, {
-        uris: chk.map((trackId) => `spotify:track:${trackId}`),
+        data: {
+          uris: chk.map((trackId) => `spotify:track:${trackId}`)
+        },
       });
     }
   }
@@ -107,10 +111,12 @@ export class SpotifyAPI {
   public async createPlaylist(name: string, ids: string[]) {
     const client = await this.checkToken();
     const { data } = await client.post(`/me/playlists`, {
-      name,
-      public: true,
-      collaborative: false,
-      description: "",
+      data: {
+        name,
+        public: true,
+        collaborative: false,
+        description: "",
+      }
     });
     return this.handleAddIdsToPlaylist(data.id, ids);
   }
@@ -184,8 +190,8 @@ export class SpotifyAPI {
       );
       return res.data.tracks.items[0] as SpotifyTrack;
     } catch (e) {
-      if (e instanceof AxiosError) {
-        if (e.response?.status === 404) {
+      if (e instanceof HttpError) {
+        if (e.status === 404) {
           return undefined;
         }
       }
