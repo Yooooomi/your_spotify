@@ -21,6 +21,9 @@ fi
 echo "Setting API Endpoint to '$API_ENDPOINT'"
 sed -i "s;__API_ENDPOINT__;$API_ENDPOINT;g" "$VAR_PATH/variables.js"
 
+VAR_HASH=$(sha256sum "$VAR_PATH/variables.js" | awk '{print $1}')
+sed -i "s#__VARIABLES_HASH__#${VAR_HASH}#g" "$VAR_PATH/index.html"
+
 # Editing meta image urls
 sed -i "s;image\" content=\"\(.[^\"]*\);image\" content=\"$API_ENDPOINT/static/your_spotify_1200.png;g" "$VAR_PATH/index.html"
 
