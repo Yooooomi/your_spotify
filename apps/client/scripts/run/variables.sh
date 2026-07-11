@@ -19,7 +19,12 @@ then
 fi
 
 echo "Setting API Endpoint to '$API_ENDPOINT'"
-sed -i "s;__API_ENDPOINT__;$API_ENDPOINT;g" "$VAR_PATH/variables.js"
+# Escape '&' because sed replacement treats it as the full match.
+API_ENDPOINT_ESCAPED=$(printf '%s' "$API_ENDPOINT" | sed 's/[&]/\\&/g')
+
+# Replace the full assignment so it works whether variables.js contains the placeholder
+# or a previously hardcoded endpoint.
+sed -i "s;window.API_ENDPOINT = .*;window.API_ENDPOINT = '$API_ENDPOINT_ESCAPED';g" "$VAR_PATH/variables.js"
 
 # Editing meta image urls
 sed -i "s;image\" content=\"\(.[^\"]*\);image\" content=\"$API_ENDPOINT/static/your_spotify_1200.png;g" "$VAR_PATH/index.html"
