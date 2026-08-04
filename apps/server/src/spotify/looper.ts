@@ -6,6 +6,7 @@ import { RecentlyPlayedTrack } from "../database/schemas/track";
 import { User } from "../database/schemas/user";
 import { HttpError } from "../tools/apis/queueHttpClient";
 import { SpotifyAPI } from "../tools/apis/spotifyApi";
+import { SpotifyReauthRequiredError } from "../tools/errors/Spotify";
 import { logger } from "../tools/logger";
 import { retryPromise, wait } from "../tools/misc";
 import { getTracksAlbumsArtists, storeIterationOfLoop } from "./dbTools";
@@ -15,13 +16,9 @@ const RETRY = 10;
 const loop = async (user: User) => {
   logger.info(`[${user.username}]: refreshing...`);
 
-  if (!user.accessToken) {
-    logger.error(
-      `User ${user.username} has not access token, please relog to Spotify`,
-    );
-    return;
-  }
-
+  // No early return on a missing access token: checkToken either refreshes it
+  // or flags the account as needing a reconnection. Returning here left those
+  // accounts silently untracked, even when a refresh could still have worked.
   const url = `/me/player/recently-played?after=${
     user.lastTimestamp - 1000 * 60 * 60 * 2
   }`;
@@ -111,6 +108,9 @@ export const dbLoop = async () => {
             await loop(us);
           } catch (error) {
             logger.error(`[${us.username}]: Error during refresh`, error);
+            if (error instanceof SpotifyReauthRequiredError) {
+              continue;
+            }
             if (error instanceof HttpError) {
               logger.info("Response of failed request", error.message);
               continue;

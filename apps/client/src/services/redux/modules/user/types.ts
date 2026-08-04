@@ -7,8 +7,11 @@ export interface User {
   _id: string;
   id: string;
   expiresIn: number;
-  accessToken: string;
-  refreshToken: string;
+  // Stripped by the server before being sent to the client
+  accessToken?: string | null;
+  refreshToken?: string | null;
+  spotifyAuthDate?: string;
+  spotifyReauthRequired?: boolean;
   lastTimestamp: number;
   tracks: string[];
   settings: {

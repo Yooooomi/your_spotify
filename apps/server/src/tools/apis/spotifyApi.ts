@@ -4,6 +4,7 @@ import { getUserFromField, storeInUser } from "../../database";
 import { SpotifyAlbum } from "../../database/schemas/album";
 import { SpotifyArtist } from "../../database/schemas/artist";
 import { SpotifyTrack } from "../../database/schemas/track";
+import { SpotifyReauthRequiredError } from "../errors/Spotify";
 import { logger } from "../logger";
 import { chunk } from "../misc";
 import { spotifyProvider } from "../oauth/Provider";
@@ -23,6 +24,17 @@ interface SpotifyPlaylist {
 export class SpotifyAPI {
   constructor(private readonly userId: string) {}
 
+  // The account cannot authenticate on its own anymore. Discard what is left
+  // and flag it, so the client knows to ask for a Spotify reconnection.
+  private async requireReauth(userId: Types.ObjectId, username: string) {
+    await storeInUser("_id", userId, {
+      accessToken: null,
+      refreshToken: null,
+      spotifyReauthRequired: true,
+    });
+    return new SpotifyReauthRequiredError(username);
+  }
+
   private async checkToken() {
     const user = await getUserFromField(
       "_id",
@@ -36,23 +48,40 @@ export class SpotifyAPI {
     if (!user.spotifyId) {
       throw new Error("User has no spotify id");
     }
-    // Refresh the token if it expires in less than two minutes (1000ms * 120)
-    if (Date.now() > user.expiresIn - 1000 * 120) {
+    // Refresh the token if it expires in less than two minutes (1000ms * 120).
+    // A missing access token also goes through the refresh, so a still valid
+    // refresh token is used instead of being discarded further down.
+    if (!access || Date.now() > user.expiresIn - 1000 * 120) {
       const token = user.refreshToken;
       if (!token) {
-        throw new Error("User has no refresh token");
+        // Nothing left to refresh with, which is how accounts that were
+        // discarded before the flag existed present themselves.
+        throw await this.requireReauth(user._id, user.username);
       }
-      const infos = await spotifyProvider.refresh(token);
+      let infos;
+      try {
+        infos = await spotifyProvider.refresh(token);
+      } catch (e) {
+        if (
+          e instanceof HttpError &&
+          e.status === 400 &&
+          e.body.includes("invalid_grant")
+        ) {
+          // Spotify expires refresh tokens six months after the authorization
+          // and asks us to discard them instead of retrying.
+          throw await this.requireReauth(user._id, user.username);
+        }
+        throw e;
+      }
 
       await storeInUser("_id", user._id, infos);
       logger.info(`Refreshed token for ${user.username}`);
       access = infos.accessToken;
     }
-    if (access) {
-      return spotifyProvider.getHttpClient(access);
-    } else {
-      throw new Error("Could not get any access token");
+    if (!access) {
+      throw await this.requireReauth(user._id, user.username);
     }
+    return spotifyProvider.getHttpClient(access);
   }
 
   public async raw(url: string) {

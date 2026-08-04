@@ -98,7 +98,11 @@ router.get("/spotify/callback", withGlobalPreferences, async (req, res) => {
         nbUsers === 0,
       );
     }
-    await storeInUser("_id", user._id, infos);
+    await storeInUser("_id", user._id, {
+      ...infos,
+      spotifyAuthDate: new Date(),
+      spotifyReauthRequired: false,
+    });
     const privateData = await getPrivateData();
     if (!privateData?.jwtPrivateKey) {
       throw new Error("No private data found, cannot sign JWT");

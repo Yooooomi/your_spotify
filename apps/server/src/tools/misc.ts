@@ -1,3 +1,4 @@
+import { SpotifyReauthRequiredError } from "./errors/Spotify";
 import { logger } from "./logger";
 
 export const wait = (ms: number) =>
@@ -289,6 +290,10 @@ export const retryPromise = async <T>(
       const res = await fn();
       return res;
     } catch (e) {
+      // Retrying cannot succeed until the user re-logs to Spotify
+      if (e instanceof SpotifyReauthRequiredError) {
+        throw e;
+      }
       lastError = e;
       logger.error(
         `Retrying crashed promise, ${i + 1}/${max}${

@@ -24,6 +24,7 @@ import Affinity from "./scenes/Collaborative/Affinity";
 import { useTheme } from "./services/theme";
 import { selectDarkMode } from "./services/redux/modules/user/selector";
 import PlaylistDialog from "./components/PlaylistDialog";
+import SpotifyAuthRefreshDialog from "./components/SpotifyAuthRefreshDialog";
 import TrackStats from "./scenes/TrackStats";
 import LongestSessions from "./scenes/LongestSessions";
 import AlbumStats from "./scenes/AlbumStats";
@@ -56,6 +57,7 @@ function App() {
             <Wrapper />
             <Message />
             <PlaylistDialog />
+            <SpotifyAuthRefreshDialog />
             <Layout>
               <Routes>
                 <Route
