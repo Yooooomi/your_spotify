@@ -54,6 +54,7 @@ export default function History() {
           setSelected={setSelectedTracks}>
           <InfiniteScroll
             dataLength={items.length}
+            hasChildren={items.length > 0}
             next={onNext}
             hasMore={hasMore}
             loader={<Loader />}>

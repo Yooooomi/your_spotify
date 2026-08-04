@@ -30,6 +30,7 @@ export default function Albums() {
             next={onNext}
             hasMore={hasMore}
             dataLength={items.length}
+            hasChildren={items.length > 0}
             loader={<Loader />}>
             <GridWrapper>
               <AlbumHeader />

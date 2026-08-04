@@ -1,6 +1,24 @@
 import { useState, useRef, useEffect } from "react";
+
 import { DEFAULT_ITEMS_TO_LOAD } from "../apis/api";
 import { Interval } from "../intervals";
+
+// react-infinite-scroll-component v7 watches a sentinel with an
+// IntersectionObserver whose rootMargin is (1 - scrollThreshold) of the
+// viewport, and it only fires on intersection *transitions*. If a page ends up
+// short enough that the sentinel stays inside that band, it never leaves the
+// intersection and no further page is ever requested. Keep loading until the
+// sentinel is provably outside the band so the observer gets its transition.
+const SENTINEL_BAND = 0.2; // = 1 - InfiniteScroll's default scrollThreshold
+
+function isSentinelClear() {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return true;
+  }
+  const doc = document.documentElement;
+  const below = doc.scrollHeight - doc.scrollTop - window.innerHeight;
+  return below > window.innerHeight * SENTINEL_BAND;
+}
 
 export function useInfiniteScroll<T>(
   interval: Interval,
@@ -14,35 +32,85 @@ export function useInfiniteScroll<T>(
 ) {
   const [items, setItems] = useState<T[]>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [autoFillCycle, setAutoFillCycle] = useState(0);
 
-  const ref = useRef<(force?: boolean) => void>(() => {});
+  const ref = useRef<(force?: boolean) => Promise<void>>(async () => {});
+  const isFetchingRef = useRef(false);
+  const generationRef = useRef(0);
+  const fetchedCountRef = useRef(0);
 
   ref.current = async (isNew = false) => {
     if (!hasMore && !isNew) return;
+    if (isFetchingRef.current) return;
+
+    const generation = generationRef.current;
+    isFetchingRef.current = true;
     try {
       const result = await call(
         interval.start,
         interval.end,
         DEFAULT_ITEMS_TO_LOAD,
-        isNew ? 0 : items.length,
+        isNew ? 0 : fetchedCountRef.current,
       );
+
+      // Ignore late responses from a previous interval generation
+      if (generation !== generationRef.current) return;
+
       const filteredData = filter ? result.data.filter(filter) : result.data;
-      if (isNew) {
-        setItems([...filteredData]);
-      } else {
-        setItems([...items, ...filteredData]);
-      }
-      setHasMore(result.data.length === DEFAULT_ITEMS_TO_LOAD);
+
+      fetchedCountRef.current = isNew
+        ? result.data.length
+        : fetchedCountRef.current + result.data.length;
+
+      setItems((prevItems) => {
+        if (isNew) return filteredData;
+        return [...prevItems, ...filteredData];
+      });
+
+      const nextHasMore = result.data.length === DEFAULT_ITEMS_TO_LOAD;
+      setHasMore(nextHasMore);
+      setAutoFillCycle((prev) => prev + 1);
     } catch (e) {
       console.error(e);
+    } finally {
+      if (generation === generationRef.current) {
+        isFetchingRef.current = false;
+      }
     }
   };
 
+  const onNext = (force = false) => {
+    void ref.current(force);
+  };
+
   useEffect(() => {
+    generationRef.current += 1;
+    isFetchingRef.current = false;
+    fetchedCountRef.current = 0;
+
     setHasMore(true);
     setItems([]);
-    setTimeout(() => ref.current?.(true), 0);
+    setAutoFillCycle(0);
+    // Defer the first load until after reset state is committed
+    const timeout = setTimeout(() => {
+      void ref.current(true);
+    }, 0);
+
+    return () => clearTimeout(timeout);
   }, [interval]);
 
-  return { items, hasMore, onNext: ref.current };
+  useEffect(() => {
+    if (autoFillCycle === 0 || !hasMore) return;
+    if (isFetchingRef.current) return;
+    if (isSentinelClear()) return;
+
+    // Trigger sequential page loads until the viewport becomes scrollable
+    const timeout = setTimeout(() => {
+      void ref.current();
+    }, 0);
+
+    return () => clearTimeout(timeout);
+  }, [autoFillCycle, hasMore]);
+
+  return { items, hasMore, onNext };
 }

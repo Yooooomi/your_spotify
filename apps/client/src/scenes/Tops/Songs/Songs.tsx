@@ -57,6 +57,7 @@ export default function Songs() {
                 next={onNext}
                 hasMore={hasMore}
                 dataLength={items.length}
+                hasChildren={items.length > 0}
                 loader={<Loader />}>
                 <GridWrapper>
                   <TrackHeader />
