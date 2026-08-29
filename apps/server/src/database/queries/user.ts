@@ -60,8 +60,8 @@ export const createUser = (
 export const storeInUser = <F extends keyof User>(
   field: F,
   value: User[F],
-  infos: Partial<User>,
-) => UserModel.findOneAndUpdate({ [field]: value }, infos, { new: true });
+  infos: Partial<User>,) => UserModel.findOneAndUpdate({ [field]: value }, infos, { returnDocument: 'after' });
+return UserModel.findOneAndUpdate({ [field]: value }, ... , { returnDocument: 'after' });
 
 export const storeFirstListenedAtIfLess = async (
   userId: string,

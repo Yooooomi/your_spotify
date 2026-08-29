@@ -20,6 +20,18 @@ export function startServer() {
 
     const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
 
+    // Fall back to IPv4 if IPv6 (::) is explicitly disabled or unsupported by the host OS
+    if (
+      (error.code === "EAFNOSUPPORT" || error.code === "EADDRNOTAVAIL") &&
+      server.address() === null
+    ) {
+      logger.warn(
+        "IPv6 interface (::) is not available on host. Falling back to IPv4 (0.0.0.0)...",
+      );
+      server.listen(port, "0.0.0.0");
+      return;
+    }
+
     // handle specific listen errors with friendly messages
     switch (error.code) {
       case "EACCES":
@@ -44,9 +56,13 @@ export function startServer() {
 
   connect()
     .then(async () => {
-      server.listen(port);
+      // Attach error and listening handlers before initiating listen
       server.on("error", onError);
       server.on("listening", onListening);
+
+      // Bind to dual-stack IPv6 (::), which handles both IPv4 and IPv6 traffic
+      server.listen(port, "::");
+
       fixRunningImportsAtStart().catch(logger.error);
       checkBlacklistConsistency().catch(logger.error);
       const domain = get("CLIENT_ENDPOINT");

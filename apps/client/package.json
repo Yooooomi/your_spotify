@@ -3,9 +3,9 @@
   "version": "1.20.1",
   "private": true,
   "scripts": {
-    "start": "rsbuild dev --host",
+    "start": "rsbuild dev --host ::",
     "build": "rsbuild build",
-    "preview": "rsbuild preview",
+    "preview": "rsbuild preview --host ::",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "oxlint -c ../dev/.oxlintrc.json . && oxfmt -c ../dev/.oxfmtrc.json --check .",

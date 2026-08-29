@@ -25,11 +25,25 @@ const app = express();
 const ALLOW_ALL_CORS =
   "i-want-a-security-vulnerability-and-want-to-allow-all-origins";
 
-let corsValue: string[] | undefined = get("CORS")?.split(",") ?? [
-  new URL(get("CLIENT_ENDPOINT")).origin,
-];
-if (corsValue?.[0] === ALLOW_ALL_CORS) {
+// Helper to normalize origins (strips trailing slashes so CORS matches browser headers)
+function normalizeOrigin(input: string): string {
+  try {
+    return new URL(input.trim()).origin;
+  } catch {
+    return input.trim().replace(/\/+$/, "");
+  }
+}
+
+const rawCors = get("CORS");
+let corsValue: string[] | undefined;
+
+if (rawCors === ALLOW_ALL_CORS) {
   corsValue = undefined;
+} else if (rawCors) {
+  corsValue = rawCors.split(",").map(normalizeOrigin);
+} else {
+  const clientEndpoint = get("CLIENT_ENDPOINT");
+  corsValue = clientEndpoint ? [normalizeOrigin(clientEndpoint)] : undefined;
 }
 
 // Mask certain query params in logs
