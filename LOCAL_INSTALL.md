@@ -52,7 +52,7 @@ WorkingDirectory=/home/YOUR_USER/sites/applications/spotify/your_spotify/server
 WantedBy=multi-user.target
 ```
 
-> Refrenced env file only has the ENV variables in it.
+> Referenced env file only has the ENV variables in it.
 
 Example MongoDB version of the systemd unit file:
 
