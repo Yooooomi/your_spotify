@@ -99,6 +99,8 @@ You can follow the instructions [here](https://github.com/Yooooomi/your_spotify/
 | MAX_IMPORT_CACHE_SIZE | Infinite | The maximum element in the cache when importing data from an outside source, more cache means less requests to Spotify, resulting in faster imports |
 | MONGO_NO_ADMIN_RIGHTS | false | Do not ask for admin right on the Mongo database |
 | PORT                  | 8080 | The port of the server, **do not** modify if you're using docker |
+| LOGIN_RATE_LIMIT_PER_MINUTE | _not defined_ (disabled) | Maximum login attempts per minute per client IP. Behind a reverse proxy, also set `TRUST_PROXY` or all users will share the same limit |
+| TRUST_PROXY           | _not defined_ | Express [trust proxy](https://expressjs.com/en/guide/behind-proxies.html) setting, so the client IP is read from `X-Forwarded-For` (e.g. `1` if the server is behind one reverse proxy) |
 | FRAME_ANCESTORS       | _not defined_ | Sites allowed to frame the website, comma separated list of URLs (`i-want-a-security-vulnerability-and-want-to-allow-all-frame-ancestors` to allow every website) |
 
 ## Advanced CORS settings

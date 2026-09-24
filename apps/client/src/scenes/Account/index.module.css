@@ -18,6 +18,16 @@
   text-align: center;
 }
 
+.error {
+  max-width: 480px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(230, 70, 70, 0.6);
+  background-color: rgba(230, 70, 70, 0.15);
+  text-align: center;
+}
+
 .link {
   display: flex;
   align-items: center;

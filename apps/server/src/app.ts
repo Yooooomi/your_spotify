@@ -22,6 +22,23 @@ import { logger, LogLevelAccepts } from "./tools/logger";
 import { measureRequestDuration } from "./tools/middleware";
 
 const app = express();
+
+// Needed behind a reverse proxy for req.ip to be the client IP (e.g. "1" for
+// a single proxy, "loopback", a list of IPs/subnets, or "true")
+const trustProxy = get("TRUST_PROXY");
+if (trustProxy !== undefined) {
+  const asNumber = Number(trustProxy);
+  app.set(
+    "trust proxy",
+    trustProxy === "true"
+      ? true
+      : trustProxy === "false"
+        ? false
+        : Number.isInteger(asNumber)
+          ? asNumber
+          : trustProxy,
+  );
+}
 const ALLOW_ALL_CORS =
   "i-want-a-security-vulnerability-and-want-to-allow-all-origins";
 

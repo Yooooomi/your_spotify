@@ -8,6 +8,12 @@ interface HttpClientRequestConfig {
   headers?: Record<string, string>;
   priority?: RequestPriority;
   retry429MaxAttempts?: number;
+  /**
+   * Fail with a RateLimitedError instead of waiting when the server asks to
+   * wait longer than this (Retry-After). Use it for requests a user is
+   * actively waiting on, so they get an error instead of a hanging request.
+   */
+  maxRetryAfterMs?: number;
 }
 
 interface HttpClientResponse<T> {
@@ -27,6 +33,7 @@ interface QueueState {
   highPriorityQueue: QueueItem<any>[];
   normalPriorityQueue: QueueItem<any>[];
   isProcessingQueue: boolean;
+  rateLimitedUntil: number;
 }
 
 export class HttpError extends Error {
@@ -44,14 +51,47 @@ export class HttpError extends Error {
   }
 }
 
+export class RateLimitedError extends HttpError {
+  public readonly retryAfterMs: number;
+
+  constructor(retryAfterMs: number) {
+    super({
+      status: 429,
+      statusText: "Too Many Requests",
+      body: `Rate limited, retry after ${Math.ceil(retryAfterMs / 1000)}s`,
+    });
+    this.retryAfterMs = retryAfterMs;
+  }
+}
+
+/**
+ * Longest Retry-After a user-facing request is allowed to wait for before
+ * failing with a RateLimitedError.
+ */
+export const USER_FACING_MAX_RETRY_AFTER_MS = 10_000;
+
 const DEFAULT_RETRY_429_MAX_ATTEMPTS = 5;
 const DEFAULT_RETRY_AFTER_MS = 1000;
+
+function getRateLimitRemainingMs(queueState: QueueState) {
+  return Math.max(0, queueState.rateLimitedUntil - Date.now());
+}
+
+function exceedsMaxRetryAfter(
+  config: HttpClientRequestConfig,
+  delayMs: number,
+) {
+  return (
+    config.maxRetryAfterMs !== undefined && delayMs > config.maxRetryAfterMs
+  );
+}
 
 function createQueueState(): QueueState {
   return {
     highPriorityQueue: [],
     normalPriorityQueue: [],
     isProcessingQueue: false,
+    rateLimitedUntil: 0,
   };
 }
 
@@ -64,6 +104,10 @@ export class QueuedHttpClientFactory {
       headers: Record<string, string>;
     },
   ) {}
+
+  getRateLimitRemainingMs() {
+    return getRateLimitRemainingMs(this.queueState);
+  }
 
   createClient(headers: Record<string, string>) {
     const mergedHeaders = { ...this.options.headers, ...headers };
@@ -86,6 +130,12 @@ export class QueuedHttpClient {
     config: HttpClientRequestConfig,
   ): Promise<HttpClientResponse<T>> {
     return new Promise<HttpClientResponse<T>>((resolve, reject) => {
+      const remainingMs = getRateLimitRemainingMs(this.queueState);
+      if (exceedsMaxRetryAfter(config, remainingMs)) {
+        reject(new RateLimitedError(remainingMs));
+        return;
+      }
+
       const queueItem: QueueItem<T> = {
         config: {
           ...config,
@@ -189,6 +239,13 @@ export class QueuedHttpClient {
       const maxAttempts =
         queueItem.config.retry429MaxAttempts ?? DEFAULT_RETRY_429_MAX_ATTEMPTS;
 
+      const retryAfterMs = this.parseRetryAfterHeader(response);
+      this.registerRateLimit(retryAfterMs);
+
+      if (exceedsMaxRetryAfter(queueItem.config, retryAfterMs)) {
+        throw new RateLimitedError(retryAfterMs);
+      }
+
       if (queueItem.retry429AttemptCount >= maxAttempts) {
         throw new HttpError({
           status: response.status,
@@ -200,8 +257,8 @@ export class QueuedHttpClient {
       queueItem.retry429AttemptCount += 1;
       this.requeue(queueItem);
 
-      const retryAfterMs = this.parseRetryAfterHeader(response);
       await this.sleep(retryAfterMs);
+      return;
     }
 
     const data = await response.json();
@@ -210,6 +267,31 @@ export class QueuedHttpClient {
       status: response.status,
       statusText: response.statusText,
     });
+  }
+
+  private registerRateLimit(retryAfterMs: number) {
+    this.queueState.rateLimitedUntil = Math.max(
+      this.queueState.rateLimitedUntil,
+      Date.now() + retryAfterMs,
+    );
+
+    // Requests that must not wait that long are failed right away instead of
+    // sitting in the queue until the rate limit is over.
+    const rejectIfTooLong = (queue: QueueItem<any>[]) =>
+      queue.filter((item) => {
+        if (!exceedsMaxRetryAfter(item.config, retryAfterMs)) {
+          return true;
+        }
+        item.reject(new RateLimitedError(retryAfterMs));
+        return false;
+      });
+
+    this.queueState.highPriorityQueue = rejectIfTooLong(
+      this.queueState.highPriorityQueue,
+    );
+    this.queueState.normalPriorityQueue = rejectIfTooLong(
+      this.queueState.normalPriorityQueue,
+    );
   }
 
   private requeue(queueItem: QueueItem<any>) {
