@@ -16,6 +16,7 @@ It's composed of a web server which polls the Spotify API every now and then and
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
   - [Using docker](#using-docker-compose)
+  - [One-click deploy](#one-click-deploy)
   - [Installing locally](#installing-locally-not-recommended)
   - [Environment](#environment)
   - [Advanced CORS settings](#advanced-cors-settings)
@@ -76,6 +77,14 @@ services:
       - ./your_spotify_db:/data/db
 
 ```
+
+## One-click deploy
+
+<a href="https://repocloud.io/details/Your%20Spotify/"><img src="https://d16t0pc4846x52.cloudfront.net/deploylobe.svg" alt="Deploy on RepoCloud" height="42"></a>
+<a href="https://railway.com/deploy/UfZbjv"><img src="https://railway.com/button.svg" alt="Deploy on Railway" height="42"></a>
+
+- RepoCloud: One-click template, no other instructions required.
+- Railway: After deploying, set the redirect URI of your Spotify application to the backend's public domain plus `/oauth/spotify/callback` ([template page](https://railway.com/deploy/UfZbjv)).
 
 ## Installing locally (not recommended)
 
